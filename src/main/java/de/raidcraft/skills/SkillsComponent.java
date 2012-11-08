@@ -33,7 +33,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
         desc = "Provides different skills and abilities for players"
 )
 @Depend(
-        components = Database.class
+        components = {Database.class, RaidCraft.class}
 )
 public class SkillsComponent extends BukkitComponent implements Component, Listener {
 
@@ -41,6 +41,8 @@ public class SkillsComponent extends BukkitComponent implements Component, Liste
     private LocalConfiguration configuration;
     @InjectComponent
     private Database database;
+    @InjectComponent
+    private RaidCraft raidCraft;
 
     @Override
     public void enable() {
