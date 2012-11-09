@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.bukkit;
 
+import com.sk89q.commandbook.CommandBook;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.rcrpg.RaidCraft;
 import de.raidcraft.skills.SkilledPlayer;
@@ -10,6 +11,7 @@ import de.raidcraft.skills.api.Skill;
 import de.raidcraft.skills.api.trigger.Trigger;
 import de.raidcraft.skills.trigger.BlockTrigger;
 import de.raidcraft.skills.trigger.InteractTrigger;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -29,15 +32,10 @@ import java.util.concurrent.TimeUnit;
 public final class BukkitListenerAdapter implements Listener {
 
     private final SkillsComponent component;
-    private final ThreadPoolExecutor threadPool;
 
     public BukkitListenerAdapter(SkillsComponent component) {
 
         this.component = component;
-        SkillsComponent.LocalConfiguration config = component.getLocalConfiguration();
-        // generate our thread pool
-        this.threadPool = new ThreadPoolExecutor(
-                config.maxCoreSize, config.maxPoolSize, config.keepAlive, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
     }
 
     @SuppressWarnings("unchecked")
@@ -45,9 +43,9 @@ public final class BukkitListenerAdapter implements Listener {
 
         SkilledPlayer player = trigger.getPlayer().getComponent(SkilledPlayer.class);
 
-        final Collection<Skill> skills = Collections.unmodifiableCollection(player.getSkills());
+        final Collection<Skill> skills = new ArrayList<>(player.getSkills());
 
-        Runnable runnable = new Runnable() {
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(CommandBook.inst(), new Runnable() {
             @Override
             public void run() {
                 // we need a try block for every possiblity because a skill might listen on passive and active triggers
@@ -68,9 +66,7 @@ public final class BukkitListenerAdapter implements Listener {
                     }
                 }
             }
-        };
-
-        threadPool.execute(runnable);
+        });
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

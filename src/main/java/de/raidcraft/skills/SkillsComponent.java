@@ -33,7 +33,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
         desc = "Provides different skills and abilities for players"
 )
 @Depend(
-        components = {Database.class, RaidCraft.class}
+        components = {Database.class}
 )
 public class SkillsComponent extends BukkitComponent implements Component, Listener {
 
@@ -41,8 +41,6 @@ public class SkillsComponent extends BukkitComponent implements Component, Liste
     private LocalConfiguration configuration;
     @InjectComponent
     private Database database;
-    @InjectComponent
-    private RaidCraft raidCraft;
 
     @Override
     public void enable() {
@@ -75,12 +73,6 @@ public class SkillsComponent extends BukkitComponent implements Component, Liste
 
     public static class LocalConfiguration extends ConfigurationBase {
 
-        @Setting("threading.max-core-size")
-        public int maxCoreSize = 2;
-        @Setting("threading.max-pool-size")
-        public int maxPoolSize = 4;
-        @Setting("threading.keep-alive")
-        public long keepAlive = 1;
     }
 
     /*///////////////////////////////////////////////////////////////
