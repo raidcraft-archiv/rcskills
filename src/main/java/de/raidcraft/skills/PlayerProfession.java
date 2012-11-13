@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.profession.Profession;
 
 import java.sql.Timestamp;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  *
  * @author Silthus
  */
-public class PlayerProfession {
+public class PlayerProfession extends AbstractLevelable {
 
     private final RCPlayer player;
     private final Profession profession;
@@ -32,6 +33,11 @@ public class PlayerProfession {
 
     }
 
+    @Override
+    protected void loadLevel() {
+        //TODO: implement
+    }
+
     public RCPlayer getPlayer() {
 
         return player;
@@ -40,5 +46,10 @@ public class PlayerProfession {
     public Profession getProfession() {
 
         return profession;
+    }
+
+    @Override
+    public void saveLevelProgress() {
+        //TODO: implement
     }
 }

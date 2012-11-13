@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.profession;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.professions.ProfessionsTable;
@@ -11,7 +10,7 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public abstract class AbstractProfession extends AbstractLevelable implements Profession {
+public abstract class AbstractProfession implements Profession {
 
     private final int id;
     private String name;
