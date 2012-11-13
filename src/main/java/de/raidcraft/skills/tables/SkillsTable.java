@@ -2,7 +2,7 @@ package de.raidcraft.skills.tables;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
-import de.raidcraft.skills.api.Skill;
+import de.raidcraft.skills.api.skill.Skill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,6 +96,7 @@ public class SkillsTable extends Table {
         public final String name;
         public final String description;
         public final String[] usage;
+        public final Skill.Type type;
         public final double cost;
 
         private Data(int id, ResultSet resultSet) throws SQLException {
@@ -104,6 +105,7 @@ public class SkillsTable extends Table {
             this.name = resultSet.getString("name");
             this.description = resultSet.getString("description");
             this.usage = resultSet.getString("usage").split("\\|");
+            this.type = Skill.Type.fromString(resultSet.getString("type"));
             this.cost = resultSet.getDouble("cost");
         }
     }

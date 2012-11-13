@@ -5,7 +5,7 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
-import de.raidcraft.skills.api.Skill;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.tables.PlayerSkillsTable;
 

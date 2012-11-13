@@ -1,6 +1,4 @@
-package de.raidcraft.skills.skills.misc;
-
-import de.raidcraft.skills.api.AbstractSkill;
+package de.raidcraft.skills.api.skill;
 
 /**
  * @author Silthus

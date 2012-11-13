@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api;
 
+import de.raidcraft.skills.api.skill.Skill;
+
 /**
  * @author Silthus
  */

@@ -2,7 +2,7 @@ package de.raidcraft.skills.skills.gathering;
 
 import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.Passive;
 import de.raidcraft.skills.trigger.BlockTrigger;
 

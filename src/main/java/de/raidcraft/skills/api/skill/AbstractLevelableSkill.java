@@ -1,7 +1,8 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.LevelableSkill;
 import de.raidcraft.skills.api.events.SkillLevelEvent;
 import de.raidcraft.skills.tables.PlayerSkillsLevelTable;
 import de.raidcraft.util.BukkitUtil;

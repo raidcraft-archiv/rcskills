@@ -7,7 +7,7 @@ import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.Active;
 import de.raidcraft.skills.api.Passive;
-import de.raidcraft.skills.api.Skill;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.Trigger;
 import de.raidcraft.skills.trigger.BlockTrigger;
 import de.raidcraft.skills.trigger.InteractTrigger;

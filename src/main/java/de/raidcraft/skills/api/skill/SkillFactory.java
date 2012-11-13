@@ -1,11 +1,11 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.skills.misc.TemplateSkill;
 import de.raidcraft.skills.tables.SkillsTable;
 import org.bukkit.ChatColor;
 
@@ -32,7 +32,7 @@ public final class SkillFactory {
 
     /**
      * Will create a template skill based on the given ID.
-     * A {@link de.raidcraft.skills.skills.misc.TemplateSkill} is only used for information
+     * A {@link TemplateSkill} is only used for information
      * and cannot be attached to a player.
      *
      * @param id of the skill

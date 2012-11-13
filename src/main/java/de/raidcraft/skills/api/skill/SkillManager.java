@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
@@ -38,12 +38,12 @@ public final class SkillManager {
      * a template skill you want because there is no way of knowing
      * what player the skill is attached to.
      * <p/>
-     * {@link de.raidcraft.skills.skills.misc.TemplateSkill} is a skill that is for information only
+     * {@link TemplateSkill} is a skill that is for information only
      * like before buying the skill and cannot be interacted with.
      *
      * @param id of the skill
      *
-     * @return {@link de.raidcraft.skills.skills.misc.TemplateSkill}
+     * @return {@link TemplateSkill}
      *
      * @throws de.raidcraft.skills.api.exceptions.UnknownSkillException is thrown if the skill is not configured
      */
@@ -61,13 +61,13 @@ public final class SkillManager {
 
     /**
      * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.SkilledPlayer}, but not currently
-     * owned by the player. This can happen when the player dropped a {@link Levelable} skill but
+     * owned by the player. This can happen when the player dropped a {@link de.raidcraft.skills.api.Levelable} skill but
      * still has saved progress for that skill in the database.
      *
      * @param id     of the skill
      * @param player that Skill was attached to
      *
-     * @return {@link Skill} that is most likely a sub skill of {@link Levelable}
+     * @return {@link Skill} that is most likely a sub skill of {@link de.raidcraft.skills.api.Levelable}
      *
      * @throws UnknownSkillException is thrown if the skill is not registered with the player
      */

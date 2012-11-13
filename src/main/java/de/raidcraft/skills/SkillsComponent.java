@@ -1,15 +1,16 @@
 package de.raidcraft.skills;
 
+import com.sk89q.rebar.config.annotations.Setting;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
-import de.raidcraft.skills.api.Skill;
-import de.raidcraft.skills.api.SkillManager;
 import de.raidcraft.skills.api.bukkit.BukkitListenerAdapter;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.skill.SkillManager;
 import de.raidcraft.skills.tables.PermissionSkillsTable;
 import de.raidcraft.skills.tables.PlayerSkillsLevelTable;
 import de.raidcraft.skills.tables.PlayerSkillsTable;
@@ -68,6 +69,9 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
 
             super(plugin, name);
         }
+
+        @Setting("op-all-permissions")
+        public boolean allow_op = false;
     }
 
     /*///////////////////////////////////////////////////////////////
