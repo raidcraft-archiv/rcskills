@@ -1,9 +1,9 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.rcrpg.RaidCraft;
-import de.raidcraft.rcrpg.api.player.PlayerComponent;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.PlayerComponent;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.Skill;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;

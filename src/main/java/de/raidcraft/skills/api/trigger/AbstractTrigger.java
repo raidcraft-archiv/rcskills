@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.trigger;
 
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.player.RCPlayer;
 
 /**
  * @author Silthus

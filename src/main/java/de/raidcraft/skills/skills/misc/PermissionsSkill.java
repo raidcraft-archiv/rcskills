@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills.misc;
 
-import de.raidcraft.componentutils.database.Database;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.AbstractSkill;
 import de.raidcraft.skills.tables.PermissionSkillsTable;
 

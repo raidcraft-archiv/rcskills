@@ -1,10 +1,10 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.rcrpg.RaidCraft;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.events.SkillLevelEvent;
 import de.raidcraft.skills.tables.PlayerSkillsLevelTable;
+import de.raidcraft.util.BukkitUtil;
 
 /**
  * @author Silthus
@@ -120,7 +120,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public void addLevel(int level) {
 
         SkillLevelEvent event = new SkillLevelEvent(this, getLevel() + 1);
-        RaidCraft.callEvent(event);
+        BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             increaseLevel();
             this.level += level;
@@ -135,7 +135,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public void removeLevel(int level) {
 
         SkillLevelEvent event = new SkillLevelEvent(this, getLevel() - 1);
-        RaidCraft.callEvent(event);
+        BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             decreaseLevel();
             this.level -= level;

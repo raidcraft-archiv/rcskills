@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.bukkit;
 
 import com.sk89q.commandbook.CommandBook;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
-import de.raidcraft.rcrpg.RaidCraft;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.Active;
@@ -21,10 +21,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Silthus

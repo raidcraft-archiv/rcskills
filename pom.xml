@@ -33,12 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>de.raidcraft</groupId>
-            <artifactId>rcrpg</artifactId>
-            <version>0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>component-utils</artifactId>
+            <artifactId>raidcraft-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api;
 
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.skills.misc.TemplateSkill;
@@ -32,7 +32,7 @@ public final class SkillFactory {
 
     /**
      * Will create a template skill based on the given ID.
-     * A {@link de.raidcraft.rcrpg.skills.skills.misc.TemplateSkill} is only used for information
+     * A {@link de.raidcraft.skills.skills.misc.TemplateSkill} is only used for information
      * and cannot be attached to a player.
      *
      * @param id of the skill

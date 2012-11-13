@@ -1,16 +1,10 @@
 package de.raidcraft.skills;
 
-import com.sk89q.commandbook.CommandBook;
-import com.zachsthings.libcomponents.ComponentInformation;
-import com.zachsthings.libcomponents.Depend;
-import com.zachsthings.libcomponents.InjectComponent;
-import com.zachsthings.libcomponents.bukkit.BukkitComponent;
-import com.zachsthings.libcomponents.config.ConfigurationBase;
-import com.zachsthings.libcomponents.config.Setting;
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.rcrpg.RaidCraft;
-import de.raidcraft.rcrpg.api.Component;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.Component;
+import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.Skill;
 import de.raidcraft.skills.api.SkillManager;
@@ -28,37 +22,34 @@ import org.bukkit.event.player.PlayerQuitEvent;
 /**
  * @author Silthus
  */
-@ComponentInformation(
-        friendlyName = "RaidCraft Skill System",
-        desc = "Provides different skills and abilities for players"
-)
-@Depend(
-        components = {Database.class}
-)
-public class SkillsComponent extends BukkitComponent implements Component, Listener {
+public class SkillsComponent extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
     private LocalConfiguration configuration;
-    @InjectComponent
-    private Database database;
 
     @Override
     public void enable() {
 
         // create the config
-        this.configuration = configure(new LocalConfiguration());
+        this.configuration = new LocalConfiguration(this, "config.yml");
         // lets register the database
-        database.registerTable(SkillsTable.class, new SkillsTable());
-        database.registerTable(PlayerSkillsTable.class, new PlayerSkillsTable());
-        database.registerTable(PlayerSkillsLevelTable.class, new PlayerSkillsLevelTable());
-        database.registerTable(PermissionSkillsTable.class, new PermissionSkillsTable());
+        registerTable(SkillsTable.class, new SkillsTable());
+        registerTable(PlayerSkillsTable.class, new PlayerSkillsTable());
+        registerTable(PlayerSkillsLevelTable.class, new PlayerSkillsLevelTable());
+        registerTable(PermissionSkillsTable.class, new PermissionSkillsTable());
         // register our events
-        CommandBook.registerEvents(new BukkitListenerAdapter(this));
-        CommandBook.registerEvents(this);
+        registerEvents(new BukkitListenerAdapter(this));
+        registerEvents(this);
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsComponent.class, this);
+    }
+
+    @Override
+    public void disable() {
+
+
     }
 
     public SkillManager getSkillManager() {
@@ -73,6 +64,10 @@ public class SkillsComponent extends BukkitComponent implements Component, Liste
 
     public static class LocalConfiguration extends ConfigurationBase {
 
+        public LocalConfiguration(BasePlugin plugin, String name) {
+
+            super(plugin, name);
+        }
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -97,7 +92,7 @@ public class SkillsComponent extends BukkitComponent implements Component, Liste
                 player.sendMessage("MaxLevel: " + levelable.getMaxLevel());
             }
         } catch (UnknownSkillException e) {
-            CommandBook.logger().info(e.getMessage());
+            getLogger().info(e.getMessage());
         }
     }
 

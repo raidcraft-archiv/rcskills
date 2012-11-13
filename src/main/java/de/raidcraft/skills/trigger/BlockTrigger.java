@@ -1,7 +1,7 @@
 package de.raidcraft.skills.trigger;
 
 import com.sk89q.worldedit.BlockWorldVector;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.trigger.AbstractTrigger;
 
 /**

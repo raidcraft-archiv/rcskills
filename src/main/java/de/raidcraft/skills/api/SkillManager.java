@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -38,12 +38,12 @@ public final class SkillManager {
      * a template skill you want because there is no way of knowing
      * what player the skill is attached to.
      * <p/>
-     * {@link de.raidcraft.rcrpg.skills.skills.misc.TemplateSkill} is a skill that is for information only
+     * {@link de.raidcraft.skills.skills.misc.TemplateSkill} is a skill that is for information only
      * like before buying the skill and cannot be interacted with.
      *
      * @param id of the skill
      *
-     * @return {@link de.raidcraft.rcrpg.skills.skills.misc.TemplateSkill}
+     * @return {@link de.raidcraft.skills.skills.misc.TemplateSkill}
      *
      * @throws de.raidcraft.skills.api.exceptions.UnknownSkillException is thrown if the skill is not configured
      */

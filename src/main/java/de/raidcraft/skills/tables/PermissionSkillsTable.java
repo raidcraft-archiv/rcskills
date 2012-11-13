@@ -1,7 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Table;
+import de.raidcraft.api.database.Table;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

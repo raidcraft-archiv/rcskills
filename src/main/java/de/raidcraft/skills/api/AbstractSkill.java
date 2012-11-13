@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.componentutils.database.Database;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.tables.SkillsTable;
 
 /**

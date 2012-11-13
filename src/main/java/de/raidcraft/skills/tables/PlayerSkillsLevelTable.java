@@ -1,8 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Table;
-import de.raidcraft.rcrpg.api.player.RCPlayer;
+import de.raidcraft.api.database.Table;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.LevelableSkill;
 
 import java.sql.ResultSet;
