@@ -103,6 +103,6 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        RaidCraft.getPlayer(event.getPlayer()).getComponent(SkilledPlayer.class).save();
+        RaidCraft.getPlayer(event.getPlayer()).getComponent(SkilledPlayer.class).saveSkills();
     }
 }

@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.profession;
 
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.skill.TemplateSkill;
 
 import java.util.Collection;
 
@@ -16,7 +15,7 @@ public interface Profession {
 
     public String getDescription();
 
-    public Collection<TemplateSkill> getSkills();
+    public Collection<Skill> getSkills();
 
     public boolean hasSkill(Skill skill);
 }
