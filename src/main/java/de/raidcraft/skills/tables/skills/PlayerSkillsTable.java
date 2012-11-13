@@ -1,4 +1,4 @@
-package de.raidcraft.skills.tables;
+package de.raidcraft.skills.tables.skills;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;

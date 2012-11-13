@@ -4,12 +4,13 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.Levelable;
-import de.raidcraft.skills.api.events.PlayerLevelEvent;
+import de.raidcraft.skills.api.Obtainable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.tables.PlayerSkillsTable;
-import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,19 +19,20 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class SkilledPlayer implements PlayerComponent, Levelable {
+public class SkilledPlayer extends AbstractLevelable implements PlayerComponent, Levelable {
 
     private final RCPlayer player;
     private final Map<Integer, Skill> skills = new HashMap<>();
-    /* Variables for the Levelable Implementation */
-    private int exp;
-    private int level;
-    private int maxLevel;
-    private int maxExp;
 
     public SkilledPlayer(RCPlayer player) {
 
         this.player = player;
+    }
+
+    @Override
+    protected void loadLevel() {
+
+        //TODO: implement
     }
 
     @Override
@@ -51,6 +53,46 @@ public class SkilledPlayer implements PlayerComponent, Levelable {
     public boolean hasSkill(Skill skill) {
 
         return hasSkill(skill.getId());
+    }
+
+    public boolean canOptainSkill(Skill skill) {
+
+        if (skill instanceof Obtainable) {
+            Obtainable obtainable = (Obtainable) skill;
+
+            switch (obtainable.getType()) {
+
+                case ADMIN:
+                    return player.isOp() || player.hasPermission("rcskills.admin");
+                case BUYABLE:
+                    return obtainable.hasBuyPermission(player)
+                            && obtainable.getNeededLevel() < getLevel()
+                            && player.hasEnoughMoney(obtainable.getCost())
+                            && meetsProfessionRequirements(skill, obtainable);
+                case GAINABLE:
+                    return obtainable.hasGainPermission(player)
+                            && obtainable.getNeededLevel() < getLevel()
+                            && meetsProfessionRequirements(skill, obtainable);
+            }
+        }
+        return false;
+    }
+
+    private boolean meetsProfessionRequirements(Skill skill, Obtainable obtainable) {
+
+        if (obtainable.getNeededProfessions().size() < 1) {
+            return true;
+        }
+
+        boolean needAll = obtainable.areAllProfessionsRequired();
+        for (Profession profession : obtainable.getNeededProfessions()) {
+            if (needAll && !profession.canPlayerObtainSkill(skill)) {
+                return false;
+            } else if (!needAll && profession.canPlayerObtainSkill(skill)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Skill getSkill(int id) throws UnknownSkillException {
@@ -76,129 +118,19 @@ public class SkilledPlayer implements PlayerComponent, Levelable {
         saveSkills();
     }
 
-    private void saveSkills() {
+    public void saveSkills() {
 
         for (Skill skill : getSkills()) {
             if (skill instanceof Levelable) {
-                ((Levelable) skill).save();
+                ((Levelable) skill).saveLevelProgress();
             }
         }
     }
 
-    /*/////////////////////////////////////////////////////////////////
-    //          Implementation of the Levelable Interface
-    /////////////////////////////////////////////////////////////////*/
-
     @Override
-    public int getLevel() {
+    public void saveLevelProgress() {
 
-        return level;
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        return maxLevel;
-    }
-
-    @Override
-    public int getExp() {
-
-        return exp;
-    }
-
-    @Override
-    public int getMaxExp() {
-
-        return maxExp;
-    }
-
-    @Override
-    public int calculateMaxExp() {
-        // TODO: calculate formula for next exp max level
-        maxExp = (int) (maxExp * 1.5);
-        return maxExp;
-    }
-
-    @Override
-    public int getExpToNextLevel() {
-
-        return maxExp - exp;
-    }
-
-    @Override
-    public void addExp(int exp) {
-
-        this.exp += exp;
-        checkProgress();
-    }
-
-    @Override
-    public void removeExp(int exp) {
-
-        this.exp -= exp;
-        checkProgress();
-    }
-
-    @Override
-    public void setExp(int exp) {
-
-        this.exp = exp;
-        checkProgress();
-    }
-
-    @Override
-    public void setLevel(int level) {
-
-        if (level < this.level) {
-            do {
-                removeLevel(1);
-            } while (getLevel() > level);
-        } else if (level > this.level) {
-            do {
-                addLevel(1);
-            } while (getLevel() < level);
-        }
-    }
-
-    @Override
-    public void addLevel(int level) {
-
-        PlayerLevelEvent event = new PlayerLevelEvent(this, getLevel() + 1);
-        BukkitUtil.callEvent(event);
-        if (!event.isCancelled()) {
-            increaseLevel();
-            this.level += level;
-            // set the exp
-            setExp(getExp() - getMaxExp());
-            calculateMaxExp();
-            saveSkills();
-        }
-    }
-
-    @Override
-    public void removeLevel(int level) {
-
-        PlayerLevelEvent event = new PlayerLevelEvent(this, getLevel() - 1);
-        BukkitUtil.callEvent(event);
-        if (!event.isCancelled()) {
-            decreaseLevel();
-            this.level -= level;
-            calculateMaxExp();
-            saveSkills();
-        }
-    }
-
-    @Override
-    public boolean canLevel() {
-
-        return getExpToNextLevel() < 1 && !hasReachedMaxLevel();
-    }
-
-    @Override
-    public boolean hasReachedMaxLevel() {
-
-        return !(getLevel() < getMaxLevel());
+        // TODO: saveLevelProgress level progress
     }
 
     @Override
@@ -209,23 +141,5 @@ public class SkilledPlayer implements PlayerComponent, Levelable {
     @Override
     public void decreaseLevel() {
         // called after the player lost a level
-    }
-
-    private void checkProgress() {
-
-        if (canLevel()) {
-            // increase the level
-            addLevel(1);
-        } else if (getExp() < 0 && getLevel() > 0) {
-            // decrease the level...
-            removeLevel(1);
-            // our exp are negative when we get reduced
-            setExp(getMaxExp() + getExp());
-        }
-    }
-
-    private void saveLevelProgress() {
-
-        // TODO: save level progress
     }
 }

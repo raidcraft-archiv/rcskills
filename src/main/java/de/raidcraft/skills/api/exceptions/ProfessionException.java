@@ -5,9 +5,9 @@ import de.raidcraft.api.RaidCraftException;
 /**
  * @author Silthus
  */
-public class SkillException extends RaidCraftException {
+public class ProfessionException extends RaidCraftException {
 
-    public SkillException(String message) {
+    public ProfessionException(String message) {
 
         super(message);
     }

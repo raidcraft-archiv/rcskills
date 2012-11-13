@@ -6,7 +6,7 @@ import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.tables.SkillsTable;
+import de.raidcraft.skills.tables.skills.SkillsTable;
 import org.bukkit.ChatColor;
 
 import java.lang.reflect.Constructor;

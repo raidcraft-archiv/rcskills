@@ -17,5 +17,5 @@ public interface Profession {
 
     public Collection<Skill> getSkills();
 
-    public boolean hasSkill(Skill skill);
+    public boolean canPlayerObtainSkill(Skill skill);
 }

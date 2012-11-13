@@ -1,9 +1,9 @@
-package de.raidcraft.skills.tables;
+package de.raidcraft.skills.tables.skills;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.LevelableSkill;
+import de.raidcraft.skills.api.skill.LevelableSkill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

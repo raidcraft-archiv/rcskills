@@ -5,7 +5,7 @@ import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.tables.PlayerSkillsTable;
+import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
 
 import java.util.HashMap;
 import java.util.Map;

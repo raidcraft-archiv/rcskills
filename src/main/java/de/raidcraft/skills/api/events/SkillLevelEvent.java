@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.events;
 
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.LevelableSkill;
+import de.raidcraft.skills.api.skill.LevelableSkill;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

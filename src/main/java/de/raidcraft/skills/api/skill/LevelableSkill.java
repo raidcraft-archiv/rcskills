@@ -1,6 +1,6 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.Levelable;
 
 /**
  * @author Silthus

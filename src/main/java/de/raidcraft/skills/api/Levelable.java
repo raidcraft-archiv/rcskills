@@ -41,5 +41,5 @@ public interface Levelable {
 
     public void decreaseLevel();
 
-    public void save();
+    public void saveLevelProgress();
 }

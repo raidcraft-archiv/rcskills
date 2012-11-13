@@ -1,11 +1,15 @@
-package de.raidcraft.skills.tables;
+package de.raidcraft.skills.tables.skills;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
+import de.raidcraft.skills.api.Obtainable;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Silthus
@@ -27,7 +31,10 @@ public class SkillsTable extends Table {
                             "`name` VARCHAR( 128 ) NOT NULL ,\n" +
                             "`description` VARCHAR ( 256 ) NOT NULL ,\n" +
                             "`usage` TEXT NOT NULL ,\n" +
+                            "`type` VARCHAR ( 64 ) NOT NULL ,\n" +
                             "`cost` DOUBLE NOT NULL ,\n" +
+                            "`needed_level` INT NOT NULL ,\n" +
+                            "`require_all_professions` BOOL NOT NULL ,\n" +
                             "`class` VARCHAR( 128 ) NOT NULL ,\n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
@@ -96,8 +103,11 @@ public class SkillsTable extends Table {
         public final String name;
         public final String description;
         public final String[] usage;
-        public final Skill.Type type;
+        public final Obtainable.Type type;
         public final double cost;
+        public final int neededLevel;
+        public final Collection<Profession> professions;
+        public final boolean allProfessionsRequired;
 
         private Data(int id, ResultSet resultSet) throws SQLException {
 
@@ -105,8 +115,12 @@ public class SkillsTable extends Table {
             this.name = resultSet.getString("name");
             this.description = resultSet.getString("description");
             this.usage = resultSet.getString("usage").split("\\|");
-            this.type = Skill.Type.fromString(resultSet.getString("type"));
+            this.type = Obtainable.Type.fromString(resultSet.getString("type"));
             this.cost = resultSet.getDouble("cost");
+            this.neededLevel = resultSet.getInt("needed_level");
+            this.allProfessionsRequired = resultSet.getBoolean("require_all_professions");
+            this.professions = new ArrayList<>();
+            // TODO: load profession -> skill requirements
         }
     }
 }

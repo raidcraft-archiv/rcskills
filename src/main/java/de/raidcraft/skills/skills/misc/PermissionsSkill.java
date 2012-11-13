@@ -1,8 +1,8 @@
 package de.raidcraft.skills.skills.misc;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.skill.AbstractSkill;
-import de.raidcraft.skills.tables.PermissionSkillsTable;
+import de.raidcraft.skills.api.skill.AbstractObtainableSkill;
+import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 /**
  * @author Silthus
  */
-public class PermissionsSkill extends AbstractSkill {
+public class PermissionsSkill extends AbstractObtainableSkill {
 
     private Collection<String> groups;
     private Collection<String> permissions;

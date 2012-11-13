@@ -1,47 +1,24 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.api;
 
-import de.raidcraft.api.database.Database;
-import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.events.SkillLevelEvent;
-import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
+import de.raidcraft.skills.api.events.RCLevelEvent;
 import de.raidcraft.util.BukkitUtil;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractLevelableSkill extends AbstractObtainableSkill implements LevelableSkill {
+public abstract class AbstractLevelable implements Levelable {
 
-    private final RCPlayer player;
-    private int level = 1;
-    private int maxLevel = 10;
-    private int exp = 0;
-    private int maxExp;
+    protected int level;
+    protected int maxLevel;
+    protected int exp;
+    protected int maxExp;
 
-    public AbstractLevelableSkill(int id, RCPlayer player) {
+    protected AbstractLevelable() {
 
-        super(id);
-        this.player = player;
-        load(Database.getTable(PlayerSkillsLevelTable.class).getLevelData(getId(), player));
+        loadLevel();
     }
 
-    protected void load(PlayerSkillsLevelTable.Data data) {
-
-        // abort in case there are no entries yet
-        if (data == null) {
-            maxExp = calculateMaxExp();
-            return;
-        }
-        this.level = data.level;
-        this.maxLevel = data.maxLevel;
-        this.exp = data.exp;
-        this.maxExp = data.maxExp;
-    }
-
-    @Override
-    public RCPlayer getPlayer() {
-
-        return player;
-    }
+    abstract protected void loadLevel();
 
     @Override
     public int getLevel() {
@@ -118,7 +95,7 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
     @Override
     public void addLevel(int level) {
 
-        SkillLevelEvent event = new SkillLevelEvent(this, getLevel() + 1);
+        RCLevelEvent event = new RCLevelEvent(this, getLevel() + 1);
         BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             increaseLevel();
@@ -133,7 +110,7 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
     @Override
     public void removeLevel(int level) {
 
-        SkillLevelEvent event = new SkillLevelEvent(this, getLevel() - 1);
+        RCLevelEvent event = new RCLevelEvent(this, getLevel() - 1);
         BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             decreaseLevel();
@@ -153,12 +130,6 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
     public boolean hasReachedMaxLevel() {
 
         return !(getLevel() < getMaxLevel());
-    }
-
-    @Override
-    public void saveLevelProgress() {
-
-        Database.getTable(PlayerSkillsLevelTable.class).saveSkillLevel(this);
     }
 
     private void checkProgress() {

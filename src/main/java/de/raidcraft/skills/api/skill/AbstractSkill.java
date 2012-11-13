@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
-import de.raidcraft.skills.tables.SkillsTable;
+import de.raidcraft.skills.tables.skills.SkillsTable;
 
 /**
  * @author Silthus
@@ -15,23 +15,18 @@ public abstract class AbstractSkill implements Skill {
     private String name;
     private String description;
     private String[] usage;
-    private Type type;
-    private double cost;
 
     public AbstractSkill(int id) {
 
         this.id = id;
-        load();
+        load(Database.getTable(SkillsTable.class).getSkillData(id));
     }
 
-    private void load() {
+    protected void load(SkillsTable.Data data) {
 
-        SkillsTable.Data data = Database.getTable(SkillsTable.class).getSkillData(id);
         this.name = data.name;
         this.description = data.description;
         this.usage = data.usage;
-        this.type = data.type;
-        this.cost = data.cost;
     }
 
     @Override
@@ -59,12 +54,6 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Type getType() {
-
-        return type;
-    }
-
-    @Override
     public boolean hasUsePermission(RCPlayer player) {
 
         return hasPermission(player,
@@ -72,26 +61,6 @@ public abstract class AbstractSkill implements Skill {
                 "rcskills.use.*",
                 "rcskills.use." + getId(),
                 "rcskills.use." + getName().replace(" ", "_").toLowerCase());
-    }
-
-    @Override
-    public boolean hasBuyPermission(RCPlayer player) {
-
-        return hasPermission(player,
-                "rcskills.admin",
-                "rcskills.buy.*",
-                "rcskills.buy." + getId(),
-                "rcskills.buy." + getName().replace(" ", "_").toLowerCase());
-    }
-
-    @Override
-    public boolean hasGainPermission(RCPlayer player) {
-
-        return hasPermission(player,
-                "rcskills.admin",
-                "rcskills.gain.*",
-                "rcskills.gain." + getId(),
-                "rcskills.gain." + getName().replace(" ", "_").toLowerCase());
     }
 
     protected boolean hasPermission(RCPlayer player, String... permissions) {
@@ -103,11 +72,5 @@ public abstract class AbstractSkill implements Skill {
             }
         }
         return false;
-    }
-
-    @Override
-    public double getCost() {
-
-        return cost;
     }
 }
