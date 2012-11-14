@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public abstract class AbstractObtainableSkill extends AbstractSkill implements Obtainable{
+public abstract class AbstractObtainableSkill extends AbstractSkill implements Obtainable {
 
     private Type type;
     private double cost;

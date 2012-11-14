@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.api.events.SkillLevelEvent;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
 import de.raidcraft.util.BukkitUtil;
@@ -24,6 +25,17 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
         load(Database.getTable(PlayerSkillsLevelTable.class).getLevelData(getId(), player));
     }
 
+    @Override
+    public RCPlayer getPlayer() {
+
+        return player;
+    }
+
+    protected SkilledPlayer getSkilledPlayer() {
+
+        return player.getComponent(SkilledPlayer.class);
+    }
+
     protected void load(PlayerSkillsLevelTable.Data data) {
 
         // abort in case there are no entries yet
@@ -35,12 +47,6 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
         this.maxLevel = data.maxLevel;
         this.exp = data.exp;
         this.maxExp = data.maxExp;
-    }
-
-    @Override
-    public RCPlayer getPlayer() {
-
-        return player;
     }
 
     @Override
