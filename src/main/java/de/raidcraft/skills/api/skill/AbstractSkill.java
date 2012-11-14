@@ -73,4 +73,19 @@ public abstract class AbstractSkill implements Skill {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+
+        return "[S" + getId() + "-" + getClass().getName() + "]" + getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof Skill) {
+            return ((Skill) obj).getId() == getId();
+        }
+        return false;
+    }
 }

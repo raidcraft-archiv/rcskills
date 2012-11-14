@@ -61,4 +61,19 @@ public abstract class AbstractProfession implements Profession {
         //TODO: check special skill -> profession requirements like level of the profession
         return false;
     }
+
+    @Override
+    public String toString() {
+
+        return "[P" + getId() + "-" + getClass().getName() + "]" + getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof AbstractProfession) {
+            return ((AbstractProfession) obj).getId() == getId();
+        }
+        return false;
+    }
 }
