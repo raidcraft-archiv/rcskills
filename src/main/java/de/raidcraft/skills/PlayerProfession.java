@@ -1,8 +1,9 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
+import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 
 /**
@@ -14,27 +15,20 @@ import de.raidcraft.skills.api.profession.Profession;
  *
  * @author Silthus
  */
-public class PlayerProfession extends AbstractLevelable {
+public class PlayerProfession extends AbstractProfession {
 
     private final Hero hero;
-    private final Profession profession;
 
-    public PlayerProfession(Hero hero, Profession profession, LevelData data) {
+    protected PlayerProfession(Hero hero, LevelData levelData, ProfessionData data) {
 
-        super(data);
+        super(levelData, data);
         this.hero = hero;
-        this.profession = profession;
     }
 
     @Override
     public Hero getHero() {
 
         return hero;
-    }
-
-    public Profession getProfession() {
-
-        return profession;
     }
 
     @Override

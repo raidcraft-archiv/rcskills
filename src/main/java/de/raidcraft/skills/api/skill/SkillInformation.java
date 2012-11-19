@@ -16,5 +16,5 @@ public @interface SkillInformation {
 
     public String desc();
 
-    public SkillType[] types() default {SkillType.UNBINDABLE};
+    public SkillType[] types();
 }

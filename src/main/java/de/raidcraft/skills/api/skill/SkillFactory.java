@@ -31,25 +31,6 @@ public final class SkillFactory {
     }
 
     /**
-     * Will create a template skill based on the given ID.
-     * A {@link TemplateSkill} is only used for information
-     * and cannot be attached to a player.
-     *
-     * @param id of the skill
-     *
-     * @return {@link Skill}
-     *
-     * @throws UnknownSkillException
-     */
-    protected Skill createTemplateSkill(int id) throws UnknownSkillException {
-
-        if (table.contains(id)) {
-            return new TemplateSkill(id);
-        }
-        throw new UnknownSkillException("Es gibt keinen Skill mit der ID: " + ChatColor.AQUA + id);
-    }
-
-    /**
      * Will try to create an instance of the skill via reflection based on the
      * class friendlyName provided in the database.
      *

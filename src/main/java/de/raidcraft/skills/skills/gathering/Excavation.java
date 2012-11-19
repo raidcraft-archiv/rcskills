@@ -1,40 +1,32 @@
 package de.raidcraft.skills.skills.gathering;
 
-import com.sk89q.worldedit.blocks.BlockID;
-import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.Passive;
-import de.raidcraft.skills.trigger.BlockTrigger;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.LevelData;
+import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.skill.SkillType;
 
 /**
  * @author Silthus
  */
-public class Excavation extends AbstractLevelableSkill implements Passive<BlockTrigger> {
+@SkillInformation(
+        name = "excavation",
+        desc = "Gräbt die Erde nach Schätzen um.",
+        types = {SkillType.UNBINDABLE}
+)
+public class Excavation extends AbstractLevelableSkill implements Passive {
 
-    public static final int[] EXCAVATION_IDS = {BlockID.SAND, BlockID.GRAVEL, BlockID.GRASS, BlockID.DIRT, BlockID.CLAY};
 
-    public Excavation(int id, RCPlayer player) {
+    public Excavation(Hero hero, SkillData skillData, LevelData levelData) {
 
-        super(id, player);
+        super(hero, skillData, levelData);
     }
 
     @Override
-    public void increaseLevel() {
-        //TODO: adjust loottables based on the level
-    }
+    public void apply(Hero hero) {
 
-    @Override
-    public void decreaseLevel() {
-        //TODO: adjust loottables based on the level
-    }
 
-    @Override
-    public void apply(BlockTrigger trigger) {
-
-        for (int i = 0; i < EXCAVATION_IDS.length; i++) {
-            if (EXCAVATION_IDS[i] == trigger.getId()) {
-                addExp(1);
-            }
-        }
     }
 }

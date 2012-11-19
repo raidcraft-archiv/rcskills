@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
+import de.raidcraft.skills.tables.skills.SkillsTable;
 import de.raidcraft.util.BukkitUtil;
 
 /**
@@ -20,9 +21,9 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     private int exp = 0;
     private int maxExp;
 
-    public AbstractLevelableSkill(int id, Hero hero, SkillData skillData, LevelData levelData) {
+    public AbstractLevelableSkill(Hero hero, SkillData skillData, LevelData levelData) {
 
-        super(id, skillData);
+        super(skillData);
         this.hero = hero;
         // abort in case there are no entries yet
         if (levelData == null) {
@@ -35,9 +36,11 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
         this.maxExp = calculateMaxExp();
     }
 
-    public AbstractLevelableSkill(int id, Hero hero, SkillData data) {
+    public AbstractLevelableSkill(Hero hero, int skillId) {
 
-        this(id, hero, data, null);
+        this(hero,
+                Database.getTable(SkillsTable.class).getSkillData(skillId),
+                Database.getTable(PlayerSkillsLevelTable.class).getLevelData(skillId, hero.getRCPlayer()));
     }
 
     @Override

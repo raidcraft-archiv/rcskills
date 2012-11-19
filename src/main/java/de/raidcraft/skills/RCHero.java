@@ -5,10 +5,9 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.AbstractHero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.PlayerTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class RCHero extends AbstractLevelable implements PlayerComponent, Hero {
+public class RCHero extends AbstractHero implements PlayerComponent {
 
     private final RCPlayer player;
     private final Map<Integer, Skill> skills = new HashMap<>();
@@ -29,20 +28,29 @@ public class RCHero extends AbstractLevelable implements PlayerComponent, Hero {
 
     public RCHero(RCPlayer player) throws UnknownPlayerException {
 
-        super(Database.getTable(PlayerTable.class).getLevelData(player.getUserName()));
+        super(player, Database.getTable(PlayerTable.class).getLevelData(player.getUserName()));
         this.player = player;
+    }
+
+    public void save() {
+
+        saveLevelProgress();
+        saveSkills();
+    }
+
+    public void saveSkills() {
+
+        for (Skill skill : getSkills()) {
+            if (skill instanceof Levelable) {
+                ((Levelable) skill).saveLevelProgress();
+            }
+        }
     }
 
     @Override
     public RCPlayer getPlayer() {
 
         return player;
-    }
-
-    @Override
-    public Hero getHero() {
-
-        return this;
     }
 
     public boolean hasSkill(int id) {
@@ -79,21 +87,6 @@ public class RCHero extends AbstractLevelable implements PlayerComponent, Hero {
     public Collection<PlayerProfession> getPlayerProfessions() {
 
         return playerProfessions;
-    }
-
-    public void save() {
-
-        saveLevelProgress();
-        saveSkills();
-    }
-
-    public void saveSkills() {
-
-        for (Skill skill : getSkills()) {
-            if (skill instanceof Levelable) {
-                ((Levelable) skill).saveLevelProgress();
-            }
-        }
     }
 
     @Override

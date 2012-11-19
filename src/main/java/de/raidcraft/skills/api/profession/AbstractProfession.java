@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.profession;
 
 import de.raidcraft.api.inheritance.Child;
+import de.raidcraft.skills.api.AbstractLevelable;
+import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
@@ -9,7 +11,7 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public abstract class AbstractProfession implements Profession, Child<Profession> {
+public abstract class AbstractProfession extends AbstractLevelable implements Profession, Child<Profession> {
 
     private final int id;
     private final String name;
@@ -20,9 +22,10 @@ public abstract class AbstractProfession implements Profession, Child<Profession
     private final Collection<Profession> strongParents;
     private final Collection<Profession> weakParents;
 
-    protected AbstractProfession(int id, ProfessionData data) {
+    protected AbstractProfession(LevelData levelData, ProfessionData data) {
 
-        this.id = id;
+        super(levelData);
+        this.id = data.getId();
         this.name = data.getName();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();

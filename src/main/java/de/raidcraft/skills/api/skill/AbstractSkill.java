@@ -22,9 +22,9 @@ public abstract class AbstractSkill implements Skill, Child<Skill> {
     private Collection<Skill> strongParents = new HashSet<>();
     private Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(int id, SkillData data) {
+    protected AbstractSkill(SkillData data) {
 
-        this.id = id;
+        this.id = data.getId();
         this.name = getClass().getAnnotation(SkillInformation.class).name();
         this.friendlyName = data.getFriendlyName();
         this.usage = data.getUsage();
@@ -128,18 +128,6 @@ public abstract class AbstractSkill implements Skill, Child<Skill> {
     public void removeWeakParent(Skill skill) {
 
         weakParents.remove(skill);
-    }
-
-    @Override
-    public void setStrongParents(Collection<Skill> skills) {
-
-        this.strongParents = skills;
-    }
-
-    @Override
-    public void setWeakParents(Collection<Skill> skills) {
-
-        this.weakParents = skills;
     }
 
     @Override
