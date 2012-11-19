@@ -33,7 +33,7 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
     public void enable() {
 
         // create the config
-        this.configuration = new LocalConfiguration(this, "config.yml");
+        this.configuration = new LocalConfiguration(this);
         // lets register the database
         registerTable(SkillsTable.class, new SkillsTable());
         registerTable(PlayerSkillsTable.class, new PlayerSkillsTable());
@@ -66,9 +66,9 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
 
     public static class LocalConfiguration extends ConfigurationBase {
 
-        public LocalConfiguration(BasePlugin plugin, String name) {
+        public LocalConfiguration(BasePlugin plugin) {
 
-            super(plugin, name);
+            super(plugin, "config.yml");
         }
 
         @Setting("op-all-permissions")

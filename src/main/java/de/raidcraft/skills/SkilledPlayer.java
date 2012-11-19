@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,8 @@ public class SkilledPlayer extends AbstractLevelable implements PlayerComponent,
 
     private final RCPlayer player;
     private final Map<Integer, Skill> skills = new HashMap<>();
+    private final Map<Obtainable.Type, Collection<Skill>> obtainedSkills = new HashMap<>();
+    private final Collection<PlayerProfession> professions = new ArrayList<>();
 
     public SkilledPlayer(RCPlayer player) {
 
@@ -141,5 +144,25 @@ public class SkilledPlayer extends AbstractLevelable implements PlayerComponent,
     @Override
     public void decreaseLevel() {
         // called after the player lost a level
+    }
+
+    public Collection<Skill> getGainedSkills() {
+
+        return obtainedSkills.get(Obtainable.Type.GAINABLE);
+    }
+
+    public Collection<Skill> getBoughtSkills() {
+
+        return obtainedSkills.get(Obtainable.Type.BUYABLE);
+    }
+
+    public Collection<Skill> getAdminSkills() {
+
+        return obtainedSkills.get(Obtainable.Type.ADMIN);
+    }
+
+    public Collection<PlayerProfession> getPlayerProfessions() {
+
+        return professions;
     }
 }
