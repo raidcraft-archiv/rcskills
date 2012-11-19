@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkilledPlayer;
+import de.raidcraft.skills.RCHero;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -61,7 +61,7 @@ public final class SkillManager {
     }
 
     /**
-     * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.SkilledPlayer}, but not currently
+     * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.RCHero}, but not currently
      * owned by the player. This can happen when the player dropped a {@link de.raidcraft.skills.api.Levelable} skill but
      * still has saved progress for that skill in the database.
      *
@@ -75,10 +75,10 @@ public final class SkillManager {
     public Skill getSkill(int id, RCPlayer player) throws UnknownSkillException {
 
         Skill skill;
-        SkilledPlayer skilledPlayer = player.getComponent(SkilledPlayer.class);
+        RCHero hero = player.getComponent(RCHero.class);
         // lets check the players skills first
-        if (skilledPlayer.hasSkill(id)) {
-            skill = skilledPlayer.getSkill(id);
+        if (hero.hasSkill(id)) {
+            skill = hero.getSkill(id);
         } else {
             // okay the player does not seem to have the skill at the moment
             // but he could still have bought it one time and dropped it again
@@ -105,9 +105,9 @@ public final class SkillManager {
     public Skill getPlayerSkill(int id, RCPlayer player) throws UnknownSkillException {
 
         Skill skill;
-        SkilledPlayer skilledPlayer = player.getComponent(SkilledPlayer.class);
-        if (skilledPlayer.hasSkill(id)) {
-            skill = skilledPlayer.getSkill(id);
+        RCHero hero = player.getComponent(RCHero.class);
+        if (hero.hasSkill(id)) {
+            skill = hero.getSkill(id);
         } else {
             // lets look into the database if the player has the skill
             if (Database.getTable(PlayerSkillsTable.class).contains(id, player)) {

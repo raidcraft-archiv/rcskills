@@ -1,21 +1,22 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.skills.api.Obtainable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.util.DataMap;
+import org.bukkit.configuration.ConfigurationSection;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 
 /**
 * @author Silthus
 */
-public abstract class SkillData {
+public abstract class SkillData extends DataMap {
 
     protected int id;
-    protected String name;
-    protected String description;
+    protected String friendlyName;
     protected String[] usage;
-    protected Obtainable.Type type;
     protected double cost;
     protected int neededLevel;
     protected Collection<Profession> professions;
@@ -23,29 +24,34 @@ public abstract class SkillData {
     protected Collection<Skill> strongParents;
     protected Collection<Skill> weakParents;
 
+    public SkillData(ResultSet resultSet) throws SQLException {
+
+        this(resultSet, null, null);
+    }
+
+    public SkillData(ResultSet resultSet, String columnKey, String columnValue) throws SQLException {
+
+        super(resultSet, columnKey, columnValue);
+    }
+
+    public SkillData(ConfigurationSection config, String... exclude) {
+
+        super(config, exclude);
+    }
+
     public int getId() {
 
         return id;
     }
 
-    public String getName() {
+    public String getFriendlyName() {
 
-        return name;
-    }
-
-    public String getDescription() {
-
-        return description;
+        return friendlyName;
     }
 
     public String[] getUsage() {
 
         return usage;
-    }
-
-    public Obtainable.Type getType() {
-
-        return type;
     }
 
     public double getCost() {

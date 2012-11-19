@@ -1,8 +1,8 @@
 package de.raidcraft.skills.tables.skills;
 
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.api.database.Table;
-import de.raidcraft.skills.api.Obtainable;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 
@@ -84,9 +84,10 @@ public class SkillsTable extends Table {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM `" + getTableName() + "` WHERE id=" + id).executeQuery();
+                    "SELECT * FROM `" + getTableName() + "` s, `" + Database.getTable(SkillsDataTable.class).getTableName() + "` sd" +
+                            "WHERE s.id=sd.skill_id AND s.id=" + id).executeQuery();
             if (resultSet.next()) {
-                return new Data(id, resultSet);
+                return new Data(resultSet);
             }
         } catch (SQLException e) {
             CommandBook.logger().severe(e.getMessage());
@@ -97,18 +98,16 @@ public class SkillsTable extends Table {
 
     public static class Data extends SkillData {
 
-        public Data(int id, ResultSet resultSet) throws SQLException {
+        public Data(ResultSet resultSet) throws SQLException {
 
-            this.id = id;
+            super(resultSet, SkillsDataTable.KEY_COLUMN_NAME, SkillsDataTable.VALUE_COLUMN_NAME);
             this.name = resultSet.getString("name");
             this.description = resultSet.getString("description");
             this.usage = resultSet.getString("usage").split("\\|");
-            this.type = Obtainable.Type.fromString(resultSet.getString("type"));
             this.cost = resultSet.getDouble("cost");
             this.neededLevel = resultSet.getInt("needed_level");
             this.allProfessionsRequired = resultSet.getBoolean("require_all_professions");
             this.professions = new ArrayList<>();
-            // TODO: load profession -> skill requirements
         }
     }
 

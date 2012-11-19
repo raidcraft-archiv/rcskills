@@ -1,34 +1,40 @@
 package de.raidcraft.skills.api.profession;
 
-import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.api.inheritance.Child;
+import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.tables.professions.ProfessionsTable;
 
 import java.util.Collection;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractProfession implements Profession {
+public abstract class AbstractProfession implements Profession, Child<Profession> {
 
     private final int id;
-    private String name;
-    private String description;
-    private Collection<Skill> skills;
+    private final String name;
+    private final String friendlyName;
+    private final String description;
+    private final Collection<Skill> skills;
+    // parent child collections
+    private final Collection<Profession> strongParents;
+    private final Collection<Profession> weakParents;
 
-    protected AbstractProfession(int id) throws UnknownProfessionException {
+    protected AbstractProfession(int id, ProfessionData data) {
 
         this.id = id;
-        load(Database.getTable(ProfessionsTable.class).getProfessionData(id));
+        this.name = data.getName();
+        this.friendlyName = data.getFriendlyName();
+        this.description = data.getDescription();
+        this.skills = data.getSkills();
+        this.strongParents = data.getStrongParents();
+        this.weakParents = data.getWeakParents();
+        load(data);
     }
 
-    private void load(ProfessionsTable.Data data) {
-
-        this.name = data.name;
-        this.description = data.description;
-        this.skills = data.skills;
-        // TODO: maybe load some infos about the skill requirements here
+    @Override
+    public void load(ProfessionData data) {
+        // override when custom values are needed
     }
 
     @Override
@@ -44,6 +50,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    @Override
     public String getDescription() {
 
         return description;
@@ -56,10 +68,39 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public boolean canPlayerObtainSkill(Skill skill) {
+    public Collection<Profession> getStrongParents() {
 
-        //TODO: check special skill -> profession requirements like level of the profession
-        return false;
+        return strongParents;
+    }
+
+    @Override
+    public Collection<Profession> getWeaksParents() {
+
+        return weakParents;
+    }
+
+    @Override
+    public void addStrongParent(Profession profession) {
+
+        strongParents.add(profession);
+    }
+
+    @Override
+    public void addWeakParent(Profession profession) {
+
+        weakParents.add(profession);
+    }
+
+    @Override
+    public void removeStrongParent(Profession profession) {
+
+        strongParents.remove(profession);
+    }
+
+    @Override
+    public void removeWeakParent(Profession profession) {
+
+        weakParents.remove(profession);
     }
 
     @Override

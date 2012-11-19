@@ -51,7 +51,7 @@ public final class SkillFactory {
 
     /**
      * Will try to create an instance of the skill via reflection based on the
-     * class name provided in the database.
+     * class friendlyName provided in the database.
      *
      * @param id     of the skill
      * @param player that owned the skill
@@ -66,7 +66,7 @@ public final class SkillFactory {
             if (table.contains(id)) {
                 // lets check the cache first
                 Constructor<? extends Skill> sConstructor;
-                // lets get the class via reflection from cache or the database via name
+                // lets get the class via reflection from cache or the database via friendlyName
                 if (cachedSkills.containsKey(id)) {
                     sConstructor = cachedSkills.get(id);
                 } else {

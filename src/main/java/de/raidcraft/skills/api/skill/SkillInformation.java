@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,4 +15,6 @@ public @interface SkillInformation {
     public String name();
 
     public String desc();
+
+    public SkillType[] types() default {SkillType.UNBINDABLE};
 }

@@ -1,39 +1,41 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
+import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.persistance.SkillData;
-import de.raidcraft.skills.tables.skills.SkillsTable;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractSkill implements Skill {
+public abstract class AbstractSkill implements Skill, Child<Skill> {
 
     private final int id;
     private String name;
+    private String friendlyName;
     private String description;
     private String[] usage;
-    private Collection<Skill> strongParents;
-    private Collection<Skill> weakParents;
+    private Collection<Skill> strongParents = new HashSet<>();
+    private Collection<Skill> weakParents = new HashSet<>();
 
-    public AbstractSkill(int id) {
+    protected AbstractSkill(int id, SkillData data) {
 
         this.id = id;
-        load(Database.getTable(SkillsTable.class).getSkillData(id));
-    }
-
-    protected void load(SkillData data) {
-
-        this.name = data.getName();
-        this.description = data.getDescription();
+        this.name = getClass().getAnnotation(SkillInformation.class).name();
+        this.friendlyName = data.getFriendlyName();
         this.usage = data.getUsage();
         this.strongParents = data.getStrongParents();
         this.weakParents = data.getWeakParents();
+        load(data);
+    }
+
+    @Override
+    public void load(SkillData data) {
+        // override when custom data needs to be loaded
     }
 
     @Override
@@ -46,6 +48,17 @@ public abstract class AbstractSkill implements Skill {
     public String getName() {
 
         return name;
+    }
+
+    @Override
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    protected void setDescription(String description) {
+
+        this.description = description;
     }
 
     @Override
@@ -88,9 +101,45 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Collection<Skill> getWeakParents() {
+    public Collection<Skill> getWeaksParents() {
 
         return weakParents;
+    }
+
+    @Override
+    public void addStrongParent(Skill skill) {
+
+        strongParents.add(skill);
+    }
+
+    @Override
+    public void addWeakParent(Skill skill) {
+
+        weakParents.add(skill);
+    }
+
+    @Override
+    public void removeStrongParent(Skill skill) {
+
+        strongParents.remove(skill);
+    }
+
+    @Override
+    public void removeWeakParent(Skill skill) {
+
+        weakParents.remove(skill);
+    }
+
+    @Override
+    public void setStrongParents(Collection<Skill> skills) {
+
+        this.strongParents = skills;
+    }
+
+    @Override
+    public void setWeakParents(Collection<Skill> skills) {
+
+        this.weakParents = skills;
     }
 
     @Override

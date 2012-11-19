@@ -1,13 +1,13 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.hero.Hero;
 
 /**
  * @author Silthus
  */
 public interface Levelable {
 
-    public RCPlayer getPlayer();
+    public Hero getHero();
 
     public int getLevel();
 

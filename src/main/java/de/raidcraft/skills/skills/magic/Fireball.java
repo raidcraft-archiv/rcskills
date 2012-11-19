@@ -26,7 +26,7 @@ public class Fireball extends AbstractLevelableSkill implements Active<InteractT
             // TODO: set variable strength of the fireball based on the skill level
             fireball.fireTicks = 60;
             fireball.incinerate = true;
-            fireball.run(getPlayer().getBukkitPlayer());
+            fireball.run(getHero().getBukkitPlayer());
         }
     }
 }

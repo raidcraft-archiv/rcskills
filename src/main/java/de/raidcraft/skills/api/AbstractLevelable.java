@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api;
 
 import de.raidcraft.skills.api.events.RCLevelEvent;
+import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.util.BukkitUtil;
 
 /**
@@ -13,12 +14,18 @@ public abstract class AbstractLevelable implements Levelable {
     protected int exp;
     protected int maxExp;
 
-    protected AbstractLevelable() {
+    protected AbstractLevelable(LevelData data) {
 
-        loadLevel();
+        // abort in case there are no entries yet
+        if (data == null) {
+            this.maxExp = calculateMaxExp();
+            return;
+        }
+        this.level = data.getLevel();
+        this.maxLevel = data.getMaxLevel();
+        this.exp = data.getExp();
+        this.maxExp = calculateMaxExp();
     }
-
-    abstract protected void loadLevel();
 
     @Override
     public int getLevel() {

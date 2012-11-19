@@ -3,7 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkilledPlayer;
+import de.raidcraft.skills.RCHero;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.command.CommandSender;
@@ -59,7 +59,7 @@ public class SkillCommands {
         if (args.hasFlag('a')) {
             skills = component.getSkillManager().getAllSkills();
         } else if (args.hasFlag('g')) {
-            skills = player.getComponent(SkilledPlayer.class).getGainedSkills();
+            skills = player.getComponent(RCHero.class).getGainedSkills();
         }
     }
 }

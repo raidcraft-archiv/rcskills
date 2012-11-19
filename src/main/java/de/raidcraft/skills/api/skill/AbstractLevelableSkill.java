@@ -1,10 +1,11 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkilledPlayer;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.events.RCLevelEvent;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.LevelData;
+import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
 import de.raidcraft.util.BukkitUtil;
 
@@ -13,41 +14,36 @@ import de.raidcraft.util.BukkitUtil;
  */
 public abstract class AbstractLevelableSkill extends AbstractSkill implements Levelable {
 
-    private final RCPlayer player;
+    private final Hero hero;
     private int level = 1;
     private int maxLevel = 10;
     private int exp = 0;
     private int maxExp;
 
-    public AbstractLevelableSkill(int id, RCPlayer player) {
+    public AbstractLevelableSkill(int id, Hero hero, SkillData skillData, LevelData levelData) {
 
-        super(id);
-        this.player = player;
-        load(Database.getTable(PlayerSkillsLevelTable.class).getLevelData(getId(), player));
-    }
-
-    @Override
-    public RCPlayer getPlayer() {
-
-        return player;
-    }
-
-    protected SkilledPlayer getSkilledPlayer() {
-
-        return player.getComponent(SkilledPlayer.class);
-    }
-
-    protected void load(PlayerSkillsLevelTable.Data data) {
-
+        super(id, skillData);
+        this.hero = hero;
         // abort in case there are no entries yet
-        if (data == null) {
+        if (levelData == null) {
             maxExp = calculateMaxExp();
             return;
         }
-        this.level = data.level;
-        this.maxLevel = data.maxLevel;
-        this.exp = data.exp;
-        this.maxExp = data.maxExp;
+        this.level = levelData.getLevel();
+        this.maxLevel = levelData.getMaxLevel();
+        this.exp = levelData.getExp();
+        this.maxExp = calculateMaxExp();
+    }
+
+    public AbstractLevelableSkill(int id, Hero hero, SkillData data) {
+
+        this(id, hero, data, null);
+    }
+
+    @Override
+    public Hero getHero() {
+
+        return hero;
     }
 
     @Override

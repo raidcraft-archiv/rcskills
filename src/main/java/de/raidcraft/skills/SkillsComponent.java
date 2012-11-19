@@ -7,7 +7,6 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
-import de.raidcraft.skills.api.Obtainable;
 import de.raidcraft.skills.api.bukkit.BukkitListenerAdapter;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
@@ -73,6 +72,7 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
 
         @Setting("op-all-permissions")
         public boolean allow_op = false;
+        public int player_max_level = 100;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -84,16 +84,11 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
 
         try {
             RCPlayer player = RaidCraft.getPlayer(event.getPlayer());
-            Skill skill = player.getComponent(SkilledPlayer.class).getSkill(1);
+            Skill skill = player.getComponent(RCHero.class).getSkill(1);
             player.sendMessage("SkillId: " + skill.getId());
             player.sendMessage("Name: " + skill.getName());
             player.sendMessage("Description: " + skill.getDescription());
             player.sendMessage(skill.getUsage());
-            if (skill instanceof Obtainable) {
-                Obtainable obtainable = (Obtainable) skill;
-                player.sendMessage("Cost: " + obtainable.getCost());
-                player.sendMessage("Ab Level: " + obtainable.getNeededLevel());
-            }
             if (skill instanceof Levelable) {
                 Levelable levelable = (Levelable) skill;
                 player.sendMessage("Level: " + levelable.getLevel());
@@ -108,6 +103,6 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        RaidCraft.getPlayer(event.getPlayer()).getComponent(SkilledPlayer.class).saveSkills();
+        RaidCraft.getPlayer(event.getPlayer()).getComponent(RCHero.class).saveSkills();
     }
 }

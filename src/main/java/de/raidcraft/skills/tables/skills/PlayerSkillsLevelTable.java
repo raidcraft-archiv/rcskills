@@ -3,7 +3,7 @@ package de.raidcraft.skills.tables.skills;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.persistance.PlayerSkillLevelData;
+import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 
 import java.sql.ResultSet;
@@ -73,7 +73,7 @@ public class PlayerSkillsLevelTable extends Table {
     public void saveSkillLevel(AbstractLevelableSkill skill) {
 
         try {
-            if (contains(skill.getId(), skill.getPlayer())) {
+            if (contains(skill.getId(), skill.getHero())) {
                 // update the table
                 getConnection().prepareStatement("UPDATE `" + getTableName() + "` SET " +
                         "level=" + skill.getLevel() + ", " +
@@ -83,7 +83,7 @@ public class PlayerSkillsLevelTable extends Table {
                 // insert the skill
                 getConnection().prepareStatement("INSERT INTO `" + getTableName() + "` " +
                         "(player, skill_id, level, exp, max_exp) VALUES (" +
-                        "'" + skill.getPlayer().getUserName() + "', " +
+                        "'" + skill.getHero().getUserName() + "', " +
                         skill.getId() + ", " +
                         skill.getLevel() + ", " +
                         skill.getExp() + ", " +
@@ -95,7 +95,7 @@ public class PlayerSkillsLevelTable extends Table {
         }
     }
 
-    public static class Data extends PlayerSkillLevelData {
+    public static class Data extends LevelData {
 
         private Data(ResultSet resultSet) throws SQLException {
 

@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.bukkit;
 import com.sk89q.commandbook.CommandBook;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkilledPlayer;
+import de.raidcraft.skills.RCHero;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.Active;
 import de.raidcraft.skills.api.Passive;
@@ -37,7 +37,7 @@ public final class BukkitListenerAdapter implements Listener {
     @SuppressWarnings("unchecked")
     private void runTask(final Trigger trigger) {
 
-        SkilledPlayer player = trigger.getPlayer().getComponent(SkilledPlayer.class);
+        RCHero player = trigger.getPlayer().getComponent(RCHero.class);
 
         final Collection<Skill> skills = new ArrayList<>(player.getSkills());
 
