@@ -3,14 +3,15 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkilledPlayer;
-import de.raidcraft.skills.api.events.SkillLevelEvent;
+import de.raidcraft.skills.api.Levelable;
+import de.raidcraft.skills.api.events.RCLevelEvent;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
 import de.raidcraft.util.BukkitUtil;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractLevelableSkill extends AbstractObtainableSkill implements LevelableSkill {
+public abstract class AbstractLevelableSkill extends AbstractSkill implements Levelable {
 
     private final RCPlayer player;
     private int level = 1;
@@ -124,7 +125,7 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
     @Override
     public void addLevel(int level) {
 
-        SkillLevelEvent event = new SkillLevelEvent(this, getLevel() + 1);
+        RCLevelEvent event = new RCLevelEvent(this, getLevel() + 1);
         BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             increaseLevel();
@@ -139,7 +140,7 @@ public abstract class AbstractLevelableSkill extends AbstractObtainableSkill imp
     @Override
     public void removeLevel(int level) {
 
-        SkillLevelEvent event = new SkillLevelEvent(this, getLevel() - 1);
+        RCLevelEvent event = new RCLevelEvent(this, getLevel() - 1);
         BukkitUtil.callEvent(event);
         if (!event.isCancelled()) {
             decreaseLevel();

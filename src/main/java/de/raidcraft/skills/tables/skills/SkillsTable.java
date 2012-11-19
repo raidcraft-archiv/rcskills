@@ -3,13 +3,12 @@ package de.raidcraft.skills.tables.skills;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.skills.api.Obtainable;
-import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Silthus
@@ -81,7 +80,7 @@ public class SkillsTable extends Table {
         return null;
     }
 
-    public Data getSkillData(int id) {
+    public SkillData getSkillData(int id) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
@@ -96,20 +95,9 @@ public class SkillsTable extends Table {
         return null;
     }
 
+    public static class Data extends SkillData {
 
-    public static class Data {
-
-        public final int id;
-        public final String name;
-        public final String description;
-        public final String[] usage;
-        public final Obtainable.Type type;
-        public final double cost;
-        public final int neededLevel;
-        public final Collection<Profession> professions;
-        public final boolean allProfessionsRequired;
-
-        private Data(int id, ResultSet resultSet) throws SQLException {
+        public Data(int id, ResultSet resultSet) throws SQLException {
 
             this.id = id;
             this.name = resultSet.getString("name");
@@ -123,4 +111,5 @@ public class SkillsTable extends Table {
             // TODO: load profession -> skill requirements
         }
     }
+
 }

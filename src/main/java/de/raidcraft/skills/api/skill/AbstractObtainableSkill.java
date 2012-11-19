@@ -2,8 +2,8 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Obtainable;
+import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.tables.skills.SkillsTable;
 
 import java.util.Collection;
 
@@ -24,7 +24,7 @@ public abstract class AbstractObtainableSkill extends AbstractSkill implements O
     }
 
     @Override
-    protected void load(SkillsTable.Data data) {
+    protected void load(SkillData data) {
 
         super.load(data);
         this.type = data.type;

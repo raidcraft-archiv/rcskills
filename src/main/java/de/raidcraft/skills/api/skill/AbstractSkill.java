@@ -4,7 +4,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.tables.skills.SkillsTable;
+
+import java.util.Collection;
 
 /**
  * @author Silthus
@@ -15,6 +18,8 @@ public abstract class AbstractSkill implements Skill {
     private String name;
     private String description;
     private String[] usage;
+    private Collection<Skill> strongParents;
+    private Collection<Skill> weakParents;
 
     public AbstractSkill(int id) {
 
@@ -22,11 +27,13 @@ public abstract class AbstractSkill implements Skill {
         load(Database.getTable(SkillsTable.class).getSkillData(id));
     }
 
-    protected void load(SkillsTable.Data data) {
+    protected void load(SkillData data) {
 
-        this.name = data.name;
-        this.description = data.description;
-        this.usage = data.usage;
+        this.name = data.getName();
+        this.description = data.getDescription();
+        this.usage = data.getUsage();
+        this.strongParents = data.getStrongParents();
+        this.weakParents = data.getWeakParents();
     }
 
     @Override
@@ -75,6 +82,18 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public Collection<Skill> getStrongParents() {
+
+        return strongParents;
+    }
+
+    @Override
+    public Collection<Skill> getWeakParents() {
+
+        return weakParents;
+    }
+
+    @Override
     public String toString() {
 
         return "[S" + getId() + "-" + getClass().getName() + "]" + getName();
@@ -83,9 +102,6 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Skill) {
-            return ((Skill) obj).getId() == getId();
-        }
-        return false;
+        return obj instanceof Skill && ((Skill) obj).getId() == getId();
     }
 }

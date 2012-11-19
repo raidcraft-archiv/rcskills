@@ -1,11 +1,13 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.api.inheritance.Child;
+import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.api.player.RCPlayer;
 
 /**
  * @author Silthus
  */
-public interface Skill {
+public interface Skill extends Parent, Child<Parent> {
 
     public int getId();
 

@@ -1,11 +1,9 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.skills.api.trigger.Trigger;
-
 /**
  * @author Silthus
  */
-public interface Passive<T extends Trigger> {
+public interface Passive {
 
-    public void apply(T trigger);
+    public void apply();
 }

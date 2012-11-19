@@ -3,7 +3,8 @@ package de.raidcraft.skills.tables.skills;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.persistance.PlayerSkillLevelData;
+import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,7 +70,7 @@ public class PlayerSkillsLevelTable extends Table {
         return null;
     }
 
-    public void saveSkillLevel(LevelableSkill skill) {
+    public void saveSkillLevel(AbstractLevelableSkill skill) {
 
         try {
             if (contains(skill.getId(), skill.getPlayer())) {
@@ -94,12 +95,7 @@ public class PlayerSkillsLevelTable extends Table {
         }
     }
 
-    public static class Data {
-
-        public final int level;
-        public final int maxLevel;
-        public final int exp;
-        public final int maxExp;
+    public static class Data extends PlayerSkillLevelData {
 
         private Data(ResultSet resultSet) throws SQLException {
 
