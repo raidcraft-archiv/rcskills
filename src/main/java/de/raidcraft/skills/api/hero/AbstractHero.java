@@ -12,10 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -106,6 +103,18 @@ public abstract class AbstractHero implements Hero {
     public Collection<Skill> getSpecialSkills() {
 
         return specialSkills.values();
+    }
+
+    @Override
+    public Collection<Skill> getGainedSkills() {
+
+        Set<Skill> skills = new HashSet<>();
+        for (LevelableProfession profession : getProfessions()) {
+            if (profession.isActive()) {
+                skills.addAll(profession.getGainedSkills());
+            }
+        }
+        return skills;
     }
 
     @Override

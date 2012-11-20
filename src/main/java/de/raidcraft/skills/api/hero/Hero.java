@@ -29,6 +29,8 @@ public interface Hero extends LevelObject<Hero> {
 
     public Collection<Skill> getSpecialSkills();
 
+    public Collection<Skill> getGainedSkills();
+
     public void saveSkills();
 
     public void save();
