@@ -3,7 +3,10 @@ package de.raidcraft.skills;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.Level;
+import de.raidcraft.skills.api.SimpleLevel;
 import de.raidcraft.skills.api.hero.AbstractHero;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.tables.PlayerTable;
 
@@ -12,24 +15,26 @@ import de.raidcraft.skills.tables.PlayerTable;
  */
 public class RCHero extends AbstractHero implements PlayerComponent {
 
-    public RCHero(HeroData data) throws UnknownPlayerException {
 
-        super(data, Database.getTable(PlayerTable.class).getLevelData(data.getPlayer().getUserName()));
+    protected RCHero(HeroData heroData) throws UnknownPlayerException {
+
+        super(heroData);
+        attachLevel(new SimpleLevel<Hero>(this,
+                Database.getTable(PlayerTable.class).getLevelData(getName())));
     }
 
     @Override
-    public void saveLevelProgress() {
-
-        // TODO: saveLevelProgress level progress
+    public void increaseLevel(Level<Hero> level) {
+        //TODO: implement
     }
 
     @Override
-    public void increaseLevel() {
-        // called after the player leveled
+    public void decreaseLevel(Level<Hero> level) {
+        //TODO: implement
     }
 
     @Override
-    public void decreaseLevel() {
-        // called after the player lost a level
+    public void saveLevelProgress(Level<Hero> level) {
+        //TODO: implement
     }
 }

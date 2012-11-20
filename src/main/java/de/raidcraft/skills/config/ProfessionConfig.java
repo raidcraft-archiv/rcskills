@@ -1,12 +1,13 @@
 package de.raidcraft.skills.config;
 
+import de.raidcraft.api.config.CommonConfig;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.HashSet;
@@ -27,26 +28,28 @@ public class ProfessionConfig {
 
     public ProfessionData getProfessionData(String id) {
 
-        return new Data(id, YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/professions/", id + ".yml")));
+        File file = new File(plugin.getDataFolder() + "/professions/");
+        if (!file.exists()) file.mkdirs();
+        return new Data(id, plugin.configure(new CommonConfig(plugin, new File(file, id + ".yml"))));
     }
 
     public class Data extends ProfessionData {
 
-        public Data(String id, YamlConfiguration config, String... exclude) {
+        public Data(String id, ConfigurationSection config, String... exclude) {
 
             super(config.getConfigurationSection("custom"), exclude);
             this.name = id;
             this.friendlyName = config.getString("name");
             this.description = config.getString("description");
-            this.skills = loadSkills(getStringList("skills"));
+            this.skills = loadSkills(config.getConfigurationSection("skills"));
             this.strongParents = loadParents(getStringList("strong-parents"));
             this.weakParents = loadParents(getStringList("weak-parents"));
         }
 
-        private Set<Skill> loadSkills(List<String> names) {
+        private Set<Skill> loadSkills(ConfigurationSection config) {
 
             Set<Skill> skills = new HashSet<>();
-            for (String s : names) {
+            for (String s : config.getKeys(false)) {
                 try {
                     skills.add(plugin.getSkillManager().getSkill(s));
                 } catch (UnknownSkillException e) {
@@ -70,6 +73,5 @@ public class ProfessionConfig {
             }
             return professions;
         }
-
     }
 }

@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.events;
 
-import de.raidcraft.skills.api.Levelable;
+import de.raidcraft.skills.api.Level;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -13,7 +13,7 @@ public class RCLevelEvent extends Event implements Cancellable {
     private final int nextLevel;
     private boolean cancelled = false;
 
-    public RCLevelEvent(Levelable levelable, int nextLevel) {
+    public RCLevelEvent(Level level, int nextLevel) {
 
         this.nextLevel = nextLevel;
     }

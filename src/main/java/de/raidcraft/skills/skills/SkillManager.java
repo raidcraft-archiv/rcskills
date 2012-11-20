@@ -61,13 +61,13 @@ public final class SkillManager {
 
     /**
      * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.RCHero}, but not currently
-     * owned by the player. This can happen when the player dropped a {@link de.raidcraft.skills.api.Levelable} skill but
+     * owned by the player. This can happen when the player dropped a {@link de.raidcraft.skills.api.Level} skill but
      * still has saved progress for that skill in the database.
      *
      * @param id     of the skill
      * @param player that Skill was attached to
      *
-     * @return {@link Skill} that is most likely a sub skill of {@link de.raidcraft.skills.api.Levelable}
+     * @return {@link Skill} that is most likely a sub skill of {@link de.raidcraft.skills.api.Level}
      *
      * @throws UnknownSkillException is thrown if the skill is not registered with the player
      */

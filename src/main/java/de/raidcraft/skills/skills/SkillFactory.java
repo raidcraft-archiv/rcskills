@@ -4,7 +4,7 @@ import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.Levelable;
+import de.raidcraft.skills.api.Level;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.SkillsTable;
@@ -74,7 +74,7 @@ public final class SkillFactory {
                     // okay we dont have it cached so lets do some reflection
                     Class<? extends Skill> sClass = table.getSkillClass(id);
                     // lets check how many parameters our skill takes
-                    if (Levelable.class.isAssignableFrom(sClass)) {
+                    if (Level.class.isAssignableFrom(sClass)) {
                         // levelable skills are bound to a player and take the ID and RCPlayer
                         sConstructor = sClass.getConstructor(int.class, RCPlayer.class);
                     } else {

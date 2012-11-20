@@ -1,13 +1,11 @@
 package de.raidcraft.skills.api;
 
-import de.raidcraft.skills.api.hero.Hero;
-
 /**
  * @author Silthus
  */
-public interface Levelable {
+public interface Level<T extends LevelObject> {
 
-    public Hero getHero();
+    public T getLevelObject();
 
     public int getLevel();
 
@@ -65,20 +63,5 @@ public interface Levelable {
 
     public boolean hasReachedMaxLevel();
 
-    /**
-     * This method is called _after_ the player has leveled up.
-     * Should be used to adjust skill damage or do other stuff.
-     */
-    public void increaseLevel();
-
-    /**
-     * This method is called _after_ the player lost a level.
-     * Should be used to adjust skill damage or do other stuff.
-     */
-    public void decreaseLevel();
-
-    /**
-     * Saves the progress of the level.
-     */
     public void saveLevelProgress();
 }

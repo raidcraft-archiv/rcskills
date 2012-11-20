@@ -1,7 +1,10 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.PlayerProfession;
 import de.raidcraft.skills.api.profession.Profession;
 
 import java.util.HashMap;
@@ -15,6 +18,7 @@ public final class ProfessionManager {
     private final SkillsPlugin component;
     private final ProfessionFactory factory;
     private final Map<String, Profession> professions = new HashMap<>();
+    private final Map<String, Map<String, PlayerProfession>> playerProfessions = new HashMap<>();
 
     public ProfessionManager(SkillsPlugin component) {
 
@@ -31,5 +35,21 @@ public final class ProfessionManager {
             professions.put(profession.getName(), profession);
             return profession;
         }
+    }
+
+    public PlayerProfession getPlayerProfession(String name, Hero player) throws UnknownPlayerProfessionException, UnknownProfessionException {
+
+        if (!playerProfessions.containsKey(player.getName())) {
+            playerProfessions.put(player.getName(), new HashMap<String, PlayerProfession>());
+        }
+        Map<String, PlayerProfession> professionMap = playerProfessions.get(player.getName());
+        PlayerProfession profession;
+        if (!professionMap.containsKey(name)) {
+            profession = factory.load(name, player);
+            professionMap.put(name, profession);
+        } else {
+            profession = professionMap.get(name);
+        }
+        return profession;
     }
 }

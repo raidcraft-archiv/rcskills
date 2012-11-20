@@ -1,46 +1,27 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.Levelable;
-import de.raidcraft.skills.api.events.RCLevelEvent;
+import de.raidcraft.skills.api.Level;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.SkillData;
-import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
-import de.raidcraft.skills.tables.skills.SkillsTable;
-import de.raidcraft.util.BukkitUtil;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractLevelableSkill extends AbstractSkill implements Levelable {
+public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
     private final Hero hero;
-    private int level = 1;
-    private int maxLevel = 10;
-    private int exp = 0;
-    private int maxExp;
+    private Level<LevelableSkill> level;
 
-    public AbstractLevelableSkill(Hero hero, SkillData skillData, LevelData levelData) {
+    public AbstractLevelableSkill(Hero hero, SkillData skillData) {
 
         super(skillData);
         this.hero = hero;
-        // abort in case there are no entries yet
-        if (levelData == null) {
-            calculateMaxExp();
-            return;
-        }
-        this.level = levelData.getLevel();
-        this.maxLevel = levelData.getMaxLevel();
-        this.exp = levelData.getExp();
-        calculateMaxExp();
     }
 
-    public AbstractLevelableSkill(Hero hero, int skillId) {
+    @Override
+    public void attachLevel(Level<LevelableSkill> level) {
 
-        this(hero,
-                Database.getTable(SkillsTable.class).getSkillData(skillId),
-                Database.getTable(PlayerSkillsLevelTable.class).getLevelData(skillId, hero.getPlayer()));
+        this.level = level;
     }
 
     @Override
@@ -50,149 +31,8 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public int getLevel() {
+    public Level getLevel() {
 
-        return this.level;
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        return this.maxLevel;
-    }
-
-    @Override
-    public int getExp() {
-
-        return this.exp;
-    }
-
-    @Override
-    public int getMaxExp() {
-
-        return this.maxExp;
-    }
-
-    @Override
-    public int getNeededExpForLevel(int level) {
-        // TODO: calculate formula for next exp max level
-        int maxExp = (int) (getMaxExp() * 1.5) + level;
-        return maxExp;
-    }
-
-    @Override
-    public void calculateMaxExp() {
-
-        this.maxExp = getNeededExpForLevel(getLevel());
-    }
-
-    @Override
-    public int getExpToNextLevel() {
-
-        return this.maxExp - this.exp;
-    }
-
-    @Override
-    public void addExp(int exp) {
-
-        this.exp += exp;
-        checkProgress();
-    }
-
-    @Override
-    public void removeExp(int exp) {
-
-        this.exp -= exp;
-        checkProgress();
-    }
-
-    @Override
-    public void setExp(int exp) {
-
-        this.exp = exp;
-        checkProgress();
-    }
-
-    @Override
-    public void setLevel(int level) {
-
-        if (level < this.level) {
-            do {
-                removeLevel(1);
-            } while (getLevel() > level);
-        } else if (level > this.level) {
-            do {
-                addLevel(1);
-            } while (getLevel() < level);
-        }
-    }
-
-    @Override
-    public void addLevel(int level) {
-
-        RCLevelEvent event = new RCLevelEvent(this, getLevel() + 1);
-        BukkitUtil.callEvent(event);
-        if (!event.isCancelled()) {
-            increaseLevel();
-            this.level += level;
-            // set the exp
-            setExp(getExp() - getMaxExp());
-            calculateMaxExp();
-            saveLevelProgress();
-        }
-    }
-
-    @Override
-    public void removeLevel(int level) {
-
-        RCLevelEvent event = new RCLevelEvent(this, getLevel() - 1);
-        BukkitUtil.callEvent(event);
-        if (!event.isCancelled()) {
-            decreaseLevel();
-            this.level -= level;
-            calculateMaxExp();
-            saveLevelProgress();
-        }
-    }
-
-    @Override
-    public boolean canLevel() {
-
-        return getExpToNextLevel() < 1 && !hasReachedMaxLevel();
-    }
-
-    @Override
-    public boolean hasReachedMaxLevel() {
-
-        return !(getLevel() < getMaxLevel());
-    }
-
-    @Override
-    public void saveLevelProgress() {
-
-        Database.getTable(PlayerSkillsLevelTable.class).saveSkillLevel(this);
-    }
-
-    private void checkProgress() {
-
-        if (canLevel()) {
-            // increase the level
-            addLevel(1);
-        } else if (getExp() < 0 && getLevel() > 0) {
-            // decrease the level...
-            removeLevel(1);
-            // our exp are negative when we get reduced
-            setExp(getMaxExp() + getExp());
-        }
-    }
-
-    @Override
-    public void increaseLevel() {
-        // override if needed
-    }
-
-    @Override
-    public void decreaseLevel() {
-        // override if needed
+        return level;
     }
 }

@@ -6,7 +6,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.Levelable;
+import de.raidcraft.skills.api.Level;
 import de.raidcraft.skills.api.bukkit.BukkitListenerAdapter;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.StorageType;
@@ -37,7 +37,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void enable() {
 
         // create the config
-        this.configuration = new LocalConfiguration(this);
+        this.configuration = configure(new LocalConfiguration(this));
         this.professionConfig = new ProfessionConfig(this);
         // lets register the database
         registerTable(SkillsTable.class, new SkillsTable());
@@ -109,11 +109,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             player.sendMessage("Name: " + skill.getName());
             player.sendMessage("Description: " + skill.getDescription());
             player.sendMessage(skill.getUsage());
-            if (skill instanceof Levelable) {
-                Levelable levelable = (Levelable) skill;
-                player.sendMessage("Level: " + levelable.getLevel());
-                player.sendMessage("Exp: " + levelable.getExp() + "/" + levelable.getMaxExp());
-                player.sendMessage("MaxLevel: " + levelable.getMaxLevel());
+            if (skill instanceof Level) {
+                Level level = (Level) skill;
+                player.sendMessage("Level: " + level.getLevel());
+                player.sendMessage("Exp: " + level.getExp() + "/" + level.getMaxExp());
+                player.sendMessage("MaxLevel: " + level.getMaxLevel());
             }
         } catch (UnknownSkillException e) {
             getLogger().info(e.getMessage());

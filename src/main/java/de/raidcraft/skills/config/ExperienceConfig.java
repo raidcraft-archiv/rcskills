@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,11 +65,7 @@ public class ExperienceConfig extends ConfigurationBase {
                     }
                 }
             }
-            try {
-                save();
-            } catch (IOException e) {
-                getPlugin().getLogger().warning("Unable to save default config for: " + CONFIG_NAME);
-            }
+            save();
         } else {
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 EntityType type = EntityType.fromName(entry.getKey());
@@ -90,11 +85,9 @@ public class ExperienceConfig extends ConfigurationBase {
         if (!contains(key)) return null;
 
         Map<String, Integer> map = new HashMap<>();
-        for (String type : getKeys(key)) {
+        for (String type : getConfigurationSection(key).getKeys(false)) {
             map.put(type, getInt(type));
         }
         return map;
     }
-
-
 }
