@@ -1,11 +1,12 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.skills;
 
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.skill.AbstractSkill;
 
 /**
  * @author Silthus
  */
-public class TemplateSkill extends AbstractSkill {
+public final class TemplateSkill extends AbstractSkill {
 
     protected TemplateSkill(SkillData data) {
 

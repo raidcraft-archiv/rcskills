@@ -5,7 +5,7 @@ import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Silthus
@@ -24,11 +24,11 @@ public interface Profession extends Parent, Levelable {
 
     public String getDescription();
 
-    public Set<Skill> getAllSkills();
+    public Collection<Skill> getAllSkills();
 
-    public Set<Skill> getUngainedSkills();
+    public Collection<Skill> getUngainedSkills();
 
-    public Set<Skill> getGainedSkills();
+    public Collection<Skill> getGainedSkills();
 
     public boolean isActive();
 

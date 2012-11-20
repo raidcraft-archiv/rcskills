@@ -3,12 +3,10 @@ package de.raidcraft.skills.tables.professions;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.persistance.ProfessionData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Silthus
@@ -25,12 +23,12 @@ public class ProfessionsTable extends Table {
         //TODO: implement
     }
 
-    public Data getProfessionData(int id) throws UnknownProfessionException {
+    public Data getProfessionData(String id) throws UnknownProfessionException {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement("SELECT * FROM `" + getTableName() + "` WHERE id=" + id).executeQuery();
+            ResultSet resultSet = getConnection().prepareStatement("SELECT * FROM `" + getTableName() + "` WHERE name=" + id).executeQuery();
             if (resultSet.next()) {
-                return new Data(id, resultSet);
+                return new Data(resultSet);
             }
         } catch (SQLException e) {
             RaidCraft.LOGGER.severe(e.getMessage());
@@ -40,19 +38,15 @@ public class ProfessionsTable extends Table {
     }
 
 
-    public static class Data {
+    public static class Data extends ProfessionData {
 
-        public final int id;
-        public final String name;
-        public final String description;
-        public final Collection<Skill> skills;
+        public Data(ResultSet resultSet) throws SQLException {
 
-        public Data(int id, ResultSet resultSet) throws SQLException {
-
-            this.id = id;
+            super(resultSet);
+            this.id = resultSet.getInt("id");
             this.name = resultSet.getString("name");
+            this.friendlyName = resultSet.getString("friendly_name");
             this.description = resultSet.getString("description");
-            this.skills = new ArrayList<>();
             // TODO: load skills of this profession
         }
     }

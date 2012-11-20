@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.skills;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Database;
@@ -6,6 +6,7 @@ import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.SkillsTable;
 import org.bukkit.ChatColor;
 

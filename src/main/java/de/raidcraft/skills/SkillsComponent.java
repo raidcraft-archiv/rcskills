@@ -1,16 +1,18 @@
 package de.raidcraft.skills;
 
-import com.sk89q.rebar.config.annotations.Setting;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.bukkit.BukkitListenerAdapter;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.skill.SkillManager;
+import de.raidcraft.skills.config.ProfessionConfig;
+import de.raidcraft.skills.skills.SkillManager;
 import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -27,12 +29,14 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
     private LocalConfiguration configuration;
+    private ProfessionConfig professionConfig;
 
     @Override
     public void enable() {
 
         // create the config
         this.configuration = new LocalConfiguration(this);
+        this.professionConfig = new ProfessionConfig(this);
         // lets register the database
         registerTable(SkillsTable.class, new SkillsTable());
         registerTable(PlayerSkillsTable.class, new PlayerSkillsTable());
@@ -63,16 +67,24 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
         return configuration;
     }
 
+    public ProfessionConfig getProfessionConfig() {
+
+        return professionConfig;
+    }
+
     public static class LocalConfiguration extends ConfigurationBase {
+
+        @Setting("op-all-permissions")
+        public boolean allow_op;
+        @Setting("storage-type")
+        public StorageType storage_type;
+        @Setting("config-type")
+        public StorageType config_type;
 
         public LocalConfiguration(BasePlugin plugin) {
 
             super(plugin, "config.yml");
         }
-
-        @Setting("op-all-permissions")
-        public boolean allow_op = false;
-        public int player_max_level = 100;
     }
 
     /*///////////////////////////////////////////////////////////////

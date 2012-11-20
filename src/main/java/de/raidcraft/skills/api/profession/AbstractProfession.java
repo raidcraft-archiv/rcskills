@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -98,6 +99,14 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
     public Collection<Skill> getGainedSkills() {
 
         return gainedSkills;
+    }
+
+    @Override
+    public Collection<Skill> getAllSkills() {
+
+        Collection<Skill> skills = new HashSet<>(gainedSkills);
+        skills.addAll(ungainedSkills);
+        return skills;
     }
 
     @Override

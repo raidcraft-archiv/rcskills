@@ -9,9 +9,9 @@ import de.raidcraft.util.BukkitUtil;
  */
 public abstract class AbstractLevelable implements Levelable {
 
-    protected int level;
-    protected int maxLevel;
-    protected int exp;
+    protected int level = 1;
+    protected int maxLevel = 60;
+    protected int exp = 0;
     protected int maxExp;
 
     protected AbstractLevelable(LevelData data) {

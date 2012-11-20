@@ -2,7 +2,6 @@ package de.raidcraft.skills;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;
-import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.hero.AbstractHero;
 import de.raidcraft.skills.api.persistance.HeroData;
@@ -15,7 +14,7 @@ public class RCHero extends AbstractHero implements PlayerComponent {
 
     public RCHero(HeroData data) throws UnknownPlayerException {
 
-        super(data, Database.getTable(PlayerTable.class).getLevelData(player.getUserName()));
+        super(data, Database.getTable(PlayerTable.class).getLevelData(data.getPlayer().getUserName()));
     }
 
     @Override
