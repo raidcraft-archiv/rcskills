@@ -4,7 +4,7 @@ import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import java.sql.ResultSet;
@@ -61,7 +61,7 @@ public class PlayerTable extends Table {
             super(resultSet);
             this.exp = resultSet.getInt("exp");
             this.level = resultSet.getInt("level");
-            this.maxLevel = RaidCraft.getComponent(SkillsComponent.class).getLocalConfiguration().player_max_level;
+            this.maxLevel = RaidCraft.getComponent(SkillsPlugin.class).getLocalConfiguration().player_max_level;
         }
     }
 }

@@ -4,7 +4,7 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.RCHero;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,9 +28,9 @@ public class SkillCommands {
         }
     }
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
 
-    public SkillCommands(SkillsComponent component) {
+    public SkillCommands(SkillsPlugin component) {
 
         this.component = component;
     }

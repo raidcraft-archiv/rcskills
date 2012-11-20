@@ -3,7 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -20,9 +20,9 @@ import java.util.List;
  */
 public class SkillsCommands {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
 
-    public SkillsCommands(SkillsComponent component) {
+    public SkillsCommands(SkillsPlugin component) {
 
         this.component = component;
     }
@@ -45,7 +45,7 @@ public class SkillsCommands {
             profession = hero.getSelectedProfession();
         }
         // lets get the skills the sender wants to have displayed
-        skills.addAll(profession.getAllSkills());
+        skills.addAll(profession.getSkills());
         if (args.hasFlag('a')) {
             skills.addAll(component.getSkillManager().getAllSkills());
         }

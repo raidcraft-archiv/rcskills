@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.skill.Skill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * @author Silthus
@@ -80,12 +79,12 @@ public class SkillsTable extends Table {
         return null;
     }
 
-    public SkillData getSkillData(int id) {
+    public SkillData getSkillData(String id) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM `" + getTableName() + "` s, `" + Database.getTable(SkillsDataTable.class).getTableName() + "` sd" +
-                            "WHERE s.id=sd.skill_id AND s.id=" + id).executeQuery();
+                            "WHERE s.id=sd.skill_id AND s.name=" + id).executeQuery();
             if (resultSet.next()) {
                 return new Data(resultSet);
             }
@@ -101,13 +100,11 @@ public class SkillsTable extends Table {
         public Data(ResultSet resultSet) throws SQLException {
 
             super(resultSet, SkillsDataTable.KEY_COLUMN_NAME, SkillsDataTable.VALUE_COLUMN_NAME);
-            this.name = resultSet.getString("name");
+            this.id = resultSet.getInt("id");
             this.description = resultSet.getString("description");
             this.usage = resultSet.getString("usage").split("\\|");
             this.cost = resultSet.getDouble("cost");
             this.requiredLevel = resultSet.getInt("needed_level");
-            this.allProfessionsRequired = resultSet.getBoolean("require_all_professions");
-            this.professions = new ArrayList<>();
         }
     }
 

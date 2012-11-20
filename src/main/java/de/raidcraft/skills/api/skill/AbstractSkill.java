@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -109,7 +109,7 @@ public abstract class AbstractSkill implements Skill {
 
     protected boolean hasPermission(RCPlayer player, String... permissions) {
 
-        if (RaidCraft.getComponent(SkillsComponent.class).getLocalConfiguration().allow_op && player.isOp()) return true;
+        if (RaidCraft.getComponent(SkillsPlugin.class).getLocalConfiguration().allow_op && player.isOp()) return true;
         for (String perm : permissions) {
             if (player.hasPermission(perm)) {
                 return true;

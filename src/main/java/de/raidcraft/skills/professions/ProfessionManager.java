@@ -1,6 +1,6 @@
 package de.raidcraft.skills.professions;
 
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.profession.Profession;
 
@@ -12,11 +12,11 @@ import java.util.Map;
  */
 public final class ProfessionManager {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
     private final ProfessionFactory factory;
     private final Map<String, Profession> professions = new HashMap<>();
 
-    public ProfessionManager(SkillsComponent component) {
+    public ProfessionManager(SkillsPlugin component) {
 
         this.component = component;
         this.factory = new ProfessionFactory(component);

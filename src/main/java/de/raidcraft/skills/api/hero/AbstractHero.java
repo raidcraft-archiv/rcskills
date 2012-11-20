@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.hero;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.AbstractLevelable;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -95,7 +95,7 @@ public abstract class AbstractHero extends AbstractLevelable implements Hero {
         if (specialSkills.containsKey(id)) {
             skill = specialSkills.get(id);
         } else {
-            skill = RaidCraft.getComponent(SkillsComponent.class).getSkillManager().getPlayerSkill(id, getPlayer());
+            skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getPlayerSkill(id, getPlayer());
             specialSkills.put(skill.getId(), skill);
         }
         return skill;

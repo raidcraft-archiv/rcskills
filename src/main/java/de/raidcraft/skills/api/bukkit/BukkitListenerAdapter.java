@@ -4,7 +4,7 @@ import com.sk89q.commandbook.CommandBook;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.RCHero;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.Active;
 import de.raidcraft.skills.api.Passive;
 import de.raidcraft.skills.api.skill.Skill;
@@ -27,9 +27,9 @@ import java.util.Collection;
  */
 public final class BukkitListenerAdapter implements Listener {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
 
-    public BukkitListenerAdapter(SkillsComponent component) {
+    public BukkitListenerAdapter(SkillsPlugin component) {
 
         this.component = component;
     }

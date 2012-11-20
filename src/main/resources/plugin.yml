@@ -4,5 +4,4 @@ description: API for creating and using custom skills.
 author: Silthus
 website: http://www.raid-craft.de
 
-main: de.raidcraft.skills.SkillsComponent
-depend: [RaidCraft-API]
+main: de.raidcraft.skills.SkillsPluginpend: [RaidCraft-API]

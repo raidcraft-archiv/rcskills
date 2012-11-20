@@ -24,9 +24,7 @@ public interface Profession extends Parent, Levelable {
 
     public String getDescription();
 
-    public Collection<Skill> getAllSkills();
-
-    public Collection<Skill> getUngainedSkills();
+    public Collection<Skill> getSkills();
 
     public Collection<Skill> getGainedSkills();
 

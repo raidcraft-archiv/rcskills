@@ -1,7 +1,7 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.professions.ProfessionsTable;
@@ -11,9 +11,9 @@ import de.raidcraft.skills.tables.professions.ProfessionsTable;
  */
 public final class ProfessionFactory {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
 
-    protected ProfessionFactory(SkillsComponent component) {
+    protected ProfessionFactory(SkillsPlugin component) {
 
         this.component = component;
     }

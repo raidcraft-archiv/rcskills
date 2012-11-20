@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.ProfessionConfig;
+import de.raidcraft.skills.professions.ProfessionManager;
 import de.raidcraft.skills.skills.SkillManager;
 import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
@@ -25,9 +26,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 /**
  * @author Silthus
  */
-public class SkillsComponent extends BasePlugin implements Component, Listener {
+public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
+    private ProfessionManager professionManager;
     private LocalConfiguration configuration;
     private ProfessionConfig professionConfig;
 
@@ -47,8 +49,9 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
         registerEvents(this);
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
+        this.professionManager = new ProfessionManager(this);
         // register ourself as a RPG Component
-        RaidCraft.registerComponent(SkillsComponent.class, this);
+        RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
 
     @Override
@@ -60,6 +63,11 @@ public class SkillsComponent extends BasePlugin implements Component, Listener {
     public SkillManager getSkillManager() {
 
         return skillManager;
+    }
+
+    public ProfessionManager getProfessionManager() {
+
+        return professionManager;
     }
 
     public LocalConfiguration getLocalConfiguration() {

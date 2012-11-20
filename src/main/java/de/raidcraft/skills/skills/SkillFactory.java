@@ -3,7 +3,7 @@ package de.raidcraft.skills.skills;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.Levelable;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
@@ -20,12 +20,12 @@ import java.util.Map;
  */
 public final class SkillFactory {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
     private final SkillsTable table;
 
-    private final Map<Integer, Constructor<? extends Skill>> cachedSkills = new HashMap<>();
+    private final Map<String, Constructor<? extends Skill>> cachedSkills = new HashMap<>();
 
-    protected SkillFactory(SkillsComponent component) {
+    protected SkillFactory(SkillsPlugin component) {
 
         this.component = component;
         this.table = Database.getTable(SkillsTable.class);
@@ -42,7 +42,7 @@ public final class SkillFactory {
      *
      * @throws UnknownSkillException
      */
-    protected Skill createTemplateSkill(int id) throws UnknownSkillException {
+    protected Skill createTemplateSkill(String id) throws UnknownSkillException {
 
         if (table.contains(id)) {
             return new TemplateSkill(table.getSkillData(id));
@@ -61,7 +61,7 @@ public final class SkillFactory {
      *
      * @throws UnknownSkillException
      */
-    protected Skill createSkill(int id, RCPlayer player) throws UnknownSkillException {
+    protected Skill createSkill(String id, RCPlayer player) throws UnknownSkillException {
 
         try {
             if (table.contains(id)) {

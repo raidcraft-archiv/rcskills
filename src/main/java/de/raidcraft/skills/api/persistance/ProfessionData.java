@@ -21,7 +21,7 @@ public abstract class ProfessionData extends DataMap {
     protected String description;
     protected boolean active;
     protected boolean mastered;
-    protected Set<Skill> ungainedSkills;
+    protected Set<Skill> skills;
     protected Set<Skill> gainedSkills;
     protected Collection<Profession> strongParents;
     protected Collection<Profession> weakParents;
@@ -71,9 +71,9 @@ public abstract class ProfessionData extends DataMap {
         return mastered;
     }
 
-    public Set<Skill> getUngainedSkills() {
+    public Set<Skill> getSkills() {
 
-        return ungainedSkills;
+        return skills;
     }
 
     public Set<Skill> getGainedSkills() {

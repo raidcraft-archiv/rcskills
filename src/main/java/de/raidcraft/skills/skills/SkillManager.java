@@ -3,7 +3,7 @@ package de.raidcraft.skills.skills;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.RCHero;
-import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -15,19 +15,19 @@ import java.util.*;
  */
 public final class SkillManager {
 
-    private final SkillsComponent component;
+    private final SkillsPlugin component;
     private final SkillFactory factory;
     /**
      * This map contains all informational skills that are not attached to a player.
      */
-    private final Map<Integer, Skill> skills = new HashMap<>();
+    private final Map<String, Skill> skills = new HashMap<>();
     /**
      * This map only contains player skills that the player does not currently have.
      * The cache of this map will be cleared when the player logs out.
      */
-    private final Map<String, Map<Integer, Skill>> playerSkills = new HashMap<>();
+    private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
 
-    public SkillManager(SkillsComponent component) {
+    public SkillManager(SkillsPlugin component) {
 
         this.component = component;
         this.factory = new SkillFactory(component);
@@ -47,7 +47,7 @@ public final class SkillManager {
      *
      * @throws de.raidcraft.skills.api.exceptions.UnknownSkillException is thrown if the skill is not configured
      */
-    public Skill getSkill(int id) throws UnknownSkillException {
+    public Skill getSkill(String id) throws UnknownSkillException {
 
         Skill skill;
         if (skills.containsKey(id)) {
@@ -71,7 +71,7 @@ public final class SkillManager {
      *
      * @throws UnknownSkillException is thrown if the skill is not registered with the player
      */
-    public Skill getSkill(int id, RCPlayer player) throws UnknownSkillException {
+    public Skill getSkill(String id, RCPlayer player) throws UnknownSkillException {
 
         Skill skill;
         RCHero hero = player.getComponent(RCHero.class);
@@ -101,7 +101,7 @@ public final class SkillManager {
     }
 
 
-    public Skill getPlayerSkill(int id, RCPlayer player) throws UnknownSkillException {
+    public Skill getPlayerSkill(String id, RCPlayer player) throws UnknownSkillException {
 
         Skill skill;
         RCHero hero = player.getComponent(RCHero.class);

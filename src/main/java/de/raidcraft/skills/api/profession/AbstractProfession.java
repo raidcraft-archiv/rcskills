@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -23,8 +22,8 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
     private final String description;
     private boolean active;
     private boolean mastered;
-    // maps ungainedSkills with the minimal required level
-    private final Set<Skill> ungainedSkills;
+    // maps skills with the minimal required level
+    private final Set<Skill> skills;
     // holds a list of all gained skills
     private final Set<Skill> gainedSkills;
     // parent child collections
@@ -39,7 +38,7 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
         this.name = data.getName();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
-        this.ungainedSkills = data.getUngainedSkills();
+        this.skills = data.getSkills();
         this.gainedSkills = data.getGainedSkills();
         this.active = data.isActive();
         this.mastered = data.isMastered();
@@ -90,23 +89,15 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
     }
 
     @Override
-    public Collection<Skill> getUngainedSkills() {
+    public Collection<Skill> getSkills() {
 
-        return ungainedSkills;
+        return skills;
     }
 
     @Override
     public Collection<Skill> getGainedSkills() {
 
         return gainedSkills;
-    }
-
-    @Override
-    public Collection<Skill> getAllSkills() {
-
-        Collection<Skill> skills = new HashSet<>(gainedSkills);
-        skills.addAll(ungainedSkills);
-        return skills;
     }
 
     @Override
