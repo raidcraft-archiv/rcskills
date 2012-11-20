@@ -16,11 +16,11 @@ public abstract class SkillData extends DataMap {
 
     protected int id;
     protected String friendlyName;
+    protected String description;
     protected String[] usage;
     protected double cost;
-    protected int neededLevel;
-    protected Collection<Profession> professions;
-    protected boolean allProfessionsRequired;
+    protected int requiredLevel;
+    protected Profession profession;
     protected Collection<Skill> strongParents;
     protected Collection<Skill> weakParents;
 
@@ -49,6 +49,11 @@ public abstract class SkillData extends DataMap {
         return friendlyName;
     }
 
+    public String getDescription() {
+
+        return description;
+    }
+
     public String[] getUsage() {
 
         return usage;
@@ -59,19 +64,14 @@ public abstract class SkillData extends DataMap {
         return cost;
     }
 
-    public int getNeededLevel() {
+    public int getRequiredLevel() {
 
-        return neededLevel;
+        return requiredLevel;
     }
 
-    public Collection<Profession> getProfessions() {
+    public Profession getProfession() {
 
-        return professions;
-    }
-
-    public boolean isAllProfessionsRequired() {
-
-        return allProfessionsRequired;
+        return profession;
     }
 
     public Collection<Skill> getStrongParents() {

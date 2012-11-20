@@ -1,10 +1,12 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
 
 /**
  * Represents a profession instantiated for one {@link RCHero}.
@@ -17,18 +19,9 @@ import de.raidcraft.skills.api.profession.Profession;
  */
 public class PlayerProfession extends AbstractProfession {
 
-    private final Hero hero;
+    protected PlayerProfession(Hero hero, ProfessionData data) throws UnknownPlayerProfessionException {
 
-    protected PlayerProfession(Hero hero, LevelData levelData, ProfessionData data) {
-
-        super(levelData, data);
-        this.hero = hero;
-    }
-
-    @Override
-    public Hero getHero() {
-
-        return hero;
+        super(hero, Database.getTable(PlayerProfessionsTable.class).getLevelData(hero, data.getId()), data);
     }
 
     @Override

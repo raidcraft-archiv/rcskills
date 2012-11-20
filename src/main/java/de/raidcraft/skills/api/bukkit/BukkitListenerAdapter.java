@@ -39,7 +39,7 @@ public final class BukkitListenerAdapter implements Listener {
 
         RCHero player = trigger.getPlayer().getComponent(RCHero.class);
 
-        final Collection<Skill> skills = new ArrayList<>(player.getSkills());
+        final Collection<Skill> skills = new ArrayList<>(player.getSpecialSkills());
 
         Bukkit.getScheduler().scheduleAsyncDelayedTask(CommandBook.inst(), new Runnable() {
             @Override

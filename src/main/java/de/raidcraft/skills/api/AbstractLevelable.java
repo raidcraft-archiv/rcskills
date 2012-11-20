@@ -18,13 +18,13 @@ public abstract class AbstractLevelable implements Levelable {
 
         // abort in case there are no entries yet
         if (data == null) {
-            this.maxExp = calculateMaxExp();
+            calculateMaxExp();
             return;
         }
         this.level = data.getLevel();
         this.maxLevel = data.getMaxLevel();
         this.exp = data.getExp();
-        this.maxExp = calculateMaxExp();
+        calculateMaxExp();
     }
 
     @Override
@@ -52,10 +52,16 @@ public abstract class AbstractLevelable implements Levelable {
     }
 
     @Override
-    public int calculateMaxExp() {
+    public int getNeededExpForLevel(int level) {
         // TODO: calculate formula for next exp max level
-        maxExp = (int) (maxExp * 1.5);
+        int maxExp = (int) (getMaxExp() * 1.5) + level;
         return maxExp;
+    }
+
+    @Override
+    public void calculateMaxExp() {
+
+        this.maxExp = getNeededExpForLevel(getLevel());
     }
 
     @Override

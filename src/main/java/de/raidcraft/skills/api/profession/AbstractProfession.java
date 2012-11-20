@@ -2,34 +2,46 @@ package de.raidcraft.skills.api.profession;
 
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.skills.api.AbstractLevelable;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author Silthus
  */
 public abstract class AbstractProfession extends AbstractLevelable implements Profession, Child<Profession> {
 
+    private final Hero hero;
     private final int id;
     private final String name;
     private final String friendlyName;
     private final String description;
-    private final Collection<Skill> skills;
+    private boolean active;
+    private boolean mastered;
+    // maps ungainedSkills with the minimal required level
+    private final Set<Skill> ungainedSkills;
+    // holds a list of all gained skills
+    private final Set<Skill> gainedSkills;
     // parent child collections
     private final Collection<Profession> strongParents;
     private final Collection<Profession> weakParents;
 
-    protected AbstractProfession(LevelData levelData, ProfessionData data) {
+    protected AbstractProfession(Hero hero, LevelData levelData, ProfessionData data) {
 
         super(levelData);
+        this.hero = hero;
         this.id = data.getId();
         this.name = data.getName();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
-        this.skills = data.getSkills();
+        this.ungainedSkills = data.getUngainedSkills();
+        this.gainedSkills = data.getGainedSkills();
+        this.active = data.isActive();
+        this.mastered = data.isMastered();
         this.strongParents = data.getStrongParents();
         this.weakParents = data.getWeakParents();
         load(data);
@@ -38,6 +50,12 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
     @Override
     public void load(ProfessionData data) {
         // override when custom values are needed
+    }
+
+    @Override
+    public Hero getHero() {
+
+        return hero;
     }
 
     @Override
@@ -59,16 +77,44 @@ public abstract class AbstractProfession extends AbstractLevelable implements Pr
     }
 
     @Override
+    public String getTag() {
+
+        return friendlyName.toUpperCase().substring(0, 2).trim();
+    }
+
+    @Override
     public String getDescription() {
 
         return description;
     }
 
     @Override
-    public Collection<Skill> getSkills() {
+    public Collection<Skill> getUngainedSkills() {
 
-        return skills;
+        return ungainedSkills;
     }
+
+    @Override
+    public Collection<Skill> getGainedSkills() {
+
+        return gainedSkills;
+    }
+
+    @Override
+    public boolean isActive() {
+
+        return active;
+    }
+
+    @Override
+    public boolean isMastered() {
+
+        return mastered;
+    }
+
+    /*//////////////////////////////////////////////////////
+    // Parent/Child Relationship Methods beyond this line
+    /////////////////////////////////////////////////////*/
 
     @Override
     public Collection<Profession> getStrongParents() {

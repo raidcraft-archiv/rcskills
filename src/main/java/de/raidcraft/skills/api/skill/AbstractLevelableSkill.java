@@ -27,20 +27,20 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
         this.hero = hero;
         // abort in case there are no entries yet
         if (levelData == null) {
-            maxExp = calculateMaxExp();
+            calculateMaxExp();
             return;
         }
         this.level = levelData.getLevel();
         this.maxLevel = levelData.getMaxLevel();
         this.exp = levelData.getExp();
-        this.maxExp = calculateMaxExp();
+        calculateMaxExp();
     }
 
     public AbstractLevelableSkill(Hero hero, int skillId) {
 
         this(hero,
                 Database.getTable(SkillsTable.class).getSkillData(skillId),
-                Database.getTable(PlayerSkillsLevelTable.class).getLevelData(skillId, hero.getRCPlayer()));
+                Database.getTable(PlayerSkillsLevelTable.class).getLevelData(skillId, hero.getPlayer()));
     }
 
     @Override
@@ -74,10 +74,16 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public int calculateMaxExp() {
+    public int getNeededExpForLevel(int level) {
         // TODO: calculate formula for next exp max level
-        maxExp = (int) (maxExp * 1.5);
+        int maxExp = (int) (getMaxExp() * 1.5) + level;
         return maxExp;
+    }
+
+    @Override
+    public void calculateMaxExp() {
+
+        this.maxExp = getNeededExpForLevel(getLevel());
     }
 
     @Override

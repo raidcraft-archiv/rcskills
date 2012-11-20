@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -18,7 +19,10 @@ public abstract class ProfessionData extends DataMap {
     protected String name;
     protected String friendlyName;
     protected String description;
-    protected Collection<Skill> skills;
+    protected boolean active;
+    protected boolean mastered;
+    protected Set<Skill> ungainedSkills;
+    protected Set<Skill> gainedSkills;
     protected Collection<Profession> strongParents;
     protected Collection<Profession> weakParents;
 
@@ -57,9 +61,24 @@ public abstract class ProfessionData extends DataMap {
         return description;
     }
 
-    public Collection<Skill> getSkills() {
+    public boolean isActive() {
 
-        return skills;
+        return active;
+    }
+
+    public boolean isMastered() {
+
+        return mastered;
+    }
+
+    public Set<Skill> getUngainedSkills() {
+
+        return ungainedSkills;
+    }
+
+    public Set<Skill> getGainedSkills() {
+
+        return gainedSkills;
     }
 
     public Collection<Profession> getStrongParents() {

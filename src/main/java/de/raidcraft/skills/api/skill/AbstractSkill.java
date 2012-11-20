@@ -1,10 +1,11 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsComponent;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.profession.Profession;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,12 +13,14 @@ import java.util.HashSet;
 /**
  * @author Silthus
  */
-public abstract class AbstractSkill implements Skill, Child<Skill> {
+public abstract class AbstractSkill implements Skill {
 
     private final int id;
+    private final Profession profession;
     private String name;
     private String friendlyName;
     private String description;
+    private int requiredLevel;
     private String[] usage;
     private Collection<Skill> strongParents = new HashSet<>();
     private Collection<Skill> weakParents = new HashSet<>();
@@ -25,8 +28,11 @@ public abstract class AbstractSkill implements Skill, Child<Skill> {
     protected AbstractSkill(SkillData data) {
 
         this.id = data.getId();
+        this.profession = data.getProfession();
         this.name = getClass().getAnnotation(SkillInformation.class).name();
         this.friendlyName = data.getFriendlyName();
+        this.description = data.getDescription();
+        this.requiredLevel = data.getRequiredLevel();
         this.usage = data.getUsage();
         this.strongParents = data.getStrongParents();
         this.weakParents = data.getWeakParents();
@@ -68,15 +74,33 @@ public abstract class AbstractSkill implements Skill, Child<Skill> {
     }
 
     @Override
+    public String getDescription(Hero hero) {
+
+        return getDescription();
+    }
+
+    @Override
+    public int getRequiredLevel() {
+
+        return requiredLevel;
+    }
+
+    @Override
+    public Profession getProfession() {
+
+        return profession;
+    }
+
+    @Override
     public String[] getUsage() {
 
         return usage;
     }
 
     @Override
-    public boolean hasUsePermission(RCPlayer player) {
+    public boolean hasUsePermission(Hero hero) {
 
-        return hasPermission(player,
+        return hasPermission(hero.getPlayer(),
                 "rcskills.admin",
                 "rcskills.use.*",
                 "rcskills.use." + getId(),
@@ -140,5 +164,13 @@ public abstract class AbstractSkill implements Skill, Child<Skill> {
     public boolean equals(Object obj) {
 
         return obj instanceof Skill && ((Skill) obj).getId() == getId();
+    }
+
+    @Override
+    public int compareTo(Skill o) {
+
+        if (o.getRequiredLevel() == getRequiredLevel()) return 0;
+        if (getRequiredLevel() > o.getRequiredLevel()) return 1;
+        return -1;
     }
 }

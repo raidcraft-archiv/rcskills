@@ -7,9 +7,7 @@ import de.raidcraft.skills.SkillsComponent;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus

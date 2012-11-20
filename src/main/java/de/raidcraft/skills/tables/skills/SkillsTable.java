@@ -105,7 +105,7 @@ public class SkillsTable extends Table {
             this.description = resultSet.getString("description");
             this.usage = resultSet.getString("usage").split("\\|");
             this.cost = resultSet.getDouble("cost");
-            this.neededLevel = resultSet.getInt("needed_level");
+            this.requiredLevel = resultSet.getInt("needed_level");
             this.allProfessionsRequired = resultSet.getBoolean("require_all_professions");
             this.professions = new ArrayList<>();
         }
