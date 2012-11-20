@@ -1,4 +1,4 @@
-package de.raidcraft.skills;
+package de.raidcraft.skills.hero;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.PlayerComponent;

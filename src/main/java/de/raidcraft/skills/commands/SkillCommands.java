@@ -3,7 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.RCHero;
+import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.command.CommandSender;

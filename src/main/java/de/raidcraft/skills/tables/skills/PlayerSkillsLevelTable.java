@@ -3,8 +3,9 @@ package de.raidcraft.skills.tables.skills;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.LevelableSkill;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +31,6 @@ public class PlayerSkillsLevelTable extends Table {
                             "`skill_id` INT NOT NULL ,\n" +
                             "`level` INT NOT NULL ,\n" +
                             "`exp` INT NOT NULL ,\n" +
-                            "`max_exp` INT NOT NULL ,\n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
@@ -39,11 +39,11 @@ public class PlayerSkillsLevelTable extends Table {
         }
     }
 
-    public boolean contains(int skillId, RCPlayer player) {
+    public boolean contains(String skillId, Hero player) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` WHERE player='" + player.getUserName() + "' " +
+                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` WHERE player='" + player.getName() + "' " +
                             "AND skill_id=" + skillId).executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("count") > 0;
@@ -70,24 +70,22 @@ public class PlayerSkillsLevelTable extends Table {
         return null;
     }
 
-    public void saveSkillLevel(AbstractLevelableSkill skill) {
+    public void saveSkillLevel(LevelableSkill skill) {
 
         try {
-            if (contains(skill.getId(), skill.getHero())) {
+            if (contains(skill.getName(), skill.getHero())) {
                 // update the table
                 getConnection().prepareStatement("UPDATE `" + getTableName() + "` SET " +
                         "level=" + skill.getLevel() + ", " +
-                        "exp=" + skill.getExp() + ", " +
-                        "max_exp=" + skill.getMaxExp()).executeUpdate();
+                        "exp=" + skill.getLevel().getExp()).executeUpdate();
             } else {
                 // insert the skill
                 getConnection().prepareStatement("INSERT INTO `" + getTableName() + "` " +
-                        "(player, skill_id, level, exp, max_exp) VALUES (" +
-                        "'" + skill.getHero().getUserName() + "', " +
+                        "(player, skill_id, level, exp) VALUES (" +
+                        "'" + skill.getHero().getName() + "', " +
                         skill.getId() + ", " +
-                        skill.getLevel() + ", " +
-                        skill.getExp() + ", " +
-                        skill.getMaxExp() + ")").executeUpdate();
+                        skill.getLevel().getLevel() + ", " +
+                        skill.getLevel().getExp() + ")").executeUpdate();
             }
         } catch (SQLException e) {
             CommandBook.logger().severe(e.getMessage());
@@ -99,11 +97,10 @@ public class PlayerSkillsLevelTable extends Table {
 
         private Data(ResultSet resultSet) throws SQLException {
 
+            super(resultSet);
             this.level = resultSet.getInt("level");
-            // TODO: get max level from the extra table
-            this.maxLevel = 10;
             this.exp = resultSet.getInt("exp");
-            this.maxExp = resultSet.getInt("max_exp");
+            // TODO: get the max level from the skill config
         }
     }
 }

@@ -3,9 +3,12 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
@@ -35,14 +38,32 @@ public class SkillsCommands {
     )
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
-        final Hero hero = component.getHero(sender.getName());
-        final Profession profession;
+        final Hero hero;
+        try {
+            hero = component.getHero(sender.getName());
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
+        } catch (UnknownProfessionException e) {
+            throw new CommandException(e.getMessage());
+        }
+        final LevelableProfession profession;
         List<Skill> skills = new ArrayList<>();
         // get the profession
         if (args.argsLength() > 0) {
-            profession = component.getProfessionManager().getProfession(args.getString(0));
+            try {
+                profession = component.getProfessionManager().getPlayerProfession(args.getString(0), hero);
+            } catch (UnknownProfessionException e) {
+                throw new CommandException(e.getMessage());
+            } catch (UnknownPlayerProfessionException e) {
+                throw new CommandException(e.getMessage());
+            }
         } else {
-            profession = hero.getSelectedProfession();
+            try {
+                profession = (LevelableProfession) hero.getSelectedProfession();
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                throw new CommandException("Programmierfehler wat da fuck?!");
+            }
         }
         // lets get the skills the sender wants to have displayed
         skills.addAll(profession.getSkills());
@@ -50,7 +71,8 @@ public class SkillsCommands {
             skills.addAll(component.getSkillManager().getAllSkills());
         }
         if (args.hasFlag('g')) {
-            skills.removeAll(profession.getUngainedSkills());
+            skills.removeAll(profession.getSkills());
+            skills.addAll(profession.getGainedSkills());
         }
         // lets sort them by their required level
         Collections.sort(skills);
@@ -66,7 +88,7 @@ public class SkillsCommands {
 
                 sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
                         .append(profession.getTag()).append(":")
-                        .append((profession.getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
+                        .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
                 sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getFriendlyName());
                 sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription(hero));

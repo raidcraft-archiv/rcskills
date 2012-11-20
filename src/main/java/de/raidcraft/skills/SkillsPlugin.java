@@ -6,11 +6,16 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.ProfessionConfig;
+import de.raidcraft.skills.hero.HeroManager;
+import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.professions.ProfessionManager;
 import de.raidcraft.skills.skills.SkillManager;
 import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
@@ -29,6 +34,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
     private ProfessionManager professionManager;
+    private HeroManager heroManager;
     private LocalConfiguration configuration;
     private ProfessionConfig professionConfig;
 
@@ -48,6 +54,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.professionManager = new ProfessionManager(this);
+        this.heroManager = new HeroManager(this);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
@@ -68,6 +75,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return professionManager;
     }
 
+    public HeroManager getHeroManager() {
+
+        return heroManager;
+    }
+
     public LocalConfiguration getLocalConfiguration() {
 
         return configuration;
@@ -78,6 +90,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return professionConfig;
     }
 
+    public Hero getHero(String name) throws UnknownPlayerException, UnknownProfessionException {
+
+        return getHeroManager().getHero(name);
+    }
+
     public static class LocalConfiguration extends ConfigurationBase {
 
         @Setting("op-all-permissions")
@@ -86,6 +103,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public StorageType storage_type;
         @Setting("config-type")
         public StorageType config_type;
+        @Setting("player-max-level")
+        public int player_max_level;
 
         public LocalConfiguration(BasePlugin plugin) {
 

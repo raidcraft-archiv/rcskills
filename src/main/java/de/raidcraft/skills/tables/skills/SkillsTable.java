@@ -42,11 +42,11 @@ public class SkillsTable extends Table {
         }
     }
 
-    public boolean contains(int id) {
+    public boolean contains(String id) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` WHERE id=" + id).executeQuery();
+                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` WHERE name=" + id).executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("count") > 0;
             }
@@ -58,11 +58,11 @@ public class SkillsTable extends Table {
     }
 
     @SuppressWarnings("unchecked")
-    public Class<? extends Skill> getSkillClass(int id) {
+    public Class<? extends Skill> getSkillClass(String id) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT class FROM `" + getTableName() + "` WHERE id=" + id).executeQuery();
+                    "SELECT class FROM `" + getTableName() + "` WHERE name=" + id).executeQuery();
             if (resultSet.next()) {
                 return (Class<? extends Skill>) Class.forName(resultSet.getString("class"));
             }

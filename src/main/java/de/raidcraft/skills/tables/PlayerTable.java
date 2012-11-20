@@ -5,6 +5,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import java.sql.ResultSet;
@@ -51,6 +53,33 @@ public class PlayerTable extends Table {
             e.printStackTrace();
         }
         throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + player);
+    }
+
+    public HeroData getHeroData(String name) throws UnknownPlayerException, UnknownProfessionException {
+
+        try {
+            ResultSet resultSet = getConnection().prepareStatement(
+                    "SELECT COUNT(*) as count, * FROM `" + getTableName() + "´ WHERE player IS LIKE '" + name + "%'").executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getInt("count") > 1)
+                    throw new UnknownPlayerException("Es gibt mehrere Spieler mit dem Namen " + name + " in der Datenbank.");
+                return new PlayerData(resultSet);
+            }
+        } catch (SQLException e) {
+            CommandBook.logger().severe(e.getMessage());
+            e.printStackTrace();
+        }
+        throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
+    }
+
+    public static class PlayerData extends HeroData {
+
+        public PlayerData(ResultSet resultSet) throws SQLException, UnknownProfessionException {
+
+            this.player = RaidCraft.getPlayer(resultSet.getString("player"));
+            this.selectedProfession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager()
+                    .getProfession(resultSet.getString("selected_profession"));
+        }
     }
 
     public static class PlayerLevelData extends LevelData {

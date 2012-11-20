@@ -2,7 +2,7 @@ package de.raidcraft.skills.skills;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.RCHero;
+import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
@@ -60,7 +60,7 @@ public final class SkillManager {
     }
 
     /**
-     * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.RCHero}, but not currently
+     * This will try to get a {@link Skill} linked to a {@link de.raidcraft.skills.hero.RCHero}, but not currently
      * owned by the player. This can happen when the player dropped a {@link de.raidcraft.skills.api.level.Level} skill but
      * still has saved progress for that skill in the database.
      *

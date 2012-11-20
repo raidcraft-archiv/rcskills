@@ -8,13 +8,9 @@ import de.raidcraft.skills.api.profession.AbstractProfession;
  */
 public final class TemplateProfession extends AbstractProfession {
 
+
     protected TemplateProfession(ProfessionData data) {
 
-        super(null, null, data);
-    }
-
-    @Override
-    public void saveLevelProgress() {
-        // do nothing, this is just a template to display information
+        super(data);
     }
 }
