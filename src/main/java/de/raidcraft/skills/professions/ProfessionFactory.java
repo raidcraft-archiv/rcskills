@@ -5,7 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.profession.PlayerProfession;
+import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.professions.ProfessionsTable;
 
@@ -36,7 +36,7 @@ public final class ProfessionFactory {
         return null;
     }
 
-    public PlayerProfession load(String id, Hero player) throws UnknownProfessionException, UnknownPlayerProfessionException {
+    public LevelableProfession load(String id, Hero player) throws UnknownProfessionException, UnknownPlayerProfessionException {
 
         switch (component.getLocalConfiguration().config_type) {
 

@@ -6,9 +6,8 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.Level;
-import de.raidcraft.skills.api.bukkit.BukkitListenerAdapter;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.ProfessionConfig;
@@ -45,7 +44,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerTable(PlayerSkillsLevelTable.class, new PlayerSkillsLevelTable());
         registerTable(PermissionSkillsTable.class, new PermissionSkillsTable());
         // register our events
-        registerEvents(new BukkitListenerAdapter(this));
         registerEvents(this);
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
@@ -104,7 +102,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         try {
             RCPlayer player = RaidCraft.getPlayer(event.getPlayer());
-            Skill skill = player.getComponent(RCHero.class).getSkill(1);
+            Skill skill = player.getComponent(RCHero.class).getSkill("test");
             player.sendMessage("SkillId: " + skill.getId());
             player.sendMessage("Name: " + skill.getName());
             player.sendMessage("Description: " + skill.getDescription());

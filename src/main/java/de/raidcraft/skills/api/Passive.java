@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.SkillResult;
 
 /**
  * @author Silthus
@@ -14,5 +15,5 @@ public interface Passive {
      *
      * @param hero to apply effect to.
      */
-    public void apply(Hero hero);
+    public SkillResult apply(Hero hero);
 }

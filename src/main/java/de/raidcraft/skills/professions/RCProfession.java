@@ -1,13 +1,13 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.Level;
-import de.raidcraft.skills.api.SimpleLevel;
+import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.level.SimpleLevel;
 import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ProfessionData;
-import de.raidcraft.skills.api.profession.AbstractPlayerProfession;
-import de.raidcraft.skills.api.profession.PlayerProfession;
+import de.raidcraft.skills.api.profession.AbstractLevelableProfession;
+import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
 
@@ -18,14 +18,14 @@ import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
  *
  * @author Silthus
  */
-public class RCProfession extends AbstractPlayerProfession {
+public class RCProfession extends AbstractLevelableProfession {
 
 
     protected RCProfession(Hero hero, ProfessionData data) throws UnknownPlayerProfessionException {
 
         super(hero, data);
         // attach a new level object that loads from the db
-        attachLevel(new SimpleLevel<PlayerProfession>(this,
+        attachLevel(new SimpleLevel<LevelableProfession>(this,
                 Database.getTable(PlayerProfessionsTable.class).getLevelData(hero, data.getId())));
     }
 

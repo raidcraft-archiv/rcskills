@@ -4,10 +4,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.Level;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.HeroData;
-import de.raidcraft.skills.api.profession.PlayerProfession;
+import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -29,7 +29,7 @@ public abstract class AbstractHero implements Hero {
     private final Map<String, Skill> specialSkills = new HashMap<>();
     // holds a list of all professions the player ever selected mapped by the string id
     // you still need to check if the profession is currently active or mastered
-    private final Map<String, PlayerProfession> professions = new HashMap<>();
+    private final Map<String, LevelableProfession> professions = new HashMap<>();
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
 
@@ -74,7 +74,8 @@ public abstract class AbstractHero implements Hero {
         }
     }
 
-    public boolean hasSkill(int id) {
+    @Override
+    public boolean hasSkill(String id) {
 
         if (getPlayer().isOnline()) {
             return specialSkills.containsKey(id);
@@ -86,7 +87,7 @@ public abstract class AbstractHero implements Hero {
     @Override
     public boolean hasSkill(Skill skill) {
 
-        return hasSkill(skill.getId());
+        return hasSkill(skill.getName());
     }
 
     public Skill getSkill(String id) throws UnknownSkillException {
@@ -108,16 +109,16 @@ public abstract class AbstractHero implements Hero {
     }
 
     @Override
-    public Collection<PlayerProfession> getProfessions() {
+    public Collection<LevelableProfession> getProfessions() {
 
         return professions.values();
     }
 
     @Override
-    public Collection<PlayerProfession> getActiveProfessions() {
+    public Collection<LevelableProfession> getActiveProfessions() {
 
-        HashSet<PlayerProfession> set = new HashSet<>();
-        for (PlayerProfession profession : getProfessions()) {
+        HashSet<LevelableProfession> set = new HashSet<>();
+        for (LevelableProfession profession : getProfessions()) {
             if (profession.isActive()) {
                 set.add(profession);
             }

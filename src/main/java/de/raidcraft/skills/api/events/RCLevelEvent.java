@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.events;
 
-import de.raidcraft.skills.api.Level;
+import de.raidcraft.skills.api.level.Level;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

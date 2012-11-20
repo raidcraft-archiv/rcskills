@@ -4,7 +4,7 @@ import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.Level;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.skills.SkillsTable;

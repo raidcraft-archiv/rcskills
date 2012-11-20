@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.Level;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 
@@ -31,7 +31,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public Level getLevel() {
+    public Level<LevelableSkill> getLevel() {
 
         return level;
     }

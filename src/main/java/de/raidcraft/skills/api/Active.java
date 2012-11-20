@@ -2,6 +2,7 @@ package de.raidcraft.skills.api;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.SkillResult;
 
 /**
  * @author Silthus
@@ -18,5 +19,5 @@ public interface Active<T> {
      * @param trigger of the skill
      * @throws CombatException is thrown when an error in the skill execution occured
      */
-    public void run(Hero hero, T trigger) throws CombatException;
+    public SkillResult run(Hero hero, T trigger) throws CombatException;
 }

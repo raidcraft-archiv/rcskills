@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.LevelObject;
-import de.raidcraft.skills.api.profession.PlayerProfession;
+import de.raidcraft.skills.api.level.LevelObject;
+import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 
@@ -19,11 +19,13 @@ public interface Hero extends LevelObject<Hero> {
 
     public boolean hasSkill(Skill skill);
 
+    public boolean hasSkill(String id);
+
     public Profession getSelectedProfession();
 
-    public Collection<PlayerProfession> getActiveProfessions();
+    public Collection<LevelableProfession> getActiveProfessions();
 
-    public Collection<PlayerProfession> getProfessions();
+    public Collection<LevelableProfession> getProfessions();
 
     public Collection<Skill> getSpecialSkills();
 

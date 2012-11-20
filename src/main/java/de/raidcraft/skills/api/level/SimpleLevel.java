@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.level;
 
 import de.raidcraft.skills.api.events.RCLevelEvent;
 import de.raidcraft.skills.api.persistance.LevelData;

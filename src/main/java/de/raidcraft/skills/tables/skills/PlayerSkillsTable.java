@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables.skills;
 
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.api.player.RCPlayer;
 
@@ -36,12 +37,13 @@ public class PlayerSkillsTable extends Table {
         }
     }
 
-    public boolean contains(int skillId, RCPlayer player) {
+    public boolean contains(String skillId, RCPlayer player) {
 
         try {
             ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` WHERE skill_id=" + skillId + " " +
-                            "AND player='" + player.getUserName() + "'").executeQuery();
+                    "SELECT COUNT(*) as count FROM `" + getTableName() + "` ps, `" + Database.getTable(SkillsTable.class).getTableName() + "` s" +
+                            "WHERE s.id=ps.skill_id AND s.name='" + skillId + "' " +
+                            "AND ps.player='" + player.getUserName() + "'").executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("count") > 0;
             }
