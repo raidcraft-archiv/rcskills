@@ -130,7 +130,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         if (professions.containsKey(id)) {
             profession = professions.get(id);
         } else {
-            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(id);
+            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(this, id);
             professions.put(id, profession);
         }
         return profession;

@@ -1,6 +1,8 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.hero.AbstractHero;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 
 import java.util.HashMap;
@@ -19,5 +21,10 @@ public final class ProfessionManager {
 
         this.component = component;
         this.factory = new ProfessionFactory(component);
+    }
+
+    public Profession getProfession(Hero hero, String profId) {
+
+
     }
 }

@@ -32,11 +32,6 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
     private final SkillInformation information;
     private THeroSkill skill;
 
-    public SkillConfig(SkillsPlugin plugin, Hero hero, SkillInformation info) {
-
-        this(plugin, hero, info, null);
-    }
-
     public SkillConfig(SkillsPlugin plugin, Hero hero, SkillInformation info, ProfessionConfig config) {
 
         this.plugin = plugin;
