@@ -80,7 +80,7 @@ public abstract class AbstractProfession implements Profession, Child<Profession
     }
 
     @Override
-    public Collection<Profession> getWeaksParents() {
+    public Collection<Profession> getWeakParents() {
 
         return weakParents;
     }
