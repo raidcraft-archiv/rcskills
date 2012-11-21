@@ -30,7 +30,8 @@ public class TSkill {
     private String name;
     private String friendlyName;
     private String description;
-    private String[] usage;
+    @Column(name = "s_usage")
+    private String usage;
     private int manaCost;
     private double manaLevelModifier;
     private int staminaCost;
@@ -106,7 +107,7 @@ public class TSkill {
         this.description = description;
     }
 
-    public String[] getUsage() {
+    public String getUsage() {
 
         return usage;
     }
@@ -121,7 +122,7 @@ public class TSkill {
         this.parents = parents;
     }
 
-    public void setUsage(String[] usage) {
+    public void setUsage(String usage) {
 
         this.usage = usage;
     }

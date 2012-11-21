@@ -112,7 +112,7 @@ public class TPlayerProfession {
         this.exp = exp;
     }
 
-    public int getLevel() {
+    public int getCurrentLevel() {
 
         return currentLevel;
     }

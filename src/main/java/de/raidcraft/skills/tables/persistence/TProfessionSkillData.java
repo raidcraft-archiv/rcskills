@@ -1,9 +1,6 @@
 package de.raidcraft.skills.tables.persistence;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
@@ -18,8 +15,10 @@ public class TProfessionSkillData {
     @ManyToOne
     private TProfessionSkill skill;
 
+    @Column(name = "psd_key")
     private String key;
 
+    @Column(name = "psd_value")
     private String value;
 
     public int getId() {

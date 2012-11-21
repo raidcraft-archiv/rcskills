@@ -1,9 +1,6 @@
 package de.raidcraft.skills.tables.persistence;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
@@ -18,9 +15,11 @@ public class TSkillData {
     @ManyToOne
     private TSkill skill;
 
+    @Column(name = "sd_key")
     private String key;
 
-    private Object value;
+    @Column(name = "sd_value")
+    private String value;
 
     public int getId() {
 
@@ -52,12 +51,12 @@ public class TSkillData {
         this.key = key;
     }
 
-    public Object getValue() {
+    public String getValue() {
 
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(String value) {
 
         this.value = value;
     }

@@ -55,7 +55,7 @@ public class TPlayerProfessionSkill {
         this.professionSkill = professionSkill;
     }
 
-    public int getLevel() {
+    public int getCurrentLevel() {
 
         return currentLevel;
     }
