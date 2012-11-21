@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -9,7 +10,7 @@ import javax.persistence.ManyToOne;
 /**
  * @author Silthus
  */
-public class THeroSkill {
+public class THeroSkill implements LevelData {
 
     @Id
     private int id;
@@ -78,6 +79,12 @@ public class THeroSkill {
     public int getExp() {
 
         return exp;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        throw new UnsupportedOperationException();
     }
 
     public void setExp(int exp) {

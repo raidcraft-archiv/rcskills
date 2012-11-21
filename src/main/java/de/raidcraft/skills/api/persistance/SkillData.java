@@ -8,15 +8,9 @@ import de.raidcraft.util.DataMap;
 */
 public interface SkillData extends SkillProperties {
 
-    public int getId();
+    public SkillInformation getSkillInformation();
 
     public DataMap getData();
 
-    public SkillInformation getSkillInformation();
-
-    public String getFriendlyName();
-
-    public String getDescription();
-
-    public String[] getUsage();
+    public String getProfession();
 }

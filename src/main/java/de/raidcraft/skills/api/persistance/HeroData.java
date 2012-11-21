@@ -1,23 +1,22 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
+
+import java.util.Set;
 
 /**
  * @author Silthus
  */
-public abstract class HeroData {
+public interface HeroData {
 
-    protected Profession selectedProfession;
-    protected RCPlayer player;
+    public int getId();
 
-    public Profession getSelectedProfession() {
+    public String getName();
 
-        return selectedProfession;
-    }
+    public Set<Skill> getSkills();
 
-    public RCPlayer getPlayer() {
+    public Set<Profession> getProfessions();
 
-        return player;
-    }
+    public Profession getSelectedProfession();
 }

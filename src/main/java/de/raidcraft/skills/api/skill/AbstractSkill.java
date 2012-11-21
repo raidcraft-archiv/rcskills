@@ -1,7 +1,12 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.util.DataMap;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,10 +16,13 @@ import java.util.HashSet;
  */
 public abstract class AbstractSkill implements Skill {
 
-    private String name;
-    private String friendlyName;
+    private final int id;
+    private final Hero hero;
+    private final String name;
+    private final String friendlyName;
+    private String profession;
     private String description;
-    private String[] usage;
+    private final String[] usage;
     private int manaCost;
     private double manaLevelModifier;
     private int staminaCost;
@@ -28,17 +36,49 @@ public abstract class AbstractSkill implements Skill {
     private double castTimeLevelModifier;
     private double duration;
     private double durationLevelModifier;
-    private Collection<Skill> strongParents = new HashSet<>();
-    private Collection<Skill> weakParents = new HashSet<>();
+    private final Collection<Skill> strongParents = new HashSet<>();
+    private final Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(SkillData data) {
+    protected AbstractSkill(Hero hero, SkillData data) {
 
-        this.name = getClass().getAnnotation(SkillInformation.class).name();
+        this.hero = hero;
+        this.id = data.getId();
+        this.profession = data.getProfession();
+        this.name = data.getSkillInformation().name();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
-        this.requiredLevel = data.getRequiredLevel();
         this.usage = data.getUsage();
+        this.manaCost = data.getManaCost();
+        this.manaLevelModifier = data.getManaLevelModifier();
+        this.staminaCost = data.getStaminaCost();
+        this.staminaLevelModifier = data.getStaminaLevelModifier();
+        this.healthCost = data.getHealthCost();
+        this.healthLevelModifier = data.getHealthLevelModifier();
+        this.damage = data.getDamage();
+        this.damageLevelModifier = data.getDamageLevelModifier();
+        this.castTime = data.getCastTime();
+        this.castTimeLevelModifier = data.getCastTimeLevelModifier();
+        this.duration = data.getDuration();
+        this.durationLevelModifier = data.getDurationLevelModifier();
+        this.requiredLevel = data.getRequiredLevel();
         load(data.getData());
+    }
+
+    @Override
+    public void load(DataMap data) {
+        // override this when needed
+    }
+
+    @Override
+    public int getId() {
+
+        return id;
+    }
+
+    @Override
+    public Hero getHero() {
+
+        return hero;
     }
 
     @Override
@@ -76,36 +116,49 @@ public abstract class AbstractSkill implements Skill {
         return usage;
     }
 
+    @Override
+    public Profession getProfession() throws UnknownProfessionException {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getHero(), profession);
+    }
+
+    @Override
     public int getManaCost() {
 
         return manaCost;
     }
 
+    @Override
     public double getManaLevelModifier() {
 
         return manaLevelModifier;
     }
 
+    @Override
     public int getStaminaCost() {
 
         return staminaCost;
     }
 
+    @Override
     public double getStaminaLevelModifier() {
 
         return staminaLevelModifier;
     }
 
+    @Override
     public int getHealthCost() {
 
         return healthCost;
     }
 
+    @Override
     public double getHealthLevelModifier() {
 
         return healthLevelModifier;
     }
 
+    @Override
     public int getRequiredLevel() {
 
         return requiredLevel;
@@ -116,26 +169,31 @@ public abstract class AbstractSkill implements Skill {
         return damage;
     }
 
+    @Override
     public double getDamageLevelModifier() {
 
         return damageLevelModifier;
     }
 
+    @Override
     public double getCastTime() {
 
         return castTime;
     }
 
+    @Override
     public double getCastTimeLevelModifier() {
 
         return castTimeLevelModifier;
     }
 
+    @Override
     public double getDuration() {
 
         return duration;
     }
 
+    @Override
     public double getDurationLevelModifier() {
 
         return durationLevelModifier;
@@ -186,7 +244,9 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public boolean equals(Object obj) {
 
-        return obj instanceof Skill && ((Skill) obj).getName().equalsIgnoreCase(getName());
+        return obj instanceof Skill
+                && ((Skill) obj).getName().equalsIgnoreCase(getName())
+                && ((Skill) obj).getHero().getName().equalsIgnoreCase(getHero().getName());
     }
 
     @Override

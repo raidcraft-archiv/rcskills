@@ -5,6 +5,14 @@ package de.raidcraft.skills.api.persistance;
  */
 public interface SkillProperties {
 
+    public int getId();
+
+    public String getFriendlyName();
+
+    public String getDescription();
+
+    public String[] getUsage();
+
     public int getManaCost();
 
     public double getManaLevelModifier();

@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
-import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.config.SkillConfig;
@@ -109,10 +108,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         @Setting("op-all-permissions")
         public boolean allow_op;
-        @Setting("storage-type")
-        public StorageType storage_type;
-        @Setting("config-type")
-        public StorageType config_type;
         @Setting("player-max-level")
         public int player_max_level;
 

@@ -1,56 +1,51 @@
 package de.raidcraft.skills.api.hero;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
-import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
+import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroSkill;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractHero implements Hero {
+public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
-    private final RCPlayer player;
+    private final int id;
     private Level<Hero> level;
-    // holds a list of all special skills the player gained mapped by the id of the skill
-    // special skills do not require a profession and can only be given manually
-    private final Map<String, Skill> specialSkills = new HashMap<>();
-    // holds a list of all professions the player ever selected mapped by the string id
-    // you still need to check if the profession is currently active or mastered
-    private final Map<String, LevelableProfession> professions = new HashMap<>();
+    private final Map<String, Skill> skills = new HashMap<>();
+    private final Map<String, Profession> professions = new HashMap<>();
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
 
-    protected AbstractHero(HeroData heroData) {
+    protected AbstractHero(HeroData data) {
 
-        this.player = heroData.getPlayer();
-        this.selectedProfession = heroData.getSelectedProfession();
+        super(data.getName());
+        this.id = data.getId();
+        this.selectedProfession = data.getSelectedProfession();
+    }
+
+    @Override
+    public int getId() {
+
+        return id;
     }
 
     @Override
     public void attachLevel(Level<Hero> level) {
 
         this.level = level;
-    }
-
-    @Override
-    public RCPlayer getPlayer() {
-
-        return player;
-    }
-
-    @Override
-    public String getName() {
-
-        return player.getUserName();
     }
 
     @Override
@@ -63,9 +58,9 @@ public abstract class AbstractHero implements Hero {
     @Override
     public final void saveSkills() {
 
-        for (Skill skill : getSpecialSkills()) {
-            if (skill instanceof Level) {
-                ((Level) skill).saveLevelProgress();
+        for (Skill skill : getSkills()) {
+            if (skill instanceof Levelable) {
+                ((Levelable) skill).getLevel().saveLevelProgress();
             }
         }
     }
@@ -73,11 +68,17 @@ public abstract class AbstractHero implements Hero {
     @Override
     public boolean hasSkill(String id) {
 
-        if (getPlayer().isOnline()) {
-            return specialSkills.containsKey(id);
+        if (isOnline()) {
+            return skills.containsKey(id);
         } else {
-            return Database.getTable(PlayerSkillsTable.class).contains(id, getPlayer());
+            List<THeroSkill> skills = Ebean.find(THero.class, getId()).getSkills();
+            for (THeroSkill skill : skills) {
+                if (skill.getName().equalsIgnoreCase(id)) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     @Override
@@ -86,52 +87,28 @@ public abstract class AbstractHero implements Hero {
         return hasSkill(skill.getName());
     }
 
-    public Skill getSkill(String id) throws UnknownSkillException {
+    public Skill getSkill(String id) {
 
         Skill skill;
-        if (specialSkills.containsKey(id)) {
-            skill = specialSkills.get(id);
+        if (skills.containsKey(id)) {
+            skill = skills.get(id);
         } else {
-            skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getPlayerSkill(id, getPlayer());
-            specialSkills.put(skill.getName(), skill);
+            skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getSkill(this, id);
+            skills.put(skill.getName(), skill);
         }
         return skill;
     }
 
     @Override
-    public Collection<Skill> getSpecialSkills() {
+    public Collection<Skill> getSkills() {
 
-        return specialSkills.values();
+        return skills.values();
     }
 
     @Override
-    public Collection<Skill> getGainedSkills() {
-
-        Set<Skill> skills = new HashSet<>();
-        for (LevelableProfession profession : getProfessions()) {
-            if (profession.isActive()) {
-                skills.addAll(profession.getGainedSkills());
-            }
-        }
-        return skills;
-    }
-
-    @Override
-    public Collection<LevelableProfession> getProfessions() {
+    public Collection<Profession> getProfessions() {
 
         return professions.values();
-    }
-
-    @Override
-    public Collection<LevelableProfession> getActiveProfessions() {
-
-        HashSet<LevelableProfession> set = new HashSet<>();
-        for (LevelableProfession profession : getProfessions()) {
-            if (profession.isActive()) {
-                set.add(profession);
-            }
-        }
-        return set;
     }
 
     @Override
@@ -147,8 +124,27 @@ public abstract class AbstractHero implements Hero {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public Profession getProfession(String id) {
 
-        return obj instanceof Hero && ((Hero) obj).getName().equals(getName());
+        Profession profession;
+        if (professions.containsKey(id)) {
+            profession = professions.get(id);
+        } else {
+            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(id);
+            professions.put(id, profession);
+        }
+        return profession;
+    }
+
+    @Override
+    public boolean hasProfession(String id) {
+
+        return professions.containsKey(id);
+    }
+
+    @Override
+    public boolean hasProfession(Profession profession) {
+
+        return hasProfession(profession.getName());
     }
 }

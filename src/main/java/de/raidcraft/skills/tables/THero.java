@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero")
-public class THero {
+public class THero implements LevelData {
 
     @Id
     private int id;
@@ -48,6 +49,12 @@ public class THero {
     public int getExp() {
 
         return exp;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        throw new UnsupportedOperationException();
     }
 
     public void setExp(int exp) {

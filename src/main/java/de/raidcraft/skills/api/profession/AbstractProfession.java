@@ -14,6 +14,7 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
+    private final int id;
     private final Hero hero;
     private final String name;
     private final String friendlyName;
@@ -30,6 +31,7 @@ public abstract class AbstractProfession implements Profession {
 
     protected AbstractProfession(Hero hero, ProfessionData data) {
 
+        this.id = data.getId();
         this.hero = hero;
         this.name = data.getName();
         this.friendlyName = data.getFriendlyName();
@@ -38,6 +40,12 @@ public abstract class AbstractProfession implements Profession {
         this.active = data.isActive();
         this.mastered = data.isMastered();
         attachLevel(new ProfessionLevel(this, data));
+    }
+
+    @Override
+    public int getId() {
+
+        return id;
     }
 
     @Override
@@ -83,7 +91,7 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public Collection<Skill> getSkills() {
+    public Set<Skill> getSkills() {
 
         return skills;
     }

@@ -10,29 +10,29 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public interface Hero extends Levelable<Hero> {
+public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public int getId();
 
-    public RCPlayer getPlayer();
+    public Profession getSelectedProfession();
 
-    public String getName();
+    public Collection<Skill> getSkills();
+
+    public Collection<Profession> getProfessions();
+
+    public void saveSkills();
+
+    public void save();
 
     public boolean hasSkill(Skill skill);
 
     public boolean hasSkill(String id);
 
-    public Profession getSelectedProfession();
+    public Skill getSkill(String id);
 
-    public Collection<LevelableProfession> getActiveProfessions();
+    public boolean hasProfession(Profession profession);
 
-    public Collection<LevelableProfession> getProfessions();
+    public boolean hasProfession(String id);
 
-    public Collection<Skill> getSpecialSkills();
-
-    public Collection<Skill> getGainedSkills();
-
-    public void saveSkills();
-
-    public void save();
+    public Profession getProfession(String id);
 }

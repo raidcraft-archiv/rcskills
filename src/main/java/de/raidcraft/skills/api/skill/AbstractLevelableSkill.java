@@ -9,25 +9,17 @@ import de.raidcraft.skills.api.persistance.SkillData;
  */
 public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
-    private final Hero hero;
     private Level<LevelableSkill> level;
 
     public AbstractLevelableSkill(Hero hero, SkillData data) {
 
-        super(data);
-        this.hero = hero;
+        super(hero, data);
     }
 
     @Override
     public void attachLevel(Level<LevelableSkill> level) {
 
         this.level = level;
-    }
-
-    @Override
-    public Hero getHero() {
-
-        return hero;
     }
 
     @Override

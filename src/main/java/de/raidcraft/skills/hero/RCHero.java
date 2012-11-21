@@ -7,7 +7,6 @@ import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.SimpleLevel;
 import de.raidcraft.skills.api.hero.AbstractHero;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.tables.PlayerTable;
 
 /**

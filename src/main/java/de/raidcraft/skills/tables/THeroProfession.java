@@ -74,7 +74,7 @@ public class THeroProfession implements LevelData {
     @Override
     public int getMaxLevel() {
 
-        return 60;
+        throw new UnsupportedOperationException();
     }
 
     public void setExp(int exp) {

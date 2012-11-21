@@ -58,7 +58,7 @@ public final class SkillManager {
      */
     public Skill loadSkill(Hero hero, String skill, ProfessionConfig config) throws UnknownSkillException {
 
-        String name = hero.getName();
+        String name = hero.getUserName();
         if (!playerSkills.containsKey(name)) {
             playerSkills.put(name, new HashMap<String, Skill>());
         }
@@ -94,5 +94,15 @@ public final class SkillManager {
             e.printStackTrace();
         }
         throw new UnknownSkillException("Error when loading skill for class: " + clazz.getCanonicalName());
+    }
+
+    public Skill getSkill(Hero hero, String id) {
+
+        if (playerSkills.containsKey(hero.getUserName())) {
+            if (playerSkills.get(hero.getUserName()).containsKey(id)) {
+                return playerSkills.get(hero.getUserName()).get(id);
+            }
+        }
+        return loadSkill(hero, id);
     }
 }

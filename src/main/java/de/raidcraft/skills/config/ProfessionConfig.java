@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -22,15 +23,10 @@ import java.util.Set;
  */
 public class ProfessionConfig extends YamlConfiguration implements ProfessionData, LevelData {
 
-    private final Hero hero;
-    private final SkillsPlugin plugin;
     private THeroProfession profession;
-    private Set<Skill> skills;
+    private Set<Skill> skills = new LinkedHashSet<>();
 
     public ProfessionConfig(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
-
-        this.hero = hero;
-        this.plugin = plugin;
 
         try {
             File file = new File(plugin.getDataFolder() + "/professions/", name + ".yml");

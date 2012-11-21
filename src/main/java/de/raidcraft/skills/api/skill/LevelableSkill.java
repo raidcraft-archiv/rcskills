@@ -8,5 +8,5 @@ import de.raidcraft.skills.api.hero.Hero;
  */
 public interface LevelableSkill extends Levelable<LevelableSkill>, Skill {
 
-    public Hero getHero();
+
 }

@@ -167,6 +167,12 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
     }
 
     @Override
+    public String getProfession() {
+
+        return skill.getProfession().getName();
+    }
+
+    @Override
     public int getManaCost() {
 
         return getOverrideInt("mana-cost");

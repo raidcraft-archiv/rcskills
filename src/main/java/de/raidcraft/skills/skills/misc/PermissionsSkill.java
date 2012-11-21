@@ -1,12 +1,13 @@
 package de.raidcraft.skills.skills.misc;
 
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.SkillType;
+import de.raidcraft.util.DataMap;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * @author Silthus
@@ -14,6 +15,7 @@ import java.util.HashSet;
 @SkillInformation(
         name = "permission-skill",
         desc = "Represents a generic permissions skill.",
+        defaults = {"groups:[foobar,barfoo]", "permissions:[foo.bar,bar.foo]"},
         types = {SkillType.UNBINDABLE}
 )
 public class PermissionsSkill extends AbstractSkill {
@@ -21,16 +23,16 @@ public class PermissionsSkill extends AbstractSkill {
     private Collection<String> groups;
     private Collection<String> permissions;
 
-    public PermissionsSkill(SkillData data) {
+    public PermissionsSkill(Hero hero, SkillData data) {
 
-        super(data);
-        if (data == null) {
-            groups = new HashSet<>();
-            permissions = new HashSet<>();
-            return;
-        }
-        this.groups = data.getStringList("groups");
-        this.permissions = data.getStringList("permissions");
+        super(hero, data);
+    }
+
+    @Override
+    public void load(DataMap data) {
+
+        groups = data.getStringList("groups");
+        permissions = data.getStringList("permissions");
     }
 
     public Collection<String> getGroups() {
