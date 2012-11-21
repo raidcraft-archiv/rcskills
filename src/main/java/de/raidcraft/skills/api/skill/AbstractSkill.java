@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.tables.TSkill;
+import de.raidcraft.skills.api.persistance.SkillData;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,7 +11,6 @@ import java.util.HashSet;
  */
 public abstract class AbstractSkill implements Skill {
 
-    private final int id;
     private String name;
     private String friendlyName;
     private String description;
@@ -20,21 +19,14 @@ public abstract class AbstractSkill implements Skill {
     private Collection<Skill> strongParents = new HashSet<>();
     private Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(TSkill data) {
+    protected AbstractSkill(SkillData data) {
 
-        this.id = data.getId();
         this.name = getClass().getAnnotation(SkillInformation.class).name();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
         this.requiredLevel = data.getRequiredLevel();
-        this.usage = data.getUsage().split("|");
+        this.usage = data.getUsage();
         load(data.getData());
-    }
-
-    @Override
-    public int getId() {
-
-        return id;
     }
 
     @Override
@@ -117,13 +109,13 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public String toString() {
 
-        return "[S" + getId() + "-" + getClass().getName() + "]" + getName();
+        return "[S-" + getClass().getName() + "]" + getName();
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return obj instanceof Skill && ((Skill) obj).getId() == getId();
+        return obj instanceof Skill && ((Skill) obj).getName().equalsIgnoreCase(getName());
     }
 
     @Override

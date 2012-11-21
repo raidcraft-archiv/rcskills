@@ -1,77 +1,122 @@
 package de.raidcraft.skills.config;
 
-import de.raidcraft.api.config.CommonConfig;
+import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
-import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.configuration.ConfigurationSection;
+import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroProfession;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
+import java.io.IOException;
 import java.util.Set;
 
 /**
  * @author Silthus
  */
-public class ProfessionConfig {
+public class ProfessionConfig extends YamlConfiguration implements ProfessionData, LevelData {
 
+    private final Hero hero;
     private final SkillsPlugin plugin;
+    private THeroProfession profession;
+    private Set<Skill> skills;
 
-    public ProfessionConfig(SkillsPlugin plugin) {
+    public ProfessionConfig(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException {
 
+        this.hero = hero;
         this.plugin = plugin;
+
+        try {
+            File file = new File(plugin.getDataFolder() + "/professions/", name + ".yml");
+            if (!file.exists()) {
+                throw new UnknownProfessionException("There is no profession with the name: " + name);
+            }
+            // first load the flatfile config
+            load(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UnknownProfessionException(e.getMessage());
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+            throw new UnknownProfessionException(e.getMessage());
+        }
+
+        // then load the hero stats from the database
+        profession = Ebean.find(THeroProfession.class).where().eq("hp_name", name).eq("hp_hero_id", hero.getId()).findUnique();
+        if (profession == null) {
+            // create a new entry
+            profession = new THeroProfession();
+            profession.setHero(Ebean.find(THero.class).where().eq("h_player", hero.getName()).findUnique());
+            profession.setLevel(1);
+            profession.setExp(0);
+            profession.setMastered(false);
+            profession.setActive(false);
+            Ebean.save(profession);
+        }
+
+        // now load the skills - when a skill does not exist in the database we will insert it
+        Set<String> configSkills = getConfigurationSection("skills").getKeys(false);
+        for (String skill : configSkills) {
+            this.skills.add(plugin.getSkillManager().loadSkill(this, skill));
+        }
     }
 
-    public ProfessionData getProfessionData(String id) {
+    @Override
+    public String getFriendlyName() {
 
-        File file = new File(plugin.getDataFolder() + "/professions/");
-        if (!file.exists()) file.mkdirs();
-        return new Data(id, plugin.configure(new CommonConfig(plugin, new File(file, id + ".yml"))));
+        return getString("name");
     }
 
-    public class Data extends ProfessionData {
+    @Override
+    public String getDescription() {
 
-        public Data(String id, ConfigurationSection config, String... exclude) {
+        return getString("description");
+    }
 
-            super(config.getConfigurationSection("custom"), exclude);
-            this.name = id;
-            this.friendlyName = config.getString("name");
-            this.description = config.getString("description");
-            this.skills = loadSkills(config.getConfigurationSection("skills"));
-            this.strongParents = loadParents(getStringList("strong-parents"));
-            this.weakParents = loadParents(getStringList("weak-parents"));
-        }
+    @Override
+    public boolean isActive() {
 
-        private Set<Skill> loadSkills(ConfigurationSection config) {
+        return getBoolean("active");
+    }
 
-            Set<Skill> skills = new HashSet<>();
-            for (String s : config.getKeys(false)) {
-                try {
-                    skills.add(plugin.getSkillManager().getSkill(s));
-                } catch (UnknownSkillException e) {
-                    plugin.getLogger().severe("The skill " + s + " does not exist. Occured when loading: " + name);
-                    e.printStackTrace();
-                }
-            }
-            return skills;
-        }
+    @Override
+    public boolean isMastered() {
 
-        private Set<Profession> loadParents(List<String> names) {
+        return profession.isMastered();
+    }
 
-            Set<Profession> professions = new HashSet<>();
-            for (String p : names) {
-                try {
-                    professions.add(plugin.getProfessionManager().getProfession(p));
-                } catch (UnknownProfessionException e) {
-                    plugin.getLogger().severe("The parent " + p + " of " + name + " does not exist. Please fix it...");
-                    e.printStackTrace();
-                }
-            }
-            return professions;
-        }
+    @Override
+    public LevelData getLevelData() {
+
+        return this;
+    }
+
+    @Override
+    public Set<Skill> getSkills() {
+
+        return skills;
+    }
+
+    @Override
+    public int getLevel() {
+
+        return profession.getLevel();
+    }
+
+    @Override
+    public int getExp() {
+
+        return profession.getExp();
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return getInt("max-exp");
     }
 }

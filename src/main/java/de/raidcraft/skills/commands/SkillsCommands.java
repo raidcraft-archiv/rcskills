@@ -8,7 +8,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;

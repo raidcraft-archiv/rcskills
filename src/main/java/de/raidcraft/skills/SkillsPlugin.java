@@ -11,14 +11,19 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.persistance.StorageType;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.ProfessionConfig;
+import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.hero.HeroManager;
 import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.professions.ProfessionManager;
 import de.raidcraft.skills.skills.SkillManager;
-import de.raidcraft.skills.tables.*;
+import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -43,7 +48,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
-        this.professionConfig = new ProfessionConfig(this);
         // register our events
         registerEvents(this);
         // the skill manager takes care of all skills currently loaded
@@ -64,16 +68,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public List<Class<?>> getDatabaseClasses() {
 
         List<Class<?>> classes = new ArrayList<>();
-        classes.add(TPlayer.class);
-        classes.add(TPlayerProfession.class);
-        classes.add(TPlayerProfessionSkill.class);
-        classes.add(TProfession.class);
-        classes.add(TProfessionParents.class);
-        classes.add(TProfessionSkill.class);
-        classes.add(TProfessionSkillData.class);
-        classes.add(TSkill.class);
-        classes.add(TSkillData.class);
-        classes.add(TSkillParents.class);
+        classes.add(THero.class);
+        classes.add(THeroProfession.class);
+        classes.add(THeroSkill.class);
         return classes;
     }
 
@@ -97,14 +94,19 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return configuration;
     }
 
-    public ProfessionConfig getProfessionConfig() {
+    public ProfessionConfig getProfessionConfig(Hero hero, String name) throws UnknownProfessionException {
 
-        return professionConfig;
+        return new ProfessionConfig(this, hero, name);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException, UnknownProfessionException {
 
         return getHeroManager().getHero(name);
+    }
+
+    public SkillData getSkillConfig(Hero hero, String name) {
+
+        return new SkillConfig(this, hero, name);
     }
 
     public static class LocalConfiguration extends ConfigurationBase {

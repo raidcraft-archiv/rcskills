@@ -6,8 +6,6 @@ import de.raidcraft.skills.api.level.SimpleLevel;
 import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ProfessionData;
-import de.raidcraft.skills.api.profession.AbstractLevelableProfession;
-import de.raidcraft.skills.api.profession.LevelableProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
 

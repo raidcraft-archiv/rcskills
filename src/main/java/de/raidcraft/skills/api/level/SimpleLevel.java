@@ -7,15 +7,15 @@ import de.raidcraft.util.BukkitUtil;
 /**
  * @author Silthus
  */
-public class SimpleLevel<T extends Levelable> implements Level<T> {
+public abstract class SimpleLevel<T extends Levelable> implements Level<T> {
 
     private final T levelObject;
-    private int level = 1;
-    private int maxLevel = 60;
-    private int exp = 0;
-    private int maxExp;
+    protected int level = 1;
+    protected int maxLevel = 60;
+    protected int exp = 0;
+    protected int maxExp;
 
-    public SimpleLevel(T levelObject, LevelData data) {
+    protected SimpleLevel(T levelObject, LevelData data) {
 
         this.levelObject = levelObject;
         // abort in case there are no entries yet
@@ -24,8 +24,8 @@ public class SimpleLevel<T extends Levelable> implements Level<T> {
             return;
         }
         this.level = data.getLevel();
-        this.maxLevel = data.getMaxLevel();
         this.exp = data.getExp();
+        this.maxLevel = data.getMaxLevel();
         calculateMaxExp();
     }
 

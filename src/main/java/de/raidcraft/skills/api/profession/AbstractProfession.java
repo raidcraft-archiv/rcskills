@@ -1,9 +1,12 @@
 package de.raidcraft.skills.api.profession;
 
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -11,31 +14,36 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
-    private final int id;
+    private final Hero hero;
     private final String name;
     private final String friendlyName;
     private final String description;
+    private boolean active;
+    private boolean mastered;
     // maps skills with the minimal required level
     private final Set<Skill> skills;
     // parent child collections
-    private final Collection<Profession> strongParents;
-    private final Collection<Profession> weakParents;
+    private final Collection<Profession> strongParents = new LinkedHashSet<>();
+    private final Collection<Profession> weakParents = new LinkedHashSet<>();
+    // the level object holding our level and stuff
+    private Level<Profession> level;
 
-    protected AbstractProfession(ProfessionData data) {
+    protected AbstractProfession(Hero hero, ProfessionData data) {
 
-        this.id = data.getId();
+        this.hero = hero;
         this.name = data.getName();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
         this.skills = data.getSkills();
-        this.strongParents = data.getStrongParents();
-        this.weakParents = data.getWeakParents();
+        this.active = data.isActive();
+        this.mastered = data.isMastered();
+        attachLevel(new ProfessionLevel(this, data));
     }
 
     @Override
-    public int getId() {
+    public Hero getHero() {
 
-        return id;
+        return hero;
     }
 
     @Override
@@ -63,9 +71,33 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public boolean isActive() {
+
+        return active;
+    }
+
+    @Override
+    public boolean isMastered() {
+
+        return mastered;
+    }
+
+    @Override
     public Collection<Skill> getSkills() {
 
         return skills;
+    }
+
+    @Override
+    public Level<Profession> getLevel() {
+
+        return level;
+    }
+
+    @Override
+    public void attachLevel(Level<Profession> level) {
+
+        this.level = level;
     }
 
     /*//////////////////////////////////////////////////////
@@ -111,14 +143,15 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public String toString() {
 
-        return "[P" + getId() + "-" + getClass().getName() + "]" + getName();
+        return "[P-" + getClass().getName() + "]" + getName();
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof AbstractProfession) {
-            return ((AbstractProfession) obj).getId() == getId();
+        if (obj instanceof Profession) {
+            return ((Profession) obj).getName().equalsIgnoreCase(getName())
+                    && getHero().getName().equalsIgnoreCase(((Profession) obj).getHero().getName());
         }
         return false;
     }
