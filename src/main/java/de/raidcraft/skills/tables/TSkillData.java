@@ -1,4 +1,4 @@
-package de.raidcraft.skills.tables.persistence;
+package de.raidcraft.skills.tables;
 
 import javax.persistence.*;
 
@@ -6,19 +6,19 @@ import javax.persistence.*;
  * @author Silthus
  */
 @Entity
-@Table(name = "s_profession_skill_data")
-public class TProfessionSkillData {
+@Table(name = "s_skill_data")
+public class TSkillData {
 
     @Id
     private int id;
 
     @ManyToOne
-    private TProfessionSkill skill;
+    private TSkill skill;
 
-    @Column(name = "psd_key")
+    @Column(name = "sd_key")
     private String key;
 
-    @Column(name = "psd_value")
+    @Column(name = "sd_value")
     private String value;
 
     public int getId() {
@@ -31,12 +31,12 @@ public class TProfessionSkillData {
         this.id = id;
     }
 
-    public TProfessionSkill getSkill() {
+    public TSkill getSkill() {
 
         return skill;
     }
 
-    public void setSkill(TProfessionSkill skill) {
+    public void setSkill(TSkill skill) {
 
         this.skill = skill;
     }

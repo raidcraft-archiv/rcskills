@@ -1,4 +1,4 @@
-package de.raidcraft.skills.tables.persistence;
+package de.raidcraft.skills.tables;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

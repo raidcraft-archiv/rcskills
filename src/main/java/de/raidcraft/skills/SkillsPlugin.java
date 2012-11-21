@@ -18,11 +18,7 @@ import de.raidcraft.skills.hero.HeroManager;
 import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.professions.ProfessionManager;
 import de.raidcraft.skills.skills.SkillManager;
-import de.raidcraft.skills.tables.persistence.*;
-import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
-import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
-import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
-import de.raidcraft.skills.tables.skills.SkillsTable;
+import de.raidcraft.skills.tables.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -48,11 +44,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
         this.professionConfig = new ProfessionConfig(this);
-        // lets register the database
-        registerTable(SkillsTable.class, new SkillsTable());
-        registerTable(PlayerSkillsTable.class, new PlayerSkillsTable());
-        registerTable(PlayerSkillsLevelTable.class, new PlayerSkillsLevelTable());
-        registerTable(PermissionSkillsTable.class, new PermissionSkillsTable());
         // register our events
         registerEvents(this);
         // the skill manager takes care of all skills currently loaded

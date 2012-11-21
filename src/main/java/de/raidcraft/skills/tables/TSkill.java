@@ -1,4 +1,6 @@
-package de.raidcraft.skills.tables.persistence;
+package de.raidcraft.skills.tables;
+
+import com.avaje.ebean.validation.NotNull;
 
 import javax.persistence.*;
 import java.util.List;
@@ -7,46 +9,43 @@ import java.util.List;
  * @author Silthus
  */
 @Entity
-@Table(name = "s_profession_skills")
-public class TProfessionSkill {
+@Table(name = "s_skills")
+public class TSkill {
 
     @Id
     private int id;
 
+    // some relation ships
     @OneToMany(cascade = CascadeType.ALL)
-    private List<TProfessionSkillData> skillData;
+    private List<TSkillData> skillData;
 
-    @ManyToOne
-    private TProfession profession;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<TProfessionSkill> professionSkills;
 
-    @ManyToOne
-    private TSkill skill;
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL)
+    private List<TSkillParents> parents;
 
+    @NotNull
+    @Column(unique = true)
+    private String name;
+    private String friendlyName;
+    private String description;
+    @Column(name = "s_usage")
+    private String usage;
     private int manaCost;
-
     private double manaLevelModifier;
-
     private int staminaCost;
-
     private double staminaLevelModifier;
-
     private int healthCost;
-
     private double healthLevelModifier;
-
     private int requiredLevel;
-
     private int damage;
-
     private double damageLevelModifier;
-
     private double castTime;
-
     private double castTimeLevelModifier;
-
     private double duration;
-
     private double durationLevelModifier;
+
 
     public int getId() {
 
@@ -58,34 +57,74 @@ public class TProfessionSkill {
         this.id = id;
     }
 
-    public List<TProfessionSkillData> getSkillData() {
+    public List<TSkillData> getSkillData() {
 
         return skillData;
     }
 
-    public void setSkillData(List<TProfessionSkillData> skillData) {
+    public void setSkillData(List<TSkillData> skillData) {
 
         this.skillData = skillData;
     }
 
-    public TProfession getProfession() {
+    public List<TProfessionSkill> getProfessionSkills() {
 
-        return profession;
+        return professionSkills;
     }
 
-    public void setProfession(TProfession profession) {
+    public void setProfessionSkills(List<TProfessionSkill> professionSkills) {
 
-        this.profession = profession;
+        this.professionSkills = professionSkills;
     }
 
-    public TSkill getSkill() {
+    public String getName() {
 
-        return skill;
+        return name;
     }
 
-    public void setSkill(TSkill skill) {
+    public void setName(String name) {
 
-        this.skill = skill;
+        this.name = name;
+    }
+
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+
+        this.friendlyName = friendlyName;
+    }
+
+    public String getDescription() {
+
+        return description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
+
+    public String getUsage() {
+
+        return usage;
+    }
+
+    public List<TSkillParents> getParents() {
+
+        return parents;
+    }
+
+    public void setParents(List<TSkillParents> parents) {
+
+        this.parents = parents;
+    }
+
+    public void setUsage(String usage) {
+
+        this.usage = usage;
     }
 
     public int getManaCost() {
