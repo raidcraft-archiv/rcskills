@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.tables.TProfessionSkill;
 
 /**
  * @author Silthus
@@ -12,9 +12,9 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     private final Hero hero;
     private Level<LevelableSkill> level;
 
-    public AbstractLevelableSkill(Hero hero, SkillData skillData) {
+    public AbstractLevelableSkill(Hero hero, TProfessionSkill data) {
 
-        super(skillData);
+        super(data.getSkill());
         this.hero = hero;
     }
 

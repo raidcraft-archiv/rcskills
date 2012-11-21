@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.util.DataMap;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +12,15 @@ import java.util.List;
 @Entity
 @Table(name = "s_skills")
 public class TSkill {
+
+    public DataMap getData() {
+
+        DataMap dataMap = new DataMap();
+        for (TSkillData data : getSkillData()) {
+            dataMap.put(data.getKey(), data.getValue());
+        }
+        return dataMap;
+    }
 
     @Id
     private int id;

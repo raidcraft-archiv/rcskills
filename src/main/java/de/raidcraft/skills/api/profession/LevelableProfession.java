@@ -17,5 +17,7 @@ public interface LevelableProfession extends Profession, Levelable<LevelableProf
 
     public boolean isMastered();
 
+    public boolean isSelected();
+
     public Collection<Skill> getGainedSkills();
 }

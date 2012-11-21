@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.profession;
 
-import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
@@ -10,7 +9,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public abstract class AbstractProfession implements Profession, Child<Profession> {
+public abstract class AbstractProfession implements Profession {
 
     private final int id;
     private final String name;

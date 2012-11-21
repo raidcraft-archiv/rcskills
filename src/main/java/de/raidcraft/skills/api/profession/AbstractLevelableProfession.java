@@ -16,6 +16,7 @@ public abstract class AbstractLevelableProfession extends AbstractProfession imp
     private Level<LevelableProfession> level;
     private boolean active;
     private boolean mastered;
+    private boolean selected;
     private Collection<Skill> gainedSkills;
 
     protected AbstractLevelableProfession(Hero hero, ProfessionData data) {
@@ -52,6 +53,12 @@ public abstract class AbstractLevelableProfession extends AbstractProfession imp
     public boolean isMastered() {
 
         return mastered;
+    }
+
+    @Override
+    public boolean isSelected() {
+
+        return selected;
     }
 
     @Override

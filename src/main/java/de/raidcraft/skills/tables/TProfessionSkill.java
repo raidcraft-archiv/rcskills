@@ -12,40 +12,24 @@ public class TProfessionSkill {
 
     @Id
     private int id;
-
     @OneToMany(cascade = CascadeType.ALL)
     private List<TProfessionSkillData> skillData;
-
     @ManyToOne
     private TProfession profession;
-
     @ManyToOne
     private TSkill skill;
-
     private int manaCost;
-
     private double manaLevelModifier;
-
     private int staminaCost;
-
     private double staminaLevelModifier;
-
     private int healthCost;
-
     private double healthLevelModifier;
-
     private int requiredLevel;
-
     private int damage;
-
     private double damageLevelModifier;
-
     private double castTime;
-
     private double castTimeLevelModifier;
-
     private double duration;
-
     private double durationLevelModifier;
 
     public int getId() {

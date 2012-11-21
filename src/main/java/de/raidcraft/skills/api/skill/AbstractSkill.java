@@ -1,11 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.SkillData;
-import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.tables.TSkill;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,7 +12,6 @@ import java.util.HashSet;
 public abstract class AbstractSkill implements Skill {
 
     private final int id;
-    private final Profession profession;
     private String name;
     private String friendlyName;
     private String description;
@@ -25,23 +20,15 @@ public abstract class AbstractSkill implements Skill {
     private Collection<Skill> strongParents = new HashSet<>();
     private Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(SkillData data) {
+    protected AbstractSkill(TSkill data) {
 
         this.id = data.getId();
-        this.profession = data.getProfession();
         this.name = getClass().getAnnotation(SkillInformation.class).name();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
         this.requiredLevel = data.getRequiredLevel();
-        this.usage = data.getUsage();
-        this.strongParents = data.getStrongParents();
-        this.weakParents = data.getWeakParents();
-        load(data);
-    }
-
-    @Override
-    public void load(SkillData data) {
-        // override when custom data needs to be loaded
+        this.usage = data.getUsage().split("|");
+        load(data.getData());
     }
 
     @Override
@@ -86,36 +73,9 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Profession getProfession() {
-
-        return profession;
-    }
-
-    @Override
     public String[] getUsage() {
 
         return usage;
-    }
-
-    @Override
-    public boolean hasUsePermission(Hero hero) {
-
-        return hasPermission(hero.getPlayer(),
-                "rcskills.admin",
-                "rcskills.use.*",
-                "rcskills.use." + getId(),
-                "rcskills.use." + getName().replace(" ", "_").toLowerCase());
-    }
-
-    protected boolean hasPermission(RCPlayer player, String... permissions) {
-
-        if (RaidCraft.getComponent(SkillsPlugin.class).getLocalConfiguration().allow_op && player.isOp()) return true;
-        for (String perm : permissions) {
-            if (player.hasPermission(perm)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
