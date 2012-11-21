@@ -7,7 +7,7 @@ import de.raidcraft.util.BukkitUtil;
 /**
  * @author Silthus
  */
-public class SimpleLevel<T extends LevelObject> implements Level<T> {
+public class SimpleLevel<T extends Levelable> implements Level<T> {
 
     private final T levelObject;
     private int level = 1;

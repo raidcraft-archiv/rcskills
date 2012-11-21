@@ -1,7 +1,7 @@
 package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.LevelObject;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -35,8 +35,8 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         fireball.fireTicks = 60 * getLevel().getLevel();
         fireball.incinerate = true;
         fireball.run(target);
-        if (getProfession() instanceof LevelObject) {
-            ((LevelObject) getProfession()).getLevel().addExp(2);
+        if (getProfession() instanceof Levelable) {
+            ((Levelable) getProfession()).getLevel().addExp(2);
         }
         return SkillResult.NORMAL;
     }

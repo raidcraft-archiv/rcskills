@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.level;
 /**
  * @author Silthus
  */
-public interface LevelObject<T extends LevelObject> {
+public interface Levelable<T extends Levelable> {
 
     public Level<T> getLevel();
 

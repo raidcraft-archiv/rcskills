@@ -125,7 +125,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Collection<Skill> getWeaksParents() {
+    public Collection<Skill> getWeakParents() {
 
         return weakParents;
     }
