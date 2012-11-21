@@ -18,6 +18,7 @@ import de.raidcraft.skills.hero.HeroManager;
 import de.raidcraft.skills.hero.RCHero;
 import de.raidcraft.skills.professions.ProfessionManager;
 import de.raidcraft.skills.skills.SkillManager;
+import de.raidcraft.skills.tables.persistence.*;
 import de.raidcraft.skills.tables.skills.PermissionSkillsTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsLevelTable;
 import de.raidcraft.skills.tables.skills.PlayerSkillsTable;
@@ -26,6 +27,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -63,6 +67,23 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void disable() {
 
 
+    }
+
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+
+        List<Class<?>> classes = new ArrayList<>();
+        classes.add(TPlayer.class);
+        classes.add(TPlayerProfession.class);
+        classes.add(TPlayerProfessionSkill.class);
+        classes.add(TProfession.class);
+        classes.add(TProfessionParents.class);
+        classes.add(TProfessionSkill.class);
+        classes.add(TProfessionSkillData.class);
+        classes.add(TSkill.class);
+        classes.add(TSkillData.class);
+        classes.add(TSkillParents.class);
+        return classes;
     }
 
     public SkillManager getSkillManager() {

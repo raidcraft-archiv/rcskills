@@ -1,7 +1,8 @@
+main: de.raidcraft.skills.SkillsPlugin
 name: Skills
 version: 1.0-SNAPSHOT
 description: API for creating and using custom skills.
 author: Silthus
+database: true
 website: http://www.raid-craft.de
-
-main: de.raidcraft.skills.SkillsPluginpend: [RaidCraft-API]
+depend: [RaidCraft-API]
