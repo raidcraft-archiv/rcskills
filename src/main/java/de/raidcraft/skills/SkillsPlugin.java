@@ -5,15 +5,13 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.persistance.StorageType;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.hero.HeroManager;
@@ -23,7 +21,6 @@ import de.raidcraft.skills.skills.SkillManager;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -41,7 +38,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private ProfessionManager professionManager;
     private HeroManager heroManager;
     private LocalConfiguration configuration;
-    private ProfessionConfig professionConfig;
 
     @Override
     public void enable() {
@@ -94,7 +90,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return configuration;
     }
 
-    public ProfessionConfig getProfessionConfig(Hero hero, String name) throws UnknownProfessionException {
+    public ProfessionConfig getProfessionConfig(Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
 
         return new ProfessionConfig(this, hero, name);
     }
@@ -104,9 +100,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return getHeroManager().getHero(name);
     }
 
-    public SkillData getSkillConfig(Hero hero, String name) {
+    public SkillData getSkillConfig(Hero hero, SkillInformation skillInfo, ProfessionConfig config) {
 
-        return new SkillConfig(this, hero, name);
+        return new SkillConfig(this, hero, skillInfo, config);
     }
 
     public static class LocalConfiguration extends ConfigurationBase {
@@ -133,22 +129,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        try {
-            RCPlayer player = RaidCraft.getPlayer(event.getPlayer());
-            Skill skill = player.getComponent(RCHero.class).getSkill("test");
-            player.sendMessage("SkillId: " + skill.getId());
-            player.sendMessage("Name: " + skill.getName());
-            player.sendMessage("Description: " + skill.getDescription());
-            player.sendMessage(skill.getUsage());
-            if (skill instanceof Level) {
-                Level level = (Level) skill;
-                player.sendMessage("Level: " + level.getLevel());
-                player.sendMessage("Exp: " + level.getExp() + "/" + level.getMaxExp());
-                player.sendMessage("MaxLevel: " + level.getMaxLevel());
-            }
-        } catch (UnknownSkillException e) {
-            getLogger().info(e.getMessage());
-        }
     }
 
     @EventHandler(ignoreCancelled = true)

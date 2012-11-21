@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.config.ProfessionConfig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -55,7 +56,7 @@ public final class SkillManager {
      * @param skill to load
      * @return loaded skill
      */
-    public Skill loadSkill(Hero hero, String skill) throws UnknownSkillException {
+    public Skill loadSkill(Hero hero, String skill, ProfessionConfig config) throws UnknownSkillException {
 
         String name = hero.getName();
         if (!playerSkills.containsKey(name)) {
@@ -67,18 +68,18 @@ public final class SkillManager {
                 throw new UnknownSkillException("There is no registered Skill with the name: " + skill);
             }
             // create a new skill for the player
-            playerSkills.get(name).put(skill, loadSkill(hero, skillClasses.get(skill)));
+            playerSkills.get(name).put(skill, loadSkill(hero, skillClasses.get(skill), config));
         }
         return playerSkills.get(name).get(skill);
     }
 
-    public Skill loadSkill(Hero hero, Class<? extends Skill> clazz) throws UnknownSkillException {
+    public Skill loadSkill(Hero hero, Class<? extends Skill> clazz, ProfessionConfig config) throws UnknownSkillException {
 
         // its reflection time yay!
         try {
             Constructor<? extends Skill> constructor = clazz.getConstructor(Hero.class, SkillData.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(hero, plugin.getSkillConfig(clazz.getAnnotation(SkillInformation.class).name()));
+            return constructor.newInstance(hero, plugin.getSkillConfig(hero, clazz.getAnnotation(SkillInformation.class), config));
         } catch (NoSuchMethodException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();

@@ -1,13 +1,22 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.util.DataMap;
+
 /**
 * @author Silthus
 */
 public interface SkillData extends SkillProperties {
 
-    public abstract String getFriendlyName();
+    public int getId();
 
-    public abstract String getDescription();
+    public DataMap getData();
 
-    public abstract String[] getUsage();
+    public SkillInformation getSkillInformation();
+
+    public String getFriendlyName();
+
+    public String getDescription();
+
+    public String[] getUsage();
 }

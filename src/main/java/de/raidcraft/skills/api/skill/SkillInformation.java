@@ -16,5 +16,7 @@ public @interface SkillInformation {
 
     public String desc();
 
+    public String[] defaults() default {};
+
     public SkillType[] types();
 }

@@ -14,8 +14,20 @@ public abstract class AbstractSkill implements Skill {
     private String name;
     private String friendlyName;
     private String description;
-    private int requiredLevel;
     private String[] usage;
+    private int manaCost;
+    private double manaLevelModifier;
+    private int staminaCost;
+    private double staminaLevelModifier;
+    private int healthCost;
+    private double healthLevelModifier;
+    private int requiredLevel;
+    private int damage;
+    private double damageLevelModifier;
+    private double castTime;
+    private double castTimeLevelModifier;
+    private double duration;
+    private double durationLevelModifier;
     private Collection<Skill> strongParents = new HashSet<>();
     private Collection<Skill> weakParents = new HashSet<>();
 
@@ -59,15 +71,74 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public String[] getUsage() {
+
+        return usage;
+    }
+
+    public int getManaCost() {
+
+        return manaCost;
+    }
+
+    public double getManaLevelModifier() {
+
+        return manaLevelModifier;
+    }
+
+    public int getStaminaCost() {
+
+        return staminaCost;
+    }
+
+    public double getStaminaLevelModifier() {
+
+        return staminaLevelModifier;
+    }
+
+    public int getHealthCost() {
+
+        return healthCost;
+    }
+
+    public double getHealthLevelModifier() {
+
+        return healthLevelModifier;
+    }
+
     public int getRequiredLevel() {
 
         return requiredLevel;
     }
 
-    @Override
-    public String[] getUsage() {
+    public int getDamage() {
 
-        return usage;
+        return damage;
+    }
+
+    public double getDamageLevelModifier() {
+
+        return damageLevelModifier;
+    }
+
+    public double getCastTime() {
+
+        return castTime;
+    }
+
+    public double getCastTimeLevelModifier() {
+
+        return castTimeLevelModifier;
+    }
+
+    public double getDuration() {
+
+        return duration;
+    }
+
+    public double getDurationLevelModifier() {
+
+        return durationLevelModifier;
     }
 
     @Override

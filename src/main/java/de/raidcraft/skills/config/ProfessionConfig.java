@@ -3,6 +3,7 @@ package de.raidcraft.skills.config;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
@@ -26,7 +27,7 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
     private THeroProfession profession;
     private Set<Skill> skills;
 
-    public ProfessionConfig(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException {
+    public ProfessionConfig(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
 
         this.hero = hero;
         this.plugin = plugin;
@@ -47,11 +48,11 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
         }
 
         // then load the hero stats from the database
-        profession = Ebean.find(THeroProfession.class).where().eq("hp_name", name).eq("hp_hero_id", hero.getId()).findUnique();
+        profession = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
         if (profession == null) {
             // create a new entry
             profession = new THeroProfession();
-            profession.setHero(Ebean.find(THero.class).where().eq("h_player", hero.getName()).findUnique());
+            profession.setHero(Ebean.find(THero.class, hero.getId()));
             profession.setLevel(1);
             profession.setExp(0);
             profession.setMastered(false);
@@ -62,8 +63,14 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
         // now load the skills - when a skill does not exist in the database we will insert it
         Set<String> configSkills = getConfigurationSection("skills").getKeys(false);
         for (String skill : configSkills) {
-            this.skills.add(plugin.getSkillManager().loadSkill(this, skill));
+            this.skills.add(plugin.getSkillManager().loadSkill(hero, skill, this));
         }
+    }
+
+    @Override
+    public int getId() {
+
+        return profession.getId();
     }
 
     @Override

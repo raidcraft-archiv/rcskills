@@ -17,6 +17,7 @@ public class THeroProfession implements LevelData {
     @Column(unique = true)
     private String name;
     @ManyToOne
+    @Column(name = "hero_id")
     private THero hero;
     private int level;
     private int exp;
@@ -68,6 +69,12 @@ public class THeroProfession implements LevelData {
     public int getExp() {
 
         return exp;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return 60;
     }
 
     public void setExp(int exp) {

@@ -9,6 +9,8 @@ import java.util.Set;
  */
 public interface ProfessionData {
 
+    public int getId();
+
     public String getName();
 
     public String getFriendlyName();
