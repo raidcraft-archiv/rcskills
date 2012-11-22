@@ -12,6 +12,8 @@ public interface SkillProperties {
 
     public SkillInformation getInformation();
 
+    public String getName();
+
     public String getFriendlyName();
 
     public String getDescription();

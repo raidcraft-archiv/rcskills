@@ -75,45 +75,9 @@ public abstract class AbstractSkill implements Skill {
     /////////////////////////////////////////////////////////////////*/
 
     @Override
-    public int getId() {
-
-        return getProperties().getId();
-    }
-
-    @Override
-    public String getFriendlyName() {
-
-        return getProperties().getFriendlyName();
-    }
-
-    @Override
-    public String[] getUsage() {
-
-        return getProperties().getUsage();
-    }
-
-    @Override
-    public SkillType[] getSkillTypes() {
-
-        return getProperties().getSkillTypes();
-    }
-
-    @Override
     public Hero getHero() {
 
         return hero;
-    }
-
-    @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public String getDescription() {
-
-        return description;
     }
 
     @Override
@@ -130,7 +94,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public String getDescription(Hero hero) {
 
-        return getDescription();
+        return getProperties().getDescription();
     }
 
     @Override
@@ -190,14 +154,14 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public String toString() {
 
-        return "[S-" + getClass().getName() + "]" + getName();
+        return "[S" + getProperties().getId() + "-" + getClass().getName() + "]" + getProperties().getName();
     }
 
     @Override
     public boolean equals(Object obj) {
 
         return obj instanceof Skill
-                && ((Skill) obj).getName().equalsIgnoreCase(getName())
+                && ((Skill) obj).getProperties().getName().equalsIgnoreCase(getProperties().getName())
                 && ((Skill) obj).getHero().equals(getHero());
     }
 

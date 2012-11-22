@@ -1,9 +1,12 @@
 package de.raidcraft.skills.api.profession;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.tables.THeroProfession;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,11 +18,8 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
-    private final int id;
+    private final ProfessionProperties properties;
     private final Hero hero;
-    private final String name;
-    private final String friendlyName;
-    private final String description;
     private boolean active;
     private boolean mastered;
     // maps skills with the minimal required level
@@ -33,16 +33,12 @@ public abstract class AbstractProfession implements Profession {
 
     protected AbstractProfession(Hero hero, ProfessionData data) {
 
-        this.id = data.getId();
+        this.properties = data;
         this.hero = hero;
-        this.name = data.getName();
-        this.friendlyName = data.getFriendlyName();
-        this.description = data.getDescription();
         this.skills = data.getSkills();
         this.active = data.isActive();
         this.mastered = data.isMastered();
         loadSkills();
-        attachLevel(new ProfessionLevel(this, data));
     }
 
     private void loadSkills() {
@@ -55,9 +51,9 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public int getId() {
+    public ProfessionProperties getProperties() {
 
-        return id;
+        return properties;
     }
 
     @Override
@@ -67,27 +63,9 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public String getFriendlyName() {
-
-        return friendlyName;
-    }
-
-    @Override
     public String getTag() {
 
-        return friendlyName.toUpperCase().substring(0, 2).trim();
-    }
-
-    @Override
-    public String getDescription() {
-
-        return description;
+        return getProperties().getName().toUpperCase().substring(0, 2).trim();
     }
 
     @Override
@@ -124,6 +102,25 @@ public abstract class AbstractProfession implements Profession {
     public void attachLevel(Level<Profession> level) {
 
         this.level = level;
+    }
+
+    @Override
+    public void increaseLevel(Level<Profession> level) {
+        //TODO: implement
+    }
+
+    @Override
+    public void decreaseLevel(Level<Profession> level) {
+        //TODO: implement
+    }
+
+    @Override
+    public final void saveLevelProgress(Level<Profession> level) {
+
+        THeroProfession profession = Ebean.find(THeroProfession.class, getProperties());
+        profession.setLevel(level.getLevel());
+        profession.setExp(level.getExp());
+        Ebean.save(profession);
     }
 
     /*//////////////////////////////////////////////////////
@@ -169,14 +166,14 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public String toString() {
 
-        return "[P-" + getClass().getName() + "]" + getName();
+        return "[P" + getProperties().getId() + "-" + getClass().getName() + "]" + getProperties().getName();
     }
 
     @Override
     public boolean equals(Object obj) {
 
         if (obj instanceof Profession) {
-            return ((Profession) obj).getName().equalsIgnoreCase(getName())
+            return ((Profession) obj).getProperties().getName().equalsIgnoreCase(getProperties().getName())
                     && getHero().equals(((Profession) obj).getHero());
         }
         return false;

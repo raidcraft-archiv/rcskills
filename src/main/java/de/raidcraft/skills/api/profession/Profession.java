@@ -12,11 +12,17 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Profession extends Parent, Child<Profession>, Levelable<Profession>, ProfessionProperties {
+public interface Profession extends Parent, Child<Profession>, Levelable<Profession> {
 
     public Hero getHero();
 
     public String getTag();
+
+    public boolean isActive();
+
+    public boolean isMastered();
+
+    public ProfessionProperties getProperties();
 
     public Set<Skill> getSkills();
 

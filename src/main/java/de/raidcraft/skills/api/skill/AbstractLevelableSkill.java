@@ -31,6 +31,30 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public double getTotalDamage() {
+
+        return super.getTotalDamage() + (getProperties().getSkillLevelDamageModifier() * getLevel().getLevel());
+    }
+
+    @Override
+    public double getTotalManaCost() {
+
+        return super.getTotalManaCost() + (getProperties().getSkillLevelManaCostModifier() * getLevel().getLevel());
+    }
+
+    @Override
+    public double getTotalStaminaCost() {
+
+        return super.getTotalStaminaCost() + (getProperties().getSkillLevelStaminaCostModifier() * getLevel().getLevel());
+    }
+
+    @Override
+    public double getTotalHealthCost() {
+
+        return super.getTotalHealthCost() + (getProperties().getSkillLevelHealthCostModifier() * getLevel().getLevel());
+    }
+
+    @Override
     public boolean isMastered() {
 
         return getLevel().getMaxLevel() == getLevel().getLevel();

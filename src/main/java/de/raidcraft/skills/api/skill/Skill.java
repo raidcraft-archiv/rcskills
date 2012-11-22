@@ -15,18 +15,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public void load(DataMap data);
 
-    public int getId();
-
-    public String getName();
-
-    public String getFriendlyName();
-
-    public String getDescription();
-
-    public String[] getUsage();
-
-    public SkillType[] getSkillTypes();
-
     public Hero getHero();
 
     public String getDescription(Hero hero);
