@@ -11,17 +11,29 @@ import de.raidcraft.util.DataMap;
 /**
  * @author Silthus
  */
-public interface Skill extends Parent, Child<Skill>, Comparable<Skill>, SkillProperties {
+public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public void load(DataMap data);
 
+    public int getId();
+
     public String getName();
+
+    public String getFriendlyName();
+
+    public String getDescription();
+
+    public String[] getUsage();
+
+    public SkillType[] getSkillTypes();
 
     public Hero getHero();
 
     public String getDescription(Hero hero);
 
     public boolean isActive();
+
+    public boolean isUnlocked();
 
     public double getTotalDamage();
 
@@ -30,6 +42,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill>, SkillPro
     public double getTotalStaminaCost();
 
     public double getTotalHealthCost();
+
+    public SkillProperties getProperties();
 
     public Profession getProfession() throws UnknownProfessionException;
 }

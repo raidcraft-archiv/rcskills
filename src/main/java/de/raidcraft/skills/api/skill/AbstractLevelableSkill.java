@@ -1,8 +1,10 @@
 package de.raidcraft.skills.api.skill;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.tables.THeroSkill;
 
 /**
  * @author Silthus
@@ -38,6 +40,27 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public boolean isUnlocked() {
 
         return super.isUnlocked() && getLevel().getLevel() > 0;
+    }
+
+    @Override
+    public void decreaseLevel(Level<LevelableSkill> level) {
+
+        // override if needed
+    }
+
+    @Override
+    public void increaseLevel(Level<LevelableSkill> level) {
+
+        // override if needed
+    }
+
+    @Override
+    public final void saveLevelProgress(Level<LevelableSkill> level) {
+
+        THeroSkill skill = Ebean.find(THeroSkill.class, getProperties().getId());
+        skill.setLevel(level.getLevel());
+        skill.setExp(level.getExp());
+        Ebean.save(skill);
     }
 
     @Override

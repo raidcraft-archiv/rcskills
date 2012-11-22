@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.util.DataMap;
 
@@ -13,79 +14,55 @@ import java.util.HashSet;
  */
 public abstract class AbstractSkill implements Skill {
 
-    private final int id;
-    private final SkillInformation information;
     private final Hero hero;
+    private final SkillProperties properties;
     private final String name;
-    private final String friendlyName;
-    private final String[] usage;
-    private final SkillType[] types;
     private Profession profession;
     private String description;
-    private boolean unlocked;
-    private int manaCost;
-    private double manaLevelModifier;
-    private int staminaCost;
-    private double staminaLevelModifier;
-    private int healthCost;
-    private double healthLevelModifier;
-    private int requiredLevel;
-    private int damage;
-    private double damageLevelModifier;
-    private double castTime;
-    private double castTimeLevelModifier;
-    private double duration;
-    private double durationLevelModifier;
     private final Collection<Skill> strongParents = new HashSet<>();
     private final Collection<Skill> weakParents = new HashSet<>();
 
     protected AbstractSkill(Hero hero, SkillData data) {
 
         this.hero = hero;
-        this.id = data.getId();
-        this.information = data.getInformation();
         this.profession = data.getProfession();
-        this.name = information.name();
-        this.friendlyName = data.getFriendlyName();
+        this.properties = data;
+        this.name = data.getInformation().name();
         this.description = data.getDescription();
-        this.usage = data.getUsage();
-        this.types = data.getSkillTypes();
-        this.unlocked = data.isUnlocked();
-        this.manaCost = data.getManaCost();
-        this.manaLevelModifier = data.getManaLevelModifier();
-        this.staminaCost = data.getStaminaCost();
-        this.staminaLevelModifier = data.getStaminaLevelModifier();
-        this.healthCost = data.getHealthCost();
-        this.healthLevelModifier = data.getHealthLevelModifier();
-        this.damage = data.getDamage();
-        this.damageLevelModifier = data.getDamageLevelModifier();
-        this.castTime = data.getCastTime();
-        this.castTimeLevelModifier = data.getCastTimeLevelModifier();
-        this.duration = data.getDuration();
-        this.durationLevelModifier = data.getDurationLevelModifier();
-        this.requiredLevel = data.getRequiredLevel();
+
         load(data.getData());
     }
 
     @Override
     public double getTotalDamage() {
 
-        return getDamage() + (getDamageLevelModifier() * getProfession().getLevel().getLevel());
+        return properties.getDamage()
+                + (properties.getDamageLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getProfLevelDamageModifier() * profession.getLevel().getLevel());
     }
 
     @Override
     public double getTotalManaCost() {
-        //TODO: implement
+
+        return properties.getManaCost()
+                + (properties.getManaLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getProfLevelManaCostModifier() * profession.getLevel().getLevel());
     }
 
     @Override
     public double getTotalStaminaCost() {
-        //TODO: implement
+
+        return properties.getStaminaCost()
+                + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getProfLevelStaminaCostModifier() * profession.getLevel().getLevel());
     }
 
     @Override
     public double getTotalHealthCost() {
-        //TODO: implement
+
+        return properties.getHealthCost()
+                + (properties.getHealthLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getProfLevelHealthCostModifier() * profession.getLevel().getLevel());
     }
 
     @Override
@@ -100,19 +77,25 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getId() {
 
-        return id;
+        return getProperties().getId();
     }
 
     @Override
-    public SkillInformation getInformation() {
+    public String getFriendlyName() {
 
-        return information;
+        return getProperties().getFriendlyName();
+    }
+
+    @Override
+    public String[] getUsage() {
+
+        return getProperties().getUsage();
     }
 
     @Override
     public SkillType[] getSkillTypes() {
 
-        return types;
+        return getProperties().getSkillTypes();
     }
 
     @Override
@@ -128,9 +111,15 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public String getFriendlyName() {
+    public String getDescription() {
 
-        return friendlyName;
+        return description;
+    }
+
+    @Override
+    public SkillProperties getProperties() {
+
+        return properties;
     }
 
     protected void setDescription(String description) {
@@ -139,21 +128,9 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public String getDescription() {
-
-        return description;
-    }
-
-    @Override
     public String getDescription(Hero hero) {
 
         return getDescription();
-    }
-
-    @Override
-    public String[] getUsage() {
-
-        return usage;
     }
 
     @Override
@@ -165,91 +142,13 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public boolean isUnlocked() {
 
-        return unlocked;
+        return getProperties().isUnlocked();
     }
 
     @Override
     public Profession getProfession() {
 
         return profession;
-    }
-
-    @Override
-    public int getManaCost() {
-
-        return manaCost;
-    }
-
-    @Override
-    public double getManaLevelModifier() {
-
-        return manaLevelModifier;
-    }
-
-    @Override
-    public int getStaminaCost() {
-
-        return staminaCost;
-    }
-
-    @Override
-    public double getStaminaLevelModifier() {
-
-        return staminaLevelModifier;
-    }
-
-    @Override
-    public int getHealthCost() {
-
-        return healthCost;
-    }
-
-    @Override
-    public double getHealthLevelModifier() {
-
-        return healthLevelModifier;
-    }
-
-    @Override
-    public int getRequiredLevel() {
-
-        return requiredLevel;
-    }
-
-    @Override
-    public int getDamage() {
-
-        return damage;
-    }
-
-    @Override
-    public double getDamageLevelModifier() {
-
-        return damageLevelModifier;
-    }
-
-    @Override
-    public double getCastTime() {
-
-        return castTime;
-    }
-
-    @Override
-    public double getCastTimeLevelModifier() {
-
-        return castTimeLevelModifier;
-    }
-
-    @Override
-    public double getDuration() {
-
-        return duration;
-    }
-
-    @Override
-    public double getDurationLevelModifier() {
-
-        return durationLevelModifier;
     }
 
     @Override
@@ -305,8 +204,8 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int compareTo(Skill o) {
 
-        if (o.getRequiredLevel() == getRequiredLevel()) return 0;
-        if (getRequiredLevel() > o.getRequiredLevel()) return 1;
+        if (getProperties().getRequiredLevel() > o.getProperties().getRequiredLevel()) return 1;
+        if (getProperties().getRequiredLevel() == o.getProperties().getRequiredLevel()) return 0;
         return -1;
     }
 }
