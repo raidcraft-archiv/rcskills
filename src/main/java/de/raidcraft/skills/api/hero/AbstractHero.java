@@ -25,6 +25,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
     private final int id;
     private Level<Hero> level;
+    private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
     // this just tells the client what to display in the experience bar and so on
@@ -35,12 +36,15 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         super(data.getName());
 
         this.id = data.getId();
+        this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
         loadSkills();
 
         attachLevel(new HeroLevel(this, data.getLevelData()));
-        this.selectedProfession = professions.get(data.getSelectedProfession().getName());
+        if (professions.size() > 0 && data.getSelectedProfession() != null) {
+            this.selectedProfession = professions.get(data.getSelectedProfession().getName());
+        }
     }
 
     private void loadProfessions(List<String> professionNames) {
@@ -49,7 +53,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         for (String professionName : professionNames) {
             try {
                 Profession profession = manager.getProfession(this, professionName);
-                professions.put(profession.getName(), profession);
+                professions.put(profession.getProperties().getName().toLowerCase(), profession);
             } catch (UnknownSkillException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
                 e.printStackTrace();
@@ -66,7 +70,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
             for (Skill skill : profession.getSkills()) {
-                skills.put(skill.getName(), skill);
+                skills.put(skill.getProperties().getName().toLowerCase(), skill);
             }
         }
     }
@@ -120,7 +124,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public boolean hasSkill(Skill skill) {
 
-        return hasSkill(skill.getName());
+        return hasSkill(skill.getProperties().getName().toLowerCase());
     }
 
     public Skill getSkill(String id) throws UnknownSkillException {
@@ -173,6 +177,34 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
+    public int getMaxLevel() {
+
+        return maxLevel;
+    }
+
+    @Override
+    public void increaseLevel(Level<Hero> level) {
+
+        // override if needed
+    }
+
+    @Override
+    public void decreaseLevel(Level<Hero> level) {
+
+        // override if needed
+    }
+
+    @Override
+    public void saveLevelProgress(Level<Hero> level) {
+
+        THero heroTable = Ebean.find(THero.class, getId());
+        heroTable.setExp(getLevel().getExp());
+        heroTable.setLevel(getLevel().getLevel());
+        // TODO: also save skills etc
+        Ebean.save(heroTable);
+    }
+
+    @Override
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException {
 
         id = id.toLowerCase();
@@ -196,6 +228,6 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public boolean hasProfession(Profession profession) {
 
-        return hasProfession(profession.getName());
+        return hasProfession(profession.getProperties().getName().toLowerCase());
     }
 }

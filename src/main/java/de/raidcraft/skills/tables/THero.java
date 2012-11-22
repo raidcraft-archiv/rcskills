@@ -1,6 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 
@@ -36,8 +38,10 @@ public class THero implements LevelData, HeroData {
     public List<String> getProfessionNames() {
 
         ArrayList<String> strings = new ArrayList<>();
-        for (THeroProfession profession : getProfessions()) {
-            strings.add(profession.getName());
+        if (getProfessions() != null) {
+            for (THeroProfession profession : getProfessions()) {
+                strings.add(profession.getName());
+            }
         }
         return strings;
     }
@@ -46,8 +50,10 @@ public class THero implements LevelData, HeroData {
     public List<String> getSkillNames() {
 
         ArrayList<String> strings = new ArrayList<>();
-        for (THeroSkill skill : getSkills()) {
-            strings.add(skill.getName());
+        if (getSkills() != null) {
+            for (THeroSkill skill : getSkills()) {
+                strings.add(skill.getName());
+            }
         }
         return strings;
     }
@@ -61,6 +67,12 @@ public class THero implements LevelData, HeroData {
     public String getName() {
 
         return player;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().max_player_level;
     }
 
     public void setId(int id) {
@@ -81,12 +93,6 @@ public class THero implements LevelData, HeroData {
     public int getExp() {
 
         return exp;
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        throw new UnsupportedOperationException();
     }
 
     public void setExp(int exp) {

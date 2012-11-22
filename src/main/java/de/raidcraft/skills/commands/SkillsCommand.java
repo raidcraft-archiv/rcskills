@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public class SkillsCommands {
+public class SkillsCommand {
 
     private final SkillsPlugin plugin;
 
-    public SkillsCommands(SkillsPlugin plugin) {
+    public SkillsCommand(SkillsPlugin plugin) {
 
         this.plugin = plugin;
     }
@@ -58,6 +58,9 @@ public class SkillsCommands {
         } else {
             profession = hero.getSelectedProfession();
         }
+        if (profession == null) {
+            throw new CommandException("Du hast noch keinen Beruf oder Klasse gewählt.");
+        }
         // lets get the skills the sender wants to have displayed
         skills.addAll(profession.getSkills());
         if (args.hasFlag('a')) {
@@ -70,20 +73,20 @@ public class SkillsCommands {
         // lets sort them by their required level
         Collections.sort(skills);
         // lets list all skills
-        new PaginatedResult<Skill>("[Prof:Level] -   Name    -   Beschreibung   | " + ChatColor.AQUA + profession.getFriendlyName()) {
+        new PaginatedResult<Skill>("[Prof:Level] -   Name    -   Beschreibung   | " + ChatColor.AQUA + profession.getProperties().getFriendlyName()) {
 
             @Override
             public String format(Skill skill) {
 
                 StringBuilder sb = new StringBuilder();
 
-                int level = skill.getRequiredLevel();
+                int level = skill.getProperties().getRequiredLevel();
 
                 sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
                         .append(profession.getTag()).append(":")
                         .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
-                sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getFriendlyName());
+                sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
                 sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription(hero));
                 return sb.toString();
             }

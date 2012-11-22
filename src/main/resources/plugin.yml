@@ -4,5 +4,4 @@ version: 1.0-SNAPSHOT
 description: API for creating and using custom skills.
 author: Silthus
 website: http://www.raid-craft.de
-database: true
 depend: [RaidCraft-API]

@@ -12,6 +12,8 @@ public interface SkillProperties {
 
     public SkillInformation getInformation();
 
+    public int getMaxLevel();
+
     public String getName();
 
     public String getFriendlyName();

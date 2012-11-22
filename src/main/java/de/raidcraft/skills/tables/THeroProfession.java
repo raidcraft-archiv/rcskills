@@ -56,9 +56,9 @@ public class THeroProfession implements LevelData {
         return hero;
     }
 
-    public void setHero(THero hero) {
+    public void setHero(THero heroTable) {
 
-        this.hero = hero;
+        this.hero = heroTable;
     }
 
     public int getLevel() {
@@ -74,12 +74,6 @@ public class THeroProfession implements LevelData {
     public int getExp() {
 
         return exp;
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        throw new UnsupportedOperationException();
     }
 
     public void setExp(int exp) {

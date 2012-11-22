@@ -6,6 +6,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionsSkill;
 import de.raidcraft.skills.tables.THero;
@@ -36,8 +37,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.configuration = configure(new LocalConfiguration(this));
         // register our events
         registerEvents(this);
-        // load the database
-        loadDatabase();
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         // register our inhouse skills
@@ -47,6 +46,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);
+        // and commands gogogo
+        registerCommands(SkillsCommand.class);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }

@@ -25,7 +25,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         }
         this.level = data.getLevel();
         this.exp = data.getExp();
-        this.maxLevel = data.getMaxLevel();
+        this.maxLevel = levelObject.getMaxLevel();
         calculateMaxExp();
     }
 

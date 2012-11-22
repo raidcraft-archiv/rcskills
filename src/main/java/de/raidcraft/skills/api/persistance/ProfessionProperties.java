@@ -21,5 +21,7 @@ public interface ProfessionProperties {
 
     public boolean isMastered();
 
+    public int getMaxLevel();
+
     public Set<Skill> getSkills();
 }

@@ -81,6 +81,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public int getMaxLevel() {
+
+        return getProperties().getMaxLevel();
+    }
+
+    @Override
     public Set<Skill> getSkills() {
 
         return skills;

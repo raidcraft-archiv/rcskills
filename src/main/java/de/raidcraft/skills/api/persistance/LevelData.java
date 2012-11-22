@@ -8,6 +8,4 @@ public interface LevelData {
     public int getLevel();
 
     public int getExp();
-
-    public int getMaxLevel();
 }

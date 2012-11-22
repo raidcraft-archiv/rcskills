@@ -33,7 +33,16 @@ public final class HeroManager {
             Player player = Bukkit.getPlayer(name);
             if (player != null) name = player.getName();
 
-            hero = new SimpleHero(Ebean.find(THero.class).where().eq("player", name).findUnique());
+            THero heroTable = Ebean.find(THero.class).where().eq("player", name).findUnique();
+            if (heroTable == null) {
+                // create a new entry
+                heroTable = new THero();
+                heroTable.setPlayer(name);
+                heroTable.setExp(0);
+                heroTable.setLevel(0);
+                Ebean.save(heroTable);
+            }
+            hero = new SimpleHero(heroTable);
             heroes.put(hero.getUserName(), hero);
         } else {
             hero = heroes.get(name);
