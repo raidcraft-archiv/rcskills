@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.util.DataMap;
 
@@ -12,5 +13,5 @@ public interface SkillData extends SkillProperties {
 
     public DataMap getData();
 
-    public String getProfession();
+    public Profession getProfession();
 }

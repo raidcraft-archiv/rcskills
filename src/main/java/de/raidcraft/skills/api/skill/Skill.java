@@ -27,5 +27,9 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill>, SkillPro
 
     public String getDescription(Hero hero);
 
+    public boolean isActive();
+
+    public boolean isUnlocked();
+
     public Profession getProfession() throws UnknownProfessionException;
 }

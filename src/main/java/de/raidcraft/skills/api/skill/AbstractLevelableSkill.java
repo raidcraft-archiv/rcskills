@@ -29,10 +29,21 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public boolean isMastered() {
+
+        return getLevel().getMaxLevel() == getLevel().getLevel();
+    }
+
+    @Override
+    public boolean isUnlocked() {
+
+        return super.isUnlocked() && getLevel().getLevel() > 0;
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
         return obj instanceof LevelableSkill
-                && super.equals(obj)
-                && ((LevelableSkill) obj).getHero().getName().equalsIgnoreCase(getHero().getName());
+                && super.equals(obj);
     }
 }

@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ public abstract class AbstractProfession implements Profession {
     private boolean mastered;
     // maps skills with the minimal required level
     private final Set<Skill> skills;
+    private final Set<Skill> unlockedSkills = new HashSet<>();
     // parent child collections
     private final Collection<Profession> strongParents = new LinkedHashSet<>();
     private final Collection<Profession> weakParents = new LinkedHashSet<>();
@@ -39,7 +41,17 @@ public abstract class AbstractProfession implements Profession {
         this.skills = data.getSkills();
         this.active = data.isActive();
         this.mastered = data.isMastered();
+        loadSkills();
         attachLevel(new ProfessionLevel(this, data));
+    }
+
+    private void loadSkills() {
+
+        for (Skill skill : skills) {
+            if (skill.isActive() && skill.isUnlocked()) {
+                unlockedSkills.add(skill);
+            }
+        }
     }
 
     @Override
@@ -94,6 +106,12 @@ public abstract class AbstractProfession implements Profession {
     public Set<Skill> getSkills() {
 
         return skills;
+    }
+
+    @Override
+    public Set<Skill> getUnlockedSkills() {
+
+        return unlockedSkills;
     }
 
     @Override
@@ -159,7 +177,7 @@ public abstract class AbstractProfession implements Profession {
 
         if (obj instanceof Profession) {
             return ((Profession) obj).getName().equalsIgnoreCase(getName())
-                    && getHero().getName().equalsIgnoreCase(((Profession) obj).getHero().getName());
+                    && getHero().equals(((Profession) obj).getHero());
         }
         return false;
     }

@@ -1,9 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.Skill;
-
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -14,9 +11,11 @@ public interface HeroData {
 
     public String getName();
 
-    public Set<Skill> getSkills();
+    public String getSelectedProfession();
 
-    public Set<Profession> getProfessions();
+    public List<String> getProfessionNames();
 
-    public Profession getSelectedProfession();
+    public List<String> getSkillNames();
+
+    public LevelData getLevelData();
 }

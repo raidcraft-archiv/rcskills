@@ -1,11 +1,9 @@
 package de.raidcraft.skills.skills.magic;
 
-import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.LevelData;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.*;
 import de.raidcraft.spells.fire.RCFireball;
@@ -22,7 +20,7 @@ import org.bukkit.entity.LivingEntity;
 public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
 
 
-    public Fireball(Hero hero, SkillData skillData, LevelData levelData) {
+    public Fireball(Hero hero, SkillData skillData) {
 
         super(hero, skillData);
     }
@@ -35,9 +33,7 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         fireball.fireTicks = 60 * getLevel().getLevel();
         fireball.incinerate = true;
         fireball.run(target);
-        if (getProfession() instanceof Levelable) {
-            ((Levelable) getProfession()).getLevel().addExp(2);
-        }
+        getProfession().getLevel().addExp(2);
         return SkillResult.NORMAL;
     }
 

@@ -1,13 +1,10 @@
 package de.raidcraft.skills.professions;
 
-import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.SimpleLevel;
-import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
 
 /**
  * Represents a profession instantiated for one {@link Hero}.
@@ -16,15 +13,13 @@ import de.raidcraft.skills.tables.professions.PlayerProfessionsTable;
  *
  * @author Silthus
  */
-public class RCProfession extends AbstractLevelableProfession {
+public class SimpleProfession extends AbstractProfession {
 
 
-    protected RCProfession(Hero hero, ProfessionData data) throws UnknownPlayerProfessionException {
+    public SimpleProfession(Hero hero, ProfessionData data) {
 
         super(hero, data);
-        // attach a new level object that loads from the db
-        attachLevel(new SimpleLevel<LevelableProfession>(this,
-                Database.getTable(PlayerProfessionsTable.class).getLevelData(hero, data.getId())));
+        attachLevel(new ProfessionLevel(this, data.getLevelData()));
     }
 
     @Override

@@ -1,8 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -20,9 +17,10 @@ public abstract class AbstractSkill implements Skill {
     private final Hero hero;
     private final String name;
     private final String friendlyName;
-    private String profession;
+    private Profession profession;
     private String description;
     private final String[] usage;
+    private boolean unlocked;
     private int manaCost;
     private double manaLevelModifier;
     private int staminaCost;
@@ -117,9 +115,21 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Profession getProfession() throws UnknownProfessionException {
+    public boolean isActive() {
 
-        return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getHero(), profession);
+        return getProfession().isActive();
+    }
+
+    @Override
+    public boolean isUnlocked() {
+
+        return unlocked;
+    }
+
+    @Override
+    public Profession getProfession() {
+
+        return profession;
     }
 
     @Override
@@ -246,7 +256,7 @@ public abstract class AbstractSkill implements Skill {
 
         return obj instanceof Skill
                 && ((Skill) obj).getName().equalsIgnoreCase(getName())
-                && ((Skill) obj).getHero().getName().equalsIgnoreCase(getHero().getName());
+                && ((Skill) obj).getHero().equals(getHero());
     }
 
     @Override

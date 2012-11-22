@@ -1,15 +1,18 @@
-package de.raidcraft.skills.skills;
+package de.raidcraft.skills;
 
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.config.ProfessionConfig;
+import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroSkill;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +22,6 @@ import java.util.Map;
 public final class SkillManager {
 
     private final SkillsPlugin plugin;
-    private final SkillFactory factory;
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
@@ -27,7 +29,6 @@ public final class SkillManager {
     public SkillManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
-        this.factory = new SkillFactory(plugin);
     }
 
     /**
@@ -49,6 +50,17 @@ public final class SkillManager {
 
     }
 
+    public Skill getSkill(Hero hero, String skill) throws UnknownSkillException {
+
+        if (!playerSkills.containsKey(hero.getUserName())) {
+            playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
+        }
+        if (!playerSkills.get(hero.getUserName()).containsKey(skill) && !hero.hasSkill(skill)) {
+            throw new UnknownSkillException("Der Spieler " + hero.getUserName() + " hat den Skill " + skill + " nicht.");
+        }
+        return playerSkills.get(hero.getUserName()).get(skill);
+    }
+
     /**
      * Loads the given skill for the given hero from cache or creates a new instance.
      *
@@ -56,7 +68,7 @@ public final class SkillManager {
      * @param skill to load
      * @return loaded skill
      */
-    public Skill loadSkill(Hero hero, String skill, ProfessionConfig config) throws UnknownSkillException {
+    public Skill loadSkill(Hero hero, String skill, ProfessionFactory factory) throws UnknownSkillException {
 
         String name = hero.getUserName();
         if (!playerSkills.containsKey(name)) {
@@ -68,18 +80,20 @@ public final class SkillManager {
                 throw new UnknownSkillException("There is no registered Skill with the name: " + skill);
             }
             // create a new skill for the player
-            playerSkills.get(name).put(skill, loadSkill(hero, skillClasses.get(skill), config));
+            Class<? extends Skill> aClass = skillClasses.get(skill);
+            playerSkills.get(name).put(skill,
+                    createSkill(hero, aClass, new SkillFactory(plugin, hero, aClass.getAnnotation(SkillInformation.class), factory)));
         }
         return playerSkills.get(name).get(skill);
     }
 
-    public Skill loadSkill(Hero hero, Class<? extends Skill> clazz, ProfessionConfig config) throws UnknownSkillException {
+    private Skill createSkill(Hero hero, Class<? extends Skill> clazz, SkillFactory factory) throws UnknownSkillException {
 
         // its reflection time yay!
         try {
             Constructor<? extends Skill> constructor = clazz.getConstructor(Hero.class, SkillData.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(hero, plugin.getSkillConfig(hero, clazz.getAnnotation(SkillInformation.class), config));
+            return constructor.newInstance(hero, factory);
         } catch (NoSuchMethodException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
@@ -96,13 +110,35 @@ public final class SkillManager {
         throw new UnknownSkillException("Error when loading skill for class: " + clazz.getCanonicalName());
     }
 
-    public Skill getSkill(Hero hero, String id) {
+    public Skill loadSkill(Hero hero, THeroSkill skill, THeroProfession profession) throws UnknownSkillException, UnknownProfessionException {
 
-        if (playerSkills.containsKey(hero.getUserName())) {
-            if (playerSkills.get(hero.getUserName()).containsKey(id)) {
-                return playerSkills.get(hero.getUserName()).get(id);
-            }
+        return loadSkill(hero, skill.getName(), new ProfessionFactory(plugin, hero, profession));
+    }
+
+    protected Skill loadSkill(Hero hero, SkillInformation information, SkillFactory skillFactory) {
+
+        if (!playerSkills.containsKey(hero.getUserName())) {
+            playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
         }
-        return loadSkill(hero, id);
+        if (playerSkills.get(hero.getUserName()).containsKey(information.name())) {
+            return playerSkills.get(hero.getUserName()).get(information.name());
+        }
+        try {
+            // create the skill
+            return createSkill(hero, skillClasses.get(information.name()), skillFactory);
+        } catch (UnknownSkillException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Collection<? extends Skill> getAllSkills() {
+
+        Collection<Skill> skills = new ArrayList<>();
+        for (Map<String, Skill> entry : playerSkills.values()) {
+            skills.addAll(entry.values());
+        }
+        return skills;
     }
 }

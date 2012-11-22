@@ -1,13 +1,15 @@
-package de.raidcraft.skills.config;
+package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.Factory;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.professions.SimpleProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -21,12 +23,58 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class ProfessionConfig extends YamlConfiguration implements ProfessionData, LevelData {
+public final class ProfessionFactory extends YamlConfiguration implements ProfessionData, LevelData, Factory<Profession> {
 
-    private THeroProfession profession;
+    private Profession profession = null;
+    private final SkillsPlugin plugin;
+    private final Hero hero;
+    private THeroProfession database;
     private Set<Skill> skills = new LinkedHashSet<>();
 
-    public ProfessionConfig(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
+    protected ProfessionFactory(SkillsPlugin plugin, Hero hero, THeroProfession database) throws UnknownProfessionException, UnknownSkillException {
+
+        this.plugin = plugin;
+        this.hero = hero;
+        loadInformation(database.getName());
+        // here we skill database loading and save the already existing entry
+        this.database = database;
+        loadSkills();
+    }
+
+    protected ProfessionFactory(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
+
+        this.plugin = plugin;
+        this.hero = hero;
+        loadInformation(name);
+        loadDatabase(name);
+        loadSkills();
+    }
+
+    public Profession create() {
+
+        if (this.profession == null) {
+            this.profession = new SimpleProfession(hero, this);
+        }
+        return this.profession;
+    }
+
+    private void loadDatabase(String name) {
+
+        // then load the hero stats from the database
+        database = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
+        if (database == null) {
+            // create a new entry
+            database = new THeroProfession();
+            database.setHero(Ebean.find(THero.class, hero.getId()));
+            database.setLevel(1);
+            database.setExp(0);
+            database.setMastered(false);
+            database.setActive(false);
+            Ebean.save(database);
+        }
+    }
+
+    private void loadInformation(String name) throws UnknownProfessionException {
 
         try {
             File file = new File(plugin.getDataFolder() + "/professions/", name + ".yml");
@@ -43,18 +91,10 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
             throw new UnknownProfessionException(e.getMessage());
         }
 
-        // then load the hero stats from the database
-        profession = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
-        if (profession == null) {
-            // create a new entry
-            profession = new THeroProfession();
-            profession.setHero(Ebean.find(THero.class, hero.getId()));
-            profession.setLevel(1);
-            profession.setExp(0);
-            profession.setMastered(false);
-            profession.setActive(false);
-            Ebean.save(profession);
-        }
+
+    }
+
+    private void loadSkills() throws UnknownSkillException {
 
         // now load the skills - when a skill does not exist in the database we will insert it
         Set<String> configSkills = getConfigurationSection("skills").getKeys(false);
@@ -66,7 +106,7 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
     @Override
     public int getId() {
 
-        return profession.getId();
+        return database.getId();
     }
 
     @Override
@@ -90,7 +130,7 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
     @Override
     public boolean isMastered() {
 
-        return profession.isMastered();
+        return database.isMastered();
     }
 
     @Override
@@ -108,13 +148,13 @@ public class ProfessionConfig extends YamlConfiguration implements ProfessionDat
     @Override
     public int getLevel() {
 
-        return profession.getLevel();
+        return database.getLevel();
     }
 
     @Override
     public int getExp() {
 
-        return profession.getExp();
+        return database.getExp();
     }
 
     @Override

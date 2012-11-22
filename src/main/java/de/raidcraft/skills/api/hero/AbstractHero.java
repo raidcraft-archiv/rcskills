@@ -4,18 +4,19 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.hero.HeroLevel;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -32,8 +33,42 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     protected AbstractHero(HeroData data) {
 
         super(data.getName());
+
         this.id = data.getId();
-        this.selectedProfession = data.getSelectedProfession();
+        // load the professions first so we have the skills already loaded
+        loadProfessions(data.getProfessionNames());
+        loadSkills();
+
+        attachLevel(new HeroLevel(this, data.getLevelData()));
+        this.selectedProfession = professions.get(data.getSelectedProfession());
+    }
+
+    private void loadProfessions(List<String> professionNames) {
+
+        ProfessionManager manager = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager();
+        for (String professionName : professionNames) {
+            try {
+                Profession profession = manager.getProfession(this, professionName);
+                professions.put(profession.getName(), profession);
+            } catch (UnknownSkillException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
+            } catch (UnknownProfessionException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadSkills() {
+
+        // this simple creates a second reference to all skills owned by the player
+        // to allow faster access to the player skills
+        for (Profession profession : professions.values()) {
+            for (Skill skill : profession.getSkills()) {
+                skills.put(skill.getName(), skill);
+            }
+        }
     }
 
     @Override
@@ -68,6 +103,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public boolean hasSkill(String id) {
 
+        id = id.toLowerCase();
         if (isOnline()) {
             return skills.containsKey(id);
         } else {
@@ -87,22 +123,35 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         return hasSkill(skill.getName());
     }
 
-    public Skill getSkill(String id) {
+    public Skill getSkill(String id) throws UnknownSkillException {
 
-        Skill skill;
-        if (skills.containsKey(id)) {
-            skill = skills.get(id);
-        } else {
-            skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getSkill(this, id);
-            skills.put(skill.getName(), skill);
+        id = id.toLowerCase();
+        if (!hasSkill(id)) {
+            throw new UnknownSkillException("Der Spieler hat keinen Skill mit der ID: " + id);
         }
-        return skill;
+        if (!skills.containsKey(id)) {
+            Skill skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getSkill(this, id);
+            skills.put(id, skill);
+        }
+        return skills.get(id);
     }
 
     @Override
     public Collection<Skill> getSkills() {
 
         return skills.values();
+    }
+
+    @Override
+    public Collection<Skill> getUnlockedSkills() {
+
+        List<Skill> skills = new ArrayList<>();
+        for (Skill skill : this.skills.values()) {
+            if (skill.isUnlocked()) {
+                skills.add(skill);
+            }
+        }
+        return skills;
     }
 
     @Override
@@ -124,8 +173,9 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public Profession getProfession(String id) {
+    public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException {
 
+        id = id.toLowerCase();
         Profession profession;
         if (professions.containsKey(id)) {
             profession = professions.get(id);
@@ -139,6 +189,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public boolean hasProfession(String id) {
 
+        id = id.toLowerCase();
         return professions.containsKey(id);
     }
 

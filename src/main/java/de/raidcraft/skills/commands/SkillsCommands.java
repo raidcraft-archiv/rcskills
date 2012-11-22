@@ -3,15 +3,16 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownPlayerProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,11 +23,11 @@ import java.util.List;
  */
 public class SkillsCommands {
 
-    private final SkillsPlugin component;
+    private final SkillsPlugin plugin;
 
-    public SkillsCommands(SkillsPlugin component) {
+    public SkillsCommands(SkillsPlugin plugin) {
 
-        this.component = component;
+        this.plugin = plugin;
     }
 
     @Command(
@@ -39,39 +40,32 @@ public class SkillsCommands {
 
         final Hero hero;
         try {
-            hero = component.getHero(sender.getName());
-        } catch (UnknownPlayerException e) {
-            throw new CommandException(e.getMessage());
+            hero = plugin.getHeroManager().getHero((Player) sender);
         } catch (UnknownProfessionException e) {
             throw new CommandException(e.getMessage());
         }
-        final LevelableProfession profession;
+        final Profession profession;
         List<Skill> skills = new ArrayList<>();
         // get the profession
         if (args.argsLength() > 0) {
             try {
-                profession = component.getProfessionManager().getPlayerProfession(args.getString(0), hero);
+                profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
             } catch (UnknownProfessionException e) {
                 throw new CommandException(e.getMessage());
-            } catch (UnknownPlayerProfessionException e) {
+            } catch (UnknownSkillException e) {
                 throw new CommandException(e.getMessage());
             }
         } else {
-            try {
-                profession = (LevelableProfession) hero.getSelectedProfession();
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                throw new CommandException("Programmierfehler wat da fuck?!");
-            }
+            profession = hero.getSelectedProfession();
         }
         // lets get the skills the sender wants to have displayed
         skills.addAll(profession.getSkills());
         if (args.hasFlag('a')) {
-            skills.addAll(component.getSkillManager().getAllSkills());
+            skills.addAll(plugin.getSkillManager().getAllSkills());
         }
         if (args.hasFlag('g')) {
             skills.removeAll(profession.getSkills());
-            skills.addAll(profession.getGainedSkills());
+            skills.addAll(profession.getUnlockedSkills());
         }
         // lets sort them by their required level
         Collections.sort(skills);

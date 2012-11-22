@@ -19,4 +19,6 @@ public interface Profession extends Parent, Child<Profession>, Levelable<Profess
     public String getTag();
 
     public Set<Skill> getSkills();
+
+    public Set<Skill> getUnlockedSkills();
 }

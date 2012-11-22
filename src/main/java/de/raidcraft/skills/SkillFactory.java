@@ -1,11 +1,14 @@
-package de.raidcraft.skills.config;
+package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.Factory;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.config.ConfigUtil;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -22,25 +25,60 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public class SkillConfig extends YamlConfiguration implements SkillData, LevelData {
+public final class SkillFactory extends YamlConfiguration implements SkillData, LevelData, Factory<Skill> {
 
     public static final String CONFIG_NAME = "skills.yml";
 
+    private Skill skill = null;
+    private final Hero hero;
     private final SkillsPlugin plugin;
     private final ConfigurationSection config;
     private final File file;
     private final SkillInformation information;
-    private THeroSkill skill;
+    private final ProfessionFactory factory;
+    private THeroSkill database;
 
-    public SkillConfig(SkillsPlugin plugin, Hero hero, SkillInformation info, ProfessionConfig config) {
+    protected SkillFactory(SkillsPlugin plugin, Hero hero, SkillInformation info, ProfessionFactory factory) {
 
         this.plugin = plugin;
+        this.hero = hero;
         this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
         this.information = info;
-        String name = info.name();
-        this.config = config.getConfigurationSection("skills." + name);
+        this.config = factory.getConfigurationSection("skills." + info.name());
+        this.factory = factory;
         // load the global skill config - values in it are overriden by the profession config
+        loadFile();
+        // lets try the database now and create a new entry if none exists
+        loadDatabase(hero, factory);
+    }
+
+    @Override
+    public Skill create() {
+
+        if (skill == null) {
+            skill = plugin.getSkillManager().loadSkill(hero, information, this);
+        }
+        return skill;
+    }
+
+    private void loadDatabase(Hero hero, ProfessionFactory factory) {
+
+        database = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("name", information.name()).findUnique();
+        if (database == null) {
+            database = new THeroSkill();
+            database.setUnlocked(false);
+            database.setExp(0);
+            database.setLevel(0);
+            database.setHero(Ebean.find(THero.class, hero.getId()));
+            database.setProfession(Ebean.find(THeroProfession.class, factory.getId()));
+            Ebean.save(database);
+        }
+    }
+
+    private void loadFile() {
+
         try {
+            String name = information.name();
             if (!file.exists()) file.createNewFile();
             // load the actual file
             load(file);
@@ -48,25 +86,13 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
             ConfigurationSection section = getConfigurationSection(name);
             if (section == null) {
                 // yes we do so lets parse the defaults and go
-                createSection(name, ConfigUtil.parseSkillDefaults(info.defaults()));
+                createSection(name, ConfigUtil.parseSkillDefaults(information.defaults()));
                 getConfigurationSection(name).set("name", name);
-                getConfigurationSection(name).set("description", info.desc());
+                getConfigurationSection(name).set("description", information.desc());
                 getConfigurationSection(name).set("usage", new ArrayList<String>());
                 getConfigurationSection(name).set("strong-parents", new ArrayList<String>());
                 getConfigurationSection(name).set("weak-parents", new ArrayList<String>());
                 save();
-            }
-            // lets try the database now and create a new entry if none exists
-            skill = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("name", name).findUnique();
-            if (skill == null) {
-                skill = new THeroSkill();
-                skill.setActive(false);
-                skill.setMastered(false);
-                skill.setExp(0);
-                skill.setLevel(0);
-                skill.setHero(Ebean.find(THero.class, hero.getId()));
-                skill.setProfession(Ebean.find(THeroProfession.class, config.getId()));
-                Ebean.save(skill);
             }
         } catch (IOException e) {
             plugin.getLogger().warning(e.getMessage());
@@ -133,7 +159,7 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
     @Override
     public int getId() {
 
-        return skill.getId();
+        return database.getId();
     }
 
     @Override
@@ -162,9 +188,9 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
     }
 
     @Override
-    public String getProfession() {
+    public Profession getProfession() {
 
-        return skill.getProfession().getName();
+        return factory.create();
     }
 
     @Override
@@ -248,13 +274,13 @@ public class SkillConfig extends YamlConfiguration implements SkillData, LevelDa
     @Override
     public int getLevel() {
 
-        return skill.getLevel();
+        return database.getLevel();
     }
 
     @Override
     public int getExp() {
 
-        return skill.getExp();
+        return database.getExp();
     }
 
     @Override

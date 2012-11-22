@@ -23,8 +23,7 @@ public class THeroSkill implements LevelData {
     private THero hero;
     private int level;
     private int exp;
-    private boolean active;
-    private boolean mastered;
+    private boolean unlocked;
 
     public int getId() {
 
@@ -92,23 +91,13 @@ public class THeroSkill implements LevelData {
         this.exp = exp;
     }
 
-    public boolean isActive() {
+    public boolean isUnlocked() {
 
-        return active;
+        return unlocked;
     }
 
-    public void setActive(boolean active) {
+    public void setUnlocked(boolean unlocked) {
 
-        this.active = active;
-    }
-
-    public boolean isMastered() {
-
-        return mastered;
-    }
-
-    public void setMastered(boolean mastered) {
-
-        this.mastered = mastered;
+        this.unlocked = unlocked;
     }
 }

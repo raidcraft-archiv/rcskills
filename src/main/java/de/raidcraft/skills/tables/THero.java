@@ -1,9 +1,11 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero")
-public class THero implements LevelData {
+public class THero implements LevelData, HeroData {
 
     @Id
     private int id;
@@ -26,9 +28,35 @@ public class THero implements LevelData {
     @OneToMany(cascade = CascadeType.ALL)
     private List<THeroSkill> skills;
 
+    @Override
+    public List<String> getProfessionNames() {
+
+        ArrayList<String> strings = new ArrayList<>();
+        for (THeroProfession profession : getProfessions()) {
+            strings.add(profession.getName());
+        }
+        return strings;
+    }
+
+    @Override
+    public List<String> getSkillNames() {
+
+        ArrayList<String> strings = new ArrayList<>();
+        for (THeroSkill skill : getSkills()) {
+            strings.add(skill.getName());
+        }
+        return strings;
+    }
+
     public int getId() {
 
         return id;
+    }
+
+    @Override
+    public String getName() {
+
+        return player;
     }
 
     public void setId(int id) {
@@ -75,6 +103,12 @@ public class THero implements LevelData {
     public String getSelectedProfession() {
 
         return selectedProfession;
+    }
+
+    @Override
+    public LevelData getLevelData() {
+
+        return this;
     }
 
     public void setSelectedProfession(String selectedProfession) {

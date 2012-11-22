@@ -7,7 +7,7 @@ import de.raidcraft.util.BukkitUtil;
 /**
  * @author Silthus
  */
-public abstract class SimpleLevel<T extends Levelable> implements Level<T> {
+public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
     private final T levelObject;
     protected int level = 1;
@@ -15,7 +15,7 @@ public abstract class SimpleLevel<T extends Levelable> implements Level<T> {
     protected int exp = 0;
     protected int maxExp;
 
-    protected SimpleLevel(T levelObject, LevelData data) {
+    protected AbstractLevel(T levelObject, LevelData data) {
 
         this.levelObject = levelObject;
         // abort in case there are no entries yet
