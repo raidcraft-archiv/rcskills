@@ -6,6 +6,8 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.skills.magic.Fireball;
+import de.raidcraft.skills.skills.misc.PermissionsSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -38,6 +40,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.skillManager = new SkillManager(this);
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);
+        // register our inhouse skills
+        registerSkills();
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
@@ -46,6 +50,13 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void disable() {
 
 
+    }
+
+    private void registerSkills() {
+
+        SkillManager m = getSkillManager();
+        m.registerSkill(Fireball.class);
+        m.registerSkill(PermissionsSkill.class);
     }
 
     @Override
