@@ -12,20 +12,24 @@ import java.util.List;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_hero")
+@Table(name = "skills_heroes")
 public class THero implements LevelData, HeroData {
 
     @Id
     private int id;
+
     @NotNull
     @Column(unique = true)
     private String player;
     private int exp;
     private int level;
-    private String selectedProfession;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne
+    private THeroProfession selectedProfession;
+
+    @OneToMany
     private List<THeroProfession> professions;
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany
     private List<THeroSkill> skills;
 
     @Override
@@ -100,7 +104,7 @@ public class THero implements LevelData, HeroData {
         this.level = level;
     }
 
-    public String getSelectedProfession() {
+    public THeroProfession getSelectedProfession() {
 
         return selectedProfession;
     }
@@ -111,7 +115,7 @@ public class THero implements LevelData, HeroData {
         return this;
     }
 
-    public void setSelectedProfession(String selectedProfession) {
+    public void setSelectedProfession(THeroProfession selectedProfession) {
 
         this.selectedProfession = selectedProfession;
     }

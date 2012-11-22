@@ -29,27 +29,38 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
 
     public static final String CONFIG_NAME = "skills.yml";
 
-    private Skill skill = null;
-    private final Hero hero;
     private final SkillsPlugin plugin;
-    private final ConfigurationSection config;
-    private final File file;
     private final SkillInformation information;
-    private final ProfessionFactory factory;
+    private final File file;
+    private Skill skill = null;
+    private Hero hero;
+    private ConfigurationSection config;
+    private ProfessionFactory factory;
     private THeroSkill database;
 
     protected SkillFactory(SkillsPlugin plugin, Hero hero, SkillInformation info, ProfessionFactory factory) {
 
-        this.plugin = plugin;
+        this(plugin, info);
         this.hero = hero;
-        this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
-        this.information = info;
         this.config = factory.getConfigurationSection("skills." + info.name());
         this.factory = factory;
-        // load the global skill config - values in it are overriden by the profession config
-        loadFile();
         // lets try the database now and create a new entry if none exists
         loadDatabase(hero, factory);
+    }
+
+    /**
+     * This only creates a fake skill and creates the defaults for it.
+     *
+     * @param plugin
+     * @param info
+     */
+    protected SkillFactory(SkillsPlugin plugin, SkillInformation info) {
+
+        this.plugin = plugin;
+        this.information = info;
+        this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
+        // load the global skill config - values in it are overriden by the profession config
+        loadFile();
     }
 
     @Override
@@ -85,13 +96,15 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
             // lets check if we need to create defaults
             ConfigurationSection section = getConfigurationSection(name);
             if (section == null) {
+                createSection(name);
+                section = getConfigurationSection(name);
                 // yes we do so lets parse the defaults and go
-                createSection(name, ConfigUtil.parseSkillDefaults(information.defaults()));
-                getConfigurationSection(name).set("name", name);
-                getConfigurationSection(name).set("description", information.desc());
-                getConfigurationSection(name).set("usage", new ArrayList<String>());
-                getConfigurationSection(name).set("strong-parents", new ArrayList<String>());
-                getConfigurationSection(name).set("weak-parents", new ArrayList<String>());
+                section.set("name", name);
+                section.set("description", information.desc());
+                section.set("usage", new ArrayList<String>());
+                section.set("strong-parents", new ArrayList<String>());
+                section.set("weak-parents", new ArrayList<String>());
+                section.createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
                 save();
             }
         } catch (IOException e) {

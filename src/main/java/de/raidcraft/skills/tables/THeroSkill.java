@@ -3,24 +3,28 @@ package de.raidcraft.skills.tables;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.skills.api.persistance.LevelData;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * @author Silthus
  */
+@Entity
+@Table(name = "skills_hero_skills")
 public class THeroSkill implements LevelData {
 
     @Id
     private int id;
+
     @NotNull
     @Column(unique = true)
     private String name;
+
     @ManyToOne
     private THeroProfession profession;
+
     @ManyToOne
     private THero hero;
+
     private int level;
     private int exp;
     private boolean unlocked;

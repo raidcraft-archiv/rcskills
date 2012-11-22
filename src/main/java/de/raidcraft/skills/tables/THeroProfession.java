@@ -9,21 +9,26 @@ import java.util.List;
 /**
  * @author Silthus
  */
+@Entity
+@Table(name = "skills_hero_professions")
 public class THeroProfession implements LevelData {
 
     @Id
     private int id;
+
     @NotNull
     @Column(unique = true)
     private String name;
+
     @ManyToOne
-    @Column(name = "hero_id")
     private THero hero;
+
     private int level;
     private int exp;
     private boolean active;
     private boolean mastered;
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany
     private List<THeroSkill> skills;
 
     public int getId() {

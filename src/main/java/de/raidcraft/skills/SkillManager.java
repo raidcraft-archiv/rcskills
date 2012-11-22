@@ -6,9 +6,11 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.loader.JarFilesSkillLoader;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public final class SkillManager {
+public final class SkillManager extends JarFilesSkillLoader {
 
     private final SkillsPlugin plugin;
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
@@ -28,7 +30,21 @@ public final class SkillManager {
 
     public SkillManager(SkillsPlugin plugin) {
 
+        super(plugin.getLogger(), new File(plugin.getDataFolder(), "/skills/"));
         this.plugin = plugin;
+
+        for (Class<? extends Skill> clazz : loadSkillClasses()) {
+            skillClasses.put(clazz.getAnnotation(SkillInformation.class).name(), clazz);
+        }
+        createDefaults();
+    }
+
+    private void createDefaults() {
+
+        // simply create a factory of every skill that will trigger the default creation
+        for (Map.Entry<String, Class<? extends Skill>> entry : skillClasses.entrySet()) {
+            new SkillFactory(plugin, entry.getValue().getAnnotation(SkillInformation.class));
+        }
     }
 
     /**
@@ -44,10 +60,6 @@ public final class SkillManager {
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + clazz.getCanonicalName());
         }
-    }
-
-    public void loadSkillClasses() {
-
     }
 
     public Skill getSkill(Hero hero, String skill) throws UnknownSkillException {

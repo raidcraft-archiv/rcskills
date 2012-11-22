@@ -36,12 +36,17 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.configuration = configure(new LocalConfiguration(this));
         // register our events
         registerEvents(this);
+        // load the database
+        loadDatabase();
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
-        this.professionManager = new ProfessionManager(this);
-        this.heroManager = new HeroManager(this);
         // register our inhouse skills
         registerSkills();
+        // and load all skills and classes
+        skillManager.loadSkillClasses();
+        // these managers can only be loaded after the skill manager
+        this.professionManager = new ProfessionManager(this);
+        this.heroManager = new HeroManager(this);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }

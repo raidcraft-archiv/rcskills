@@ -40,7 +40,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         loadSkills();
 
         attachLevel(new HeroLevel(this, data.getLevelData()));
-        this.selectedProfession = professions.get(data.getSelectedProfession());
+        this.selectedProfession = professions.get(data.getSelectedProfession().getName());
     }
 
     private void loadProfessions(List<String> professionNames) {
