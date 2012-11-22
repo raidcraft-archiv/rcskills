@@ -1,5 +1,8 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.skill.SkillType;
+
 /**
  * @author Silthus
  */
@@ -7,11 +10,17 @@ public interface SkillProperties {
 
     public int getId();
 
+    public SkillInformation getInformation();
+
     public String getFriendlyName();
 
     public String getDescription();
 
     public String[] getUsage();
+
+    public SkillType[] getSkillTypes();
+
+    public boolean isUnlocked();
 
     public int getManaCost();
 
@@ -38,4 +47,28 @@ public interface SkillProperties {
     public double getDuration();
 
     public double getDurationLevelModifier();
+
+    public double getSkillLevelDamageModifier();
+
+    public double getSkillLevelManaCostModifier();
+
+    public double getSkillLevelStaminaCostModifier();
+
+    public double getSkillLevelHealthCostModifier();
+
+    public double getSkillLevelCastTimeModifier();
+
+    public double getSkillLevelDurationModifier();
+
+    public double getProfLevelDamageModifier();
+
+    public double getProfLevelManaCostModifier();
+
+    public double getProfLevelStaminaCostModifier();
+
+    public double getProfLevelHealthCostModifier();
+
+    public double getProfLevelCastTimeModifier();
+
+    public double getProfLevelDurationModifier();
 }

@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.skill.SkillType;
 import de.raidcraft.skills.config.ConfigUtil;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
@@ -127,12 +128,12 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     }
 
     @Override
-    public SkillInformation getSkillInformation() {
+    public SkillInformation getInformation() {
 
         return information;
     }
 
-    private <V> V getValue(String key, Class<V> vClass) {
+    private <V> V getValue(String key, Class<V> vClass, V def) {
 
         if (config != null) {
             if (config.isSet(key)) {
@@ -140,33 +141,33 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
             }
         }
         if (!isSet(key)) {
-            if (vClass == double.class) set(key, 0.0);
-            if (vClass == int.class) set(key, 0);
-            if (vClass == boolean.class) set(key, false);
-            if (vClass == String.class) set(key, "default");
+            if (vClass == double.class) set(key, def);
+            if (vClass == int.class) set(key, def);
+            if (vClass == boolean.class) set(key, def);
+            if (vClass == String.class) set(key, def);
             save();
         }
-        return vClass.cast(get(key));
+        return vClass.cast(get(key, def));
     }
 
-    private double getOverrideDouble(String key) {
+    private double getOverrideDouble(String key, double def) {
 
-        return getValue(key, double.class);
+        return getValue(key, double.class, def);
     }
 
-    private int getOverrideInt(String key) {
+    private int getOverrideInt(String key, int def) {
 
-        return getValue(key, int.class);
+        return getValue(key, int.class, def);
     }
 
-    private boolean getOverrideBool(String key) {
+    private boolean getOverrideBool(String key, boolean def) {
 
-        return getValue(key, boolean.class);
+        return getValue(key, boolean.class, def);
     }
 
-    private String getOverrideString(String key) {
+    private String getOverrideString(String key, String def) {
 
-        return getValue(key, String.class);
+        return getValue(key, String.class, def);
     }
 
     @Override
@@ -178,13 +179,13 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     @Override
     public String getFriendlyName() {
 
-        return getOverrideString("name");
+        return getOverrideString("name", information.name());
     }
 
     @Override
     public String getDescription() {
 
-        return getOverrideString("description");
+        return getOverrideString("description", information.desc());
     }
 
     @Override
@@ -192,6 +193,18 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
 
         List<String> usage = getStringList("usage");
         return usage.toArray(new String[usage.size()]);
+    }
+
+    @Override
+    public SkillType[] getSkillTypes() {
+
+        return information.types();
+    }
+
+    @Override
+    public boolean isUnlocked() {
+
+        return database.isUnlocked();
     }
 
     @Override
@@ -209,79 +222,79 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     @Override
     public int getManaCost() {
 
-        return getOverrideInt("mana-cost");
+        return getOverrideInt("mana-cost", 0);
     }
 
     @Override
     public double getManaLevelModifier() {
 
-        return getOverrideDouble("mana-level-modifier");
+        return getOverrideDouble("mana-level-modifier", 0);
     }
 
     @Override
     public int getStaminaCost() {
 
-        return getOverrideInt("stamina-cost");
+        return getOverrideInt("stamina-cost", 0);
     }
 
     @Override
     public double getStaminaLevelModifier() {
 
-        return getOverrideDouble("stamina-level-modifier");
+        return getOverrideDouble("stamina-level-modifier", 0);
     }
 
     @Override
     public int getHealthCost() {
 
-        return getOverrideInt("health-cost");
+        return getOverrideInt("health-cost", 0);
     }
 
     @Override
     public double getHealthLevelModifier() {
 
-        return getOverrideDouble("health-level-modifier");
+        return getOverrideDouble("health-level-modifier", 0);
     }
 
     @Override
     public int getRequiredLevel() {
 
-        return getOverrideInt("level");
+        return getOverrideInt("level", 1);
     }
 
     @Override
     public int getDamage() {
 
-        return getOverrideInt("damage");
+        return getOverrideInt("damage", 0);
     }
 
     @Override
     public double getDamageLevelModifier() {
 
-        return getOverrideDouble("damage-level-modifier");
+        return getOverrideDouble("damage-level-modifier", 0);
     }
 
     @Override
     public double getCastTime() {
 
-        return getOverrideDouble("cast-time");
+        return getOverrideDouble("cast-time", 0);
     }
 
     @Override
     public double getCastTimeLevelModifier() {
 
-        return getOverrideDouble("cast-time-modifier");
+        return getOverrideDouble("cast-time-modifier", 0);
     }
 
     @Override
     public double getDuration() {
 
-        return getOverrideDouble("duration");
+        return getOverrideDouble("duration", 0);
     }
 
     @Override
     public double getDurationLevelModifier() {
 
-        return getOverrideDouble("duration-level-modifier");
+        return getOverrideDouble("duration-level-modifier", 0);
     }
 
     @Override
@@ -299,6 +312,78 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     @Override
     public int getMaxLevel() {
 
-        return getOverrideInt("max-level");
+        return getOverrideInt("max-level", 10);
+    }
+
+    @Override
+    public double getSkillLevelDamageModifier() {
+
+        return getOverrideDouble("skill-level-damage-modifier", 0);
+    }
+
+    @Override
+    public double getSkillLevelManaCostModifier() {
+
+        return getOverrideDouble("skill-level-mana-modifier", 0);
+    }
+
+    @Override
+    public double getSkillLevelStaminaCostModifier() {
+
+        return getOverrideDouble("skill-level-stamina-modifier", 0);
+    }
+
+    @Override
+    public double getSkillLevelHealthCostModifier() {
+
+        return getOverrideDouble("skill-level-health-modifier", 0);
+    }
+
+    @Override
+    public double getSkillLevelCastTimeModifier() {
+
+        return getOverrideDouble("skill-level-casttime-modifier", 0);
+    }
+
+    @Override
+    public double getSkillLevelDurationModifier() {
+
+        return getOverrideDouble("skill-level-duration-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelDamageModifier() {
+
+        return getOverrideDouble("prof-level-damage-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelManaCostModifier() {
+
+        return getOverrideDouble("prof-level-mana-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelStaminaCostModifier() {
+
+        return getOverrideDouble("prof-level-stamina-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelHealthCostModifier() {
+
+        return getOverrideDouble("prof-level-health-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelCastTimeModifier() {
+
+        return getOverrideDouble("prof-level-casttime-modifier", 0);
+    }
+
+    @Override
+    public double getProfLevelDurationModifier() {
+
+        return getOverrideDouble("prof-level-duration-modifier", 0);
     }
 }

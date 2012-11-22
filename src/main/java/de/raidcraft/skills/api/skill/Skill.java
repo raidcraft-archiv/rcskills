@@ -15,21 +15,21 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill>, SkillPro
 
     public void load(DataMap data);
 
-    public Hero getHero();
-
     public String getName();
 
-    public String getFriendlyName();
-
-    public String getDescription();
-
-    public String[] getUsage();
+    public Hero getHero();
 
     public String getDescription(Hero hero);
 
     public boolean isActive();
 
-    public boolean isUnlocked();
+    public double getTotalDamage();
+
+    public double getTotalManaCost();
+
+    public double getTotalStaminaCost();
+
+    public double getTotalHealthCost();
 
     public Profession getProfession() throws UnknownProfessionException;
 }

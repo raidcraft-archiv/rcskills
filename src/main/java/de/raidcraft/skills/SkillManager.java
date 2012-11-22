@@ -36,10 +36,9 @@ public final class SkillManager extends JarFilesSkillLoader {
         for (Class<? extends Skill> clazz : loadSkillClasses()) {
             skillClasses.put(clazz.getAnnotation(SkillInformation.class).name(), clazz);
         }
-        createDefaults();
     }
 
-    private void createDefaults() {
+    public void createDefaults() {
 
         // simply create a factory of every skill that will trigger the default creation
         for (Map.Entry<String, Class<? extends Skill>> entry : skillClasses.entrySet()) {

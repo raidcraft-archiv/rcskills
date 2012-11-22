@@ -42,8 +42,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.skillManager = new SkillManager(this);
         // register our inhouse skills
         registerSkills();
-        // and load all skills and classes
-        skillManager.loadSkillClasses();
+        // create defaults for all loaded skills
+        skillManager.createDefaults();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);

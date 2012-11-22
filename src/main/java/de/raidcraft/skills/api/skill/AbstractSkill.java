@@ -14,12 +14,14 @@ import java.util.HashSet;
 public abstract class AbstractSkill implements Skill {
 
     private final int id;
+    private final SkillInformation information;
     private final Hero hero;
     private final String name;
     private final String friendlyName;
+    private final String[] usage;
+    private final SkillType[] types;
     private Profession profession;
     private String description;
-    private final String[] usage;
     private boolean unlocked;
     private int manaCost;
     private double manaLevelModifier;
@@ -41,11 +43,14 @@ public abstract class AbstractSkill implements Skill {
 
         this.hero = hero;
         this.id = data.getId();
+        this.information = data.getInformation();
         this.profession = data.getProfession();
-        this.name = data.getSkillInformation().name();
+        this.name = information.name();
         this.friendlyName = data.getFriendlyName();
         this.description = data.getDescription();
         this.usage = data.getUsage();
+        this.types = data.getSkillTypes();
+        this.unlocked = data.isUnlocked();
         this.manaCost = data.getManaCost();
         this.manaLevelModifier = data.getManaLevelModifier();
         this.staminaCost = data.getStaminaCost();
@@ -63,14 +68,51 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public double getTotalDamage() {
+
+        return getDamage() + (getDamageLevelModifier() * getProfession().getLevel().getLevel());
+    }
+
+    @Override
+    public double getTotalManaCost() {
+        //TODO: implement
+    }
+
+    @Override
+    public double getTotalStaminaCost() {
+        //TODO: implement
+    }
+
+    @Override
+    public double getTotalHealthCost() {
+        //TODO: implement
+    }
+
+    @Override
     public void load(DataMap data) {
         // override this when needed
     }
+
+    /*/////////////////////////////////////////////////////////////////
+    //    There are only getter and (setter) beyond this point
+    /////////////////////////////////////////////////////////////////*/
 
     @Override
     public int getId() {
 
         return id;
+    }
+
+    @Override
+    public SkillInformation getInformation() {
+
+        return information;
+    }
+
+    @Override
+    public SkillType[] getSkillTypes() {
+
+        return types;
     }
 
     @Override
@@ -174,6 +216,7 @@ public abstract class AbstractSkill implements Skill {
         return requiredLevel;
     }
 
+    @Override
     public int getDamage() {
 
         return damage;

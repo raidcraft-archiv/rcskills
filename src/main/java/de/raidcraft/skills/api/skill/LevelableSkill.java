@@ -7,6 +7,5 @@ import de.raidcraft.skills.api.level.Levelable;
  */
 public interface LevelableSkill extends Levelable<LevelableSkill>, Skill {
 
-
     public boolean isMastered();
 }
