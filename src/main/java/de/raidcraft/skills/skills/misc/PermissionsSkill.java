@@ -3,8 +3,8 @@ package de.raidcraft.skills.skills.misc;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.AbstractSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.SkillType;
 import de.raidcraft.util.DataMap;
 
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.Collection;
         name = "permission-skill",
         desc = "Represents a generic permissions skill.",
         defaults = {"groups:[foobar,barfoo]", "permissions:[foo.bar,bar.foo]"},
-        types = {SkillType.UNBINDABLE}
+        types = {Skill.Type.UNBINDABLE}
 )
 public class PermissionsSkill extends AbstractSkill {
 

@@ -18,5 +18,5 @@ public @interface SkillInformation {
 
     public String[] defaults() default {};
 
-    public SkillType[] types();
+    public Skill.Type[] types();
 }

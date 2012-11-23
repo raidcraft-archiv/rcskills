@@ -17,7 +17,8 @@ public class Attack {
         MISSED,
         ABSORBED,
         REFLECTED,
-        IMMUNE;
+        IMMUNE,
+        ABORTED;
     }
 
     private final Hero attacker;

@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.SkillType;
 
 /**
  * @author Silthus
@@ -22,7 +22,7 @@ public interface SkillProperties {
 
     public String[] getUsage();
 
-    public SkillType[] getSkillTypes();
+    public Skill.Type[] getSkillTypes();
 
     public boolean isUnlocked();
 

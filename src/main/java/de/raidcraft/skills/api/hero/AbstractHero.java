@@ -1,8 +1,11 @@
 package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.bukkit.BukkitPlayer;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -12,9 +15,11 @@ import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.hero.HeroLevel;
-import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.*;
 
@@ -229,5 +234,49 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public boolean hasProfession(Profession profession) {
 
         return hasProfession(profession.getProperties().getName().toLowerCase());
+    }
+
+    @Override
+    public boolean damageEntity(LivingEntity target, int damage) {
+
+        // create a fake event to make sure the damage is not cancelled
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(getBukkitPlayer(), target, EntityDamageEvent.DamageCause.CUSTOM, 0);
+        if (event.isCancelled()) {
+            return false;
+        }
+        // damage the actual entity
+        target.setNoDamageTicks(0);
+        target.setLastDamage(damage);
+        target.setHealth(target.getHealth() - damage);
+        target.setLastDamageCause(event);
+        // TODO: check if it actually works like this
+        return true;
+    }
+
+    @Override
+    public Skill getSkillFromArg(String input) throws CommandException {
+
+        List<String> foundSkills = new ArrayList<>();
+        input = input.toLowerCase().trim();
+        for (Skill skill : skills.values()) {
+            if (skill.getProperties().getName().toLowerCase().contains(input)
+                    || skill.getProperties().getFriendlyName().toLowerCase().contains(input)) {
+                foundSkills.add(skill.getProperties().getName());
+            }
+        }
+
+        if (foundSkills.size() > 1) {
+            throw new CommandException(
+                    "Es gibt mehrere Skills mit dem Namen: " + input + " - " + StringUtil.joinString(foundSkills, ", ", 0));
+        }
+
+        return skills.get(foundSkills.get(0));
+    }
+
+    @Override
+    public Skill.Result runSkill(Skill skill) {
+
+        // TODO: check everything
+        return Skill.Result.NORMAL;
     }
 }

@@ -1,11 +1,13 @@
 package de.raidcraft.skills.api.hero;
 
+import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
 
@@ -39,4 +41,10 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public boolean hasProfession(String id);
 
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
+
+    public boolean damageEntity(LivingEntity target, int damage);
+
+    public Skill getSkillFromArg(String input) throws CommandException;
+
+    public Skill.Result runSkill(Skill skill);
 }

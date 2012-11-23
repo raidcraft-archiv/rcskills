@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.SkillType;
 import de.raidcraft.skills.config.ConfigUtil;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
@@ -196,7 +195,7 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     }
 
     @Override
-    public SkillType[] getSkillTypes() {
+    public Skill.Type[] getSkillTypes() {
 
         return information.types();
     }
