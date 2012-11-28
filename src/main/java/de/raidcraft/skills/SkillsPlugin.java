@@ -6,6 +6,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
@@ -46,6 +47,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.heroManager = new HeroManager(this);
         // and commands gogogo
         registerCommands(SkillsCommand.class);
+        registerCommands(CastCommand.class);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
