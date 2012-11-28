@@ -1,12 +1,9 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.skills.api.Factory;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.LevelData;
-import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.professions.SimpleProfession;
@@ -17,51 +14,39 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Silthus
  */
-public final class ProfessionFactory extends YamlConfiguration implements ProfessionData, LevelData, Factory<Profession> {
+public final class ProfessionFactory extends YamlConfiguration implements ProfessionProperties {
 
-    private Profession profession = null;
     private final SkillsPlugin plugin;
-    private final Hero hero;
-    private THeroProfession database;
-    private Set<Skill> skills = new LinkedHashSet<>();
+    private final File file;
+    private final String name;
 
-    protected ProfessionFactory(SkillsPlugin plugin, Hero hero, THeroProfession database) throws UnknownProfessionException, UnknownSkillException {
-
-        this.plugin = plugin;
-        this.hero = hero;
-        loadInformation(database.getName());
-        // here we skill database loading and save the already existing entry
-        this.database = database;
-        loadSkills();
-    }
-
-    protected ProfessionFactory(SkillsPlugin plugin, Hero hero, String name) throws UnknownProfessionException, UnknownSkillException {
+    protected ProfessionFactory(SkillsPlugin plugin, File file) {
 
         this.plugin = plugin;
-        this.hero = hero;
-        loadInformation(name);
-        loadDatabase(name);
-        loadSkills();
+        // we asume the file always exist because the skillmanager passed it to us
+        this.file = file;
+        this.name = file.getName().toLowerCase().replace("profession", "").replace(".yml", "").trim();
+        // first load all common information about this profession
+        loadFile();
     }
 
-    public Profession create() {
+    protected Profession create(Hero hero) throws UnknownSkillException {
 
-        if (this.profession == null) {
-            this.profession = new SimpleProfession(hero, this);
-        }
-        return this.profession;
+        THeroProfession database = loadDatabase(hero, name);
+        List<Skill> skills = loadSkills(hero);
+        return new SimpleProfession(hero, this, database, skills);
     }
 
-    private void loadDatabase(String name) {
+    private THeroProfession loadDatabase(Hero hero, String name) {
 
         // then load the hero stats from the database
-        database = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
+        THeroProfession database = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
         if (database == null) {
             // create a new entry
             database = new THeroProfession();
@@ -72,41 +57,37 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
             database.setActive(false);
             Ebean.save(database);
         }
+        return database;
     }
 
-    private void loadInformation(String name) throws UnknownProfessionException {
+    private void loadFile() {
 
         try {
-            File file = new File(plugin.getDataFolder() + "/professions/", name + ".yml");
-            if (!file.exists()) {
-                throw new UnknownProfessionException("There is no profession with the name: " + name);
-            }
-            // first load the flatfile config
+            // load the flat file config
             load(file);
         } catch (IOException e) {
+            plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
-            throw new UnknownProfessionException(e.getMessage());
         } catch (InvalidConfigurationException e) {
+            plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
-            throw new UnknownProfessionException(e.getMessage());
         }
-
-
     }
 
-    private void loadSkills() throws UnknownSkillException {
+    private List<Skill> loadSkills(Hero hero) throws UnknownSkillException {
 
+        List<Skill> skills = new ArrayList<>();
         // now load the skills - when a skill does not exist in the database we will insert it
-        Set<String> configSkills = getConfigurationSection("skills").getKeys(false);
-        for (String skill : configSkills) {
-            this.skills.add(plugin.getSkillManager().loadSkill(hero, skill, this));
+        for (String skill : getConfigurationSection("skills").getKeys(false)) {
+            skills.add(plugin.getSkillManager().getSkill(hero, this, skill));
         }
+        return skills;
     }
 
     @Override
-    public int getId() {
+    public String getTag() {
 
-        return database.getId();
+        return getString("tag");
     }
 
     @Override
@@ -119,42 +100,6 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
     public String getDescription() {
 
         return getString("description");
-    }
-
-    @Override
-    public boolean isActive() {
-
-        return getBoolean("active");
-    }
-
-    @Override
-    public boolean isMastered() {
-
-        return database.isMastered();
-    }
-
-    @Override
-    public LevelData getLevelData() {
-
-        return this;
-    }
-
-    @Override
-    public Set<Skill> getSkills() {
-
-        return skills;
-    }
-
-    @Override
-    public int getLevel() {
-
-        return database.getLevel();
-    }
-
-    @Override
-    public int getExp() {
-
-        return database.getExp();
     }
 
     @Override

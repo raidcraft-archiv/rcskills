@@ -7,16 +7,16 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.skill.Skill;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Silthus
  */
 public interface Profession extends Parent, Child<Profession>, Levelable<Profession> {
 
-    public Hero getHero();
+    public int getId();
 
-    public String getTag();
+    public Hero getHero();
 
     public boolean isActive();
 
@@ -24,7 +24,7 @@ public interface Profession extends Parent, Child<Profession>, Levelable<Profess
 
     public ProfessionProperties getProperties();
 
-    public Set<Skill> getSkills();
+    public Collection<Skill> getSkills();
 
-    public Set<Skill> getUnlockedSkills();
+    public Collection<Skill> getUnlockedSkills();
 }

@@ -1,11 +1,9 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.skills.api.Factory;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.LevelData;
-import de.raidcraft.skills.api.persistance.SkillData;
-import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.config.ConfigUtil;
@@ -19,71 +17,81 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Silthus
  */
-public final class SkillFactory extends YamlConfiguration implements SkillData, LevelData, Factory<Skill> {
+public final class SkillFactory extends YamlConfiguration implements SkillProperties {
 
     public static final String CONFIG_NAME = "skills.yml";
 
     private final SkillsPlugin plugin;
+    private final Class<? extends Skill> sClass;
     private final SkillInformation information;
     private final File file;
-    private Skill skill = null;
-    private Hero hero;
-    private ConfigurationSection config;
-    private ProfessionFactory factory;
-    private THeroSkill database;
 
-    protected SkillFactory(SkillsPlugin plugin, Hero hero, SkillInformation info, ProfessionFactory factory) {
-
-        this(plugin, info);
-        this.hero = hero;
-        this.config = factory.getConfigurationSection("skills." + info.name());
-        this.factory = factory;
-        // lets try the database now and create a new entry if none exists
-        loadDatabase(hero, factory);
-    }
+    private ConfigurationSection professionConfig;
 
     /**
      * This only creates a fake skill and creates the defaults for it.
      *
      * @param plugin
-     * @param info
      */
-    protected SkillFactory(SkillsPlugin plugin, SkillInformation info) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass) {
 
         this.plugin = plugin;
-        this.information = info;
+        this.sClass = sClass;
+        this.information = sClass.getAnnotation(SkillInformation.class);
         this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
         // load the global skill config - values in it are overriden by the profession config
         loadFile();
     }
 
-    @Override
-    public Skill create() {
+    protected Skill create(Hero hero, ProfessionFactory factory) throws UnknownSkillException {
 
-        if (skill == null) {
-            skill = plugin.getSkillManager().loadSkill(hero, information, this);
+        // set the config that overrides the default skill parameters with the profession config
+        this.professionConfig = factory.getConfigurationSection("skills." + information.name());
+        // lets load the database
+        THeroSkill database = loadDatabase(hero, factory);
+
+        // its reflection time yay!
+        try {
+            Constructor<? extends Skill> constructor = sClass.getConstructor(Hero.class, SkillProperties.class, THeroSkill.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(hero, factory, database);
+        } catch (NoSuchMethodException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
         }
-        return skill;
+        throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }
 
-    private void loadDatabase(Hero hero, ProfessionFactory factory) {
+    private THeroSkill loadDatabase(Hero hero, ProfessionFactory factory) {
 
-        database = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("name", information.name()).findUnique();
+        THeroSkill database = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("name", information.name()).findUnique();
         if (database == null) {
             database = new THeroSkill();
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession(Ebean.find(THeroProfession.class, factory.getId()));
+            database.setProfession(Ebean.find(THeroProfession.class).where().eq("name", factory.getName()).findUnique());
             Ebean.save(database);
         }
+        return database;
     }
 
     private void loadFile() {
@@ -134,9 +142,9 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
 
     private <V> V getValue(String key, Class<V> vClass, V def) {
 
-        if (config != null) {
-            if (config.isSet(key)) {
-                return vClass.cast(config.get(key));
+        if (professionConfig != null) {
+            if (professionConfig.isSet(key)) {
+                return vClass.cast(professionConfig.get(key));
             }
         }
         if (!isSet(key)) {
@@ -170,12 +178,6 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     }
 
     @Override
-    public int getId() {
-
-        return database.getId();
-    }
-
-    @Override
     public String getFriendlyName() {
 
         return getOverrideString("name", information.name());
@@ -201,21 +203,9 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     }
 
     @Override
-    public boolean isUnlocked() {
-
-        return database.isUnlocked();
-    }
-
-    @Override
     public DataMap getData() {
 
-        return new DataMap(config.getConfigurationSection("custom"));
-    }
-
-    @Override
-    public Profession getProfession() {
-
-        return factory.create();
+        return new DataMap(professionConfig.getConfigurationSection("custom"));
     }
 
     @Override
@@ -294,18 +284,6 @@ public final class SkillFactory extends YamlConfiguration implements SkillData, 
     public double getDurationLevelModifier() {
 
         return getOverrideDouble("duration-level-modifier", 0);
-    }
-
-    @Override
-    public int getLevel() {
-
-        return database.getLevel();
-    }
-
-    @Override
-    public int getExp() {
-
-        return database.getExp();
     }
 
     @Override

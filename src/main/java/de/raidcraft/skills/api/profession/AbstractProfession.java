@@ -3,51 +3,51 @@ package de.raidcraft.skills.api.profession;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.persistance.ProfessionData;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
  */
 public abstract class AbstractProfession implements Profession {
 
+    private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
-    private boolean active;
-    private boolean mastered;
     // maps skills with the minimal required level
-    private final Set<Skill> skills;
-    private final Set<Skill> unlockedSkills = new HashSet<>();
+    private final List<Skill> skills;
+    private final List<Skill> unlockedSkills = new ArrayList<>();
     // parent child collections
     private final Collection<Profession> strongParents = new LinkedHashSet<>();
     private final Collection<Profession> weakParents = new LinkedHashSet<>();
+    private boolean active;
+    private boolean mastered;
     // the level object holding our level and stuff
     private Level<Profession> level;
 
-    protected AbstractProfession(Hero hero, ProfessionData data) {
+    protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database, List<Skill> skills) {
 
+        this.id = database.getId();
         this.properties = data;
         this.hero = hero;
-        this.skills = data.getSkills();
-        this.active = data.isActive();
-        this.mastered = data.isMastered();
-        loadSkills();
-    }
-
-    private void loadSkills() {
-
+        this.skills = skills;
+        this.active = database.isActive();
+        this.mastered = database.isMastered();
+        // check if some of the skills are already unlocked
         for (Skill skill : skills) {
             if (skill.isActive() && skill.isUnlocked()) {
                 unlockedSkills.add(skill);
             }
         }
+    }
+
+    @Override
+    public int getId() {
+
+        return id;
     }
 
     @Override
@@ -60,12 +60,6 @@ public abstract class AbstractProfession implements Profession {
     public Hero getHero() {
 
         return hero;
-    }
-
-    @Override
-    public String getTag() {
-
-        return getProperties().getName().toUpperCase().substring(0, 2).trim();
     }
 
     @Override
@@ -87,13 +81,13 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public Set<Skill> getSkills() {
+    public List<Skill> getSkills() {
 
         return skills;
     }
 
     @Override
-    public Set<Skill> getUnlockedSkills() {
+    public List<Skill> getUnlockedSkills() {
 
         return unlockedSkills;
     }
@@ -172,7 +166,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public String toString() {
 
-        return "[P" + getProperties().getId() + "-" + getClass().getName() + "]" + getProperties().getName();
+        return "[P" + getId() + "-" + getClass().getName() + "]" + getProperties().getName();
     }
 
     @Override

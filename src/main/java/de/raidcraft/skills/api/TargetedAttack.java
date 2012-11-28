@@ -2,7 +2,6 @@ package de.raidcraft.skills.api;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -11,5 +10,5 @@ import org.bukkit.entity.LivingEntity;
 public interface TargetedAttack extends Active<LivingEntity> {
 
     @Override
-    public Skill.Result run(Hero hero, LivingEntity target) throws CombatException;
+    public void run(Hero hero, LivingEntity target) throws CombatException;
 }

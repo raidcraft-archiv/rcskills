@@ -1,22 +1,13 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.SkillData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.loader.JarFilesSkillLoader;
-import de.raidcraft.skills.tables.THeroProfession;
-import de.raidcraft.skills.tables.THeroSkill;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -24,9 +15,11 @@ import java.util.Map;
 public final class SkillManager extends JarFilesSkillLoader {
 
     private final SkillsPlugin plugin;
-    private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
+    private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
+    // holds all skills that are triggered every few ticks
+    private final List<Skill> passiveSkills = new ArrayList<>();
 
     public SkillManager(SkillsPlugin plugin) {
 
@@ -34,15 +27,7 @@ public final class SkillManager extends JarFilesSkillLoader {
         this.plugin = plugin;
 
         for (Class<? extends Skill> clazz : loadSkillClasses()) {
-            skillClasses.put(clazz.getAnnotation(SkillInformation.class).name(), clazz);
-        }
-    }
-
-    public void createDefaults() {
-
-        // simply create a factory of every skill that will trigger the default creation
-        for (Map.Entry<String, Class<? extends Skill>> entry : skillClasses.entrySet()) {
-            new SkillFactory(plugin, entry.getValue().getAnnotation(SkillInformation.class));
+            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(), new SkillFactory(plugin, clazz));
         }
     }
 
@@ -55,7 +40,7 @@ public final class SkillManager extends JarFilesSkillLoader {
     public void registerSkill(Class<? extends Skill> clazz) {
 
         if (clazz.isAnnotationPresent(SkillInformation.class)) {
-            skillClasses.put(clazz.getAnnotation(SkillInformation.class).name(), clazz);
+            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(), new SkillFactory(plugin, clazz));
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + clazz.getCanonicalName());
         }
@@ -63,85 +48,33 @@ public final class SkillManager extends JarFilesSkillLoader {
 
     public Skill getSkill(Hero hero, String skill) throws UnknownSkillException {
 
+        skill = skill.toLowerCase();
+        if (!skillFactories.containsKey(skill)) {
+            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
+        }
         if (!playerSkills.containsKey(hero.getUserName())) {
             playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
         }
-        if (!playerSkills.get(hero.getUserName()).containsKey(skill) && !hero.hasSkill(skill)) {
+        if (!playerSkills.get(hero.getUserName()).containsKey(skill)) {
             throw new UnknownSkillException("Der Spieler " + hero.getUserName() + " hat den Skill " + skill + " nicht.");
         }
         return playerSkills.get(hero.getUserName()).get(skill);
     }
 
-    /**
-     * Loads the given skill for the given hero from cache or creates a new instance.
-     *
-     * @param hero to load skill for
-     * @param skill to load
-     * @return loaded skill
-     */
-    public Skill loadSkill(Hero hero, String skill, ProfessionFactory factory) throws UnknownSkillException {
+    protected Skill getSkill(Hero hero, ProfessionFactory professionFactory, String skill) throws UnknownSkillException {
 
-        String name = hero.getUserName();
-        if (!playerSkills.containsKey(name)) {
-            playerSkills.put(name, new HashMap<String, Skill>());
+        skill = skill.toLowerCase();
+        if (!skillFactories.containsKey(skill)) {
+            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
         }
-        if (!playerSkills.get(name).containsKey(skill)) {
-            // first check if the skill is registered
-            if (!skillClasses.containsKey(skill)) {
-                throw new UnknownSkillException("There is no registered Skill with the name: " + skill);
-            }
-            // create a new skill for the player
-            Class<? extends Skill> aClass = skillClasses.get(skill);
-            playerSkills.get(name).put(skill,
-                    createSkill(hero, aClass, new SkillFactory(plugin, hero, aClass.getAnnotation(SkillInformation.class), factory)));
-        }
-        return playerSkills.get(name).get(skill);
-    }
-
-    private Skill createSkill(Hero hero, Class<? extends Skill> clazz, SkillFactory factory) throws UnknownSkillException {
-
-        // its reflection time yay!
-        try {
-            Constructor<? extends Skill> constructor = clazz.getConstructor(Hero.class, SkillData.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(hero, factory);
-        } catch (NoSuchMethodException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
-        throw new UnknownSkillException("Error when loading skill for class: " + clazz.getCanonicalName());
-    }
-
-    public Skill loadSkill(Hero hero, THeroSkill skill, THeroProfession profession) throws UnknownSkillException, UnknownProfessionException {
-
-        return loadSkill(hero, skill.getName(), new ProfessionFactory(plugin, hero, profession));
-    }
-
-    protected Skill loadSkill(Hero hero, SkillInformation information, SkillFactory skillFactory) {
-
         if (!playerSkills.containsKey(hero.getUserName())) {
             playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
         }
-        if (playerSkills.get(hero.getUserName()).containsKey(information.name())) {
-            return playerSkills.get(hero.getUserName()).get(information.name());
+        if (!playerSkills.get(hero.getUserName()).containsKey(skill)) {
+            // create a new skill instance for this hero and profession
+            playerSkills.get(hero.getUserName()).put(skill, skillFactories.get(skill).create(hero, professionFactory));
         }
-        try {
-            // create the skill
-            return createSkill(hero, skillClasses.get(information.name()), skillFactory);
-        } catch (UnknownSkillException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return playerSkills.get(hero.getUserName()).get(skill);
     }
 
     public Collection<? extends Skill> getAllSkills() {

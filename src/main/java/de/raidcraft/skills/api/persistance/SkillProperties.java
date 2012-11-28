@@ -2,17 +2,12 @@ package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.util.DataMap;
 
 /**
  * @author Silthus
  */
 public interface SkillProperties {
-
-    public int getId();
-
-    public SkillInformation getInformation();
-
-    public int getMaxLevel();
 
     public String getName();
 
@@ -24,7 +19,11 @@ public interface SkillProperties {
 
     public Skill.Type[] getSkillTypes();
 
-    public boolean isUnlocked();
+    public DataMap getData();
+
+    public SkillInformation getInformation();
+
+    public int getMaxLevel();
 
     public int getManaCost();
 

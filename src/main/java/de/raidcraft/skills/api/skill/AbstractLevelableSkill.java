@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.skill;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.persistance.SkillData;
+import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
@@ -13,9 +13,10 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
     private Level<LevelableSkill> level;
 
-    public AbstractLevelableSkill(Hero hero, SkillData data) {
+    public AbstractLevelableSkill(Hero hero, SkillProperties data, THeroSkill database) {
 
-        super(hero, data);
+        super(hero, data, database);
+        attachLevel(new SkillLevel(this, database));
     }
 
     @Override
@@ -87,7 +88,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void saveLevelProgress(Level<LevelableSkill> level) {
 
-        THeroSkill skill = Ebean.find(THeroSkill.class, getProperties().getId());
+        THeroSkill skill = Ebean.find(THeroSkill.class, getId());
         skill.setLevel(level.getLevel());
         skill.setExp(level.getExp());
         Ebean.save(skill);

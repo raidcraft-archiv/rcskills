@@ -75,7 +75,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
             for (Skill skill : profession.getSkills()) {
-                skills.put(skill.getProperties().getName().toLowerCase(), skill);
+                skills.put(skill.getName().toLowerCase(), skill);
             }
         }
     }
@@ -129,7 +129,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public boolean hasSkill(Skill skill) {
 
-        return hasSkill(skill.getProperties().getName().toLowerCase());
+        return hasSkill(skill.getName().toLowerCase());
     }
 
     public Skill getSkill(String id) throws UnknownSkillException {
@@ -259,9 +259,9 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         List<String> foundSkills = new ArrayList<>();
         input = input.toLowerCase().trim();
         for (Skill skill : skills.values()) {
-            if (skill.getProperties().getName().toLowerCase().contains(input)
-                    || skill.getProperties().getFriendlyName().toLowerCase().contains(input)) {
-                foundSkills.add(skill.getProperties().getName());
+            if (skill.getName().toLowerCase().contains(input)
+                    || skill.getFriendlyName().toLowerCase().contains(input)) {
+                foundSkills.add(skill.getName());
             }
         }
 
@@ -271,12 +271,5 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         }
 
         return skills.get(foundSkills.get(0));
-    }
-
-    @Override
-    public Skill.Result runSkill(Skill skill) {
-
-        // TODO: check everything
-        return Skill.Result.NORMAL;
     }
 }

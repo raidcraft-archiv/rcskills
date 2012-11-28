@@ -8,7 +8,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.skills.magic.Fireball;
-import de.raidcraft.skills.skills.misc.PermissionsSkill;
+import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -41,8 +41,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.skillManager = new SkillManager(this);
         // register our inhouse skills
         registerSkills();
-        // create defaults for all loaded skills
-        skillManager.createDefaults();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);
@@ -62,7 +60,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         SkillManager m = getSkillManager();
         m.registerSkill(Fireball.class);
-        m.registerSkill(PermissionsSkill.class);
+        m.registerSkill(PermissionSkill.class);
     }
 
     @Override

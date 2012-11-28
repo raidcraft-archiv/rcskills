@@ -13,37 +13,6 @@ import de.raidcraft.util.DataMap;
  */
 public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
-    public enum Result {
-
-        CANCELLED(false),
-        INVALID_TARGET(true),
-        FAIL(false),
-        LOW_MANA(true),
-        LOW_HEALTH(true),
-        LOW_LEVEL(true),
-        LOW_STAMINA(true),
-        MISSING_REAGENT(true),
-        NO_COMBAT(true),
-        NORMAL(false),
-        ON_GLOBAL_COOLDOWN(false),
-        ON_COOLDOWN(true),
-        REMOVED_EFFECT(false),
-        SKIP_POST_USAGE(false),
-        START_DELAY(false);
-
-        private final boolean showMessage;
-
-        private Result(boolean showMessage) {
-
-            this.showMessage = showMessage;
-        }
-
-        public boolean showMessage() {
-
-            return showMessage;
-        }
-    }
-
     public enum Type {
 
         BUFF,
@@ -75,6 +44,18 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public void load(DataMap data);
 
+    public int getId();
+
+    public String getName();
+
+    public String getFriendlyName();
+
+    public String getDescription();
+
+    public String[] getUsage();
+
+    public Skill.Type[] getSkillTypes();
+
     public Hero getHero();
 
     public String getDescription(Hero hero);
@@ -94,4 +75,20 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public SkillProperties getProperties();
 
     public Profession getProfession() throws UnknownProfessionException;
+
+    /**
+     * Applies the skill to the {@link Hero}. Is called when the skill is first added to the hero.
+     * If {@link de.raidcraft.skills.api.Passive} is implemented this method will be
+     * called every few ticks.
+     *
+     * @param hero to apply skill to.
+     */
+    public void apply(Hero hero);
+
+    /**
+     * Removes the skill from the {@link Hero}. Is called when the skill was removed from the hero.
+     *
+     * @param hero to apply skill to.
+     */
+    public void remove(Hero hero);
 }

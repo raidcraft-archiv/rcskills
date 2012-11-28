@@ -1,9 +1,13 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.ProfessionData;
+import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.tables.THeroProfession;
+
+import java.util.List;
 
 /**
  * Represents a profession instantiated for one {@link Hero}.
@@ -15,9 +19,9 @@ import de.raidcraft.skills.api.profession.Profession;
 public class SimpleProfession extends AbstractProfession {
 
 
-    public SimpleProfession(Hero hero, ProfessionData data) {
+    public SimpleProfession(Hero hero, ProfessionProperties properties, THeroProfession database, List<Skill> skills) {
 
-        super(hero, data);
-        attachLevel(new ProfessionLevel(this, data.getLevelData()));
+        super(hero, properties, database, skills);
+        attachLevel(new ProfessionLevel(this, database));
     }
 }
