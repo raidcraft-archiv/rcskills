@@ -45,6 +45,4 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public boolean damageEntity(LivingEntity target, int damage);
 
     public Skill getSkillFromArg(String input) throws CommandException;
-
-    public Skill.Result runSkill(Skill skill);
 }

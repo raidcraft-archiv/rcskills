@@ -7,32 +7,44 @@ import de.raidcraft.api.RaidCraftException;
  */
 public class CombatException extends RaidCraftException {
 
-    public enum Cause {
+    public enum FailCause {
 
-        CANCELLED,
-        INVALID_TARGET,
-        FAIL,
-        LOW_MANA,
-        LOW_HEALTH,
-        LOW_LEVEL,
-        LOW_STAMINA,
-        MISSING_REAGENT,
-        NO_COMBAT,
-        ON_GLOBAL_COOLDOWN,
-        ON_COOLDOWN,
-        IMMUNE;
+        CANCELLED("Abgebrochen"),
+        INVALID_TARGET("Ungültiges Ziel"),
+        FAIL("Fehlgeschlagen"),
+        LOW_MANA("Zu wenig Mana"),
+        LOW_HEALTH("Zu wenig Leben"),
+        LOW_LEVEL("Level ist zu niedrig"),
+        LOW_STAMINA("Zu wenig Stamina"),
+        MISSING_REAGENT("Fehlendes Reagenz"),
+        NO_COMBAT("Kann nicht im Kampf verwendet werden"),
+        ON_GLOBAL_COOLDOWN("Globaler Cooldown"),
+        ON_COOLDOWN("Abklingzeit nicht vorbei"),
+        IMMUNE("Ziel ist immun");
+
+        private final String message;
+
+        private FailCause(String message) {
+
+            this.message = message;
+        }
+
+        public String getMessage() {
+
+            return message;
+        }
     }
 
-    private final Cause[] causes;
+    private final FailCause failCause;
 
-    public CombatException(String message, Cause... causes) {
+    public CombatException(String message, FailCause failCause) {
 
         super(message);
-        this.causes = causes;
+        this.failCause = failCause;
     }
 
-    public Cause[] getCauses() {
+    public FailCause getFailCause() {
 
-        return causes;
+        return failCause;
     }
 }

@@ -3,9 +3,13 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.AreaAttack;
+import de.raidcraft.skills.api.Passive;
+import de.raidcraft.skills.api.TargetedAttack;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.command.CommandSender;
@@ -47,6 +51,17 @@ public final class CastCommand {
         // lets parse the argument for a valid spell
         Skill skill = hero.getSkillFromArg(args.getJoinedStrings(0));
 
-        hero.runSkill(skill);
+        try {
+            if (skill instanceof TargetedAttack) {
+                ((TargetedAttack) skill).run(hero, hero.getTarget());
+            } else if (skill instanceof AreaAttack) {
+                ((AreaAttack) skill).run(hero, BukkitUtil.toBlock(hero.getTargetBlock()).getLocation());
+            } else if (skill instanceof Passive) {
+                // always keep this the last check
+                throw new CommandException("Dieser Skill ist passiv und kann nicht angewendet werden.");
+            }
+        } catch (CombatException e) {
+            throw new CommandException("Skill konnte nicht angewendet werden: " + e.getFailCause().getMessage());
+        }
     }
 }

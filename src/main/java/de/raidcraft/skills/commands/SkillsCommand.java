@@ -83,7 +83,7 @@ public class SkillsCommand {
                 int level = skill.getProperties().getRequiredLevel();
 
                 sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
-                        .append(profession.getTag()).append(":")
+                        .append(profession.getProperties().getTag()).append(":")
                         .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
                 sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
