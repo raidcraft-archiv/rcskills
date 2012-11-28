@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
+import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -83,15 +84,6 @@ public abstract class AbstractSkill implements Skill {
     //    Methods that handle applying of effects are here
     /////////////////////////////////////////////////////////////////*/
 
-    public void addEffect(Class<? extends Effect> effect, LivingEntity target) {
-
-        addEffect(effect, getHero(), target);
-    }
-
-    public void addEffect(Class<? extends Effect> effect, Hero source, LivingEntity target) {
-
-    }
-
     public void addEffect(Effect effect, LivingEntity target) {
 
         addEffect(effect, getHero(), target);
@@ -99,6 +91,12 @@ public abstract class AbstractSkill implements Skill {
 
     public void addEffect(Effect effect, Hero source, LivingEntity target) {
 
+        // dont add invalid effects
+        if (!effect.getClass().isAnnotationPresent(EffectInformation.class)) {
+            RaidCraft.LOGGER.warning("The effect " + effect.getClass().getCanonicalName() + " has no EffectInformation!");
+            return;
+        }
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().addEffect(effect, source, target);
     }
 
     /*/////////////////////////////////////////////////////////////////

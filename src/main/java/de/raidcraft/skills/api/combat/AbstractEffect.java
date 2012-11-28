@@ -5,9 +5,22 @@ package de.raidcraft.skills.api.combat;
  */
 public abstract class AbstractEffect implements Effect {
 
+    private int taskId;
     private int duration = 0;
     private int delay = 0;
     private int interval = 0;
+
+    @Override
+    public final int getTaskId() {
+
+        return taskId;
+    }
+
+    @Override
+    public final void setTaskId(int taskId) {
+
+        this.taskId = taskId;
+    }
 
     @Override
     public Effect setDuration(int duration) {
@@ -46,5 +59,18 @@ public abstract class AbstractEffect implements Effect {
     public int getInterval() {
 
         return interval;
+    }
+
+    private String convertName(String name) {
+
+        return name.toLowerCase().replace(" ", "-").trim();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return obj instanceof Effect
+                && convertName(obj.getClass().getAnnotation(EffectInformation.class).name())
+                .equals(convertName(getClass().getAnnotation(EffectInformation.class).name()));
     }
 }

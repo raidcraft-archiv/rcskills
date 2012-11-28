@@ -14,6 +14,10 @@ public interface Effect {
 
     public void apply(Hero source, LivingEntity target) throws CombatException;
 
+    public void setTaskId(int taskId);
+
+    public int getTaskId();
+
     public Effect setDuration(int duration);
 
     public int getDuration();

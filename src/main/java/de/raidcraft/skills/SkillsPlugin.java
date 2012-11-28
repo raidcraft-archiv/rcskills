@@ -5,6 +5,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.skills.api.combat.CombatManager;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.SkillsCommand;
@@ -29,6 +30,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private SkillManager skillManager;
     private ProfessionManager professionManager;
     private HeroManager heroManager;
+    private CombatManager combatManager;
     private LocalConfiguration configuration;
 
     @Override
@@ -45,6 +47,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);
+        this.combatManager = new CombatManager(this);
         // and commands gogogo
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
@@ -88,6 +91,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public HeroManager getHeroManager() {
 
         return heroManager;
+    }
+
+    public CombatManager getCombatManager() {
+
+        return combatManager;
     }
 
     public LocalConfiguration getCommonConfig() {
