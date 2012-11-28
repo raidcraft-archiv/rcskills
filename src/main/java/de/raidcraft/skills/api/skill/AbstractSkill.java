@@ -43,35 +43,35 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public double getTotalDamage() {
+    public int getTotalDamage() {
 
-        return properties.getDamage()
-                + (properties.getDamageLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelDamageModifier() * getProfession().getLevel().getLevel());
+        return (int) (properties.getDamage()
+                        + (properties.getDamageLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getProfLevelDamageModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalManaCost() {
+    public int getTotalManaCost() {
 
-        return properties.getManaCost()
-                + (properties.getManaLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelManaCostModifier() * getProfession().getLevel().getLevel());
+        return (int) (properties.getManaCost()
+                        + (properties.getManaLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getProfLevelManaCostModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalStaminaCost() {
+    public int getTotalStaminaCost() {
 
-        return properties.getStaminaCost()
-                + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelStaminaCostModifier() * getProfession().getLevel().getLevel());
+        return (int) (properties.getStaminaCost()
+                        + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getProfLevelStaminaCostModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalHealthCost() {
+    public int getTotalHealthCost() {
 
-        return properties.getHealthCost()
-                + (properties.getHealthLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelHealthCostModifier() * getProfession().getLevel().getLevel());
+        return (int) (properties.getHealthCost()
+                        + (properties.getHealthLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getProfLevelHealthCostModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override

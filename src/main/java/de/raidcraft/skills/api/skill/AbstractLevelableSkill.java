@@ -38,27 +38,27 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public double getTotalDamage() {
+    public int getTotalDamage() {
 
-        return super.getTotalDamage() + (getProperties().getSkillLevelDamageModifier() * getLevel().getLevel());
+        return (int) (super.getTotalDamage() + (getProperties().getSkillLevelDamageModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalManaCost() {
+    public int getTotalManaCost() {
 
-        return super.getTotalManaCost() + (getProperties().getSkillLevelManaCostModifier() * getLevel().getLevel());
+        return (int) (super.getTotalManaCost() + (getProperties().getSkillLevelManaCostModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalStaminaCost() {
+    public int getTotalStaminaCost() {
 
-        return super.getTotalStaminaCost() + (getProperties().getSkillLevelStaminaCostModifier() * getLevel().getLevel());
+        return (int) (super.getTotalStaminaCost() + (getProperties().getSkillLevelStaminaCostModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public double getTotalHealthCost() {
+    public int getTotalHealthCost() {
 
-        return super.getTotalHealthCost() + (getProperties().getSkillLevelHealthCostModifier() * getLevel().getLevel());
+        return (int) (super.getTotalHealthCost() + (getProperties().getSkillLevelHealthCostModifier() * getLevel().getLevel()));
     }
 
     @Override

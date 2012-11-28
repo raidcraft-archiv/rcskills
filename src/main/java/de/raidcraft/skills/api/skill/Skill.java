@@ -64,13 +64,13 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public boolean isUnlocked();
 
-    public double getTotalDamage();
+    public int getTotalDamage();
 
-    public double getTotalManaCost();
+    public int getTotalManaCost();
 
-    public double getTotalStaminaCost();
+    public int getTotalStaminaCost();
 
-    public double getTotalHealthCost();
+    public int getTotalHealthCost();
 
     public SkillProperties getProperties();
 

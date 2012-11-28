@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -11,7 +12,7 @@ import org.bukkit.entity.LivingEntity;
  */
 public interface Effect {
 
-    public void apply(LivingEntity source, LivingEntity target) throws CombatException;
+    public void apply(Hero source, LivingEntity target) throws CombatException;
 
     public Effect setDuration(int duration);
 

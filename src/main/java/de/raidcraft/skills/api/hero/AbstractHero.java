@@ -100,6 +100,15 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
+    public void saveLevelProgress(Level<Hero> level) {
+
+        THero heroTable = Ebean.find(THero.class, getId());
+        heroTable.setExp(getLevel().getExp());
+        heroTable.setLevel(getLevel().getLevel());
+        Ebean.save(heroTable);
+    }
+
+    @Override
     public final void saveSkills() {
 
         for (Skill skill : getSkills()) {
@@ -197,16 +206,6 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void decreaseLevel(Level<Hero> level) {
 
         // override if needed
-    }
-
-    @Override
-    public void saveLevelProgress(Level<Hero> level) {
-
-        THero heroTable = Ebean.find(THero.class, getId());
-        heroTable.setExp(getLevel().getExp());
-        heroTable.setLevel(getLevel().getLevel());
-        // TODO: also save skills etc
-        Ebean.save(heroTable);
     }
 
     @Override
