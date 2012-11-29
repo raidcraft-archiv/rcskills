@@ -116,6 +116,12 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
+    public boolean canChoose(Profession profession) {
+        //TODO: implement
+        return true;
+    }
+
+    @Override
     public int getHealth() {
 
         return health;
@@ -203,13 +209,13 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public Collection<Skill> getSkills() {
+    public List<Skill> getSkills() {
 
-        return skills.values();
+        return new ArrayList<>(skills.values());
     }
 
     @Override
-    public Collection<Skill> getUnlockedSkills() {
+    public List<Skill> getUnlockedSkills() {
 
         List<Skill> skills = new ArrayList<>();
         for (Skill skill : this.skills.values()) {
@@ -221,9 +227,9 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public Collection<Profession> getProfessions() {
+    public List<Profession> getProfessions() {
 
-        return professions.values();
+        return new ArrayList<>(professions.values());
     }
 
     @Override
@@ -299,6 +305,10 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
                     || skill.getFriendlyName().toLowerCase().contains(input)) {
                 foundSkills.add(skill.getName());
             }
+        }
+
+        if (foundSkills.size() < 1) {
+            throw new CommandException("Du kennst keinen Skill mit dem Namen: " + input);
         }
 
         if (foundSkills.size() > 1) {

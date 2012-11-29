@@ -34,6 +34,7 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
         this.name = file.getName().toLowerCase().replace("profession", "").replace(".yml", "").trim();
         // first load all common information about this profession
         loadFile();
+        plugin.getLogger().info("Profession loaded: " + name);
     }
 
     protected Profession create(Hero hero) throws UnknownSkillException {

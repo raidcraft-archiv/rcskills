@@ -29,6 +29,7 @@ public class THeroProfession implements LevelData {
     private boolean mastered;
 
     @OneToMany
+    @JoinColumn(name = "profession_id")
     private List<THeroSkill> skills;
 
     public int getId() {

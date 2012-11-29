@@ -30,9 +30,11 @@ public class THero implements LevelData, HeroData {
     private THeroProfession selectedProfession;
 
     @OneToMany
+    @JoinColumn(name = "hero_id")
     private List<THeroProfession> professions;
 
     @OneToMany
+    @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
 
     @Override

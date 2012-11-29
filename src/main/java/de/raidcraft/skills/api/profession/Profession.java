@@ -12,7 +12,7 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public interface Profession extends Parent, Child<Profession>, Levelable<Profession> {
+public interface Profession extends Parent, Child<Profession>, Levelable<Profession>, Comparable<Profession> {
 
     public int getId();
 

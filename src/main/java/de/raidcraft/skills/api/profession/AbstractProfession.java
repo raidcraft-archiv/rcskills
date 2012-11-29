@@ -170,6 +170,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public int compareTo(Profession o) {
+
+        return o.getProperties().getFriendlyName().compareTo(getProperties().getFriendlyName());
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
         if (obj instanceof Profession) {

@@ -1,19 +1,23 @@
 package de.raidcraft.skills;
 
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.commands.CastCommand;
+import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,6 +55,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // and commands gogogo
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
+        registerCommands(BaseCommands.class);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
@@ -116,6 +121,18 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         }
     }
 
+    public class BaseCommands {
+
+        @Command(
+                aliases = {"profession", "prof"},
+                desc = "Base Command for Profession and Classes"
+        )
+        @NestedCommand(ProfessionCommands.class)
+        public void profession(CommandContext args, CommandSender sender) {
+
+        }
+    }
+
     /*///////////////////////////////////////////////////////////////
     //          All Bukkit Events are handled here
     ///////////////////////////////////////////////////////////////*/
@@ -128,11 +145,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        try {
-            getHeroManager().getHero(event.getPlayer()).save();
-        } catch (UnknownProfessionException e) {
-            getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
+        getHeroManager().getHero(event.getPlayer()).save();
     }
 }

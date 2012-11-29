@@ -49,6 +49,7 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
         this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
         // load the global skill config - values in it are overriden by the profession config
         loadFile();
+        plugin.getLogger().info("Skill loaded: " + information.name());
     }
 
     protected Skill create(Hero hero, ProfessionFactory factory) throws UnknownSkillException {

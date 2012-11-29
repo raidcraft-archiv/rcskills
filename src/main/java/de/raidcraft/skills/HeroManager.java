@@ -2,7 +2,6 @@ package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
@@ -25,7 +24,7 @@ public final class HeroManager {
         this.plugin = plugin;
     }
 
-    public Hero getHero(String name) throws UnknownPlayerException, UnknownProfessionException {
+    public Hero getHero(String name) throws UnknownPlayerException {
 
         Hero hero;
         if (!heroes.containsKey(name)) {
@@ -50,7 +49,7 @@ public final class HeroManager {
         return hero;
     }
 
-    public Hero getHero(Player player) throws UnknownProfessionException {
+    public Hero getHero(Player player) {
 
         try {
             return getHero(player.getName());

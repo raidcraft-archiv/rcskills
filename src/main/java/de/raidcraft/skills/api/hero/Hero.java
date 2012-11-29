@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -31,11 +31,13 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public Profession getSecundaryProfession();
 
-    public Collection<Skill> getSkills();
+    public List<Skill> getSkills();
 
-    public Collection<Skill> getUnlockedSkills();
+    public List<Skill> getUnlockedSkills();
 
-    public Collection<Profession> getProfessions();
+    public List<Profession> getProfessions();
+
+    public boolean canChoose(Profession profession);
 
     public void saveSkills();
 
