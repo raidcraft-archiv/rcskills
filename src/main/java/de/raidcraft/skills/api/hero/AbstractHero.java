@@ -7,6 +7,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Level;
@@ -18,8 +19,6 @@ import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.*;
 
@@ -29,10 +28,15 @@ import java.util.*;
 public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
     private final int id;
+    private boolean inCombat = false;
+    private int health;
     private Level<Hero> level;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
+    // primary and secondary professions are the ones defining items and stuff
+    private Profession primaryProfession;
+    private Profession secundaryProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
 
@@ -41,6 +45,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         super(data.getName());
 
         this.id = data.getId();
+        this.health = data.getHealth();
         this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
@@ -84,6 +89,49 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public int getId() {
 
         return id;
+    }
+
+    @Override
+    public boolean isInCombat() {
+
+        return inCombat;
+    }
+
+    @Override
+    public void setInCombat(boolean inCombat) {
+
+        this.inCombat = inCombat;
+    }
+
+    @Override
+    public Profession getPrimaryProfession() {
+
+        return primaryProfession;
+    }
+
+    @Override
+    public Profession getSecundaryProfession() {
+
+        return secundaryProfession;
+    }
+
+    @Override
+    public int getHealth() {
+
+        return health;
+    }
+
+    @Override
+    public void setHealth(int health) {
+
+        this.health = health;
+    }
+
+    @Override
+    public int getMaxHealth() {
+
+        return (int) (primaryProfession.getProperties().getBaseHealth()
+                        + primaryProfession.getProperties().getBaseHealthModifier() * primaryProfession.getLevel().getLevel());
     }
 
     @Override
@@ -236,20 +284,9 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public boolean damageEntity(LivingEntity target, int damage) {
+    public void damageEntity(LivingEntity target, int damage) throws CombatException {
 
-        // create a fake event to make sure the damage is not cancelled
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(getBukkitPlayer(), target, EntityDamageEvent.DamageCause.CUSTOM, 0);
-        if (event.isCancelled()) {
-            return false;
-        }
-        // damage the actual entity
-        target.setNoDamageTicks(0);
-        target.setLastDamage(damage);
-        target.setHealth(target.getHealth() - damage);
-        target.setLastDamageCause(event);
-        // TODO: check if it actually works like this
-        return true;
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getBukkitPlayer(), target, damage);
     }
 
     @Override

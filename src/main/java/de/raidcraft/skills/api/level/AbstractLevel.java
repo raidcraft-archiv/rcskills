@@ -61,7 +61,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
     @Override
     public int getNeededExpForLevel(int level) {
-        // TODO: calculate formula for next exp max level
+        // TODO: calculate formula for next exp max level in the respective Level implementations
         int maxExp = (int) (getMaxExp() * 1.5) + level;
         return maxExp;
     }
@@ -166,17 +166,20 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void increaseLevel() {
 
         levelObject.increaseLevel(this);
     }
 
+    @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
         levelObject.decreaseLevel(this);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public final void saveLevelProgress() {
 
         levelObject.saveLevelProgress(this);

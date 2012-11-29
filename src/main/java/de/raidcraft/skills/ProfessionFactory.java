@@ -105,6 +105,24 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
     @Override
     public int getMaxLevel() {
 
-        return getInt("max-exp");
+        return getInt("max-level", 60);
+    }
+
+    @Override
+    public int getBaseHealth() {
+
+        return getInt("base-health", 20);
+    }
+
+    @Override
+    public double getBaseHealthModifier() {
+
+        return getDouble("base-health-level-modifier", 0.0);
+    }
+
+    @Override
+    public boolean isPrimary() {
+
+        return getBoolean("primary", false);
     }
 }

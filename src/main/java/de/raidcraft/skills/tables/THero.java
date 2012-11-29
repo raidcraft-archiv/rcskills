@@ -25,6 +25,7 @@ public class THero implements LevelData, HeroData {
     private String player;
     private int exp;
     private int level;
+    private int health;
     @OneToOne
     private THeroProfession selectedProfession;
 
@@ -144,5 +145,16 @@ public class THero implements LevelData, HeroData {
     public void setSkills(List<THeroSkill> skills) {
 
         this.skills = skills;
+    }
+
+    @Override
+    public int getHealth() {
+
+        return health;
+    }
+
+    public void setHealth(int health) {
+
+        this.health = health;
     }
 }

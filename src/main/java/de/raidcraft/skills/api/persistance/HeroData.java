@@ -11,6 +11,8 @@ public interface HeroData {
 
     public int getId();
 
+    public int getHealth();
+
     public String getName();
 
     public int getMaxLevel();

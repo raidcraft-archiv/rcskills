@@ -14,4 +14,10 @@ public interface ProfessionProperties {
     public String getDescription();
 
     public int getMaxLevel();
+
+    public int getBaseHealth();
+
+    public double getBaseHealthModifier();
+
+    public boolean isPrimary();
 }

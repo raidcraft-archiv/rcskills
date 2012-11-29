@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.hero;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Levelable;
@@ -18,7 +19,17 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public int getId();
 
+    public int getHealth();
+
+    public void setHealth(int health);
+
+    public int getMaxHealth();
+
     public Profession getSelectedProfession();
+
+    public Profession getPrimaryProfession();
+
+    public Profession getSecundaryProfession();
 
     public Collection<Skill> getSkills();
 
@@ -40,9 +51,13 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public boolean hasProfession(String id);
 
+    public boolean isInCombat();
+
+    public void setInCombat(boolean inCombat);
+
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
 
-    public boolean damageEntity(LivingEntity target, int damage);
+    public void damageEntity(LivingEntity target, int damage) throws CombatException;
 
     public Skill getSkillFromArg(String input) throws CommandException;
 }

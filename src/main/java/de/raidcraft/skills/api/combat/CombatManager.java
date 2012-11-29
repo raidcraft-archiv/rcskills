@@ -8,6 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.HashMap;
@@ -71,6 +73,21 @@ public final class CombatManager implements Listener {
         }
         // add the new effect to our applied list
         effects.add(effect);
+    }
+
+    public void damageEntity(LivingEntity source, LivingEntity target, int damage) throws CombatException {
+
+        // create a fake event to make sure the damage is not cancelled
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(source, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
+        if (event.isCancelled()) {
+            throw new CombatException("Damage Event was cancelled.", CombatException.FailCause.CANCELLED);
+        }
+        // damage the actual entity
+        target.setNoDamageTicks(0);
+        target.setLastDamage(damage);
+        target.setHealth(target.getHealth() - damage);
+        target.setLastDamageCause(event);
+        // TODO: check if it actually works like this
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
