@@ -52,19 +52,20 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         // cast the fireball and wait for a callback after it hit
         fireball.run(hero.getBukkitPlayer(), new SpellCallback() {
             @Override
-            public void run() {
+            public void run(LivingEntity target) {
 
                 // only apply the after burn effect if set in our custom config
                 if (!afterBurner) {
                     return;
                 }
-                // if the fireball hit the target add a burn effect
-                if (isHit(target)) {
-                    // also add some extra damage after the fireball hit
-                    // the total damage is calculated from config settings and the player, prof and skill level
+                // also add some extra damage after the fireball hit
+                // the total damage is calculated from config settings and the player, prof and skill level
+                try {
                     hero.damageEntity(target, getTotalDamage());
-                    addEffect(new FireballEffect().setDelay(5).setDuration(20).setInterval(2), target);
+                } catch (CombatException e) {
+                    return;
                 }
+                addEffect(new FireballEffect().setDelay(5).setDuration(20).setInterval(2), target);
             }
         }, target);
         // add some exp to the profession and skill
