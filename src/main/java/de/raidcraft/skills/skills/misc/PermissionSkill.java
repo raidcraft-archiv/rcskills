@@ -3,6 +3,7 @@ package de.raidcraft.skills.skills.misc;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -27,9 +28,9 @@ public class PermissionSkill extends AbstractSkill {
     private Collection<String> permissions;
     private Collection<String> worlds;
 
-    protected PermissionSkill(Hero hero, SkillProperties data, THeroSkill database) {
+    protected PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
-        super(hero, data, database);
+        super(hero, data, database, profession);
     }
 
 

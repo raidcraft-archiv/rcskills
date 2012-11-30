@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -27,9 +28,9 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
 
     private boolean afterBurner;
 
-    public Fireball(Hero hero, SkillProperties skillData, THeroSkill database) {
+    public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
-        super(hero, skillData, database);
+        super(hero, skillData, database, profession);
     }
 
     @Override

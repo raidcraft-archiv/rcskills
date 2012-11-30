@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.config.ConfigUtil;
@@ -52,7 +53,7 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
         plugin.getLogger().info("Skill loaded: " + information.name());
     }
 
-    protected Skill create(Hero hero, ProfessionFactory factory) throws UnknownSkillException {
+    protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
 
         // set the config that overrides the default skill parameters with the profession config
         this.professionConfig = factory.getConfigurationSection("skills." + information.name());
@@ -61,9 +62,9 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
 
         // its reflection time yay!
         try {
-            Constructor<? extends Skill> constructor = sClass.getConstructor(Hero.class, SkillProperties.class, THeroSkill.class);
+            Constructor<? extends Skill> constructor = sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(hero, factory, database);
+            return constructor.newInstance(hero, this, profession, database);
         } catch (NoSuchMethodException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
@@ -149,9 +150,9 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
             }
         }
         if (!isSet(key)) {
-            if (vClass == double.class) set(key, def);
-            if (vClass == int.class) set(key, def);
-            if (vClass == boolean.class) set(key, def);
+            if (vClass == Double.class) set(key, def);
+            if (vClass == Integer.class) set(key, def);
+            if (vClass == Boolean.class) set(key, def);
             if (vClass == String.class) set(key, def);
             save();
         }
@@ -160,17 +161,17 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
 
     private double getOverrideDouble(String key, double def) {
 
-        return getValue(key, double.class, def);
+        return getValue(key, Double.class, def);
     }
 
     private int getOverrideInt(String key, int def) {
 
-        return getValue(key, int.class, def);
+        return getValue(key, Integer.class, def);
     }
 
     private boolean getOverrideBool(String key, boolean def) {
 
-        return getValue(key, boolean.class, def);
+        return getValue(key, Boolean.class, def);
     }
 
     private String getOverrideString(String key, String def) {
@@ -206,7 +207,12 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     @Override
     public DataMap getData() {
 
-        return new DataMap(professionConfig.getConfigurationSection("custom"));
+        ConfigurationSection custom = professionConfig.getConfigurationSection("custom");
+        if (custom == null) {
+            professionConfig.createSection("custom");
+            custom = professionConfig.getConfigurationSection("custom");
+        }
+        return new DataMap(custom);
     }
 
     @Override

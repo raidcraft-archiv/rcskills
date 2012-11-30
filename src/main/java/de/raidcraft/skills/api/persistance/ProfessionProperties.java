@@ -1,5 +1,11 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
+
+import java.util.List;
+
 /**
  * @author Silthus
  */
@@ -20,4 +26,6 @@ public interface ProfessionProperties {
     public double getBaseHealthModifier();
 
     public boolean isPrimary();
+
+    public List<Skill> loadSkills(Hero hero, Profession profession);
 }

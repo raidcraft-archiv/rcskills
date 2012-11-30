@@ -39,9 +39,7 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
 
     protected Profession create(Hero hero) throws UnknownSkillException {
 
-        THeroProfession database = loadDatabase(hero, name);
-        List<Skill> skills = loadSkills(hero);
-        return new SimpleProfession(hero, this, database, skills);
+        return new SimpleProfession(hero, this, loadDatabase(hero, name));
     }
 
     private THeroProfession loadDatabase(Hero hero, String name) {
@@ -75,14 +73,25 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
         }
     }
 
-    private List<Skill> loadSkills(Hero hero) throws UnknownSkillException {
+    public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : getConfigurationSection("skills").getKeys(false)) {
-            skills.add(plugin.getSkillManager().getSkill(hero, this, skill));
+            try {
+                skills.add(plugin.getSkillManager().getSkill(hero, this, profession, skill));
+            } catch (UnknownSkillException e) {
+                plugin.getLogger().warning(e.getMessage());
+                e.printStackTrace();
+            }
         }
         return skills;
+    }
+
+    @Override
+    public String getName() {
+
+        return name;
     }
 
     @Override

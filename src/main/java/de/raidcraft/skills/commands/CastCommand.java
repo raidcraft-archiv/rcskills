@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.AreaAttack;
 import de.raidcraft.skills.api.Passive;
@@ -57,6 +58,8 @@ public class CastCommand {
             }
         } catch (CombatException e) {
             throw new CommandException("Skill konnte nicht angewendet werden: " + e.getFailCause().getMessage());
+        } catch (InvalidTargetException e) {
+            throw new CommandException(e.getMessage());
         }
     }
 }

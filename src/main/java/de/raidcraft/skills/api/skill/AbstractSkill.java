@@ -4,8 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
 import de.raidcraft.skills.api.combat.EffectInformation;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -24,21 +22,20 @@ public abstract class AbstractSkill implements Skill {
     private final int id;
     private final Hero hero;
     private final SkillProperties properties;
+    private final Profession profession;
     private String description;
     private boolean unlocked;
-    private Profession profession;
-    private final String professionName;
     private final Collection<Skill> strongParents = new HashSet<>();
     private final Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(Hero hero, SkillProperties data, THeroSkill database) {
+    protected AbstractSkill(Hero hero, SkillProperties data, THeroSkill database, Profession profession) {
 
         this.id = database.getId();
         this.hero = hero;
         this.properties = data;
         this.description = data.getDescription();
         this.unlocked = database.isUnlocked();
-        this.professionName = database.getProfession().getName();
+        this.profession = profession;
 
         load(data.getData());
     }
@@ -177,17 +174,6 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public Profession getProfession() {
 
-        if (profession == null) {
-            try {
-                this.profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getHero(), professionName);
-            } catch (UnknownSkillException e) {
-                // this should never occur since we are the skill
-                e.printStackTrace();
-            } catch (UnknownProfessionException e) {
-                // should never occur since everything is already build
-                e.printStackTrace();
-            }
-        }
         return profession;
     }
 

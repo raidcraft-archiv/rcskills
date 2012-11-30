@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.loader.JarFilesSkillLoader;
@@ -61,7 +62,7 @@ public final class SkillManager extends JarFilesSkillLoader {
         return playerSkills.get(hero.getUserName()).get(skill);
     }
 
-    protected Skill getSkill(Hero hero, ProfessionFactory professionFactory, String skill) throws UnknownSkillException {
+    protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skill) throws UnknownSkillException {
 
         skill = skill.toLowerCase();
         if (!skillFactories.containsKey(skill)) {
@@ -72,7 +73,7 @@ public final class SkillManager extends JarFilesSkillLoader {
         }
         if (!playerSkills.get(hero.getUserName()).containsKey(skill)) {
             // create a new skill instance for this hero and profession
-            playerSkills.get(hero.getUserName()).put(skill, skillFactories.get(skill).create(hero, professionFactory));
+            playerSkills.get(hero.getUserName()).put(skill, skillFactories.get(skill).create(hero, profession, factory));
         }
         return playerSkills.get(hero.getUserName()).get(skill);
     }

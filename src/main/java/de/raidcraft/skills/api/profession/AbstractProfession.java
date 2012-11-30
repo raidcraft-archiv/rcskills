@@ -7,7 +7,10 @@ import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -17,9 +20,8 @@ public abstract class AbstractProfession implements Profession {
     private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
-    // maps skills with the minimal required level
-    private final List<Skill> skills;
     private final List<Skill> unlockedSkills = new ArrayList<>();
+    private List<Skill> skills;
     // parent child collections
     private final Collection<Profession> strongParents = new LinkedHashSet<>();
     private final Collection<Profession> weakParents = new LinkedHashSet<>();
@@ -28,20 +30,13 @@ public abstract class AbstractProfession implements Profession {
     // the level object holding our level and stuff
     private Level<Profession> level;
 
-    protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database, List<Skill> skills) {
+    protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
         this.id = database.getId();
         this.properties = data;
         this.hero = hero;
-        this.skills = skills;
         this.active = database.isActive();
         this.mastered = database.isMastered();
-        // check if some of the skills are already unlocked
-        for (Skill skill : skills) {
-            if (skill.isActive() && skill.isUnlocked()) {
-                unlockedSkills.add(skill);
-            }
-        }
     }
 
     @Override
@@ -83,6 +78,15 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public List<Skill> getSkills() {
 
+        if (skills == null || skills.size() < 1) {
+            this.skills = properties.loadSkills(getHero(), this);
+            // go thru the skills and sort unlocked
+            for (Skill skill : skills) {
+                if (skill.isUnlocked()) {
+                    unlockedSkills.add(skill);
+                }
+            }
+        }
         return skills;
     }
 

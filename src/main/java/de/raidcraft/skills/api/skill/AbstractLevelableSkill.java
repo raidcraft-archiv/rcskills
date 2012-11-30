@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
@@ -13,9 +14,9 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
     private Level<LevelableSkill> level;
 
-    public AbstractLevelableSkill(Hero hero, SkillProperties data, THeroSkill database) {
+    public AbstractLevelableSkill(Hero hero, SkillProperties data, THeroSkill database, Profession profession) {
 
-        super(hero, data, database);
+        super(hero, data, database, profession);
         attachLevel(new SkillLevel(this, database));
     }
 
