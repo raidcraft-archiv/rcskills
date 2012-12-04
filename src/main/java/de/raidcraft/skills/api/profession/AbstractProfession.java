@@ -109,12 +109,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public void increaseLevel(Level<Profession> level) {
+    public void onLevelUp(Level<Profession> level) {
         // override if needed
     }
 
     @Override
-    public void decreaseLevel(Level<Profession> level) {
+    public void onLevelDown(Level<Profession> level) {
         // override if needed
     }
 

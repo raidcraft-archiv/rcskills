@@ -81,12 +81,12 @@ public abstract class AbstractSkill implements Skill {
     //    Methods that handle applying of effects are here
     /////////////////////////////////////////////////////////////////*/
 
-    public void addEffect(Effect effect, LivingEntity target) {
+    public final void addEffect(Effect effect, LivingEntity target) {
 
         addEffect(effect, getHero(), target);
     }
 
-    public void addEffect(Effect effect, Hero source, LivingEntity target) {
+    public final void addEffect(Effect effect, Hero source, LivingEntity target) {
 
         // dont add invalid effects
         if (!effect.getClass().isAnnotationPresent(EffectInformation.class)) {
@@ -101,54 +101,54 @@ public abstract class AbstractSkill implements Skill {
     /////////////////////////////////////////////////////////////////*/
 
     @Override
-    public int getId() {
+    public final int getId() {
 
         return id;
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
 
         return getProperties().getName();
     }
 
     @Override
-    public String getFriendlyName() {
+    public final String getFriendlyName() {
 
         return getProperties().getFriendlyName();
     }
 
     @Override
-    public String getDescription() {
+    public final String getDescription() {
 
         return description;
     }
 
     @Override
-    public String[] getUsage() {
+    public final String[] getUsage() {
 
         return getProperties().getUsage();
     }
 
     @Override
-    public Type[] getSkillTypes() {
+    public final Type[] getSkillTypes() {
 
         return getProperties().getSkillTypes();
     }
 
     @Override
-    public Hero getHero() {
+    public final Hero getHero() {
 
         return hero;
     }
 
     @Override
-    public SkillProperties getProperties() {
+    public final SkillProperties getProperties() {
 
         return properties;
     }
 
-    protected void setDescription(String description) {
+    protected final void setDescription(String description) {
 
         this.description = description;
     }
@@ -160,7 +160,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isActive() {
+    public final boolean isActive() {
 
         return getProfession().isActive();
     }
@@ -172,49 +172,49 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Profession getProfession() {
+    public final Profession getProfession() {
 
         return profession;
     }
 
     @Override
-    public Collection<Skill> getStrongParents() {
+    public final Collection<Skill> getStrongParents() {
 
         return strongParents;
     }
 
     @Override
-    public Collection<Skill> getWeakParents() {
+    public final Collection<Skill> getWeakParents() {
 
         return weakParents;
     }
 
     @Override
-    public void addStrongParent(Skill skill) {
+    public final void addStrongParent(Skill skill) {
 
         strongParents.add(skill);
     }
 
     @Override
-    public void addWeakParent(Skill skill) {
+    public final void addWeakParent(Skill skill) {
 
         weakParents.add(skill);
     }
 
     @Override
-    public void removeStrongParent(Skill skill) {
+    public final void removeStrongParent(Skill skill) {
 
         strongParents.remove(skill);
     }
 
     @Override
-    public void removeWeakParent(Skill skill) {
+    public final void removeWeakParent(Skill skill) {
 
         weakParents.remove(skill);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
 
         return "[S" + getId() + "-" + getClass().getName() + "]" + getName();
     }
@@ -228,7 +228,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int compareTo(Skill o) {
+    public final int compareTo(Skill o) {
 
         if (getProperties().getRequiredLevel() > o.getProperties().getRequiredLevel()) return 1;
         if (getProperties().getRequiredLevel() == o.getProperties().getRequiredLevel()) return 0;

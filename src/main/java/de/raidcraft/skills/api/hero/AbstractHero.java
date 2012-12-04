@@ -251,13 +251,13 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public void increaseLevel(Level<Hero> level) {
+    public void onLevelUp(Level<Hero> level) {
 
         // override if needed
     }
 
     @Override
-    public void decreaseLevel(Level<Hero> level) {
+    public void onLevelDown(Level<Hero> level) {
 
         // override if needed
     }

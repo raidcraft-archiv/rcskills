@@ -11,9 +11,9 @@ public interface Levelable<T extends Levelable> {
 
     public void attachLevel(Level<T> level);
 
-    public void increaseLevel(Level<T> level);
+    public void onLevelUp(Level<T> level);
 
-    public void decreaseLevel(Level<T> level);
+    public void onLevelDown(Level<T> level);
 
     public void saveLevelProgress(Level<T> level);
 }

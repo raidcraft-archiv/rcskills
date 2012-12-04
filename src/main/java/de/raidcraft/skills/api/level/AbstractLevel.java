@@ -169,13 +169,13 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @SuppressWarnings("unchecked")
     private void increaseLevel() {
 
-        levelObject.increaseLevel(this);
+        levelObject.onLevelUp(this);
     }
 
     @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
-        levelObject.decreaseLevel(this);
+        levelObject.onLevelDown(this);
     }
 
     @Override

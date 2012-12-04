@@ -21,67 +21,67 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public void attachLevel(Level<LevelableSkill> level) {
+    public final void attachLevel(Level<LevelableSkill> level) {
 
         this.level = level;
     }
 
     @Override
-    public Level<LevelableSkill> getLevel() {
+    public final Level<LevelableSkill> getLevel() {
 
         return level;
     }
 
     @Override
-    public int getMaxLevel() {
+    public final int getMaxLevel() {
 
         return getProperties().getMaxLevel();
     }
 
     @Override
-    public int getTotalDamage() {
+    public final int getTotalDamage() {
 
         return (int) (super.getTotalDamage() + (getProperties().getSkillLevelDamageModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public int getTotalManaCost() {
+    public final int getTotalManaCost() {
 
         return (int) (super.getTotalManaCost() + (getProperties().getSkillLevelManaCostModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public int getTotalStaminaCost() {
+    public final int getTotalStaminaCost() {
 
         return (int) (super.getTotalStaminaCost() + (getProperties().getSkillLevelStaminaCostModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public int getTotalHealthCost() {
+    public final int getTotalHealthCost() {
 
         return (int) (super.getTotalHealthCost() + (getProperties().getSkillLevelHealthCostModifier() * getLevel().getLevel()));
     }
 
     @Override
-    public boolean isMastered() {
+    public final boolean isMastered() {
 
         return getLevel().getMaxLevel() == getLevel().getLevel();
     }
 
     @Override
-    public boolean isUnlocked() {
+    public final boolean isUnlocked() {
 
         return super.isUnlocked() && getLevel().getLevel() > 0;
     }
 
     @Override
-    public void decreaseLevel(Level<LevelableSkill> level) {
+    public void onLevelDown(Level<LevelableSkill> level) {
 
         // override if needed
     }
 
     @Override
-    public void increaseLevel(Level<LevelableSkill> level) {
+    public void onLevelUp(Level<LevelableSkill> level) {
 
         // override if needed
     }
@@ -96,7 +96,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
 
         return obj instanceof LevelableSkill
                 && super.equals(obj);
