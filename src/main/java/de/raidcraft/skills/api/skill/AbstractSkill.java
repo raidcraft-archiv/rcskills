@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
 import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -70,6 +71,33 @@ public abstract class AbstractSkill implements Skill {
         return (int) (properties.getHealthCost()
                         + (properties.getHealthLevelModifier() * hero.getLevel().getLevel())
                         + (properties.getProfLevelHealthCostModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public int getTotalEffectDuration() {
+
+        EffectProperties properties = getEffectProperties();
+        return (int) (properties.getDuration()
+                + (properties.getDurationLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getDurationProfLevelModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public int getTotalEffectInterval() {
+
+        EffectProperties properties = getEffectProperties();
+        return (int) (properties.getInterval()
+                + (properties.getIntervalLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getIntervalProfLevelModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public int getTotalEffectDelay() {
+
+        EffectProperties properties = getEffectProperties();
+        return (int) (properties.getDelay()
+                + (properties.getDelayLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getDelayProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
@@ -151,6 +179,12 @@ public abstract class AbstractSkill implements Skill {
     public final SkillProperties getProperties() {
 
         return properties;
+    }
+
+    @Override
+    public EffectProperties getEffectProperties() {
+
+        return (EffectProperties) properties;
     }
 
     protected final void setDescription(String description) {

@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.Passive;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
@@ -16,6 +17,7 @@ import java.util.*;
 public final class SkillManager extends JarFilesSkillLoader {
 
     private final SkillsPlugin plugin;
+    private final File configDir;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
@@ -27,8 +29,25 @@ public final class SkillManager extends JarFilesSkillLoader {
         super(plugin.getLogger(), new File(plugin.getDataFolder(), "/skills/"));
         this.plugin = plugin;
 
+        // lets go thru all the skill configs and remove the .disabled
+        this.configDir = new File(plugin.getDataFolder(), "/skill-configs/");
+        configDir.mkdirs();
+        for (File file : configDir.listFiles()) {
+            if (file.getName().endsWith(".disabled")) {
+                file.renameTo(new File(file, file.getName().replace(".disabled", "")));
+            }
+        }
+
         for (Class<? extends Skill> clazz : loadSkillClasses()) {
-            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(), new SkillFactory(plugin, clazz));
+            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
+                    new SkillFactory(plugin, clazz, configDir));
+        }
+
+        // and now go thru all loaded skills and add disabled annotations to the configs
+        for (File file : configDir.listFiles()) {
+            if (!skillFactories.containsKey(file.getName().replace(".yml", "").toLowerCase().trim())) {
+                file.renameTo(new File(file, ".disabled"));
+            }
         }
     }
 
@@ -41,7 +60,8 @@ public final class SkillManager extends JarFilesSkillLoader {
     public void registerSkill(Class<? extends Skill> clazz) {
 
         if (clazz.isAnnotationPresent(SkillInformation.class)) {
-            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(), new SkillFactory(plugin, clazz));
+            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
+                    new SkillFactory(plugin, clazz, configDir));
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + clazz.getCanonicalName());
         }
@@ -62,20 +82,28 @@ public final class SkillManager extends JarFilesSkillLoader {
         return playerSkills.get(hero.getUserName()).get(skill);
     }
 
-    protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skill) throws UnknownSkillException {
+    protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skillName) throws UnknownSkillException {
 
-        skill = skill.toLowerCase();
-        if (!skillFactories.containsKey(skill)) {
-            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
+        Skill skill;
+        skillName = skillName.toLowerCase();
+        if (!skillFactories.containsKey(skillName)) {
+            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
         if (!playerSkills.containsKey(hero.getUserName())) {
             playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
         }
-        if (!playerSkills.get(hero.getUserName()).containsKey(skill)) {
+        if (!playerSkills.get(hero.getUserName()).containsKey(skillName)) {
             // create a new skill instance for this hero and profession
-            playerSkills.get(hero.getUserName()).put(skill, skillFactories.get(skill).create(hero, profession, factory));
+            skill = skillFactories.get(skillName).create(hero, profession, factory);
+            playerSkills.get(hero.getUserName()).put(skillName, skill);
+            // add skill to our passive list if it is a passive skill
+            if (skill instanceof Passive) {
+                passiveSkills.add(skill);
+            }
+        } else {
+            skill = playerSkills.get(hero.getUserName()).get(skillName);
         }
-        return playerSkills.get(hero.getUserName()).get(skill);
+        return skill;
     }
 
     public Collection<? extends Skill> getAllSkills() {

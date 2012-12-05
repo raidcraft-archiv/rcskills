@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -13,6 +14,8 @@ import org.bukkit.entity.LivingEntity;
 public interface Effect {
 
     public void apply(Hero source, LivingEntity target) throws CombatException;
+
+    public Skill getSkill();
 
     public void setTaskId(int taskId);
 

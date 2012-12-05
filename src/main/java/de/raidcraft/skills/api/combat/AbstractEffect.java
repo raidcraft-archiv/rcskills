@@ -1,14 +1,31 @@
 package de.raidcraft.skills.api.combat;
 
+import de.raidcraft.skills.api.skill.Skill;
+
 /**
  * @author Silthus
  */
 public abstract class AbstractEffect implements Effect {
 
+    private final Skill skill;
     private int taskId;
     private int duration = 0;
     private int delay = 0;
     private int interval = 0;
+
+    protected AbstractEffect(Skill skill) {
+
+        this.skill = skill;
+        this.duration = skill.getTotalEffectDuration();
+        this.delay = skill.getTotalEffectDelay();
+        this.interval = skill.getTotalEffectInterval();
+    }
+
+    @Override
+    public Skill getSkill() {
+
+        return skill;
+    }
 
     @Override
     public final int getTaskId() {

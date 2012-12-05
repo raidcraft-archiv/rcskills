@@ -43,13 +43,9 @@ public interface SkillProperties {
 
     public double getDamageLevelModifier();
 
-    public double getCastTime();
+    public int getCastTime();
 
     public double getCastTimeLevelModifier();
-
-    public double getDuration();
-
-    public double getDurationLevelModifier();
 
     public double getSkillLevelDamageModifier();
 
@@ -61,8 +57,6 @@ public interface SkillProperties {
 
     public double getSkillLevelCastTimeModifier();
 
-    public double getSkillLevelDurationModifier();
-
     public double getProfLevelDamageModifier();
 
     public double getProfLevelManaCostModifier();
@@ -72,6 +66,4 @@ public interface SkillProperties {
     public double getProfLevelHealthCostModifier();
 
     public double getProfLevelCastTimeModifier();
-
-    public double getProfLevelDurationModifier();
 }

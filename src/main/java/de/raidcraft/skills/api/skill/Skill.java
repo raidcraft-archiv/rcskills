@@ -4,6 +4,7 @@ import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.util.DataMap;
@@ -71,6 +72,14 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public int getTotalHealthCost();
 
     public SkillProperties getProperties();
+
+    public EffectProperties getEffectProperties();
+
+    public int getTotalEffectDuration();
+
+    public int getTotalEffectInterval();
+
+    public int getTotalEffectDelay();
 
     public Profession getProfession() throws UnknownProfessionException;
 

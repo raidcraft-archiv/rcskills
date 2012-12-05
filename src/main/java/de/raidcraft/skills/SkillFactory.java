@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -26,9 +27,7 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public final class SkillFactory extends YamlConfiguration implements SkillProperties {
-
-    public static final String CONFIG_NAME = "skills.yml";
+public final class SkillFactory extends YamlConfiguration implements SkillProperties, EffectProperties {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
@@ -42,12 +41,12 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
      *
      * @param plugin
      */
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
         this.plugin = plugin;
         this.sClass = sClass;
         this.information = sClass.getAnnotation(SkillInformation.class);
-        this.file = new File(plugin.getDataFolder(), CONFIG_NAME);
+        this.file = new File(configDir, information.name() + ".yml");
         // load the global skill config - values in it are overriden by the profession config
         loadFile();
         plugin.getLogger().info("Skill loaded: " + information.name());
@@ -100,21 +99,22 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
 
         try {
             String name = information.name();
-            if (!file.exists()) file.createNewFile();
+            boolean createDefaults = false;
+            if (!file.exists()) {
+                file.createNewFile();
+                createDefaults = true;
+            }
             // load the actual file
             load(file);
-            // lets check if we need to create defaults
-            ConfigurationSection section = getConfigurationSection(name);
-            if (section == null) {
-                createSection(name);
-                section = getConfigurationSection(name);
+
+            if (createDefaults) {
                 // yes we do so lets parse the defaults and go
-                section.set("name", name);
-                section.set("description", information.desc());
-                section.set("usage", new ArrayList<String>());
-                section.set("strong-parents", new ArrayList<String>());
-                section.set("weak-parents", new ArrayList<String>());
-                section.createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
+                set("name", name);
+                set("description", information.desc());
+                set("usage", new ArrayList<String>());
+                set("strong-parents", new ArrayList<String>());
+                set("weak-parents", new ArrayList<String>());
+                createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
                 save();
             }
         } catch (IOException e) {
@@ -270,27 +270,15 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     }
 
     @Override
-    public double getCastTime() {
+    public int getCastTime() {
 
-        return getOverrideDouble("cast-time", 0);
+        return getOverrideInt("cast-time", 0);
     }
 
     @Override
     public double getCastTimeLevelModifier() {
 
         return getOverrideDouble("cast-time-modifier", 0);
-    }
-
-    @Override
-    public double getDuration() {
-
-        return getOverrideDouble("duration", 0);
-    }
-
-    @Override
-    public double getDurationLevelModifier() {
-
-        return getOverrideDouble("duration-level-modifier", 0);
     }
 
     @Override
@@ -330,12 +318,6 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     }
 
     @Override
-    public double getSkillLevelDurationModifier() {
-
-        return getOverrideDouble("skill-level-duration-modifier", 0);
-    }
-
-    @Override
     public double getProfLevelDamageModifier() {
 
         return getOverrideDouble("prof-level-damage-modifier", 0);
@@ -366,8 +348,74 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     }
 
     @Override
-    public double getProfLevelDurationModifier() {
+    public int getDuration() {
 
-        return getOverrideDouble("prof-level-duration-modifier", 0);
+        return getOverrideInt("effect.duration", 0);
+    }
+
+    @Override
+    public int getDelay() {
+
+        return getOverrideInt("effect.delay", 0);
+    }
+
+    @Override
+    public int getInterval() {
+
+        return getOverrideInt("effect.interval", 0);
+    }
+
+    @Override
+    public double getDurationLevelModifier() {
+
+        return getOverrideDouble("effect.duration-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDurationSkillLevelModifier() {
+
+        return getOverrideDouble("effect.duration-skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDurationProfLevelModifier() {
+
+        return getOverrideDouble("effect.duration-prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDelayLevelModifier() {
+
+        return getOverrideDouble("effect.delay-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDelaySkillLevelModifier() {
+
+        return getOverrideDouble("effect.delay-skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDelayProfLevelModifier() {
+
+        return getOverrideDouble("effect.delay-prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getIntervalLevelModifier() {
+
+        return getOverrideDouble("effect.interval-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getIntervalSkillLevelModifier() {
+
+        return getOverrideDouble("effect.interval-skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getIntervalProfLevelModifier() {
+
+        return getOverrideDouble("effect.interval-prof-level-modifier", 0.0);
     }
 }
