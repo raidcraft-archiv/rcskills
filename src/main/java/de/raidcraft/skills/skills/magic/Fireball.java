@@ -2,7 +2,6 @@ package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.combat.AbstractEffect;
-import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -66,7 +65,7 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
                 } catch (CombatException e) {
                     return;
                 }
-                addEffect(new FireballEffect().setDelay(5).setDuration(20).setInterval(2), target);
+                addEffect(new FireballEffect(Fireball.this), target);
             }
         }, target);
         // add some exp to the profession and skill
@@ -74,11 +73,12 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         getLevel().addExp(5);
     }
 
-    @EffectInformation(
-            name = "FireballEffect",
-            description = "Das Ziel brennt von der Hitze des Feuerballs."
-    )
     public class FireballEffect extends AbstractEffect {
+
+        public FireballEffect(Skill skill) {
+
+            super(skill);
+        }
 
         @Override
         public void apply(Hero hero, LivingEntity target) throws CombatException {

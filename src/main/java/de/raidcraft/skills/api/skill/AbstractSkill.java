@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
-import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
