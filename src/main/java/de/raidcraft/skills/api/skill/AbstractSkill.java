@@ -121,7 +121,12 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final String getDescription() {
 
-        return description;
+        return description
+                .replace("%player%", hero.getDisplayName())
+                .replace("%damage%", getTotalDamage() + "")
+                .replace("%mana-cost%", getTotalManaCost() + "")
+                .replace("%health-cost%", getTotalHealthCost() + "")
+                .replace("%stamina-cost%", getTotalStaminaCost() + "");
     }
 
     @Override
@@ -151,12 +156,6 @@ public abstract class AbstractSkill implements Skill {
     protected final void setDescription(String description) {
 
         this.description = description;
-    }
-
-    @Override
-    public String getDescription(Hero hero) {
-
-        return getDescription();
     }
 
     @Override

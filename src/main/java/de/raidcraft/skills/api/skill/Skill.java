@@ -58,8 +58,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public Hero getHero();
 
-    public String getDescription(Hero hero);
-
     public boolean isActive();
 
     public boolean isUnlocked();
