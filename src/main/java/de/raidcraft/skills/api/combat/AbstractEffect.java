@@ -10,6 +10,7 @@ public abstract class AbstractEffect implements Effect {
     private final Skill skill;
     private final EffectInformation info;
     private int taskId;
+    private int damage = 0;
     private int duration = 0;
     private int delay = 0;
     private int interval = 0;
@@ -36,6 +37,14 @@ public abstract class AbstractEffect implements Effect {
     }
 
     @Override
+    public final double getStrength() {
+
+        // calculates the virtual strength of this effect
+        // this a decision base for other effects to override this
+        return (getInterval() * getDuration()) * getDamage();
+    }
+
+    @Override
     public Skill getSkill() {
 
         return skill;
@@ -51,6 +60,18 @@ public abstract class AbstractEffect implements Effect {
     public final void setTaskId(int taskId) {
 
         this.taskId = taskId;
+    }
+
+    @Override
+    public int getDamage() {
+
+        return damage;
+    }
+
+    @Override
+    public void setDamage(int damage) {
+
+        this.damage = damage;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
 
     public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
-        super(hero, skillData, database, profession);
+        super(hero, skillData, profession, database);
     }
 
     @Override

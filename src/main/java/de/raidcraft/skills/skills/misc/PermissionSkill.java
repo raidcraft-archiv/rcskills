@@ -30,7 +30,7 @@ public class PermissionSkill extends AbstractSkill {
 
     protected PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
-        super(hero, data, database, profession);
+        super(hero, data, profession, database);
     }
 
 

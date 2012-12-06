@@ -14,6 +14,7 @@ import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
+import de.raidcraft.skills.skills.physical.Strike;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -71,6 +72,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         SkillManager m = getSkillManager();
         m.registerSkill(Fireball.class);
         m.registerSkill(PermissionSkill.class);
+        m.registerSkill(Strike.class);
     }
 
     @Override

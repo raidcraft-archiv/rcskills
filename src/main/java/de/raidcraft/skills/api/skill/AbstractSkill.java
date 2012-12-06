@@ -29,7 +29,7 @@ public abstract class AbstractSkill implements Skill {
     private final Collection<Skill> strongParents = new HashSet<>();
     private final Collection<Skill> weakParents = new HashSet<>();
 
-    protected AbstractSkill(Hero hero, SkillProperties data, THeroSkill database, Profession profession) {
+    protected AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         this.id = database.getId();
         this.hero = hero;
@@ -137,7 +137,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final String getName() {
 
-        return getProperties().getName();
+        return getProperties().getName().toLowerCase();
     }
 
     @Override

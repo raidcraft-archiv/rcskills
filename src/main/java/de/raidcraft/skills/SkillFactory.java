@@ -46,16 +46,19 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
         this.plugin = plugin;
         this.sClass = sClass;
         this.information = sClass.getAnnotation(SkillInformation.class);
-        this.file = new File(configDir, information.name() + ".yml");
+        this.file = new File(configDir, information.name().toLowerCase() + ".yml");
         // load the global skill config - values in it are overriden by the profession config
         loadFile();
-        plugin.getLogger().info("Skill loaded: " + information.name());
+        plugin.getLogger().info("Skill loaded: " + information.name().toLowerCase());
     }
 
     protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
 
         // set the config that overrides the default skill parameters with the profession config
-        this.professionConfig = factory.getConfigurationSection("skills." + information.name());
+        this.professionConfig = factory.getConfigurationSection("skills." + information.name().toLowerCase());
+        if (this.professionConfig == null) {
+            this.professionConfig = factory.createSection("skills." + information.name().toLowerCase());
+        }
         // lets load the database
         THeroSkill database = loadDatabase(hero, factory);
 
@@ -82,9 +85,12 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
 
     private THeroSkill loadDatabase(Hero hero, ProfessionFactory factory) {
 
-        THeroSkill database = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("name", information.name()).findUnique();
+        THeroSkill database = Ebean.find(THeroSkill.class).where()
+                .eq("hero_id", hero.getId())
+                .eq("name", information.name().toLowerCase()).findUnique();
         if (database == null) {
             database = new THeroSkill();
+            database.setName(getName());
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(0);
@@ -98,7 +104,7 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     private void loadFile() {
 
         try {
-            String name = information.name();
+            String name = information.name().toLowerCase();
             boolean createDefaults = false;
             if (!file.exists()) {
                 file.createNewFile();
@@ -134,6 +140,12 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getName() {
+
+        return information.name().toLowerCase();
     }
 
     @Override
@@ -218,37 +230,37 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     @Override
     public int getManaCost() {
 
-        return getOverrideInt("mana-cost", 0);
+        return getOverrideInt("mana.base-cost", 0);
     }
 
     @Override
     public double getManaLevelModifier() {
 
-        return getOverrideDouble("mana-level-modifier", 0);
+        return getOverrideDouble("mana.level-modifier", 0);
     }
 
     @Override
     public int getStaminaCost() {
 
-        return getOverrideInt("stamina-cost", 0);
+        return getOverrideInt("stamina.base-cost", 0);
     }
 
     @Override
     public double getStaminaLevelModifier() {
 
-        return getOverrideDouble("stamina-level-modifier", 0);
+        return getOverrideDouble("stamina.level-modifier", 0);
     }
 
     @Override
     public int getHealthCost() {
 
-        return getOverrideInt("health-cost", 0);
+        return getOverrideInt("health.base-cost", 0);
     }
 
     @Override
     public double getHealthLevelModifier() {
 
-        return getOverrideDouble("health-level-modifier", 0);
+        return getOverrideDouble("health.level-modifier", 0);
     }
 
     @Override
@@ -260,25 +272,25 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     @Override
     public int getDamage() {
 
-        return getOverrideInt("damage", 0);
+        return getOverrideInt("damage.base", 0);
     }
 
     @Override
     public double getDamageLevelModifier() {
 
-        return getOverrideDouble("damage-level-modifier", 0);
+        return getOverrideDouble("damage.level-modifier", 0);
     }
 
     @Override
     public int getCastTime() {
 
-        return getOverrideInt("cast-time", 0);
+        return getOverrideInt("casttime.base", 0);
     }
 
     @Override
     public double getCastTimeLevelModifier() {
 
-        return getOverrideDouble("cast-time-modifier", 0);
+        return getOverrideDouble("casttime.level-modifier", 0);
     }
 
     @Override
@@ -290,61 +302,61 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     @Override
     public double getSkillLevelDamageModifier() {
 
-        return getOverrideDouble("skill-level-damage-modifier", 0);
+        return getOverrideDouble("damage.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelManaCostModifier() {
 
-        return getOverrideDouble("skill-level-mana-modifier", 0);
+        return getOverrideDouble("mana.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelStaminaCostModifier() {
 
-        return getOverrideDouble("skill-level-stamina-modifier", 0);
+        return getOverrideDouble("stamina.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelHealthCostModifier() {
 
-        return getOverrideDouble("skill-level-health-modifier", 0);
+        return getOverrideDouble("health.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelCastTimeModifier() {
 
-        return getOverrideDouble("skill-level-casttime-modifier", 0);
+        return getOverrideDouble("casttime.skill-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelDamageModifier() {
 
-        return getOverrideDouble("prof-level-damage-modifier", 0);
+        return getOverrideDouble("damage.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelManaCostModifier() {
 
-        return getOverrideDouble("prof-level-mana-modifier", 0);
+        return getOverrideDouble("mana.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelStaminaCostModifier() {
 
-        return getOverrideDouble("prof-level-stamina-modifier", 0);
+        return getOverrideDouble("stamina.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelHealthCostModifier() {
 
-        return getOverrideDouble("prof-level-health-modifier", 0);
+        return getOverrideDouble("health.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelCastTimeModifier() {
 
-        return getOverrideDouble("prof-level-casttime-modifier", 0);
+        return getOverrideDouble("casttime.prof-level-modifier", 0);
     }
 
     @Override

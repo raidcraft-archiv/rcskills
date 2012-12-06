@@ -4,6 +4,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,10 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -43,7 +41,14 @@ public final class CombatManager implements Listener {
             // lets cancel the old effect first
             for (Effect e : effects) {
                 if (e.equals(effect)) {
-                    Bukkit.getScheduler().cancelTask(e.getTaskId());
+                    // lets check if the effect is stronger and if yes cancel the old one
+                    if (effect.getStrength() > e.getStrength()) {
+                        Bukkit.getScheduler().cancelTask(e.getTaskId());
+                    } else {
+                        // tell the hero that a stronger effect of the same type is active
+                        source.sendMessage(ChatColor.RED + "Es ist bereits ein stärkerer Effect vom selben Typ aktiv.");
+                        return;
+                    }
                 }
             }
         }
@@ -85,9 +90,26 @@ public final class CombatManager implements Listener {
         // damage the actual entity
         target.setNoDamageTicks(0);
         target.setLastDamage(damage);
-        target.setHealth(target.getHealth() - damage);
+        int newHealth = target.getHealth() - damage;
+        if (newHealth < 0) {
+            newHealth = 0;
+        }
+        target.setHealth(newHealth);
+        // TODO: play death animation
         target.setLastDamageCause(event);
         // TODO: check if it actually works like this
+    }
+
+    public void damageEntity(LivingEntity source, LivingEntity target, int damage, CombatCallback callback) throws CombatException {
+
+        damageEntity(source, target, damage);
+
+        if (target == null || target.isDead()) {
+            return;
+        }
+        // we only come here if no combat exception is thrown
+        // so lets call the callback function
+        callback.run(target);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -98,4 +120,6 @@ public final class CombatManager implements Listener {
             appliedEffects.remove(event.getEntity());
         }
     }
+
+
 }

@@ -21,9 +21,15 @@ public interface Effect {
 
     public Skill getSkill();
 
+    public double getStrength();
+
     public void setTaskId(int taskId);
 
     public int getTaskId();
+
+    public int getDamage();
+
+    public void setDamage(int damage);
 
     public Effect setDuration(int duration);
 

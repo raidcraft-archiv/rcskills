@@ -7,6 +7,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.CombatCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -293,6 +294,12 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void damageEntity(LivingEntity target, int damage) throws CombatException {
 
         RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getBukkitPlayer(), target, damage);
+    }
+
+    @Override
+    public void damageEntity(LivingEntity target, int damage, CombatCallback callback) throws CombatException {
+
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getBukkitPlayer(), target, damage, callback);
     }
 
     @Override
