@@ -121,7 +121,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public final void saveLevelProgress(Level<Profession> level) {
 
-        THeroProfession profession = Ebean.find(THeroProfession.class, getProperties());
+        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
         profession.setLevel(level.getLevel());
         profession.setExp(level.getExp());
         Ebean.save(profession);

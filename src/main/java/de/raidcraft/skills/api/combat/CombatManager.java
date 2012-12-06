@@ -25,7 +25,7 @@ public final class CombatManager implements Listener {
     private final SkillsPlugin plugin;
 
     private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
-    private final Map<LivingEntity, List<SourcedCallback>> rangeCallbacks = new HashMap<>();
+    private final List<SourcedCallback> rangeCallbacks = new ArrayList<>();
 
     public CombatManager(SkillsPlugin plugin) {
 
@@ -112,15 +112,25 @@ public final class CombatManager implements Listener {
         }
         // we need to check if it is a projectile or not
         if (callback instanceof RangedCallback) {
-            // lets add it to the listener
-            if (!rangeCallbacks.containsKey(target)) {
-                rangeCallbacks.put(target, new ArrayList<SourcedCallback>());
-            }
-            rangeCallbacks.get(target).add(new SourcedCallback(source, target, callback));
+            castRangeAttack(source, callback);
         } else {
             // lets call it directly
             callback.run(target);
         }
+    }
+
+    public void castRangeAttack(LivingEntity source, Callback callback) {
+
+        // lets add it to the listener
+        final SourcedCallback cb = new SourcedCallback(source, callback);
+        rangeCallbacks.add(cb);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                rangeCallbacks.remove(cb);
+            }
+        }, plugin.getCommonConfig().callback_purge_time);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -129,10 +139,6 @@ public final class CombatManager implements Listener {
         // we need to remove entites that died from the effect list
         if (appliedEffects.containsKey(event.getEntity())) {
             appliedEffects.remove(event.getEntity());
-        }
-        // also remove from our range callback list
-        if (rangeCallbacks.containsKey(event.getEntity())) {
-            rangeCallbacks.remove(event.getEntity());
         }
     }
 
@@ -143,22 +149,17 @@ public final class CombatManager implements Listener {
         if (!(entity instanceof LivingEntity)) {
             return;
         }
-        // first lets check if the victim is registered for callbacks
-        if (!rangeCallbacks.containsKey(entity)) {
-            return;
-        }
         // check if the entity was damaged by a projectile
         if (!(event.getDamager() instanceof Projectile)) {
             return;
         }
         // and go thru all registered callbacks
-        for (SourcedCallback callback : new ArrayList<>(rangeCallbacks.get(entity))) {
-            if (callback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
+        for (SourcedCallback sourcedCallback : new ArrayList<>(rangeCallbacks)) {
+            if (sourcedCallback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
                 // the shooter is our source so lets call back and remove
-                callback.run();
-                rangeCallbacks.get(entity).remove(callback);
+                sourcedCallback.getCallback().run((LivingEntity) entity);
+                rangeCallbacks.remove(sourcedCallback);
             }
         }
     }
-
 }

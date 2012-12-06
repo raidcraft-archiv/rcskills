@@ -9,9 +9,6 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
-import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
@@ -29,15 +26,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Silthus
  */
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
-    public static void debug(String message) {
+/*    public static void debug(String message) {
 
         logger.debug(message);
     }
@@ -72,7 +67,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         logger.debug(hero + message.getMessage(), message);
     }
 
-    private static DebugLogger logger = new DebugLogger("Minecraft.RaidCraft.Skills.Debug");
+    private static DebugLogger logger = new DebugLogger("Minecraft.RaidCraft.Skills.Debug");*/
     private SkillManager skillManager;
     private ProfessionManager professionManager;
     private HeroManager heroManager;
@@ -157,6 +152,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public boolean allow_op;
         @Setting("max-player-level")
         public int max_player_level;
+        @Setting("callback-purge-ticks")
+        public long callback_purge_time = 1200;
 
         public LocalConfiguration(BasePlugin plugin) {
 
@@ -190,39 +187,5 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         getHeroManager().getHero(event.getPlayer()).save();
-    }
-
-    public static class DebugLogger extends Logger {
-
-        /**
-         * Protected method to construct a logger for a named subsystem.
-         * <p/>
-         * The logger will be initially configured with a null Level
-         * and with useParentHandlers set to true.
-         *
-         * @param name               A name for the logger.  This should
-         *                           be a dot-separated name and should normally
-         *                           be based on the package name or class name
-         *                           of the subsystem, such as java.net
-         *                           or javax.swing.  It may be null for anonymous Loggers.
-         *
-         * @throws java.util.MissingResourceException
-         *          if the resourceBundleName is non-null and
-         *          no corresponding resource can be found.
-         */
-        protected DebugLogger(String name) {
-
-            super(name, "");
-        }
-
-        public void debug(String message) {
-
-            log(Level.INFO, message);
-        }
-
-        public void debug(String message, Throwable throwable) {
-
-            log(Level.INFO, message, throwable);
-        }
     }
 }

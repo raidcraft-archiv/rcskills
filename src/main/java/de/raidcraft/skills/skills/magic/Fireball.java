@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills.magic;
 
-import de.raidcraft.skills.api.TargetedAttack;
+import de.raidcraft.skills.api.AreaAttack;
 import de.raidcraft.skills.api.combat.AbstractEffect;
 import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.combat.RangedCallback;
@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -25,7 +26,7 @@ import org.bukkit.entity.Player;
         types = {Skill.Type.DAMAGING, Skill.Type.FIRE, Skill.Type.HARMFUL},
         defaults = {"incinerate: false", "bounce: false"}
 )
-public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
+public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
     private boolean incinerate = false;
     private boolean bounce = false;
@@ -43,7 +44,7 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
     }
 
     @Override
-    public void run(final Hero hero, final LivingEntity target) throws CombatException {
+    public void run(final Hero hero, final Location target) throws CombatException {
 
         Player caster = hero.getBukkitPlayer();
         // lets create a new Spell from the Spells component
@@ -55,9 +56,9 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         fireball.setBounce(bounce);
         fireball.setFireTicks(0);
         // lets register a spell callback that is called when the fireball hits
-        hero.damageEntity(target, 0, new RangedCallback() {
+        hero.castRangeAttack(new RangedCallback() {
             @Override
-            public void run(LivingEntity entity) {
+            public void run(LivingEntity target) {
 
                 try {
                     hero.damageEntity(target, getTotalDamage());

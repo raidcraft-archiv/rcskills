@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.hero;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.combat.Callback;
+import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -66,6 +67,8 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public void damageEntity(LivingEntity target, int damage) throws CombatException;
 
     public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException;
+
+    public void castRangeAttack(RangedCallback callback);
 
     public Skill getSkillFromArg(String input) throws CommandException;
 }
