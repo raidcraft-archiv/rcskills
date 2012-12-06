@@ -15,6 +15,10 @@ public interface Effect {
 
     public void apply(Hero source, LivingEntity target) throws CombatException;
 
+    public String getName();
+
+    public String getDescription();
+
     public Skill getSkill();
 
     public void setTaskId(int taskId);

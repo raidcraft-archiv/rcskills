@@ -83,7 +83,7 @@ public class SkillsCommand {
                         .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
                 sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
-                sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription(hero));
+                sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
                 return sb.toString();
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));

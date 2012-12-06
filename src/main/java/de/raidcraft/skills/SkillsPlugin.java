@@ -140,6 +140,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        event.getPlayer().setRemainingAir(event.getPlayer().getRemainingAir());
     }
 
     @EventHandler(ignoreCancelled = true)

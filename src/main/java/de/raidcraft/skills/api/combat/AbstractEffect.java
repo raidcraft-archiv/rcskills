@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.skill.Skill;
 public abstract class AbstractEffect implements Effect {
 
     private final Skill skill;
+    private final EffectInformation info;
     private int taskId;
     private int duration = 0;
     private int delay = 0;
@@ -16,9 +17,22 @@ public abstract class AbstractEffect implements Effect {
     protected AbstractEffect(Skill skill) {
 
         this.skill = skill;
+        this.info = getClass().getAnnotation(EffectInformation.class);
         this.duration = skill.getTotalEffectDuration();
         this.delay = skill.getTotalEffectDelay();
         this.interval = skill.getTotalEffectInterval();
+    }
+
+    @Override
+    public String getName() {
+
+        return info.name();
+    }
+
+    @Override
+    public String getDescription() {
+
+        return info.description();
     }
 
     @Override
@@ -86,8 +100,9 @@ public abstract class AbstractEffect implements Effect {
     @Override
     public boolean equals(Object obj) {
 
+        // IMPORTANT: An effect has a skill but is compared by its name and not the skill
+        // this is important for checking duplicate or stronger effects from different skills
         return obj instanceof Effect
-                && convertName(obj.getClass().getAnnotation(EffectInformation.class).name())
-                .equals(convertName(getClass().getAnnotation(EffectInformation.class).name()));
+                && ((Effect) obj).getName().equalsIgnoreCase(getName());
     }
 }
