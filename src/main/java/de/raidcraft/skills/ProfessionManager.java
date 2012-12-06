@@ -6,8 +6,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -49,5 +48,14 @@ public final class ProfessionManager {
             professions.get(hero.getUserName()).put(profId, profession);
         }
         return professions.get(hero.getUserName()).get(profId);
+    }
+
+    public List<Profession> getAllProfessions(Hero hero) throws UnknownSkillException {
+
+        List<Profession> professions = new ArrayList<>();
+        for (ProfessionFactory factory : professionFactories.values()) {
+            professions.add(factory.create(hero));
+        }
+        return professions;
     }
 }

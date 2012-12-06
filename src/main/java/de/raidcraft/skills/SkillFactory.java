@@ -87,7 +87,9 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
             database.setExp(0);
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession(Ebean.find(THeroProfession.class).where().eq("name", factory.getName()).findUnique());
+            database.setProfession(Ebean.find(THeroProfession.class).where()
+                    .eq("name", factory.getName())
+                    .eq("hero_id", hero.getId()).findUnique());
             Ebean.save(database);
         }
         return database;

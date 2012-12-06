@@ -66,10 +66,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
             try {
                 Profession profession = manager.getProfession(this, professionName);
                 professions.put(profession.getProperties().getName().toLowerCase(), profession);
-            } catch (UnknownSkillException e) {
-                RaidCraft.LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-            } catch (UnknownProfessionException e) {
+            } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
                 e.printStackTrace();
             }

@@ -45,10 +45,13 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
     private THeroProfession loadDatabase(Hero hero, String name) {
 
         // then load the hero stats from the database
-        THeroProfession database = Ebean.find(THeroProfession.class).where().eq("name", name).eq("hero_id", hero.getId()).findUnique();
+        THeroProfession database = Ebean.find(THeroProfession.class).where()
+                .eq("name", name)
+                .eq("hero_id", hero.getId()).findUnique();
         if (database == null) {
             // create a new entry
             database = new THeroProfession();
+            database.setName(getName());
             database.setHero(Ebean.find(THero.class, hero.getId()));
             database.setLevel(1);
             database.setExp(0);

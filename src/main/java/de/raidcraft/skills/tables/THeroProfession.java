@@ -17,7 +17,6 @@ public class THeroProfession implements LevelData {
     private int id;
 
     @NotNull
-    @Column(unique = true)
     private String name;
 
     @ManyToOne

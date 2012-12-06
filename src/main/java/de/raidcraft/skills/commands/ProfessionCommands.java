@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.util.PaginatedResult;
@@ -38,7 +39,12 @@ public class ProfessionCommands {
         }
 
         final Hero hero = plugin.getHeroManager().getHero((Player) sender);
-        List<Profession> professions = hero.getProfessions();
+        List<Profession> professions;
+        try {
+            professions = plugin.getProfessionManager().getAllProfessions(hero);
+        } catch (UnknownSkillException e) {
+            throw new CommandException(e.getMessage());
+        }
 
         if (professions == null || professions.size() < 1) {
             throw new CommandException("Da gibts noch nix zu sehen!");
@@ -47,8 +53,7 @@ public class ProfessionCommands {
         for (int i = 0; i < professions.size(); i++) {
             if (!args.hasFlag('a') && !professions.get(i).isActive()) {
                 professions.remove(i);
-            }
-            if (args.hasFlag('c') && !hero.canChoose(professions.get(i))) {
+            } else if (args.hasFlag('c') && !hero.canChoose(professions.get(i))) {
                 professions.remove(i);
             }
         }
