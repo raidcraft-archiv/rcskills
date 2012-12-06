@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.combat;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.skill.Skill;
 
 /**
@@ -10,8 +12,11 @@ public abstract class AbstractEffect implements Effect {
     private final Skill skill;
     private final EffectInformation info;
     private int taskId;
-    private int damage = 0;
+    private double priority;
+    // messures how long this effect was running for
     private int duration = 0;
+    private int damage = 0;
+    private int totalDuration = 0;
     private int delay = 0;
     private int interval = 0;
 
@@ -19,7 +24,8 @@ public abstract class AbstractEffect implements Effect {
 
         this.skill = skill;
         this.info = getClass().getAnnotation(EffectInformation.class);
-        this.duration = skill.getTotalEffectDuration();
+        this.priority = skill.getEffectProperties().getEffectPriority();
+        this.totalDuration = skill.getTotalEffectDuration();
         this.delay = skill.getTotalEffectDelay();
         this.interval = skill.getTotalEffectInterval();
     }
@@ -27,7 +33,7 @@ public abstract class AbstractEffect implements Effect {
     @Override
     public String getName() {
 
-        return info.name();
+        return convertName(info.name());
     }
 
     @Override
@@ -37,11 +43,31 @@ public abstract class AbstractEffect implements Effect {
     }
 
     @Override
-    public final double getStrength() {
+    public final double getPriority() {
 
         // calculates the virtual strength of this effect
         // this a decision base for other effects to override this
-        return (getInterval() * getDuration()) * getDamage();
+        if (priority == RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().default_effect_priority) {
+            return (interval * (totalDuration - duration)) * getDamage();
+        } else {
+            return priority;
+        }
+    }
+
+    @Override
+    public void increaseDuration() {
+
+        if (duration == 0) {
+            duration = delay;
+        } else {
+            duration += interval;
+        }
+    }
+
+    @Override
+    public int getDuration() {
+
+        return duration;
     }
 
     @Override
@@ -75,16 +101,16 @@ public abstract class AbstractEffect implements Effect {
     }
 
     @Override
-    public Effect setDuration(int duration) {
+    public Effect setTotalDuration(int duration) {
 
-        this.duration = duration;
+        this.totalDuration = duration;
         return this;
     }
 
     @Override
-    public int getDuration() {
+    public int getTotalDuration() {
 
-        return duration;
+        return totalDuration;
     }
 
     @Override

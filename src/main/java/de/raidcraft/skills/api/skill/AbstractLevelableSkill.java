@@ -65,19 +65,19 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final int getTotalEffectDuration() {
 
-        return (int) (super.getTotalEffectDuration() + getEffectProperties().getDurationSkillLevelModifier() * getLevel().getLevel());
+        return (int) (super.getTotalEffectDuration() + getEffectProperties().getEffectDurationSkillLevelModifier() * getLevel().getLevel());
     }
 
     @Override
     public final int getTotalEffectInterval() {
 
-        return (int) (super.getTotalEffectInterval() + getEffectProperties().getIntervalSkillLevelModifier() * getLevel().getLevel());
+        return (int) (super.getTotalEffectInterval() + getEffectProperties().getEffectIntervalSkillLevelModifier() * getLevel().getLevel());
     }
 
     @Override
     public final int getTotalEffectDelay() {
 
-        return (int) (super.getTotalEffectDelay() + getEffectProperties().getDelaySkillLevelModifier() * getLevel().getLevel());
+        return (int) (super.getTotalEffectDelay() + getEffectProperties().getEffectDelaySkillLevelModifier() * getLevel().getLevel());
     }
 
     @Override

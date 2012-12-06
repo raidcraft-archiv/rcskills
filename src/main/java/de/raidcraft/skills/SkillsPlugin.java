@@ -154,6 +154,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int max_player_level;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
+        @Setting("defaults.effect-priority")
+        public double default_effect_priority = 1.0;
 
         public LocalConfiguration(BasePlugin plugin) {
 

@@ -5,27 +5,29 @@ package de.raidcraft.skills.api.persistance;
  */
 public interface EffectProperties {
 
-    public int getDuration();
+    public double getEffectPriority();
 
-    public int getDelay();
+    public int getEffectDuration();
 
-    public int getInterval();
+    public int getEffectDelay();
 
-    public double getDurationLevelModifier();
+    public int getEffectInterval();
 
-    public double getDurationSkillLevelModifier();
+    public double getEffectDurationLevelModifier();
 
-    public double getDurationProfLevelModifier();
+    public double getEffectDurationSkillLevelModifier();
 
-    public double getDelayLevelModifier();
+    public double getEffectDurationProfLevelModifier();
 
-    public double getDelaySkillLevelModifier();
+    public double getEffectDelayLevelModifier();
 
-    public double getDelayProfLevelModifier();
+    public double getEffectDelaySkillLevelModifier();
 
-    public double getIntervalLevelModifier();
+    public double getEffectDelayProfLevelModifier();
 
-    public double getIntervalSkillLevelModifier();
+    public double getEffectIntervalLevelModifier();
 
-    public double getIntervalProfLevelModifier();
+    public double getEffectIntervalSkillLevelModifier();
+
+    public double getEffectIntervalProfLevelModifier();
 }

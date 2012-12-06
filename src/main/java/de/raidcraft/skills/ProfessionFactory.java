@@ -64,10 +64,7 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
         try {
             // load the flat file config
             load(file);
-        } catch (IOException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }

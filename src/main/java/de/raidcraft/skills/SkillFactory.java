@@ -64,19 +64,11 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
 
         // its reflection time yay!
         try {
-            Constructor<? extends Skill> constructor = sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
+            Constructor<? extends Skill> constructor =
+                    sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
             constructor.setAccessible(true);
             return constructor.newInstance(hero, this, profession, database);
-        } catch (NoSuchMethodException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
@@ -123,10 +115,7 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
                 createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
                 save();
             }
-        } catch (IOException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
@@ -360,73 +349,79 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     }
 
     @Override
-    public int getDuration() {
+    public double getEffectPriority() {
+
+        return getOverrideDouble("effect.priority", plugin.getCommonConfig().default_effect_priority);
+    }
+
+    @Override
+    public int getEffectDuration() {
 
         return getOverrideInt("effect.duration", 0);
     }
 
     @Override
-    public int getDelay() {
+    public int getEffectDelay() {
 
         return getOverrideInt("effect.delay", 0);
     }
 
     @Override
-    public int getInterval() {
+    public int getEffectInterval() {
 
         return getOverrideInt("effect.interval", 0);
     }
 
     @Override
-    public double getDurationLevelModifier() {
+    public double getEffectDurationLevelModifier() {
 
         return getOverrideDouble("effect.duration-level-modifier", 0.0);
     }
 
     @Override
-    public double getDurationSkillLevelModifier() {
+    public double getEffectDurationSkillLevelModifier() {
 
         return getOverrideDouble("effect.duration-skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getDurationProfLevelModifier() {
+    public double getEffectDurationProfLevelModifier() {
 
         return getOverrideDouble("effect.duration-prof-level-modifier", 0.0);
     }
 
     @Override
-    public double getDelayLevelModifier() {
+    public double getEffectDelayLevelModifier() {
 
         return getOverrideDouble("effect.delay-level-modifier", 0.0);
     }
 
     @Override
-    public double getDelaySkillLevelModifier() {
+    public double getEffectDelaySkillLevelModifier() {
 
         return getOverrideDouble("effect.delay-skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getDelayProfLevelModifier() {
+    public double getEffectDelayProfLevelModifier() {
 
         return getOverrideDouble("effect.delay-prof-level-modifier", 0.0);
     }
 
     @Override
-    public double getIntervalLevelModifier() {
+    public double getEffectIntervalLevelModifier() {
 
         return getOverrideDouble("effect.interval-level-modifier", 0.0);
     }
 
     @Override
-    public double getIntervalSkillLevelModifier() {
+    public double getEffectIntervalSkillLevelModifier() {
 
         return getOverrideDouble("effect.interval-skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getIntervalProfLevelModifier() {
+    public double getEffectIntervalProfLevelModifier() {
 
         return getOverrideDouble("effect.interval-prof-level-modifier", 0.0);
     }

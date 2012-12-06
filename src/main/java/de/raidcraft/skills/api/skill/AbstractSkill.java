@@ -77,27 +77,27 @@ public abstract class AbstractSkill implements Skill {
     public int getTotalEffectDuration() {
 
         EffectProperties properties = getEffectProperties();
-        return (int) (properties.getDuration()
-                + (properties.getDurationLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getDurationProfLevelModifier() * getProfession().getLevel().getLevel()));
+        return (int) (properties.getEffectDuration()
+                + (properties.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getEffectDurationProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
     public int getTotalEffectInterval() {
 
         EffectProperties properties = getEffectProperties();
-        return (int) (properties.getInterval()
-                + (properties.getIntervalLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getIntervalProfLevelModifier() * getProfession().getLevel().getLevel()));
+        return (int) (properties.getEffectInterval()
+                + (properties.getEffectIntervalLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getEffectIntervalProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
     public int getTotalEffectDelay() {
 
         EffectProperties properties = getEffectProperties();
-        return (int) (properties.getDelay()
-                + (properties.getDelayLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getDelayProfLevelModifier() * getProfession().getLevel().getLevel()));
+        return (int) (properties.getEffectDelay()
+                + (properties.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getEffectDelayProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override

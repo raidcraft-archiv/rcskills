@@ -45,7 +45,7 @@ public final class CombatManager implements Listener {
             for (Effect e : effects) {
                 if (e.equals(effect)) {
                     // lets check if the effect is stronger and if yes cancel the old one
-                    if (effect.getStrength() > e.getStrength()) {
+                    if (effect.getPriority() > e.getPriority()) {
                         Bukkit.getScheduler().cancelTask(e.getTaskId());
                     } else {
                         // tell the hero that a stronger effect of the same type is active
@@ -62,13 +62,14 @@ public final class CombatManager implements Listener {
 
                 try {
                     effect.apply(source, target);
+                    effect.increaseDuration();
                 } catch (CombatException e) {
                     // TODO: catch exception
                 }
             }
         }, effect.getDelay(), effect.getInterval()));
         // start the cancel task if the duration is > -1
-        if (effect.getDuration() > -1) {
+        if (effect.getTotalDuration() > -1) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
@@ -77,7 +78,7 @@ public final class CombatManager implements Listener {
                     effects.remove(effect);
                 }
                 // we choose this values because we want to cancel after the effect ticked at least once
-            }, effect.getDuration() + effect.getDelay() + effect.getInterval());
+            }, effect.getTotalDuration() + effect.getDelay() + effect.getInterval());
         }
         // add the new effect to our applied list
         effects.add(effect);
