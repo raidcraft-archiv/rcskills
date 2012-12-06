@@ -2,6 +2,7 @@ package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.combat.AbstractEffect;
+import de.raidcraft.skills.api.combat.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -73,6 +74,10 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
         getLevel().addExp(5);
     }
 
+    @EffectInformation(
+            name = "FireballEffect",
+            description = "Setzt das Ziel in Flammen."
+    )
     public class FireballEffect extends AbstractEffect {
 
         public FireballEffect(Skill skill) {

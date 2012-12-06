@@ -5,7 +5,9 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,6 +25,7 @@ public final class CombatManager implements Listener {
     private final SkillsPlugin plugin;
 
     private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
+    private final Map<LivingEntity, List<SourcedCallback>> rangeCallbacks = new HashMap<>();
 
     public CombatManager(SkillsPlugin plugin) {
 
@@ -100,16 +103,24 @@ public final class CombatManager implements Listener {
         // TODO: check if it actually works like this
     }
 
-    public void damageEntity(LivingEntity source, LivingEntity target, int damage, CombatCallback callback) throws CombatException {
+    public void damageEntity(LivingEntity source, LivingEntity target, int damage, Callback callback) throws CombatException {
 
         damageEntity(source, target, damage);
 
         if (target == null || target.isDead()) {
             return;
         }
-        // we only come here if no combat exception is thrown
-        // so lets call the callback function
-        callback.run(target);
+        // we need to check if it is a projectile or not
+        if (callback instanceof RangedCallback) {
+            // lets add it to the listener
+            if (!rangeCallbacks.containsKey(target)) {
+                rangeCallbacks.put(target, new ArrayList<SourcedCallback>());
+            }
+            rangeCallbacks.get(target).add(new SourcedCallback(source, target, callback));
+        } else {
+            // lets call it directly
+            callback.run(target);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -119,7 +130,35 @@ public final class CombatManager implements Listener {
         if (appliedEffects.containsKey(event.getEntity())) {
             appliedEffects.remove(event.getEntity());
         }
+        // also remove from our range callback list
+        if (rangeCallbacks.containsKey(event.getEntity())) {
+            rangeCallbacks.remove(event.getEntity());
+        }
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+
+        Entity entity = event.getEntity();
+        if (!(entity instanceof LivingEntity)) {
+            return;
+        }
+        // first lets check if the victim is registered for callbacks
+        if (!rangeCallbacks.containsKey(entity)) {
+            return;
+        }
+        // check if the entity was damaged by a projectile
+        if (!(event.getDamager() instanceof Projectile)) {
+            return;
+        }
+        // and go thru all registered callbacks
+        for (SourcedCallback callback : new ArrayList<>(rangeCallbacks.get(entity))) {
+            if (callback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
+                // the shooter is our source so lets call back and remove
+                callback.run();
+                rangeCallbacks.get(entity).remove(callback);
+            }
+        }
+    }
 
 }

@@ -5,7 +5,7 @@ import org.bukkit.entity.LivingEntity;
 /**
  * @author Silthus
  */
-public interface CombatCallback {
+public interface Callback {
 
     public void run(LivingEntity entity);
 }

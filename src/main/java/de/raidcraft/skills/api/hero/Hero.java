@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.hero;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.player.RCPlayer;
-import de.raidcraft.skills.api.combat.CombatCallback;
+import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ import java.util.List;
 public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public int getId();
+
+    public Player getBukkitPlayer();
 
     public int getHealth();
 
@@ -62,7 +65,7 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public void damageEntity(LivingEntity target, int damage) throws CombatException;
 
-    public void damageEntity(LivingEntity target, int damage, CombatCallback callback) throws CombatException;
+    public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException;
 
     public Skill getSkillFromArg(String input) throws CommandException;
 }
