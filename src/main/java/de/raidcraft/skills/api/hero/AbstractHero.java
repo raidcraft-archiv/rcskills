@@ -325,4 +325,16 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
         return skills.get(foundSkills.get(0));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return obj instanceof Hero && ((Hero) obj).getUserName().equalsIgnoreCase(getUserName());
+    }
+
+    @Override
+    public String toString() {
+
+        return "[H:" + getUserName() + "]";
+    }
 }

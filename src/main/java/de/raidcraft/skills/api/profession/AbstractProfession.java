@@ -170,7 +170,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public String toString() {
 
-        return "[P" + getId() + "-" + getClass().getName() + "]" + getProperties().getName();
+        return "[P" + getId() + ":" + getProperties().getName() + "]";
     }
 
     @Override

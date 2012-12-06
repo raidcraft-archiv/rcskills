@@ -3,6 +3,7 @@ package de.raidcraft.skills.skills.magic;
 import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.combat.AbstractEffect;
 import de.raidcraft.skills.api.combat.EffectInformation;
+import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -11,10 +12,9 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.spells.api.SpellCallback;
-import de.raidcraft.spells.fire.RCFireball;
 import de.raidcraft.util.DataMap;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 /**
  * @author Silthus
@@ -22,11 +22,13 @@ import org.bukkit.entity.LivingEntity;
 @SkillInformation(
         name = "fireball",
         desc = "Schießt einen Feuerball auf den Gegener.",
-        types = {Skill.Type.DAMAGING, Skill.Type.FIRE, Skill.Type.HARMFUL}
+        types = {Skill.Type.DAMAGING, Skill.Type.FIRE, Skill.Type.HARMFUL},
+        defaults = {"incinerate: false", "bounce: false"}
 )
 public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
 
-    private boolean afterBurner;
+    private boolean incinerate = false;
+    private boolean bounce = false;
 
     public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -36,42 +38,38 @@ public class Fireball extends AbstractLevelableSkill implements TargetedAttack {
     @Override
     public void load(DataMap data) {
 
-        afterBurner = data.getBoolean("burn-after-hit", false);
+        incinerate = data.getBoolean("incinerate", false);
+        bounce = data.getBoolean("bounce", false);
     }
 
     @Override
     public void run(final Hero hero, final LivingEntity target) throws CombatException {
 
+        Player caster = hero.getBukkitPlayer();
         // lets create a new Spell from the Spells component
         // you can also do your own stuff here but if you think
         // a boss can do this stuff too add a spell please
-        RCFireball fireball = new RCFireball();
-        // set the firetick damage based on the player level
-        fireball.fireTicks = 20 * hero.getLevel().getLevel();
-        // let it burn the target
-        fireball.incinerate = true;
-        // cast the fireball and wait for a callback after it hit
-        fireball.run(hero.getBukkitPlayer(), new SpellCallback() {
+        org.bukkit.entity.Fireball fireball = caster.getWorld().spawn(caster.getEyeLocation(), org.bukkit.entity.Fireball.class);
+        fireball.setShooter(caster);
+        fireball.setIsIncendiary(incinerate);
+        fireball.setBounce(bounce);
+        fireball.setFireTicks(0);
+        // lets register a spell callback that is called when the fireball hits
+        hero.damageEntity(target, 0, new RangedCallback() {
             @Override
-            public void run(LivingEntity target) {
+            public void run(LivingEntity entity) {
 
-                // only apply the after burn effect if set in our custom config
-                if (!afterBurner) {
-                    return;
-                }
-                // also add some extra damage after the fireball hit
-                // the total damage is calculated from config settings and the player, prof and skill level
                 try {
                     hero.damageEntity(target, getTotalDamage());
+                    addEffect(new FireballEffect(Fireball.this), target);
+                    // add some exp to the profession and skill
+                    getProfession().getLevel().addExp(2);
+                    getLevel().addExp(5);
                 } catch (CombatException e) {
-                    return;
+                    // TODO: catch exception
                 }
-                addEffect(new FireballEffect(Fireball.this), target);
             }
-        }, target);
-        // add some exp to the profession and skill
-        getProfession().getLevel().addExp(2);
-        getLevel().addExp(5);
+        });
     }
 
     @EffectInformation(

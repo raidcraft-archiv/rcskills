@@ -9,6 +9,9 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
@@ -26,12 +29,50 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Silthus
  */
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
+    public static void debug(String message) {
+
+        logger.debug(message);
+    }
+
+    public static void debug(Skill skill, String message) {
+
+        logger.debug(skill + message);
+    }
+
+    public static void debug(Profession profession, String message) {
+
+        logger.debug(profession + message);
+    }
+
+    public static void debug(Hero hero, String message) {
+
+        logger.debug(hero + message);
+    }
+
+    public static void debug(Skill skill, Throwable message) {
+
+        logger.debug(skill + message.getMessage(), message);
+    }
+
+    public static void debug(Profession profession, Throwable message) {
+
+        logger.debug(profession + message.getMessage(), message);
+    }
+
+    public static void debug(Hero hero, Throwable message) {
+
+        logger.debug(hero + message.getMessage(), message);
+    }
+
+    private static DebugLogger logger = new DebugLogger("Minecraft.RaidCraft.Skills.Debug");
     private SkillManager skillManager;
     private ProfessionManager professionManager;
     private HeroManager heroManager;
@@ -149,5 +190,39 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         getHeroManager().getHero(event.getPlayer()).save();
+    }
+
+    public static class DebugLogger extends Logger {
+
+        /**
+         * Protected method to construct a logger for a named subsystem.
+         * <p/>
+         * The logger will be initially configured with a null Level
+         * and with useParentHandlers set to true.
+         *
+         * @param name               A name for the logger.  This should
+         *                           be a dot-separated name and should normally
+         *                           be based on the package name or class name
+         *                           of the subsystem, such as java.net
+         *                           or javax.swing.  It may be null for anonymous Loggers.
+         *
+         * @throws java.util.MissingResourceException
+         *          if the resourceBundleName is non-null and
+         *          no corresponding resource can be found.
+         */
+        protected DebugLogger(String name) {
+
+            super(name, "");
+        }
+
+        public void debug(String message) {
+
+            log(Level.INFO, message);
+        }
+
+        public void debug(String message, Throwable throwable) {
+
+            log(Level.INFO, message, throwable);
+        }
     }
 }

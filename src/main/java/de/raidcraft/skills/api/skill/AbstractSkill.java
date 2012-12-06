@@ -249,7 +249,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final String toString() {
 
-        return "[S" + getId() + "-" + getClass().getName() + "]" + getName();
+        return "[S" + getId() + ":" + getName() + "]";
     }
 
     @Override
