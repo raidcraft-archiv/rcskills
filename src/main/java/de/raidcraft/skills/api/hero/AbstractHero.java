@@ -125,6 +125,8 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         } else if (skill instanceof AreaAttack) {
             ((AreaAttack) skill).run(this, BukkitUtil.toBlock(getTargetBlock()).getLocation());
         }
+        // keep this last or items will be removed before casting
+        getBukkitPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }
 
     @Override

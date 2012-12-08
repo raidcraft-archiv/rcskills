@@ -100,7 +100,7 @@ public class ProfessionCommands {
             if (force) {
                 chooseProfession(hero, profession);
             } else {
-                new QueuedCaptchaCommand(hero, this,
+                new QueuedCaptchaCommand(sender, this,
                         getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
                         hero, profession);
             }
