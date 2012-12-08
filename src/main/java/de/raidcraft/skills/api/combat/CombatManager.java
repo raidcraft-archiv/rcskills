@@ -116,9 +116,14 @@ public final class CombatManager implements Listener {
             // and go thru all registered callbacks
             for (SourcedCallback sourcedCallback : new ArrayList<>(rangeCallbacks)) {
                 if (sourcedCallback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
-                    // the shooter is our source so lets call back and remove
-                    sourcedCallback.getCallback().run((LivingEntity) entity);
-                    rangeCallbacks.remove(sourcedCallback);
+                    try {
+                        // the shooter is our source so lets call back and remove
+                        sourcedCallback.getCallback().run((LivingEntity) entity);
+                        rangeCallbacks.remove(sourcedCallback);
+                    } catch (CombatException e) {
+                        // print to console
+                        plugin.getLogger().info(e.getMessage());
+                    }
                 }
             }
         }
@@ -224,14 +229,8 @@ public final class CombatManager implements Listener {
 
         EntityDamageByEntityEvent damageEntityEvent = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
         Bukkit.getServer().getPluginManager().callEvent(damageEntityEvent);
-        if (damageEntityEvent.isCancelled()) {
-            return false;
-        }
 
-        damageEntityEvent = new EntityDamageByEntityEvent(target, attacker, EntityDamageEvent.DamageCause.CUSTOM, 0);
-        Bukkit.getServer().getPluginManager().callEvent(damageEntityEvent);
-
-        return !damageEntityEvent.isCancelled() && !target.isDead() && target.getHealth() > 0;
+        return !damageEntityEvent.isCancelled();
     }
 
     public void knockBack(LivingEntity attacker, LivingEntity target, double power) {
