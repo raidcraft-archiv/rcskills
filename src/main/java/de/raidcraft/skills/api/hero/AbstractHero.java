@@ -3,10 +3,15 @@ package de.raidcraft.skills.api.hero;
 import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.AreaAttack;
+import de.raidcraft.skills.api.Passive;
+import de.raidcraft.skills.api.TargetedAttack;
 import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -81,6 +86,19 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
             for (Skill skill : profession.getSkills()) {
                 skills.put(skill.getName().toLowerCase(), skill);
             }
+        }
+    }
+
+    @Override
+    public final void runSkill(Skill skill) throws CombatException, InvalidTargetException {
+
+        if (skill instanceof TargetedAttack) {
+            ((TargetedAttack) skill).run(this, getTarget());
+        } else if (skill instanceof AreaAttack) {
+            ((AreaAttack) skill).run(this, BukkitUtil.toBlock(getTargetBlock()).getLocation());
+        } else if (skill instanceof Passive) {
+            // always keep this the last check
+            throw new CombatException("Dieser Skill ist passiv und kann nicht angewendet werden.");
         }
     }
 

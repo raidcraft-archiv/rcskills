@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import com.sk89q.minecraft.util.commands.CommandException;
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.combat.RangedCallback;
@@ -71,4 +72,6 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public void castRangeAttack(RangedCallback callback);
 
     public Skill getSkillFromArg(String input) throws CommandException;
+
+    public void runSkill(Skill skill) throws CombatException, InvalidTargetException;
 }

@@ -35,7 +35,12 @@ public class CombatException extends RaidCraftException {
         }
     }
 
-    private final FailCause failCause;
+    private FailCause failCause;
+
+    public CombatException(String message) {
+
+        super(message);
+    }
 
     public CombatException(String message, FailCause failCause) {
 

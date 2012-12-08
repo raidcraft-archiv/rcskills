@@ -3,18 +3,24 @@ package de.raidcraft.skills.api.combat;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
+import net.minecraft.server.EntityLiving;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -22,15 +28,115 @@ import java.util.*;
  */
 public final class CombatManager implements Listener {
 
-    private final SkillsPlugin plugin;
+    private static final Random random = new Random();
 
+    private final SkillsPlugin plugin;
+    private final Map<EntityType, Integer> entityDamage = new HashMap<>();
+    private final Map<EntityType, Integer> entityHealth = new HashMap<>();
     private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
     private final List<SourcedCallback> rangeCallbacks = new ArrayList<>();
+    // reflection field of the NMS EntityLiving class
+    private Field nmsHealth = null;
 
     public CombatManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        loadEntityConfig();
+        try {
+            // make the health field in NMS accessible
+            this.nmsHealth = EntityLiving.class.getDeclaredField("health");
+            this.nmsHealth.setAccessible(true);
+        } catch (NoSuchFieldException ignored) { }
+    }
+
+    private void loadEntityConfig() {
+
+        // lets load the health and damage values from the configs
+        File file = new File(plugin.getDataFolder(), "entity-config.yml");
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            for (EntityType type : EntityType.values()) {
+
+                if (type != null && type.getEntityClass() != null) {
+                    // dont write stuff for non LivingEntities
+                    if (LivingEntity.class.isAssignableFrom(type.getEntityClass())) {
+                        ConfigurationSection section = config.getConfigurationSection(type.name());
+                        if (!config.isConfigurationSection(type.name())) {
+                            section = config.createSection(type.name());
+                        }
+                        // create some defaults if they dont exist
+                        if (!section.isSet("damage")) section.set("damage", 0);
+                        if (!section.isSet("health")) section.set("health", 0);
+
+                        int damage = section.getInt("damage", 0);
+                        int health = section.getInt("health", 0);
+                        if (damage > 0) {
+                            entityDamage.put(type, damage);
+                        }
+                        if (health > 0) {
+                            entityHealth.put(type, health);
+                        }
+                    }
+                }
+            }
+            // save the config with the written defaults (if any)
+            config.save(file);
+        } catch (IOException e) {
+            plugin.getLogger().warning("Error when handling Entity Config: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    //      Hooked Bukkit events for handling all the combat stuff
+    //////////////////////////////////////////////////////////////////////////////*/
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDeath(EntityDeathEvent event) {
+
+        // we need to remove entites that died from the effect list
+        if (appliedEffects.containsKey(event.getEntity())) {
+            appliedEffects.remove(event.getEntity());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+
+        Entity entity = event.getEntity();
+        if (!(entity instanceof LivingEntity)) {
+            return;
+        }
+        // check if the entity was damaged by a projectile
+        if ((event.getDamager() instanceof Projectile)) {
+            // and go thru all registered callbacks
+            for (SourcedCallback sourcedCallback : new ArrayList<>(rangeCallbacks)) {
+                if (sourcedCallback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
+                    // the shooter is our source so lets call back and remove
+                    sourcedCallback.getCallback().run((LivingEntity) entity);
+                    rangeCallbacks.remove(sourcedCallback);
+                }
+            }
+        }
+        // lets modify the damage done by creatures
+        if (event.getDamager() instanceof Creature && event.getEntity() instanceof Player) {
+            if (entityDamage.containsKey(event.getDamager().getType())) {
+                event.setDamage(entityDamage.get(event.getDamager().getType()));
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntitySpawn(CreatureSpawnEvent event) {
+
+        // lets set the health and damage of the entity
+        if (entityHealth.containsKey(event.getEntityType())) {
+            setHealth(event.getEntity(), entityHealth.get(event.getEntityType()));
+        }
     }
 
     public void addEffect(final Effect effect, final Hero source, final LivingEntity target) {
@@ -84,33 +190,9 @@ public final class CombatManager implements Listener {
         effects.add(effect);
     }
 
-    public void damageEntity(LivingEntity source, LivingEntity target, int damage) throws CombatException {
-
-        // create a fake event to make sure the damage is not cancelled
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(source, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
-        if (event.isCancelled()) {
-            throw new CombatException("Damage Event was cancelled.", CombatException.FailCause.CANCELLED);
-        }
-        // damage the actual entity
-        target.setNoDamageTicks(0);
-        target.setLastDamage(damage);
-        int newHealth = target.getHealth() - damage;
-        if (newHealth < 0) {
-            newHealth = 0;
-        }
-        target.setHealth(newHealth);
-        // TODO: play death animation
-        target.setLastDamageCause(event);
-        // TODO: check if it actually works like this
-    }
-
     public void damageEntity(LivingEntity source, LivingEntity target, int damage, Callback callback) throws CombatException {
 
         damageEntity(source, target, damage);
-
-        if (target == null || target.isDead()) {
-            return;
-        }
         // we need to check if it is a projectile or not
         if (callback instanceof RangedCallback) {
             castRangeAttack(source, callback);
@@ -134,33 +216,156 @@ public final class CombatManager implements Listener {
         }, plugin.getCommonConfig().callback_purge_time);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDeath(EntityDeathEvent event) {
+    public boolean canDamageEntity(LivingEntity attacker, LivingEntity target) {
 
-        // we need to remove entites that died from the effect list
-        if (appliedEffects.containsKey(event.getEntity())) {
-            appliedEffects.remove(event.getEntity());
+        if (attacker.equals(target)) {
+            return false;
+        }
+
+        EntityDamageByEntityEvent damageEntityEvent = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
+        Bukkit.getServer().getPluginManager().callEvent(damageEntityEvent);
+        if (damageEntityEvent.isCancelled()) {
+            return false;
+        }
+
+        damageEntityEvent = new EntityDamageByEntityEvent(target, attacker, EntityDamageEvent.DamageCause.CUSTOM, 0);
+        Bukkit.getServer().getPluginManager().callEvent(damageEntityEvent);
+
+        return !damageEntityEvent.isCancelled() && !target.isDead() && target.getHealth() > 0;
+    }
+
+    public void knockBack(LivingEntity attacker, LivingEntity target, double power) {
+
+        // knocks back the target based on the attackers center position
+        Location knockBackCenter = attacker.getLocation();
+        double xOff = target.getLocation().getX() - knockBackCenter.getX();
+        double yOff = target.getLocation().getY() - knockBackCenter.getY();
+        double zOff = target.getLocation().getZ() - knockBackCenter.getZ();
+        // power is the velocity applied to the target
+        // a power of 0.4 is a player jumping
+        target.setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
+    }
+
+    public void damageEntity(LivingEntity attacker, LivingEntity target, int damage) throws CombatException {
+
+        damageEntity(attacker, target, damage, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+    }
+
+    public void damageEntity(LivingEntity attacker, LivingEntity target, int damage, EntityDamageEvent.DamageCause cause) throws CombatException {
+
+        if (!canDamageEntity(attacker, target)) {
+            if (target.getHealth() <= 0) {
+                throw new CombatException("Ziel ist bereits tot.");
+            } else {
+                throw new CombatException("Ziel kann nicht angegriffen werden!");
+            }
+        }
+
+        target.setNoDamageTicks(0);
+
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, cause, damage);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            throw new CombatException("Ziel kann nicht angegriffen werden!");
+        }
+
+        int oldHealth = target.getHealth();
+        int newHealth = oldHealth - event.getDamage();
+        if (newHealth < 0) {
+            newHealth = 0;
+        }
+
+        target.setLastDamageCause(event);
+        target.setLastDamage(event.getDamage());
+        target.playEffect(EntityEffect.HURT);
+        // set the health of the target
+        setHealth(target, newHealth);
+
+        if (newHealth <= 0) {
+
+            // play the death sound
+            target.getWorld().playSound(target.getLocation(), getDeathSound(target.getType()), 1.0F, getSoundStrength(target));
+            // play the death effect
+            target.playEffect(EntityEffect.DEATH);
+        } else {
+
+            target.setNoDamageTicks(0);
+
+            if (target instanceof Wolf) {
+                Wolf wolf = (Wolf) target;
+                wolf.setAngry(true);
+                wolf.setTarget(attacker);
+            } else if (target instanceof PigZombie) {
+                PigZombie pigZombie = (PigZombie) target;
+                pigZombie.setAngry(true);
+                pigZombie.setTarget(attacker);
+            } else if (target instanceof Creature) {
+                ((Creature) target).setTarget(attacker);
+            }
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    private void setHealth(LivingEntity entity, int amount) {
 
-        Entity entity = event.getEntity();
-        if (!(entity instanceof LivingEntity)) {
-            return;
+        // lets do some relfection action
+        try {
+            nmsHealth.setInt(((CraftLivingEntity) entity).getHandle(), amount);
+        } catch (IllegalAccessException e) {
+            entity.setHealth(amount);
+            e.printStackTrace();
         }
-        // check if the entity was damaged by a projectile
-        if (!(event.getDamager() instanceof Projectile)) {
-            return;
+    }
+
+    private float getSoundStrength(LivingEntity target) {
+
+        if (!(target instanceof Ageable)) {
+            return 1.0F;
         }
-        // and go thru all registered callbacks
-        for (SourcedCallback sourcedCallback : new ArrayList<>(rangeCallbacks)) {
-            if (sourcedCallback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
-                // the shooter is our source so lets call back and remove
-                sourcedCallback.getCallback().run((LivingEntity) entity);
-                rangeCallbacks.remove(sourcedCallback);
-            }
+        if (((Ageable) target).isAdult()) {
+            return (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F;
+        } else {
+            return (random.nextFloat() - random.nextFloat()) * 0.2F + 1.5F;
+        }
+    }
+
+    private Sound getDeathSound(EntityType type) {
+
+        switch (type) {
+
+            case COW:
+                return Sound.COW_IDLE;
+            case BLAZE:
+                return Sound.BLAZE_DEATH;
+            case CHICKEN:
+                return Sound.CHICKEN_HURT;
+            case CREEPER:
+                return Sound.CREEPER_DEATH;
+            case SLIME:
+            case MAGMA_CUBE:
+                return Sound.SLIME_IDLE;
+            case SKELETON:
+                return Sound.SKELETON_DEATH;
+            case IRON_GOLEM:
+                return Sound.IRONGOLEM_DEATH;
+            case GHAST:
+                return Sound.GHAST_DEATH;
+            case PIG:
+                return Sound.PIG_DEATH;
+            case OCELOT:
+                return Sound.CAT_HIT;
+            case SHEEP:
+                return Sound.SHEEP_IDLE;
+            case SPIDER:
+            case CAVE_SPIDER:
+                return Sound.SPIDER_DEATH;
+            case WOLF:
+                return Sound.WOLF_DEATH;
+            case ZOMBIE:
+                return Sound.ZOMBIE_DEATH;
+            case PIG_ZOMBIE:
+                return Sound.ZOMBIE_PIG_DEATH;
+            default:
+                return Sound.HURT_FLESH;
         }
     }
 }
