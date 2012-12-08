@@ -288,8 +288,6 @@ public final class CombatManager implements Listener {
             target.playEffect(EntityEffect.DEATH);
         } else {
 
-            target.setNoDamageTicks(0);
-
             if (target instanceof Wolf) {
                 Wolf wolf = (Wolf) target;
                 wolf.setAngry(true);
