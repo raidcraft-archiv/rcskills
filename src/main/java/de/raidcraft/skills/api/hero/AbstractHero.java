@@ -26,8 +26,12 @@ import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -37,6 +41,8 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     private final int id;
     private boolean inCombat = false;
     private int health;
+    private int mana;
+    private int stamina;
     private Level<Hero> level;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
@@ -92,13 +98,32 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public final void runSkill(Skill skill) throws CombatException, InvalidTargetException {
 
+        if (skill instanceof Passive) {
+            throw new CombatException(CombatException.Type.PASSIVE);
+        }
+        // lets check the resources of the skill and if the hero has it
+        if (skill.getTotalManaCost() > getMana()) {
+            throw new CombatException(CombatException.Type.LOW_MANA);
+        }
+        if (skill.getTotalStaminaCost() > getStamina()) {
+            throw new CombatException(CombatException.Type.LOW_STAMINA);
+        }
+        if (skill.getTotalHealthCost() > getHealth()) {
+            throw new CombatException(CombatException.Type.LOW_HEALTH);
+        }
+        // lets check if the player has the required reagents
+        for (ItemStack itemStack : skill.getProperties().getReagents()) {
+            if (!getBukkitPlayer().getInventory().contains(itemStack)) {
+                throw new CombatException(CombatException.Type.MISSING_REAGENT);
+            }
+        }
+
+        // TODO: do some fancy checks for the resistence and stuff
+
         if (skill instanceof TargetedAttack) {
             ((TargetedAttack) skill).run(this, getTarget());
         } else if (skill instanceof AreaAttack) {
             ((AreaAttack) skill).run(this, BukkitUtil.toBlock(getTargetBlock()).getLocation());
-        } else if (skill instanceof Passive) {
-            // always keep this the last check
-            throw new CombatException("Dieser Skill ist passiv und kann nicht angewendet werden.");
         }
     }
 
@@ -155,6 +180,48 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
         return (int) (primaryProfession.getProperties().getBaseHealth()
                         + primaryProfession.getProperties().getBaseHealthModifier() * primaryProfession.getLevel().getLevel());
+    }
+
+    @Override
+    public int getMana() {
+
+        return mana;
+    }
+
+    @Override
+    public void setMana(int mana) {
+
+        this.mana = mana;
+    }
+
+    @Override
+    public int getMaxMana() {
+
+        Profession profession = getPrimaryProfession();
+        if (profession == null) return 100;
+        return (int) (profession.getProperties().getBaseMana()
+                + profession.getProperties().getBaseManaModifier() * profession.getLevel().getLevel());
+    }
+
+    @Override
+    public int getStamina() {
+
+        return stamina;
+    }
+
+    @Override
+    public void setStamina(int stamina) {
+
+        this.stamina = stamina;
+    }
+
+    @Override
+    public int getMaxStamina() {
+
+        Profession profession = getPrimaryProfession();
+        if (profession == null) return 20;
+        return (int) (profession.getProperties().getBaseStamina() +
+                        profession.getProperties().getBaseStaminaModifier() * profession.getLevel().getLevel());
     }
 
     @Override

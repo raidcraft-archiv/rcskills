@@ -28,7 +28,7 @@ import java.util.*;
  */
 public final class CombatManager implements Listener {
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     private final SkillsPlugin plugin;
     private final Map<EntityType, Integer> entityDamage = new HashMap<>();
@@ -322,9 +322,9 @@ public final class CombatManager implements Listener {
             return 1.0F;
         }
         if (((Ageable) target).isAdult()) {
-            return (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F;
+            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.0F;
         } else {
-            return (random.nextFloat() - random.nextFloat()) * 0.2F + 1.5F;
+            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.5F;
         }
     }
 

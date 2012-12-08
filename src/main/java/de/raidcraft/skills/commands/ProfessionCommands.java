@@ -3,7 +3,9 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
@@ -70,5 +72,48 @@ public class ProfessionCommands {
                         ChatColor.RESET + (profession.getLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.RED) + profession.getLevel().getLevel();
             }
         }.display(sender, professions, args.getFlagInteger('p', 1));
+    }
+
+    @Command(
+            aliases = {"choose", "c"},
+            desc = "Wählt die gewünschte Klasse oder Beruf.",
+            min = 1,
+            flags = "f"
+    )
+    public void choose(CommandContext args, CommandSender sender) throws CommandException {
+
+        if (!(sender instanceof Player)) throw new CommandException("...");
+
+        boolean force = args.hasFlag('f');
+
+        try {
+            Hero hero = plugin.getHeroManager().getHero((Player) sender);
+            Profession profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
+            boolean primary = profession.getProperties().isPrimary();
+
+            if (primary && hero.getPrimaryProfession() != null && hero.getPrimaryProfession().equals(profession)) {
+                throw new CommandException("Du hast diese Klasse aktuell ausgewählt.");
+            } else if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
+                throw new CommandException("Du hast diesen Beruf aktuell ausgewählt");
+            }
+
+            if (force) {
+                chooseProfession(hero, profession);
+            } else {
+                new QueuedCaptchaCommand(hero, this,
+                        getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
+                        hero, profession);
+            }
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            throw new CommandException(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    private void chooseProfession(Hero hero, Profession profession) {
+
+
     }
 }

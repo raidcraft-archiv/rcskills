@@ -7,7 +7,7 @@ import de.raidcraft.api.RaidCraftException;
  */
 public class CombatException extends RaidCraftException {
 
-    public enum FailCause {
+    public enum Type {
 
         CANCELLED("Abgebrochen"),
         INVALID_TARGET("Ungültiges Ziel"),
@@ -20,11 +20,13 @@ public class CombatException extends RaidCraftException {
         NO_COMBAT("Kann nicht im Kampf verwendet werden"),
         ON_GLOBAL_COOLDOWN("Globaler Cooldown"),
         ON_COOLDOWN("Abklingzeit nicht vorbei"),
-        IMMUNE("Ziel ist immun");
+        IMMUNE("Ziel ist immun"),
+        PASSIVE("Passive Skills können nicht gezaubert werden"),
+        UNKNOWN("");
 
         private final String message;
 
-        private FailCause(String message) {
+        private Type(String message) {
 
             this.message = message;
         }
@@ -35,21 +37,22 @@ public class CombatException extends RaidCraftException {
         }
     }
 
-    private FailCause failCause;
+    private final Type type;
 
     public CombatException(String message) {
 
         super(message);
+        this.type = Type.UNKNOWN;
     }
 
-    public CombatException(String message, FailCause failCause) {
+    public CombatException(Type type) {
 
-        super(message);
-        this.failCause = failCause;
+        super(type.getMessage());
+        this.type = type;
     }
 
-    public FailCause getFailCause() {
+    public Type getType() {
 
-        return failCause;
+        return type;
     }
 }

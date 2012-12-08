@@ -30,6 +30,8 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
     private boolean incinerate = false;
     private boolean bounce = false;
+    private float yield = 1.0F;
+    private int fireTicks = 0;
 
     public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -39,8 +41,10 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
     @Override
     public void load(DataMap data) {
 
-        incinerate = data.getBoolean("incinerate", false);
-        bounce = data.getBoolean("bounce", false);
+        incinerate = data.getBoolean("incinerate", incinerate);
+        bounce = data.getBoolean("bounce", bounce);
+        yield = (float) data.getDouble("strength", yield);
+        fireTicks = data.getInt("fireticks", fireTicks);
     }
 
     @Override
@@ -54,21 +58,18 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
         fireball.setShooter(caster);
         fireball.setIsIncendiary(incinerate);
         fireball.setBounce(bounce);
-        fireball.setFireTicks(0);
+        fireball.setFireTicks(fireTicks);
+        fireball.setYield(yield);
         // lets register a spell callback that is called when the fireball hits
         hero.castRangeAttack(new RangedCallback() {
             @Override
-            public void run(LivingEntity target) {
+            public void run(LivingEntity target) throws CombatException {
 
-                try {
-                    hero.damageEntity(target, getTotalDamage());
-                    addEffect(new FireballEffect(Fireball.this), target);
-                    // add some exp to the profession and skill
-                    getProfession().getLevel().addExp(2);
-                    getLevel().addExp(5);
-                } catch (CombatException e) {
-                    // TODO: catch exception
-                }
+                hero.damageEntity(target, getTotalDamage());
+                addEffect(new FireballEffect(Fireball.this), target);
+                // add some exp to the profession and skill
+                getProfession().getLevel().addExp(2);
+                getLevel().addExp(5);
             }
         });
     }
@@ -90,7 +91,6 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
             // reminder: this method is called every set interval for the duration after the delay
             // damage entity for 5 and let it burn for 1 second
             hero.damageEntity(target, 5);
-            target.setFireTicks(20);
         }
     }
 }

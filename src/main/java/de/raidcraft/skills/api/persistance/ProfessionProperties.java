@@ -25,6 +25,14 @@ public interface ProfessionProperties {
 
     public double getBaseHealthModifier();
 
+    public int getBaseMana();
+
+    public double getBaseManaModifier();
+
+    public int getBaseStamina();
+
+    public double getBaseStaminaModifier();
+
     public boolean isPrimary();
 
     public List<Skill> loadSkills(Hero hero, Profession profession);

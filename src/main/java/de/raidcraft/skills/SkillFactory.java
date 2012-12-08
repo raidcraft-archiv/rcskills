@@ -13,9 +13,11 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -182,6 +185,36 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
         return getValue(key, String.class, def);
     }
 
+    private List<String> getOverrideStringList(String path) {
+
+        if (professionConfig != null) {
+            if (professionConfig.isSet(path)) {
+                return professionConfig.getStringList(path);
+            }
+        }
+        if (!isSet(path)) {
+            set(path, new ArrayList<String>());
+            save();
+        }
+        return getStringList(path);
+    }
+
+    private ConfigurationSection getOverrideSection(String path) {
+
+        ConfigurationSection section;
+        if (professionConfig != null) {
+            section = professionConfig.getConfigurationSection(path);
+            if (section != null) {
+                return section;
+            }
+        }
+        section = getConfigurationSection(path);
+        if (section == null) {
+            section = createSection(path);
+        }
+        return section;
+    }
+
     @Override
     public String getFriendlyName() {
 
@@ -205,6 +238,28 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
     public Skill.Type[] getSkillTypes() {
 
         return information.types();
+    }
+
+    @Override
+    public ItemStack[] getReagents() {
+
+        ConfigurationSection section = getOverrideSection("reagents");
+        Set<String> keys = section.getKeys(false);
+        ItemStack[] reagents = new ItemStack[keys.size()];
+        int i = 0;
+        for (String key : keys) {
+            Material material;
+            try {
+                material = Material.getMaterial(Integer.parseInt(key));
+            } catch (NumberFormatException e) {
+                material = Material.getMaterial(key);
+            }
+            if (material == null) {
+                plugin.getLogger().warning("Item " + key + " is non existant in bukkit! Skill: " + getName());
+            }
+            reagents[i] = new ItemStack(material, section.getInt(key));
+        }
+        return reagents;
     }
 
     @Override

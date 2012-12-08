@@ -46,9 +46,7 @@ public class SkillsCommand {
         if (args.argsLength() > 0) {
             try {
                 profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
-            } catch (UnknownProfessionException e) {
-                throw new CommandException(e.getMessage());
-            } catch (UnknownSkillException e) {
+            } catch (UnknownProfessionException | UnknownSkillException e) {
                 throw new CommandException(e.getMessage());
             }
         } else {

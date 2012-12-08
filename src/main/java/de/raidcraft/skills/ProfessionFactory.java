@@ -10,7 +10,6 @@ import de.raidcraft.skills.professions.SimpleProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public final class ProfessionFactory extends YamlConfiguration implements ProfessionProperties {
+public final class ProfessionFactory extends DefaultConfiguration implements ProfessionProperties {
 
     private final SkillsPlugin plugin;
     private final File file;
@@ -35,6 +34,17 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
         // first load all common information about this profession
         loadFile();
         plugin.getLogger().info("Profession loaded: " + name);
+    }
+
+    @Override
+    public void save() {
+
+        try {
+            save(file);
+        } catch (IOException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     protected Profession create(Hero hero) throws UnknownSkillException {
@@ -121,13 +131,37 @@ public final class ProfessionFactory extends YamlConfiguration implements Profes
     @Override
     public int getBaseHealth() {
 
-        return getInt("base-health", 20);
+        return getInt("health.base", 20);
     }
 
     @Override
     public double getBaseHealthModifier() {
 
-        return getDouble("base-health-level-modifier", 0.0);
+        return getDouble("health.level-modifier", 0.0);
+    }
+
+    @Override
+    public int getBaseMana() {
+
+        return getInt("mana.base", 100);
+    }
+
+    @Override
+    public double getBaseManaModifier() {
+
+        return getDouble("mana.level-modifier", 0.0);
+    }
+
+    @Override
+    public int getBaseStamina() {
+
+        return getInt("stamina.base", 20);
+    }
+
+    @Override
+    public double getBaseStaminaModifier() {
+
+        return getDouble("stamina.level-modifier", 0.0);
     }
 
     @Override

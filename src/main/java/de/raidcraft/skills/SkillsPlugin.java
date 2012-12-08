@@ -32,42 +32,6 @@ import java.util.List;
  */
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
-/*    public static void debug(String message) {
-
-        logger.debug(message);
-    }
-
-    public static void debug(Skill skill, String message) {
-
-        logger.debug(skill + message);
-    }
-
-    public static void debug(Profession profession, String message) {
-
-        logger.debug(profession + message);
-    }
-
-    public static void debug(Hero hero, String message) {
-
-        logger.debug(hero + message);
-    }
-
-    public static void debug(Skill skill, Throwable message) {
-
-        logger.debug(skill + message.getMessage(), message);
-    }
-
-    public static void debug(Profession profession, Throwable message) {
-
-        logger.debug(profession + message.getMessage(), message);
-    }
-
-    public static void debug(Hero hero, Throwable message) {
-
-        logger.debug(hero + message.getMessage(), message);
-    }
-
-    private static DebugLogger logger = new DebugLogger("Minecraft.RaidCraft.Skills.Debug");*/
     private SkillManager skillManager;
     private ProfessionManager professionManager;
     private HeroManager heroManager;
@@ -156,6 +120,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
+        @Setting("queue-command-delay")
+        public long queue_command_delay = 100L;
 
         public LocalConfiguration(BasePlugin plugin) {
 

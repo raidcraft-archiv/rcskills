@@ -28,6 +28,9 @@ public abstract class JarFilesSkillLoader extends FileSkillLoader {
 
         super(logger);
         this.jarDir = jarDir;
+        if (!jarDir.exists()) {
+            jarDir.mkdirs();
+        }
     }
 
     @Override

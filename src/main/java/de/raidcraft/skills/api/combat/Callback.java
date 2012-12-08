@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.combat;
 
+import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -7,5 +8,5 @@ import org.bukkit.entity.LivingEntity;
  */
 public interface Callback {
 
-    public void run(LivingEntity entity);
+    public void run(LivingEntity entity) throws CombatException;
 }

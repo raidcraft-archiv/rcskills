@@ -31,6 +31,18 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public int getMaxHealth();
 
+    public int getMana();
+
+    public void setMana(int mana);
+
+    public int getMaxMana();
+
+    public int getStamina();
+
+    public void setStamina(int stamina);
+
+    public int getMaxStamina();
+
     public Profession getSelectedProfession();
 
     public Profession getPrimaryProfession();
@@ -69,7 +81,7 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException;
 
-    public void castRangeAttack(RangedCallback callback);
+    public void castRangeAttack(RangedCallback callback) throws CombatException;
 
     public Skill getSkillFromArg(String input) throws CommandException;
 
