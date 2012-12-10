@@ -67,20 +67,16 @@ public class SkillsCommand {
 
                 StringBuilder sb = new StringBuilder();
 
-                try {
-                    int level = skill.getProperties().getRequiredLevel();
-                    Profession profession = skill.getProfession();
+                int level = skill.getProperties().getRequiredLevel();
+                Profession profession = skill.getProfession();
 
-                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
-                            .append(profession.getProperties().getTag()).append(":")
-                            .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
-                            .append(ChatColor.YELLOW).append("] ");
-                    sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
-                            .append(skill.getProperties().getFriendlyName());
-                    sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
-                } catch (UnknownProfessionException e) {
-                    e.printStackTrace();
-                }
+                sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
+                        .append(profession.getProperties().getTag()).append(":")
+                        .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
+                        .append(ChatColor.YELLOW).append("] ");
+                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
+                        .append(skill.getProperties().getFriendlyName());
+                sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
                 return sb.toString();
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));

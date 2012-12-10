@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -85,7 +84,7 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public int getTotalEffectDelay();
 
-    public Profession getProfession() throws UnknownProfessionException;
+    public Profession getProfession();
 
     public void save();
 

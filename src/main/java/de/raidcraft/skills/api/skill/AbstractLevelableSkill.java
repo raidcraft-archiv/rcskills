@@ -87,12 +87,6 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final boolean isUnlocked() {
-
-        return super.isUnlocked() && getLevel().getLevel() > 0;
-    }
-
-    @Override
     public void onLevelDown(Level<LevelableSkill> level) {
 
         // override if needed

@@ -135,8 +135,8 @@ public class ProfessionCommands {
                 (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
         boolean primary = profession.getProperties().isPrimary();
         hero.changeProfession(profession);
-        hero.sendMessage(ChatColor.GREEN  + "Du hast " +
-                (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.GREEN +
+        hero.sendMessage(ChatColor.YELLOW  + "Du hast " +
+                (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.YELLOW +
         " erfolgreich gewechselt.");
         hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
         + ChatColor.RED + " vom Konto abgezogen.");

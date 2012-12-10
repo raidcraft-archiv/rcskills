@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
@@ -208,13 +209,17 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void unlock() {
 
+        getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(true);
+        Database.save(database);
     }
 
     @Override
     public void lock() {
 
+        getHero().sendMessage(ChatColor.RED + "Skill wurde gesperrt: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(false);
+        Database.save(database);
     }
 
     @Override

@@ -24,6 +24,12 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public int getId();
 
+    public boolean isDebugging();
+
+    public void setDebugging(boolean debug);
+
+    public void debug(String message);
+
     public Player getBukkitPlayer();
 
     public int getDamage();
@@ -57,8 +63,6 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public void changeProfession(Profession profession);
 
     public List<Skill> getSkills();
-
-    public List<Skill> getUnlockedSkills();
 
     public List<Profession> getProfessions();
 

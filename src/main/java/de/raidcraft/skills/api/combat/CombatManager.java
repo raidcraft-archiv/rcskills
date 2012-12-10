@@ -141,6 +141,7 @@ public final class CombatManager implements Listener {
             if (damage > 0) {
                 event.setDamage(damage);
             }
+            attacker.debug(damage + " damage inflicted - EVENT");
         }
     }
 
@@ -167,6 +168,7 @@ public final class CombatManager implements Listener {
         } else {
             victim.setHealth(newHealth);
         }
+        victim.debug(oldHealth - newHealth + " damage taken - EVENT");
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -191,6 +193,7 @@ public final class CombatManager implements Listener {
                 if (e.equals(effect)) {
                     // lets check if the effect is stronger and if yes cancel the old one
                     if (effect.getPriority() > e.getPriority()) {
+                        source.debug("removed weaker effect " + e.getName() + ":" + e.getPriority());
                         Bukkit.getScheduler().cancelTask(e.getTaskId());
                     } else {
                         // tell the hero that a stronger effect of the same type is active
@@ -208,6 +211,7 @@ public final class CombatManager implements Listener {
                 try {
                     effect.apply(source, target);
                     effect.increaseDuration();
+                    source.debug("applied effect: " + effect.getName() + ":" + effect.getPriority());
                 } catch (CombatException e) {
                     // TODO: catch exception
                 }
@@ -221,6 +225,7 @@ public final class CombatManager implements Listener {
 
                     Bukkit.getScheduler().cancelTask(effect.getTaskId());
                     effects.remove(effect);
+                    source.debug("removed effect - ended: " + effect.getName() + ":" + effect.getPriority());
                 }
                 // we choose this values because we want to cancel after the effect ticked at least once
             }, effect.getTotalDuration() + effect.getDelay() + effect.getInterval());
@@ -294,8 +299,6 @@ public final class CombatManager implements Listener {
             }
         }
 
-        target.setNoDamageTicks(0);
-
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, cause, damage);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -313,6 +316,12 @@ public final class CombatManager implements Listener {
         target.playEffect(EntityEffect.HURT);
         // set the health of the target
         setHealth(target, newHealth);
+
+        if (attacker instanceof Player) {
+            plugin.getHeroManager().getHero((Player) attacker).debug(oldHealth - newHealth + " damage inflicted");
+        } else if (target instanceof Player) {
+            plugin.getHeroManager().getHero((Player) target).debug(oldHealth - newHealth + " damage taken");
+        }
 
         if (newHealth <= 0) {
 
@@ -371,9 +380,6 @@ public final class CombatManager implements Listener {
                 return Sound.CHICKEN_HURT;
             case CREEPER:
                 return Sound.CREEPER_DEATH;
-            case SLIME:
-            case MAGMA_CUBE:
-                return Sound.SLIME_IDLE;
             case SKELETON:
                 return Sound.SKELETON_DEATH;
             case IRON_GOLEM:

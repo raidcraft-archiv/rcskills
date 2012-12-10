@@ -25,6 +25,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,6 +37,7 @@ import java.util.*;
 public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
     private final int id;
+    private boolean debugging = false;
     private boolean inCombat = false;
     private int health;
     private int mana;
@@ -126,14 +128,16 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         professions.put(profession.getProperties().getName(), profession);
         setSelectedProfession(profession);
         // go thru all skills and add/remove them from the skill list
+        for (Skill skill : profession.getSkills()) {
+            skills.put(skill.getName(), skill);
+        }
         for (Skill skill : new ArrayList<>(skills.values())) {
             if (!skill.isActive()) {
                 skill.save();
                 skills.remove(skill.getName());
+            } else if (!skill.isUnlocked() && skill.getProfession().getLevel().getLevel() >= skill.getProperties().getRequiredLevel()) {
+                skill.unlock();
             }
-        }
-        for (Skill skill : profession.getSkills()) {
-            skills.put(skill.getName(), skill);
         }
         save();
     }
@@ -176,6 +180,26 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public int getId() {
 
         return id;
+    }
+
+    @Override
+    public boolean isDebugging() {
+
+        return debugging;
+    }
+
+    @Override
+    public void setDebugging(boolean debug) {
+
+        this.debugging = debug;
+    }
+
+    @Override
+    public void debug(String message) {
+
+        if (isDebugging() && message != null && !message.equals("")) {
+            sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
+        }
     }
 
     @Override
@@ -364,18 +388,6 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public List<Skill> getSkills() {
 
         return new ArrayList<>(skills.values());
-    }
-
-    @Override
-    public List<Skill> getUnlockedSkills() {
-
-        List<Skill> skills = new ArrayList<>();
-        for (Skill skill : this.skills.values()) {
-            if (skill.isUnlocked()) {
-                skills.add(skill);
-            }
-        }
-        return skills;
     }
 
     @Override
