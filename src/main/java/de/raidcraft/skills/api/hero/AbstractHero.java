@@ -24,6 +24,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -333,6 +334,8 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void saveLevelProgress(Level<Hero> level) {
 
         THero heroTable = Ebean.find(THero.class, getId());
+        if (selectedProfession != null)
+            heroTable.setSelectedProfession(Ebean.find(THeroProfession.class, selectedProfession.getId()));
         heroTable.setExp(getLevel().getExp());
         heroTable.setLevel(getLevel().getLevel());
         Database.save(heroTable);
