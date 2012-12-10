@@ -34,54 +34,53 @@ public class SkillsCommand {
             aliases = "skills",
             desc = "Shows all skills for the selected profession.",
             usage = "[profession] -p #",
-            flags = "p:ag"
+            flags = "p:as"
     )
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
         final Hero hero;
         hero = plugin.getHeroManager().getHero((Player) sender);
-        final Profession profession;
+        // Profession profession = null;
         List<Skill> skills = new ArrayList<>();
         // get the profession
         if (args.argsLength() > 0) {
             try {
-                profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
+                skills.addAll(plugin.getProfessionManager().getProfession(hero, args.getString(0)).getSkills());
             } catch (UnknownProfessionException | UnknownSkillException e) {
                 throw new CommandException(e.getMessage());
             }
-        } else {
-            profession = hero.getSelectedProfession();
-        }
-        if (profession == null) {
-            throw new CommandException("Du hast noch keinen Beruf oder Klasse gewählt.");
-        }
-        // lets get the skills the sender wants to have displayed
-        skills.addAll(profession.getSkills());
-        if (args.hasFlag('a')) {
+        } else if (args.hasFlag('s')) {
+            skills.addAll(hero.getSelectedProfession().getSkills());
+        } else if (args.hasFlag('a')) {
             skills.addAll(plugin.getSkillManager().getAllSkills());
-        }
-        if (args.hasFlag('g')) {
-            skills.removeAll(profession.getSkills());
-            skills.addAll(profession.getUnlockedSkills());
+        } else {
+            // lets get the skills the sender wants to have displayed
+            skills.addAll(hero.getSkills());
         }
         // lets sort them by their required level
         Collections.sort(skills);
         // lets list all skills
-        new PaginatedResult<Skill>("[Prof:Level] -   Name    -   Beschreibung   | " + ChatColor.AQUA + profession.getProperties().getFriendlyName()) {
+        new PaginatedResult<Skill>("[Prof:Level] -   Name    -   Beschreibung") {
 
             @Override
             public String format(Skill skill) {
 
                 StringBuilder sb = new StringBuilder();
 
-                int level = skill.getProperties().getRequiredLevel();
+                try {
+                    int level = skill.getProperties().getRequiredLevel();
+                    Profession profession = skill.getProfession();
 
-                sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
-                        .append(profession.getProperties().getTag()).append(":")
-                        .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.GREEN)).append(level)
-                        .append(ChatColor.YELLOW).append("] ");
-                sb.append((hero.hasSkill(skill) ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
-                sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
+                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
+                            .append(profession.getProperties().getTag()).append(":")
+                            .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
+                            .append(ChatColor.YELLOW).append("] ");
+                    sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
+                            .append(skill.getProperties().getFriendlyName());
+                    sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
+                } catch (UnknownProfessionException e) {
+                    e.printStackTrace();
+                }
                 return sb.toString();
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));

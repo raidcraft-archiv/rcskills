@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero_professions")
-public class THeroProfession implements LevelData {
+public class THeroProfession implements LevelData, Bean {
 
     @Id
     private int id;

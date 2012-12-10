@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.profession;
 
-import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
@@ -65,7 +65,6 @@ public abstract class AbstractProfession implements Profession {
     public void setActive(boolean active) {
 
         database.setActive(active);
-        Ebean.save(database);
     }
 
     @Override
@@ -128,7 +127,7 @@ public abstract class AbstractProfession implements Profession {
 
         database.setLevel(level.getLevel());
         database.setExp(level.getExp());
-        Ebean.save(database);
+        Database.save(database);
     }
 
     /*//////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.hero.SimpleHero;
@@ -39,7 +40,7 @@ public final class HeroManager {
                 heroTable.setPlayer(name);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                Ebean.save(heroTable);
+                Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
             heroes.put(hero.getUserName(), hero);

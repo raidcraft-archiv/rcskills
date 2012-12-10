@@ -2,6 +2,7 @@ package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_heroes")
-public class THero implements LevelData, HeroData {
+public class THero implements LevelData, HeroData, Bean {
 
     @Id
     private int id;

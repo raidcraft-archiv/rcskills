@@ -93,7 +93,7 @@ public final class ProfessionFactory extends ConfigurationBase implements Profes
     @Override
     public String getTag() {
 
-        return getString("tag", name.substring(0, 2).toUpperCase().trim());
+        return getString("tag", name.substring(0, 3).toUpperCase().trim());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.hero;
 
-import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.combat.Callback;
@@ -49,6 +48,8 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public Profession getSelectedProfession();
 
+    public void setSelectedProfession(Profession profession);
+
     public Profession getPrimaryProfession();
 
     public Profession getSecundaryProfession();
@@ -96,8 +97,6 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException;
 
     public void castRangeAttack(RangedCallback callback) throws CombatException;
-
-    public Skill getSkillFromArg(String input) throws CommandException;
 
     public void runSkill(Skill skill) throws CombatException, InvalidTargetException;
 }

@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
-import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -116,7 +116,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
         database.setLevel(level.getLevel());
         database.setExp(level.getExp());
-        Ebean.save(database);
+        Database.save(database);
     }
 
     @Override

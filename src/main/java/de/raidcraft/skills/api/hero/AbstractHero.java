@@ -1,12 +1,11 @@
 package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.util.StringUtil;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.bukkit.BukkitPlayer;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.AreaAttack;
@@ -117,16 +116,17 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void changeProfession(Profession profession) {
 
         if (profession.getProperties().isPrimary()) {
-            primaryProfession.setActive(false);
+            if (primaryProfession != null) primaryProfession.setActive(false);
             primaryProfession = profession;
         } else {
-            secundaryProfession.setActive(false);
+            if (secundaryProfession != null) secundaryProfession.setActive(false);
             secundaryProfession = profession;
         }
         profession.setActive(true);
         professions.put(profession.getProperties().getName(), profession);
+        setSelectedProfession(profession);
         // go thru all skills and add/remove them from the skill list
-        for (Skill skill : skills.values()) {
+        for (Skill skill : new ArrayList<>(skills.values())) {
             if (!skill.isActive()) {
                 skill.save();
                 skills.remove(skill.getName());
@@ -311,7 +311,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         THero heroTable = Ebean.find(THero.class, getId());
         heroTable.setExp(getLevel().getExp());
         heroTable.setLevel(getLevel().getLevel());
-        Ebean.save(heroTable);
+        Database.save(heroTable);
     }
 
     @Override
@@ -388,6 +388,13 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public Profession getSelectedProfession() {
 
         return selectedProfession;
+    }
+
+    @Override
+    public void setSelectedProfession(Profession profession) {
+
+        this.selectedProfession = profession;
+        //TODO: update graphics
     }
 
     @Override
@@ -473,30 +480,6 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public void kill() {
         //TODO: implement
-    }
-
-    @Override
-    public Skill getSkillFromArg(String input) throws CommandException {
-
-        List<String> foundSkills = new ArrayList<>();
-        input = input.toLowerCase().trim();
-        for (Skill skill : skills.values()) {
-            if (skill.getName().toLowerCase().contains(input)
-                    || skill.getFriendlyName().toLowerCase().contains(input)) {
-                foundSkills.add(skill.getName());
-            }
-        }
-
-        if (foundSkills.size() < 1) {
-            throw new CommandException("Du kennst keinen Skill mit dem Namen: " + input);
-        }
-
-        if (foundSkills.size() > 1) {
-            throw new CommandException(
-                    "Es gibt mehrere Skills mit dem Namen: " + input + " - " + StringUtil.joinString(foundSkills, ", ", 0));
-        }
-
-        return skills.get(foundSkills.get(0));
     }
 
     @Override

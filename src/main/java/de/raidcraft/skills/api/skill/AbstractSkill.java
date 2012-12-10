@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
 import de.raidcraft.skills.api.combat.EffectInformation;
@@ -268,7 +268,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void save() {
 
-        Ebean.save(database);
+        Database.save(database);
     }
 
     @Override

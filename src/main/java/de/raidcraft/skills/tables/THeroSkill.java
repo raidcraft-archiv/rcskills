@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "skills_hero_skills")
-public class THeroSkill implements LevelData {
+public class THeroSkill implements LevelData, Bean {
 
     @Id
     private int id;
