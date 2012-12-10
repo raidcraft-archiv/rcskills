@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
@@ -9,6 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
+import de.raidcraft.skills.commands.AdminCommands;
 import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
@@ -45,14 +47,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.configuration = configure(new LocalConfiguration(this));
         // register our events
         registerEvents(this);
-        // the skill manager takes care of all skills currently loaded
-        this.skillManager = new SkillManager(this);
-        // register our inhouse skills
-        registerSkills();
-        // these managers can only be loaded after the skill manager
-        this.professionManager = new ProfessionManager(this);
-        this.heroManager = new HeroManager(this);
-        this.combatManager = new CombatManager(this);
+        loadEngine();
         // and commands gogogo
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
@@ -61,10 +56,31 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
 
+    private void loadEngine() {
+
+        // the skill manager takes care of all skills currently loaded
+        this.skillManager = new SkillManager(this);
+        // register our inhouse skills
+        registerSkills();
+        // these managers can only be loaded after the skill manager
+        this.professionManager = new ProfessionManager(this);
+        this.heroManager = new HeroManager(this);
+        this.combatManager = new CombatManager(this);
+    }
+
     @Override
     public void disable() {
 
 
+    }
+
+    @Override
+    public void reload() {
+
+        this.configuration.reload();
+        // will override all set variables
+        // the garbage collector will take care of the rest
+        loadEngine();
     }
 
     private void registerSkills() {
@@ -112,16 +128,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public static class LocalConfiguration extends ConfigurationBase {
 
-        @Setting("op-all-permissions")
-        public boolean allow_op;
         @Setting("max-player-level")
         public int max_player_level;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
-        @Setting("queue-command-delay")
-        public long queue_command_delay = 100L;
 
         public LocalConfiguration(BasePlugin plugin) {
 
@@ -139,6 +151,16 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public void profession(CommandContext args, CommandSender sender) {
 
         }
+
+        @Command(
+                aliases = {"rcsa"},
+                desc = "Base Command for Admins"
+        )
+        @NestedCommand(AdminCommands.class)
+        @CommandPermissions("rcskills.admin")
+        public void admin(CommandContext args, CommandSender sender) {
+
+        }
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -148,7 +170,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        event.getPlayer().setRemainingAir(event.getPlayer().getRemainingAir());
+
     }
 
     @EventHandler(ignoreCancelled = true)

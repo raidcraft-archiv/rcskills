@@ -21,12 +21,11 @@ public abstract class AbstractProfession implements Profession {
     private final ProfessionProperties properties;
     private final Hero hero;
     private final List<Skill> unlockedSkills = new ArrayList<>();
+    protected final THeroProfession database;
     private List<Skill> skills;
     // parent child collections
     private final Collection<Profession> strongParents = new LinkedHashSet<>();
     private final Collection<Profession> weakParents = new LinkedHashSet<>();
-    private boolean active;
-    private boolean mastered;
     // the level object holding our level and stuff
     private Level<Profession> level;
 
@@ -35,8 +34,7 @@ public abstract class AbstractProfession implements Profession {
         this.id = database.getId();
         this.properties = data;
         this.hero = hero;
-        this.active = database.isActive();
-        this.mastered = database.isMastered();
+        this.database = database;
     }
 
     @Override
@@ -60,13 +58,13 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean isActive() {
 
-        return active;
+        return database.isActive();
     }
 
     @Override
     public boolean isMastered() {
 
-        return mastered;
+        return database.isMastered();
     }
 
     @Override
@@ -121,10 +119,9 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public final void saveLevelProgress(Level<Profession> level) {
 
-        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
-        profession.setLevel(level.getLevel());
-        profession.setExp(level.getExp());
-        Ebean.save(profession);
+        database.setLevel(level.getLevel());
+        database.setExp(level.getExp());
+        Ebean.save(database);
     }
 
     /*//////////////////////////////////////////////////////
@@ -182,10 +179,8 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Profession) {
-            return ((Profession) obj).getProperties().getName().equalsIgnoreCase(getProperties().getName())
-                    && getHero().equals(((Profession) obj).getHero());
-        }
-        return false;
+        return obj instanceof Profession
+                && ((Profession) obj).getProperties().getName().equalsIgnoreCase(getProperties().getName())
+                && getHero().equals(((Profession) obj).getHero());
     }
 }

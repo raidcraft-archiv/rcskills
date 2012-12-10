@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.Equipment;
@@ -21,7 +22,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class ProfessionFactory extends DefaultConfiguration implements ProfessionProperties {
+public final class ProfessionFactory extends ConfigurationBase implements ProfessionProperties {
 
     private final SkillsPlugin plugin;
     private final String name;
@@ -60,7 +61,6 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
             database.setExp(0);
             database.setMastered(false);
             database.setActive(false);
-            Ebean.save(database);
         }
         return database;
     }
@@ -68,8 +68,12 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
     public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
+        ConfigurationSection section = getConfigurationSection("skills");
+        if (section == null) section = createSection("skills");
+        Set<String> keys = section.getKeys(false);
+        if (keys == null) return skills;
         // now load the skills - when a skill does not exist in the database we will insert it
-        for (String skill : getConfigurationSection("skills").getKeys(false)) {
+        for (String skill : keys) {
             try {
                 skills.add(plugin.getSkillManager().getSkill(hero, this, profession, skill));
             } catch (UnknownSkillException e) {
@@ -89,19 +93,19 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
     @Override
     public String getTag() {
 
-        return getString("tag");
+        return getString("tag", name.substring(0, 2).toUpperCase().trim());
     }
 
     @Override
     public String getFriendlyName() {
 
-        return getString("name");
+        return getString("name", name);
     }
 
     @Override
     public String getDescription() {
 
-        return getString("description");
+        return getString("description", "Default description");
     }
 
     @Override
@@ -157,7 +161,10 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
 
         Set<Equipment> equipment = new HashSet<>();
         ConfigurationSection section = getConfigurationSection("equipment");
-        for (String key : section.getKeys(false)) {
+        if (section == null) section = createSection("equipment");
+        Set<String> keys = section.getKeys(false);
+        if (keys == null) return equipment;
+        for (String key : keys) {
             equipment.add(new Equipment(section.getConfigurationSection(key)));
         }
         return equipment;

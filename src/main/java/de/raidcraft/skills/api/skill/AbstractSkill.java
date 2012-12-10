@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.Effect;
@@ -24,8 +25,8 @@ public abstract class AbstractSkill implements Skill {
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
+    protected final THeroSkill database;
     private String description;
-    private boolean unlocked;
     private final Collection<Skill> strongParents = new HashSet<>();
     private final Collection<Skill> weakParents = new HashSet<>();
 
@@ -34,8 +35,8 @@ public abstract class AbstractSkill implements Skill {
         this.id = database.getId();
         this.hero = hero;
         this.properties = data;
+        this.database = database;
         this.description = data.getDescription();
-        this.unlocked = database.isUnlocked();
         this.profession = profession;
 
         load(data.getData());
@@ -201,7 +202,19 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public boolean isUnlocked() {
 
-        return unlocked;
+        return database.isUnlocked();
+    }
+
+    @Override
+    public void unlock() {
+
+        database.setUnlocked(true);
+    }
+
+    @Override
+    public void lock() {
+
+        database.setUnlocked(false);
     }
 
     @Override
@@ -250,6 +263,12 @@ public abstract class AbstractSkill implements Skill {
     public final String toString() {
 
         return "[S" + getId() + ":" + getName() + "]";
+    }
+
+    @Override
+    public void save() {
+
+        Ebean.save(database);
     }
 
     @Override

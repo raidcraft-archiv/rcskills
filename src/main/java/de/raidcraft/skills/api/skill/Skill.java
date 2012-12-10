@@ -63,6 +63,10 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public boolean isUnlocked();
 
+    public void unlock();
+
+    public void lock();
+
     public int getTotalDamage();
 
     public int getTotalManaCost();
@@ -82,6 +86,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public int getTotalEffectDelay();
 
     public Profession getProfession() throws UnknownProfessionException;
+
+    public void save();
 
     /**
      * Applies the skill to the {@link Hero}. Is called when the skill is first added to the hero.

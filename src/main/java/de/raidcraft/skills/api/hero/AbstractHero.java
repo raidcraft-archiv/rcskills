@@ -262,10 +262,19 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public final void save() {
+    public void save() {
 
+        saveProfessions();
         saveLevelProgress(level);
         saveSkills();
+    }
+
+    @Override
+    public void saveProfessions() {
+
+        for (Profession profession : professions.values()) {
+            profession.getLevel().saveLevelProgress();
+        }
     }
 
     @Override
@@ -278,7 +287,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
-    public final void saveSkills() {
+    public void saveSkills() {
 
         for (Skill skill : getSkills()) {
             if (skill instanceof Levelable) {

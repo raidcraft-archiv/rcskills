@@ -63,6 +63,8 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public boolean canChoose(Profession profession);
 
+    public void saveProfessions();
+
     public void saveSkills();
 
     public void save();

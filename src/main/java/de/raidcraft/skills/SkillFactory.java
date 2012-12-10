@@ -52,6 +52,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
         super.load();
         if (createDefaults) {
             createDefaults();
+            createDefaults = false;
         }
         plugin.getLogger().info("Skill loaded: " + information.name().toLowerCase());
     }
@@ -110,7 +111,6 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
             database.setProfession(Ebean.find(THeroProfession.class).where()
                     .eq("name", factory.getName())
                     .eq("hero_id", hero.getId()).findUnique());
-            Ebean.save(database);
         }
         return database;
     }

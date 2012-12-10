@@ -105,12 +105,18 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public void save() {
+
+        super.save();
+        level.saveLevelProgress();
+    }
+
+    @Override
     public final void saveLevelProgress(Level<LevelableSkill> level) {
 
-        THeroSkill skill = Ebean.find(THeroSkill.class, getId());
-        skill.setLevel(level.getLevel());
-        skill.setExp(level.getExp());
-        Ebean.save(skill);
+        database.setLevel(level.getLevel());
+        database.setExp(level.getExp());
+        Ebean.save(database);
     }
 
     @Override
