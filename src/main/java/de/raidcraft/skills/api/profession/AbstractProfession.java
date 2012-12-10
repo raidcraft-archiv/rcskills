@@ -62,6 +62,13 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public void setActive(boolean active) {
+
+        database.setActive(active);
+        Ebean.save(database);
+    }
+
+    @Override
     public boolean isMastered() {
 
         return database.isMastered();

@@ -87,7 +87,7 @@ public final class ProfessionFactory extends ConfigurationBase implements Profes
     @Override
     public String getName() {
 
-        return name;
+        return name.toLowerCase();
     }
 
     @Override

@@ -134,6 +134,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
+        @Setting("profession.change-cost")
+        public int profession_change_cost = 100;
+        @Setting("profession.change-level-modifier")
+        public double profession_change_level_modifier = 1.0;
 
         public LocalConfiguration(BasePlugin plugin) {
 

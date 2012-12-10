@@ -20,6 +20,8 @@ public interface Profession extends Parent, Child<Profession>, Levelable<Profess
 
     public boolean isActive();
 
+    public void setActive(boolean active);
+
     public boolean isMastered();
 
     public ProfessionProperties getProperties();

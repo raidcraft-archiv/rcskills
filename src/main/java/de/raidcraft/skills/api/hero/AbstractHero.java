@@ -83,7 +83,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         for (String professionName : professionNames) {
             try {
                 Profession profession = manager.getProfession(this, professionName);
-                professions.put(profession.getProperties().getName().toLowerCase(), profession);
+                professions.put(profession.getProperties().getName(), profession);
                 // set the primary and secundary profession
                 if (profession.isActive()) {
                     if (profession.getProperties().isPrimary()) {
@@ -105,9 +105,37 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
             for (Skill skill : profession.getSkills()) {
-                skills.put(skill.getName().toLowerCase(), skill);
+                // only add active skills
+                if (skill.isActive()) {
+                    skills.put(skill.getName(), skill);
+                }
             }
         }
+    }
+
+    @Override
+    public void changeProfession(Profession profession) {
+
+        if (profession.getProperties().isPrimary()) {
+            primaryProfession.setActive(false);
+            primaryProfession = profession;
+        } else {
+            secundaryProfession.setActive(false);
+            secundaryProfession = profession;
+        }
+        profession.setActive(true);
+        professions.put(profession.getProperties().getName(), profession);
+        // go thru all skills and add/remove them from the skill list
+        for (Skill skill : skills.values()) {
+            if (!skill.isActive()) {
+                skill.save();
+                skills.remove(skill.getName());
+            }
+        }
+        for (Skill skill : profession.getSkills()) {
+            skills.put(skill.getName(), skill);
+        }
+        save();
     }
 
     @Override

@@ -93,13 +93,26 @@ public class ProfessionCommands {
 
             if (primary && hero.getPrimaryProfession() != null && hero.getPrimaryProfession().equals(profession)) {
                 throw new CommandException("Du hast diese Klasse aktuell ausgewählt.");
-            } else if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
-                throw new CommandException("Du hast diesen Beruf aktuell ausgewählt");
+            }
+            if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
+                throw new CommandException("Du hast diesen Beruf aktuell ausgewählt.");
+            }
+            if (!hero.canChoose(profession)) {
+                throw new CommandException("Du kannst " + (primary ? "diese Klasse" : "diesen Beruf") + " nicht auswählen.");
             }
 
             if (force) {
                 chooseProfession(hero, profession);
             } else {
+                int cost = (int) (plugin.getCommonConfig().profession_change_cost +
+                                        (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
+                        (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.GREEN
+                        + " neuwählen willst?");
+                sender.sendMessage(ChatColor.RED +
+                        "Das wechseln deiner " +
+                        (primary ? "deiner " + ChatColor.AQUA + "Klasse" : "deines " + ChatColor.AQUA + "Berufs") + ChatColor.RED +
+                        " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
                 new QueuedCaptchaCommand(sender, this,
                         getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
                         hero, profession);
@@ -114,6 +127,18 @@ public class ProfessionCommands {
 
     private void chooseProfession(Hero hero, Profession profession) {
 
+        if (!hero.canChoose(profession)) {
+            return;
+        }
 
+        int cost = (int) (plugin.getCommonConfig().profession_change_cost +
+                (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+        boolean primary = profession.getProperties().isPrimary();
+        hero.changeProfession(profession);
+        hero.sendMessage(ChatColor.GREEN  + "Du hast " +
+                (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.GREEN +
+        " erfolgreich gewechselt.");
+        hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
+        + ChatColor.RED + " vom Konto abgezogen.");
     }
 }

@@ -53,6 +53,8 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public Profession getSecundaryProfession();
 
+    public void changeProfession(Profession profession);
+
     public List<Skill> getSkills();
 
     public List<Skill> getUnlockedSkills();
