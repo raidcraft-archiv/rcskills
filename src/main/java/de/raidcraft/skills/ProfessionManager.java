@@ -29,7 +29,7 @@ public final class ProfessionManager {
         dir.mkdirs();
         // go thru all files in the directory and register them as professions
         for (File file : dir.listFiles()) {
-            ProfessionFactory factory = new ProfessionFactory(plugin, file);
+            ProfessionFactory factory = plugin.configure(new ProfessionFactory(plugin, file));
             professionFactories.put(factory.getName(), factory);
         }
     }

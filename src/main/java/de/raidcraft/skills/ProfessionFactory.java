@@ -3,18 +3,20 @@ package de.raidcraft.skills;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.professions.SimpleProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
-import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -22,29 +24,20 @@ import java.util.List;
 public final class ProfessionFactory extends DefaultConfiguration implements ProfessionProperties {
 
     private final SkillsPlugin plugin;
-    private final File file;
     private final String name;
 
     protected ProfessionFactory(SkillsPlugin plugin, File file) {
 
+        super(plugin, file);
         this.plugin = plugin;
-        // we asume the file always exist because the skillmanager passed it to us
-        this.file = file;
         this.name = file.getName().toLowerCase().replace("profession", "").replace(".yml", "").trim();
-        // first load all common information about this profession
-        loadFile();
-        plugin.getLogger().info("Profession loaded: " + name);
     }
 
     @Override
-    public void save() {
+    public void load() {
 
-        try {
-            save(file);
-        } catch (IOException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
+        super.load();
+        plugin.getLogger().info("Profession loaded: " + name);
     }
 
     protected Profession create(Hero hero) throws UnknownSkillException {
@@ -70,17 +63,6 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
             Ebean.save(database);
         }
         return database;
-    }
-
-    private void loadFile() {
-
-        try {
-            // load the flat file config
-            load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public List<Skill> loadSkills(Hero hero, Profession profession) {
@@ -168,5 +150,16 @@ public final class ProfessionFactory extends DefaultConfiguration implements Pro
     public boolean isPrimary() {
 
         return getBoolean("primary", false);
+    }
+
+    @Override
+    public Set<Equipment> getEquipment() {
+
+        Set<Equipment> equipment = new HashSet<>();
+        ConfigurationSection section = getConfigurationSection("equipment");
+        for (String key : section.getKeys(false)) {
+            equipment.add(new Equipment(section.getConfigurationSection(key)));
+        }
+        return equipment;
     }
 }

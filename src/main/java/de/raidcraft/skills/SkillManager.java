@@ -40,7 +40,7 @@ public final class SkillManager extends JarFilesSkillLoader {
 
         for (Class<? extends Skill> clazz : loadSkillClasses()) {
             skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
-                    new SkillFactory(plugin, clazz, configDir));
+                    plugin.configure(new SkillFactory(plugin, clazz, configDir)));
         }
 
         // and now go thru all loaded skills and add disabled annotations to the configs
@@ -61,7 +61,7 @@ public final class SkillManager extends JarFilesSkillLoader {
 
         if (clazz.isAnnotationPresent(SkillInformation.class)) {
             skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
-                    new SkillFactory(plugin, clazz, configDir));
+                    plugin.configure(new SkillFactory(plugin, clazz, configDir)));
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + clazz.getCanonicalName());
         }

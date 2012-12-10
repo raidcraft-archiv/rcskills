@@ -126,12 +126,46 @@ public final class CombatManager implements Listener {
                     }
                 }
             }
+
         }
-        // lets modify the damage done by creatures
-        if (event.getDamager() instanceof Creature && event.getEntity() instanceof Player) {
-            if (entityDamage.containsKey(event.getDamager().getType())) {
-                event.setDamage(entityDamage.get(event.getDamager().getType()));
+
+        // handle all damage done to heroes
+        if (event.getEntity() instanceof Player) {
+            damageHero(event, plugin.getHeroManager().getHero((Player) event.getEntity()));
+        // modify damage done by players to any non heroes
+        } else if (event.getDamager() instanceof Player
+                && event.getEntity() instanceof LivingEntity) {
+            // get the attacker hero
+            Hero attacker = plugin.getHeroManager().getHero((Player) event.getDamager());
+            int damage = attacker.getDamage();
+            if (damage > 0) {
+                event.setDamage(damage);
             }
+        }
+    }
+
+    private void damageHero(EntityDamageByEntityEvent event, Hero victim) {
+
+        int oldHealth = victim.getHealth();
+        int newHealth = oldHealth;
+
+        // lets modify the damage done by creatures to players
+        if (event.getDamager() instanceof Creature) {
+            if (entityDamage.containsKey(event.getDamager().getType())) {
+                newHealth = oldHealth - entityDamage.get(event.getDamager().getType());
+            }
+        } else if (event.getDamager() instanceof Player) {
+            Hero attacker = plugin.getHeroManager().getHero((Player) event.getDamager());
+            newHealth = oldHealth - attacker.getDamage();
+        }
+
+        // set the damage to 0 and remove virtual lives from the player
+        event.setDamage(0);
+        if (newHealth <= 0) {
+            victim.setHealth(0);
+            victim.kill((LivingEntity) event.getDamager());
+        } else {
+            victim.setHealth(newHealth);
         }
     }
 
@@ -247,7 +281,7 @@ public final class CombatManager implements Listener {
 
     public void damageEntity(LivingEntity attacker, LivingEntity target, int damage) throws CombatException {
 
-        damageEntity(attacker, target, damage, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        damageEntity(attacker, target, damage, EntityDamageEvent.DamageCause.CUSTOM);
     }
 
     public void damageEntity(LivingEntity attacker, LivingEntity target, int damage, EntityDamageEvent.DamageCause cause) throws CombatException {

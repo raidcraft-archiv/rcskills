@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -36,4 +37,6 @@ public interface ProfessionProperties {
     public boolean isPrimary();
 
     public List<Skill> loadSkills(Hero hero, Profession profession);
+
+    public Set<Equipment> getEquipment();
 }

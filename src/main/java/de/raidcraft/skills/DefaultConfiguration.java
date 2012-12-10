@@ -1,13 +1,19 @@
 package de.raidcraft.skills;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.config.ConfigurationBase;
+
+import java.io.File;
 
 /**
  * @author Silthus
  */
-public abstract class DefaultConfiguration extends YamlConfiguration {
+public abstract class DefaultConfiguration extends ConfigurationBase {
 
-    public abstract void save();
+    public DefaultConfiguration(BasePlugin plugin, File file) {
+
+        super(plugin, file);
+    }
 
     @Override
     public int getInt(String path, int def) {

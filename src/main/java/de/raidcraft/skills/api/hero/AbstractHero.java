@@ -19,6 +19,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -28,10 +29,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -47,6 +45,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
+    private Set<Equipment> equipment = new HashSet<>();
     // primary and secondary professions are the ones defining items and stuff
     private Profession primaryProfession;
     private Profession secundaryProfession;
@@ -68,6 +67,14 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         if (professions.size() > 0 && data.getSelectedProfession() != null) {
             this.selectedProfession = professions.get(data.getSelectedProfession().getName());
         }
+        // add equipment from the primary and secundary profession
+        // we need to make sure to add the secundary equipment first because it is overriden by the primary class
+        if (getSecundaryProfession() != null) {
+            equipment.addAll(getSecundaryProfession().getProperties().getEquipment());
+        }
+        if (getPrimaryProfession() != null) {
+            equipment.addAll(getPrimaryProfession().getProperties().getEquipment());
+        }
     }
 
     private void loadProfessions(List<String> professionNames) {
@@ -77,6 +84,14 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
             try {
                 Profession profession = manager.getProfession(this, professionName);
                 professions.put(profession.getProperties().getName().toLowerCase(), profession);
+                // set the primary and secundary profession
+                if (profession.isActive()) {
+                    if (profession.getProperties().isPrimary()) {
+                        primaryProfession = profession;
+                    } else {
+                        secundaryProfession = profession;
+                    }
+                }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
                 e.printStackTrace();
@@ -163,6 +178,20 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public boolean canChoose(Profession profession) {
         //TODO: implement
         return true;
+    }
+
+    @Override
+    public int getDamage() {
+
+        ItemStack itemInHand = getBukkitPlayer().getItemInHand();
+        for (Equipment equipment : this.equipment) {
+            if (equipment.equals(itemInHand)) {
+                return (int) (equipment.getBaseDamage()
+                                        + (equipment.getDamageLevelModifier() * getLevel().getLevel())
+                                        + (equipment.getDamageProfessionLevelModifier() * getPrimaryProfession().getLevel().getLevel()));
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -325,6 +354,12 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
+    public Set<Equipment> getEquipment() {
+
+        return equipment;
+    }
+
+    @Override
     public Level<Hero> getLevel() {
 
         return level;
@@ -391,6 +426,16 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void castRangeAttack(RangedCallback callback) {
 
         RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().castRangeAttack(getBukkitPlayer(), callback);
+    }
+
+    @Override
+    public void kill(LivingEntity attacker) {
+        //TODO: implement
+    }
+
+    @Override
+    public void kill() {
+        //TODO: implement
     }
 
     @Override

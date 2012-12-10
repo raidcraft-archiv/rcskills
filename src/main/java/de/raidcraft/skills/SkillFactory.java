@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectProperties;
@@ -15,12 +16,9 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -30,29 +28,48 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class SkillFactory extends YamlConfiguration implements SkillProperties, EffectProperties {
+public final class SkillFactory extends ConfigurationBase implements SkillProperties, EffectProperties {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     private final SkillInformation information;
-    private final File file;
+    private boolean createDefaults = false;
 
     private ConfigurationSection professionConfig;
 
-    /**
-     * This only creates a fake skill and creates the defaults for it.
-     *
-     * @param plugin
-     */
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
+        super(plugin, new File(configDir, sClass.getAnnotation(SkillInformation.class).name().toLowerCase() + ".yml"));
         this.plugin = plugin;
         this.sClass = sClass;
         this.information = sClass.getAnnotation(SkillInformation.class);
-        this.file = new File(configDir, information.name().toLowerCase() + ".yml");
-        // load the global skill config - values in it are overriden by the profession config
-        loadFile();
+        this.createDefaults = !getFile().exists();
+    }
+
+    @Override
+    public void load() {
+
+        super.load();
+        if (createDefaults) {
+            createDefaults();
+        }
         plugin.getLogger().info("Skill loaded: " + information.name().toLowerCase());
+    }
+
+    private void createDefaults() {
+
+        String name = information.name().toLowerCase();
+
+        if (createDefaults) {
+            // yes we do so lets parse the defaults and go
+            set("name", name);
+            set("description", information.desc());
+            set("usage", new ArrayList<String>());
+            set("strong-parents", new ArrayList<String>());
+            set("weak-parents", new ArrayList<String>());
+            createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
+            save();
+        }
     }
 
     protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
@@ -96,44 +113,6 @@ public final class SkillFactory extends YamlConfiguration implements SkillProper
             Ebean.save(database);
         }
         return database;
-    }
-
-    private void loadFile() {
-
-        try {
-            String name = information.name().toLowerCase();
-            boolean createDefaults = false;
-            if (!file.exists()) {
-                file.createNewFile();
-                createDefaults = true;
-            }
-            // load the actual file
-            load(file);
-
-            if (createDefaults) {
-                // yes we do so lets parse the defaults and go
-                set("name", name);
-                set("description", information.desc());
-                set("usage", new ArrayList<String>());
-                set("strong-parents", new ArrayList<String>());
-                set("weak-parents", new ArrayList<String>());
-                createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
-                save();
-            }
-        } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    public void save() {
-
-        try {
-            save(file);
-        } catch (IOException e) {
-            plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     @Override
