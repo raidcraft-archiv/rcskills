@@ -38,5 +38,9 @@ public interface ProfessionProperties {
 
     public List<Skill> loadSkills(Hero hero, Profession profession);
 
+    public Set<Profession> loadStrongParents(Hero hero, Profession profession);
+
+    public Set<Profession> loadWeakParents(Hero hero, Profession profession);
+
     public Set<Equipment> getEquipment();
 }

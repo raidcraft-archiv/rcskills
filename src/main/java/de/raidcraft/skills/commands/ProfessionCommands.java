@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -53,11 +54,13 @@ public class ProfessionCommands {
         }
 
         for (int i = 0; i < professions.size(); i++) {
-            if (!args.hasFlag('a') && !professions.get(i).isActive()) {
-                professions.remove(i);
-            } else if (args.hasFlag('c') && !hero.canChoose(professions.get(i))) {
-                professions.remove(i);
-            }
+            try {
+                if (!args.hasFlag('a') && !professions.get(i).isActive()) {
+                    professions.remove(i);
+                } else if (args.hasFlag('c') && !hero.canChooseProfession(professions.get(i))) {
+                    professions.remove(i);
+                }
+            } catch (InvalidChoiceException ignored) {}
         }
         Collections.sort(professions);
 
@@ -97,8 +100,12 @@ public class ProfessionCommands {
             if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
                 throw new CommandException("Du hast diesen Beruf aktuell ausgewählt.");
             }
-            if (!hero.canChoose(profession)) {
-                throw new CommandException("Du kannst " + (primary ? "diese Klasse" : "diesen Beruf") + " nicht auswählen.");
+            try {
+                if (!hero.canChooseProfession(profession)) {
+                    throw new CommandException("Du kannst " + (primary ? "diese Klasse" : "diesen Beruf") + " nicht auswählen.");
+                }
+            } catch (InvalidChoiceException e) {
+                throw new CommandException(e.getMessage());
             }
 
             if (force) {
@@ -117,7 +124,7 @@ public class ProfessionCommands {
                         getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
                         hero, profession);
             }
-        } catch (UnknownSkillException | UnknownProfessionException e) {
+        } catch (UnknownSkillException | UnknownProfessionException | InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -125,9 +132,21 @@ public class ProfessionCommands {
         }
     }
 
-    private void chooseProfession(Hero hero, Profession profession) {
+    @Command(
+            aliases = {"info"},
+            desc = "Shows information about a profession"
+    )
+    public void info(CommandContext args, CommandSender sender) {
 
-        if (!hero.canChoose(profession)) {
+        Hero hero = plugin.getHeroManager().getHero((Player) sender);
+        Profession profession = hero.getSelectedProfession();
+
+        sender.sendMessage(ChatColor.YELLOW + profession.getProperties().getFriendlyName());
+    }
+
+    private void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
+
+        if (!hero.canChooseProfession(profession)) {
             return;
         }
 

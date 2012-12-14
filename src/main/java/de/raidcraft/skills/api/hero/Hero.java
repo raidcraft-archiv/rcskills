@@ -5,6 +5,7 @@ import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Levelable;
@@ -68,7 +69,7 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public Set<Equipment> getEquipment();
 
-    public boolean canChoose(Profession profession);
+    public boolean canChooseProfession(Profession profession) throws InvalidChoiceException;
 
     public void saveProfessions();
 

@@ -260,18 +260,6 @@ public final class CombatManager implements Listener {
         }, plugin.getCommonConfig().callback_purge_time);
     }
 
-    public boolean canDamageEntity(LivingEntity attacker, LivingEntity target) {
-
-        if (attacker.equals(target)) {
-            return false;
-        }
-
-        EntityDamageByEntityEvent damageEntityEvent = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
-        Bukkit.getServer().getPluginManager().callEvent(damageEntityEvent);
-
-        return !damageEntityEvent.isCancelled();
-    }
-
     public void knockBack(LivingEntity attacker, LivingEntity target, double power) {
 
         // knocks back the target based on the attackers center position
@@ -291,12 +279,8 @@ public final class CombatManager implements Listener {
 
     public void damageEntity(LivingEntity attacker, LivingEntity target, int damage, EntityDamageEvent.DamageCause cause) throws CombatException {
 
-        if (!canDamageEntity(attacker, target)) {
-            if (target.getHealth() <= 0) {
-                throw new CombatException("Ziel ist bereits tot.");
-            } else {
-                throw new CombatException("Ziel kann nicht angegriffen werden!");
-            }
+        if (target.getHealth() <= 0) {
+            throw new CombatException("Ziel ist bereits tot.");
         }
 
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, cause, damage);

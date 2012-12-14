@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.Equipment;
@@ -14,10 +15,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -65,6 +63,7 @@ public final class ProfessionFactory extends ConfigurationBase implements Profes
         return database;
     }
 
+    @Override
     public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
@@ -82,6 +81,36 @@ public final class ProfessionFactory extends ConfigurationBase implements Profes
             }
         }
         return skills;
+    }
+
+    @Override
+    public Set<Profession> loadStrongParents(Hero hero, Profession profession) {
+
+        Set<Profession> parents = new LinkedHashSet<>();
+        for (String name : getStringList("strong-parents")) {
+            try {
+                parents.add(plugin.getProfessionManager().getProfession(hero, name));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                plugin.getLogger().warning(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return parents;
+    }
+
+    @Override
+    public Set<Profession> loadWeakParents(Hero hero, Profession profession) {
+
+        Set<Profession> parents = new LinkedHashSet<>();
+        for (String name : getStringList("weak-parents")) {
+            try {
+                parents.add(plugin.getProfessionManager().getProfession(hero, name));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                plugin.getLogger().warning(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return parents;
     }
 
     @Override

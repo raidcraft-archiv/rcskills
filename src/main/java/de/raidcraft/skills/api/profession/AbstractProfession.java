@@ -8,9 +8,8 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -24,8 +23,8 @@ public abstract class AbstractProfession implements Profession {
     protected final THeroProfession database;
     private List<Skill> skills;
     // parent child collections
-    private final Collection<Profession> strongParents = new LinkedHashSet<>();
-    private final Collection<Profession> weakParents = new LinkedHashSet<>();
+    private Set<Profession> strongParents = null;
+    private Set<Profession> weakParents = null;
     // the level object holding our level and stuff
     private Level<Profession> level;
 
@@ -135,15 +134,21 @@ public abstract class AbstractProfession implements Profession {
     /////////////////////////////////////////////////////*/
 
     @Override
-    public Collection<Profession> getStrongParents() {
+    public Set<Profession> getStrongParents() {
 
-        return strongParents;
+        if (strongParents == null) {
+            this.strongParents = getProperties().loadStrongParents(getHero(), this);
+        }
+        return this.strongParents;
     }
 
     @Override
-    public Collection<Profession> getWeakParents() {
+    public Set<Profession> getWeakParents() {
 
-        return weakParents;
+        if (weakParents == null) {
+            this.weakParents = getProperties().loadWeakParents(getHero(), this);
+        }
+        return this.weakParents;
     }
 
     @Override

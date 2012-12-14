@@ -10,10 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
-import de.raidcraft.skills.commands.AdminCommands;
-import de.raidcraft.skills.commands.CastCommand;
-import de.raidcraft.skills.commands.ProfessionCommands;
-import de.raidcraft.skills.commands.SkillsCommand;
+import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -163,6 +160,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(AdminCommands.class)
         @CommandPermissions("rcskills.admin")
         public void admin(CommandContext args, CommandSender sender) {
+
+        }
+
+        @Command(
+                aliases = "skill",
+                desc = "Base Command for the Skill"
+        )
+        @NestedCommand(SkillCommands.class)
+        public void skill(CommandContext args, CommandSender sender) {
 
         }
     }
