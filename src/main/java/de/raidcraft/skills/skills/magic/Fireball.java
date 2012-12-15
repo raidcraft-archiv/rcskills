@@ -1,9 +1,9 @@
 package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.skills.api.AreaAttack;
-import de.raidcraft.skills.api.combat.AbstractEffect;
-import de.raidcraft.skills.api.combat.EffectInformation;
-import de.raidcraft.skills.api.combat.RangedCallback;
+import de.raidcraft.skills.api.combat.effect.AbstractEffect;
+import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;

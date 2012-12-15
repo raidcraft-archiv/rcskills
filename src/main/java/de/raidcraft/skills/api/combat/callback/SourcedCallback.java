@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.callback;
 
 import org.bukkit.entity.LivingEntity;
 
@@ -10,7 +10,7 @@ public class SourcedCallback {
     private final LivingEntity source;
     private final Callback callback;
 
-    protected SourcedCallback(LivingEntity source,Callback callback) {
+    protected SourcedCallback(LivingEntity source, Callback callback) {
 
         this.source = source;
         this.callback = callback;

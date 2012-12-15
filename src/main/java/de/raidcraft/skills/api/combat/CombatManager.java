@@ -1,6 +1,9 @@
 package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.combat.callback.SourcedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import net.minecraft.server.EntityLiving;
@@ -27,7 +30,7 @@ public final class CombatManager implements Listener {
     private static final Random RANDOM = new Random();
 
     private final SkillsPlugin plugin;
-    private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
+    private final Map<LivingEntity, Set<de.raidcraft.skills.api.combat.effect.Effect>> appliedEffects = new HashMap<>();
     private final List<SourcedCallback> rangeCallbacks = new ArrayList<>();
     // reflection field of the NMS EntityLiving class
     private Field nmsHealth = null;
@@ -129,17 +132,17 @@ public final class CombatManager implements Listener {
         setHealth(event.getEntity(), plugin.getDamageManager().getCreatureHealth(event.getEntityType()));
     }
 
-    public void addEffect(final Effect effect, final Hero source, final LivingEntity target) {
+    public void addEffect(final de.raidcraft.skills.api.combat.effect.Effect effect, final Hero source, final LivingEntity target) {
 
         // TODO: rework the effect into extra classes
         if (!appliedEffects.containsKey(target)) {
-            appliedEffects.put(target, new HashSet<Effect>());
+            appliedEffects.put(target, new HashSet<de.raidcraft.skills.api.combat.effect.Effect>());
         }
-        final Set<Effect> effects = appliedEffects.get(target);
+        final Set<de.raidcraft.skills.api.combat.effect.Effect> effects = appliedEffects.get(target);
         // check for already existing effects of the same type
         if (effects.contains(effect)) {
             // lets cancel the old effect first
-            for (Effect e : effects) {
+            for (de.raidcraft.skills.api.combat.effect.Effect e : effects) {
                 if (e.equals(effect)) {
                     // lets check if the effect is stronger and if yes cancel the old one
                     if (effect.getPriority() > e.getPriority()) {

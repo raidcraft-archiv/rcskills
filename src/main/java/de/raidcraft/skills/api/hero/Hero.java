@@ -2,8 +2,8 @@ package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.Callback;
-import de.raidcraft.skills.api.combat.RangedCallback;
+import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;

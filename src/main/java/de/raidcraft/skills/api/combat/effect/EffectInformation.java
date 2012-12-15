@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.effect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

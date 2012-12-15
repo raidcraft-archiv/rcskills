@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;

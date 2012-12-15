@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.combat.Effect;
+import de.raidcraft.skills.api.combat.effect.Effect;
 import net.minecraft.server.EntityLiving;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
@@ -75,7 +75,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void damage(int damage) {
 
-        setHealth(getHealth() - damage);
+        int health = getHealth() - damage;
+        if (health < 0) health = 0;
+        setHealth(health);
     }
 
     @Override

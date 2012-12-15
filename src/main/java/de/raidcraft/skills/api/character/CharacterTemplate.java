@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.character;
 
-import de.raidcraft.skills.api.combat.Effect;
+import de.raidcraft.skills.api.combat.effect.Effect;
 import org.bukkit.entity.LivingEntity;
 
 /**

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;

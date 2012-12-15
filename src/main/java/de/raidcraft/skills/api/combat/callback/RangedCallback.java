@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.callback;
 
 /**
  * @author Silthus

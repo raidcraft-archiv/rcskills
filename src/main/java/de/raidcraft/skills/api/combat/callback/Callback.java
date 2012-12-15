@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills.api.combat.callback;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.entity.LivingEntity;
