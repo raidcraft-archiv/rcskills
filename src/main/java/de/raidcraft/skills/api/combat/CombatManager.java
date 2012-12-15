@@ -5,8 +5,6 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import net.minecraft.server.EntityLiving;
 import org.bukkit.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -18,8 +16,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -31,8 +27,6 @@ public final class CombatManager implements Listener {
     private static final Random RANDOM = new Random();
 
     private final SkillsPlugin plugin;
-    private final Map<EntityType, Integer> entityDamage = new EnumMap<>(EntityType.class);
-    private final Map<EntityType, Integer> entityHealth = new EnumMap<>(EntityType.class);
     private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
     private final List<SourcedCallback> rangeCallbacks = new ArrayList<>();
     // reflection field of the NMS EntityLiving class
@@ -42,54 +36,11 @@ public final class CombatManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
-        loadEntityConfig();
         try {
             // make the health field in NMS accessible
             this.nmsHealth = EntityLiving.class.getDeclaredField("health");
             this.nmsHealth.setAccessible(true);
         } catch (NoSuchFieldException ignored) { }
-    }
-
-    private void loadEntityConfig() {
-
-        // TODO: replace with the DamageManager
-        // lets load the health and damage values from the configs
-        File file = new File(plugin.getDataFolder(), "entity-config.yml");
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            for (EntityType type : EntityType.values()) {
-
-                if (type != null && type.getEntityClass() != null) {
-                    // dont write stuff for non LivingEntities
-                    if (LivingEntity.class.isAssignableFrom(type.getEntityClass())) {
-                        ConfigurationSection section = config.getConfigurationSection(type.name());
-                        if (!config.isConfigurationSection(type.name())) {
-                            section = config.createSection(type.name());
-                        }
-                        // create some defaults if they dont exist
-                        if (!section.isSet("damage")) section.set("damage", 0);
-                        if (!section.isSet("health")) section.set("health", 0);
-
-                        int damage = section.getInt("damage", 0);
-                        int health = section.getInt("health", 0);
-                        if (damage > 0) {
-                            entityDamage.put(type, damage);
-                        }
-                        if (health > 0) {
-                            entityHealth.put(type, health);
-                        }
-                    }
-                }
-            }
-            // save the config with the written defaults (if any)
-            config.save(file);
-        } catch (IOException e) {
-            plugin.getLogger().warning("Error when handling Entity Config: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
@@ -108,6 +59,7 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
+        // TODO: rework how the damage is handled with the attack object
         Entity entity = event.getEntity();
         if (!(entity instanceof LivingEntity)) {
             return;
@@ -153,9 +105,7 @@ public final class CombatManager implements Listener {
 
         // lets modify the damage done by creatures to players
         if (event.getDamager() instanceof Creature) {
-            if (entityDamage.containsKey(event.getDamager().getType())) {
-                newHealth = oldHealth - entityDamage.get(event.getDamager().getType());
-            }
+            event.setDamage(plugin.getDamageManager().getCreatureDamage(event.getDamager().getType()));
         } else if (event.getDamager() instanceof Player) {
             Hero attacker = plugin.getHeroManager().getHero((Player) event.getDamager());
             newHealth = oldHealth - attacker.getDamage();
@@ -176,13 +126,12 @@ public final class CombatManager implements Listener {
     public void onEntitySpawn(CreatureSpawnEvent event) {
 
         // lets set the health and damage of the entity
-        if (entityHealth.containsKey(event.getEntityType())) {
-            setHealth(event.getEntity(), entityHealth.get(event.getEntityType()));
-        }
+        setHealth(event.getEntity(), plugin.getDamageManager().getCreatureHealth(event.getEntityType()));
     }
 
     public void addEffect(final Effect effect, final Hero source, final LivingEntity target) {
 
+        // TODO: rework the effect into extra classes
         if (!appliedEffects.containsKey(target)) {
             appliedEffects.put(target, new HashSet<Effect>());
         }
@@ -237,6 +186,7 @@ public final class CombatManager implements Listener {
 
     public void damageEntity(LivingEntity source, LivingEntity target, int damage, Callback callback) throws CombatException {
 
+        // TODO: rework this to an extra monster class
         damageEntity(source, target, damage);
         // we need to check if it is a projectile or not
         if (callback instanceof RangedCallback) {
@@ -263,6 +213,7 @@ public final class CombatManager implements Listener {
 
     public void knockBack(LivingEntity attacker, LivingEntity target, double power) {
 
+        // TODO: make effect out of this
         // knocks back the target based on the attackers center position
         Location knockBackCenter = attacker.getLocation();
         double xOff = target.getLocation().getX() - knockBackCenter.getX();
