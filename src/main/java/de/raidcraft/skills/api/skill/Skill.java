@@ -90,7 +90,7 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     /**
      * Applies the skill to the {@link Hero}. Is called when the skill is first added to the hero.
-     * If {@link de.raidcraft.skills.api.Passive} is implemented this method will be
+     * If {@link de.raidcraft.skills.api.skill.type.Passive} is implemented this method will be
      * called every few ticks.
      *
      * @param hero to apply skill to.

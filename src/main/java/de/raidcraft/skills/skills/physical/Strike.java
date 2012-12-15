@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills.physical;
 
-import de.raidcraft.skills.api.TargetedAttack;
+import de.raidcraft.skills.api.skill.type.TargetedAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;

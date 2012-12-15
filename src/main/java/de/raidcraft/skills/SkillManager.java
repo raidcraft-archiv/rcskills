@@ -1,6 +1,6 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.Passive;
+import de.raidcraft.skills.api.skill.type.Passive;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;

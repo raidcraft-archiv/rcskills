@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill.type;
 
 /**
  * Marks a skill as passive skill.

@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills.magic;
 
-import de.raidcraft.skills.api.AreaAttack;
+import de.raidcraft.skills.api.skill.type.AreaAttack;
 import de.raidcraft.skills.api.combat.effect.AbstractEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;

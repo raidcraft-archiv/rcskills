@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.skill.type;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
