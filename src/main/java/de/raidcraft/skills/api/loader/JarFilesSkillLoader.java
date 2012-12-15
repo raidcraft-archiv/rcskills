@@ -1,4 +1,4 @@
-package de.raidcraft.skills.loader;
+package de.raidcraft.skills.api.loader;
 
 import de.raidcraft.skills.api.skill.Skill;
 

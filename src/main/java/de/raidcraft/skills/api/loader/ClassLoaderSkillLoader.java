@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.raidcraft.skills.loader;
+package de.raidcraft.skills.api.loader;
 
 import de.raidcraft.skills.api.skill.Skill;
 

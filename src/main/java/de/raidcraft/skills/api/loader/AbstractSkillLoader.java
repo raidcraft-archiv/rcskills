@@ -1,6 +1,6 @@
 /*
  * CommandBook
- * Copyright (C) 2011 sk89q <http://www.sk89q.com>
+ * Copyright (C) 2012 sk89q <http://www.sk89q.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.raidcraft.skills.loader;
+package de.raidcraft.skills.api.loader;
 
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.skill.SkillInformation;
 
-import java.util.Collection;
+import java.util.logging.Logger;
 
-public interface SkillLoader {
+/**
+ * A parent class that contains several useful component loader helper methods
+ */
+public abstract class AbstractSkillLoader implements SkillLoader {
 
-    public Collection<Class<? extends Skill>> loadSkillClasses();
+    private final Logger logger;
+    
+    protected AbstractSkillLoader(Logger logger) {
 
-    public boolean isSkillClass(Class<?> clazz);
+        this.logger = logger;
+    }
 
+    @Override
+    public boolean isSkillClass(Class<?> clazz) {
+
+        return clazz != null && Skill.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(SkillInformation.class);
+    }
+    
+    protected Logger getLogger() {
+        return logger;
+    }
 }

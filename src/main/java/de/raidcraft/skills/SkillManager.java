@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.loader.JarFilesSkillLoader;
+import de.raidcraft.skills.api.loader.JarFilesSkillLoader;
 
 import java.io.File;
 import java.util.*;

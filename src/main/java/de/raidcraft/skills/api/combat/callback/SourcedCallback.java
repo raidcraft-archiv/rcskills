@@ -10,7 +10,7 @@ public class SourcedCallback {
     private final LivingEntity source;
     private final Callback callback;
 
-    protected SourcedCallback(LivingEntity source, Callback callback) {
+    public SourcedCallback(LivingEntity source, Callback callback) {
 
         this.source = source;
         this.callback = callback;

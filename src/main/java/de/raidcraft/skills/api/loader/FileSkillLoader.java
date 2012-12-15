@@ -1,4 +1,4 @@
-package de.raidcraft.skills.loader;
+package de.raidcraft.skills.api.loader;
 
 import java.util.logging.Logger;
 
