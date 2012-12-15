@@ -5,45 +5,46 @@ creature-health:
     Ghast: 10
     Giant: 100
     Pig: 10
-    PigZombie: 20
+    Pig_Zombie: 20
     Sheep: 8
     Skeleton: 20
-    Ozelot: 10
+    Ocelot: 10
     Slime: 16
     Spider: 20
     Squid: 10
     Zombie: 20
     Wolf: 8
-    CaveSpider: 20
+    Cave_Spider: 20
     Enderman: 40
-    EnderDragon: 200
+    Ender_Dragon: 200
     Silverfish: 8
     Villager: 20
     Blaze: 20
-    MushroomCow: 10
-    LavaSlime: 16
+    Mushroom_Cow: 10
+    Magma_Cube: 16
     SnowMan: 4
-    VillagerGolem: 100
+    Iron_Golem: 100
     Bat: 6
-    WitherBoss: 300
+    Wither: 300
     Witch: 26
 creature-damage:
     Creeper: 49
     Giant: 17
     Zombie: 4
-    PigZombie: 5
-    EnderDragon: 10
+    Pig_Zombie: 5
+    Ender_Dragon: 10
     Wolf: 2
     Enderman: 7
     Skeleton: 4
     Spider: 2
-    CaveSpider: 2
+    Cave_Spider: 2
     SnowMan: 0
-    VillagerGolem: 20
-    Ozelot: 3
+    Iron_Golem: 20
+    Ocelot: 3
     Slime: 4
-    LavaSlime: 6
-    WitherBoss: 5
+    Magma_Cube: 6
+    Wither: 5
+    Wither_Skull: 5
 item-damage:
     Air: 2
 environmental-damage:

@@ -93,7 +93,7 @@ public final class DamageManager {
             if (keys != null) {
                 for (String key : keys) {
                     try {
-                        K type = K.valueOf(enumType, key);
+                        K type = K.valueOf(enumType, key.toUpperCase());
                         if (type == null) {
                             throw new Exception("Invalid key type (" + key + ") found in damages.yml.");
                         }
