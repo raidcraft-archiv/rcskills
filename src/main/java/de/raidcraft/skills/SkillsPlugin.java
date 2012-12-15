@@ -10,6 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.combat.CombatManager;
+import de.raidcraft.skills.api.combat.DamageManager;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
@@ -35,6 +36,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private ProfessionManager professionManager;
     private HeroManager heroManager;
     private CombatManager combatManager;
+    private DamageManager damageManager;
     private LocalConfiguration configuration;
 
     @Override
@@ -63,6 +65,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.professionManager = new ProfessionManager(this);
         this.heroManager = new HeroManager(this);
         this.combatManager = new CombatManager(this);
+        this.damageManager = new DamageManager(this);
     }
 
     @Override
@@ -118,6 +121,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return combatManager;
     }
 
+    public DamageManager getDamageManager() {
+
+        return damageManager;
+    }
+
     public LocalConfiguration getCommonConfig() {
 
         return configuration;
@@ -135,6 +143,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
         public double profession_change_level_modifier = 1.0;
+        @Setting("manabar.update_interval")
+        public long manabar_update_interval = 5 * 1000;
 
         public LocalConfiguration(BasePlugin plugin) {
 

@@ -31,8 +31,8 @@ public final class CombatManager implements Listener {
     private static final Random RANDOM = new Random();
 
     private final SkillsPlugin plugin;
-    private final Map<EntityType, Integer> entityDamage = new HashMap<>();
-    private final Map<EntityType, Integer> entityHealth = new HashMap<>();
+    private final Map<EntityType, Integer> entityDamage = new EnumMap<>(EntityType.class);
+    private final Map<EntityType, Integer> entityHealth = new EnumMap<>(EntityType.class);
     private final Map<LivingEntity, Set<Effect>> appliedEffects = new HashMap<>();
     private final List<SourcedCallback> rangeCallbacks = new ArrayList<>();
     // reflection field of the NMS EntityLiving class
@@ -104,7 +104,7 @@ public final class CombatManager implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         Entity entity = event.getEntity();
