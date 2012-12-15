@@ -52,6 +52,7 @@ public final class CombatManager implements Listener {
 
     private void loadEntityConfig() {
 
+        // TODO: replace with the DamageManager
         // lets load the health and damage values from the configs
         File file = new File(plugin.getDataFolder(), "entity-config.yml");
         try {
