@@ -43,7 +43,7 @@ public final class HeroManager {
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
-            heroes.put(hero.getUserName(), hero);
+            heroes.put(hero.getName(), hero);
         } else {
             hero = heroes.get(name);
         }

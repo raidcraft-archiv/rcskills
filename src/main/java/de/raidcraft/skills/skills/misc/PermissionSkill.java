@@ -48,10 +48,10 @@ public class PermissionSkill extends AbstractSkill {
         Permission pex = RaidCraft.getPermissions();
         for (String world : worlds) {
             for (String perm : permissions) {
-                pex.playerAdd(world, hero.getUserName(), perm);
+                pex.playerAdd(world, hero.getName(), perm);
             }
             for (String grp : groups) {
-                pex.playerAddGroup(world, hero.getUserName(), grp);
+                pex.playerAddGroup(world, hero.getName(), grp);
             }
         }
     }
@@ -62,10 +62,10 @@ public class PermissionSkill extends AbstractSkill {
         Permission pex = RaidCraft.getPermissions();
         for (String world : worlds) {
             for (String perm : permissions) {
-                pex.playerRemove(world, hero.getUserName(), perm);
+                pex.playerRemove(world, hero.getName(), perm);
             }
             for (String grp : groups) {
-                pex.playerRemoveGroup(world, hero.getUserName(), grp);
+                pex.playerRemoveGroup(world, hero.getName(), grp);
             }
         }
     }

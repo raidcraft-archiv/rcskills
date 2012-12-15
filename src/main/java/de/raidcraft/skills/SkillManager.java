@@ -73,13 +73,13 @@ public final class SkillManager extends JarFilesSkillLoader {
         if (!skillFactories.containsKey(skill)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
         }
-        if (!playerSkills.containsKey(hero.getUserName())) {
-            playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
+        if (!playerSkills.containsKey(hero.getName())) {
+            playerSkills.put(hero.getName(), new HashMap<String, Skill>());
         }
-        if (!playerSkills.get(hero.getUserName()).containsKey(skill)) {
-            throw new UnknownSkillException("Der Spieler " + hero.getUserName() + " hat den Skill " + skill + " nicht.");
+        if (!playerSkills.get(hero.getName()).containsKey(skill)) {
+            throw new UnknownSkillException("Der Spieler " + skill + " hat den Skill " + skill + " nicht.");
         }
-        return playerSkills.get(hero.getUserName()).get(skill);
+        return playerSkills.get(hero.getName()).get(skill);
     }
 
     protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skillName) throws UnknownSkillException {
@@ -89,19 +89,19 @@ public final class SkillManager extends JarFilesSkillLoader {
         if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
-        if (!playerSkills.containsKey(hero.getUserName())) {
-            playerSkills.put(hero.getUserName(), new HashMap<String, Skill>());
+        if (!playerSkills.containsKey(hero.getName())) {
+            playerSkills.put(hero.getName(), new HashMap<String, Skill>());
         }
-        if (!playerSkills.get(hero.getUserName()).containsKey(skillName)) {
+        if (!playerSkills.get(hero.getName()).containsKey(skillName)) {
             // create a new skill instance for this hero and profession
             skill = skillFactories.get(skillName).create(hero, profession, factory);
-            playerSkills.get(hero.getUserName()).put(skillName, skill);
+            playerSkills.get(hero.getName()).put(skillName, skill);
             // add skill to our passive list if it is a passive skill
             if (skill instanceof Passive) {
                 passiveSkills.add(skill);
             }
         } else {
-            skill = playerSkills.get(hero.getUserName()).get(skillName);
+            skill = playerSkills.get(hero.getName()).get(skillName);
         }
         return skill;
     }

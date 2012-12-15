@@ -50,7 +50,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
     @Override
     public void run(final Hero hero, final Location target) throws CombatException {
 
-        Player caster = hero.getBukkitPlayer();
+        Player caster = hero.getPlayer();
         // lets create a new Spell from the Spells component
         // you can also do your own stuff here but if you think
         // a boss can do this stuff too add a spell please
@@ -76,7 +76,8 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
     @EffectInformation(
             name = "FireballEffect",
-            description = "Setzt das Ziel in Flammen."
+            description = "Setzt das Ziel in Flammen.",
+            types = {}
     )
     public class FireballEffect extends AbstractEffect {
 

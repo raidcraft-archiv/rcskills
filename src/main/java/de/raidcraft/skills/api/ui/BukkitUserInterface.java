@@ -19,7 +19,7 @@ public class BukkitUserInterface implements UserInterface {
     public BukkitUserInterface(Hero hero) {
 
         this.hero = hero;
-        this.player = hero.getBukkitPlayer();
+        this.player = hero.getPlayer();
     }
 
     @Override

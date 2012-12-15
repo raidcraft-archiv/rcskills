@@ -11,6 +11,7 @@ public abstract class AbstractEffect implements Effect {
 
     private final Skill skill;
     private final EffectInformation info;
+    private final Type[] types;
     private int taskId;
     private double priority;
     // messures how long this effect was running for
@@ -24,6 +25,7 @@ public abstract class AbstractEffect implements Effect {
 
         this.skill = skill;
         this.info = getClass().getAnnotation(EffectInformation.class);
+        this.types = info.types();
         this.priority = skill.getEffectProperties().getEffectPriority();
         this.totalDuration = skill.getTotalEffectDuration();
         this.delay = skill.getTotalEffectDelay();
@@ -40,6 +42,23 @@ public abstract class AbstractEffect implements Effect {
     public String getDescription() {
 
         return info.description();
+    }
+
+    @Override
+    public Type[] getTypes() {
+
+        return types;
+    }
+
+    @Override
+    public boolean hasType(Type type) {
+
+        for (Type t : types) {
+            if (type == t) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -13,11 +13,20 @@ import org.bukkit.entity.LivingEntity;
  */
 public interface Effect {
 
+    public enum Type {
+
+
+    }
+
     public void apply(Hero source, LivingEntity target) throws CombatException;
 
     public String getName();
 
     public String getDescription();
+
+    public Type[] getTypes();
+
+    public boolean hasType(Type type);
 
     public Skill getSkill();
 

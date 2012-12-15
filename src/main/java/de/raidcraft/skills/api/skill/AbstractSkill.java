@@ -152,7 +152,7 @@ public abstract class AbstractSkill implements Skill {
     public final String getDescription() {
 
         return description
-                .replace("%player%", hero.getDisplayName())
+                .replace("%player%", hero.getName())
                 .replace("%damage%", getTotalDamage() + "")
                 .replace("%mana-cost%", getTotalManaCost() + "")
                 .replace("%health-cost%", getTotalHealthCost() + "")

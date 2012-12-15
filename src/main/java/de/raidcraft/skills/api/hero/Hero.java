@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.InvalidTargetException;
-import de.raidcraft.api.player.RCPlayer;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -21,9 +21,11 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Hero extends Levelable<Hero>, RCPlayer {
+public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public int getId();
+
+    public Player getPlayer();
 
     public boolean isDebugging();
 
@@ -31,15 +33,7 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public void debug(String message);
 
-    public Player getBukkitPlayer();
-
     public int getDamage();
-
-    public int getHealth();
-
-    public void setHealth(int health);
-
-    public int getMaxHealth();
 
     public int getMana();
 
@@ -91,10 +85,6 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
 
     public boolean hasProfession(String id);
 
-    public boolean isInCombat();
-
-    public void setInCombat(boolean inCombat);
-
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
 
     public void damageEntity(LivingEntity target, int damage) throws CombatException;
@@ -104,4 +94,6 @@ public interface Hero extends Levelable<Hero>, RCPlayer {
     public void castRangeAttack(RangedCallback callback) throws CombatException;
 
     public void runSkill(Skill skill) throws CombatException, InvalidTargetException;
+
+    public void sendMessage(String... messages);
 }

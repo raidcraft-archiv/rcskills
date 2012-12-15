@@ -4,13 +4,14 @@ import com.avaje.ebean.Ebean;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;
-import de.raidcraft.api.bukkit.BukkitPlayer;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.AreaAttack;
 import de.raidcraft.skills.api.Passive;
 import de.raidcraft.skills.api.TargetedAttack;
+import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.combat.Callback;
 import de.raidcraft.skills.api.combat.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -27,8 +28,10 @@ import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -36,11 +39,11 @@ import java.util.*;
 /**
  * @author Silthus
  */
-public abstract class AbstractHero extends BukkitPlayer implements Hero {
+public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
 
     private final int id;
+    private final RCPlayer player;
     private boolean debugging = false;
-    private boolean inCombat = false;
     private int health;
     private int mana;
     private int stamina;
@@ -57,9 +60,10 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
 
     protected AbstractHero(HeroData data) {
 
-        super(data.getName());
+        super(Bukkit.getPlayer(data.getName()));
 
         this.id = data.getId();
+        this.player = RaidCraft.getPlayer(data.getName());
         this.health = data.getHealth();
         this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
@@ -162,7 +166,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         }
         // lets check if the player has the required reagents
         for (ItemStack itemStack : skill.getProperties().getReagents()) {
-            if (!getBukkitPlayer().getInventory().contains(itemStack)) {
+            if (!getPlayer().getInventory().contains(itemStack)) {
                 throw new CombatException(CombatException.Type.MISSING_REAGENT);
             }
         }
@@ -170,18 +174,24 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
         // TODO: do some fancy checks for the resistence and stuff
 
         if (skill instanceof TargetedAttack) {
-            ((TargetedAttack) skill).run(this, getTarget());
+            ((TargetedAttack) skill).run(this, player.getTarget());
         } else if (skill instanceof AreaAttack) {
-            ((AreaAttack) skill).run(this, BukkitUtil.toBlock(getTargetBlock()).getLocation());
+            ((AreaAttack) skill).run(this, BukkitUtil.toBlock(player.getTargetBlock()).getLocation());
         }
         // keep this last or items will be removed before casting
-        getBukkitPlayer().getInventory().removeItem(skill.getProperties().getReagents());
+        getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }
 
     @Override
     public int getId() {
 
         return id;
+    }
+
+    @Override
+    public Player getPlayer() {
+
+        return (Player) getEntity();
     }
 
     @Override
@@ -200,20 +210,8 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public void debug(String message) {
 
         if (isDebugging() && message != null && !message.equals("")) {
-            sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
+            player.sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
         }
-    }
-
-    @Override
-    public boolean isInCombat() {
-
-        return inCombat;
-    }
-
-    @Override
-    public void setInCombat(boolean inCombat) {
-
-        this.inCombat = inCombat;
     }
 
     @Override
@@ -260,7 +258,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public int getDamage() {
 
-        ItemStack itemInHand = getBukkitPlayer().getItemInHand();
+        ItemStack itemInHand = getPlayer().getItemInHand();
         for (Equipment equipment : this.equipment) {
             if (equipment.equals(itemInHand)) {
                 return (int) (equipment.getBaseDamage()
@@ -379,7 +377,7 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     public boolean hasSkill(String id) {
 
         id = id.toLowerCase();
-        if (isOnline()) {
+        if (player.isOnline()) {
             return skills.containsKey(id);
         } else {
             List<THeroSkill> skills = Ebean.find(THero.class, getId()).getSkills();
@@ -496,19 +494,19 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     @Override
     public void damageEntity(LivingEntity target, int damage) throws CombatException {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getBukkitPlayer(), target, damage);
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getPlayer(), target, damage);
     }
 
     @Override
     public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getBukkitPlayer(), target, damage, callback);
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getPlayer(), target, damage, callback);
     }
 
     @Override
     public void castRangeAttack(RangedCallback callback) {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().castRangeAttack(getBukkitPlayer(), callback);
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().castRangeAttack(getPlayer(), callback);
     }
 
     @Override
@@ -522,14 +520,20 @@ public abstract class AbstractHero extends BukkitPlayer implements Hero {
     }
 
     @Override
+    public void sendMessage(String... messages) {
+
+        player.sendMessage(messages);
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
-        return obj instanceof Hero && ((Hero) obj).getUserName().equalsIgnoreCase(getUserName());
+        return obj instanceof Hero && ((Hero) obj).getName().equalsIgnoreCase(getName());
     }
 
     @Override
     public String toString() {
 
-        return "[H:" + getUserName() + "]";
+        return "[H:" + getName() + "]";
     }
 }

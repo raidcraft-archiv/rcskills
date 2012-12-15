@@ -15,4 +15,6 @@ public @interface EffectInformation {
     public String name();
 
     public String description();
+
+    public Effect.Type[] types();
 }

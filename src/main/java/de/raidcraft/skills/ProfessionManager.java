@@ -40,14 +40,14 @@ public final class ProfessionManager {
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
-        if (!professions.containsKey(hero.getUserName())) {
-            professions.put(hero.getUserName(), new HashMap<String, Profession>());
+        if (!professions.containsKey(hero.getName())) {
+            professions.put(hero.getName(), new HashMap<String, Profession>());
         }
-        if (!professions.get(hero.getUserName()).containsKey(profId)) {
+        if (!professions.get(hero.getName()).containsKey(profId)) {
             Profession profession = professionFactories.get(profId).create(hero);
-            professions.get(hero.getUserName()).put(profId, profession);
+            professions.get(hero.getName()).put(profId, profession);
         }
-        return professions.get(hero.getUserName()).get(profId);
+        return professions.get(hero.getName()).get(profId);
     }
 
     public List<Profession> getAllProfessions(Hero hero) throws UnknownSkillException {
