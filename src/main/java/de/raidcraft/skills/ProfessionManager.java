@@ -17,7 +17,7 @@ public final class ProfessionManager {
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
     private final Map<String, Map<String, Profession>> professions = new HashMap<>();
 
-    public ProfessionManager(SkillsPlugin plugin) {
+    protected ProfessionManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         loadProfessions();

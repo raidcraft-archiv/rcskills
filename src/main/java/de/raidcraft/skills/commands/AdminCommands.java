@@ -45,12 +45,12 @@ public class AdminCommands {
         Hero hero;
         if (args.argsLength() > 1) {
             try {
-                hero = plugin.getHeroManager().getHero(args.getString(0));
+                hero = plugin.getCharacterManager().getHero(args.getString(0));
             } catch (UnknownPlayerException e) {
                 throw new CommandException(e.getMessage());
             }
         } else {
-            hero = plugin.getHeroManager().getHero((Player) sender);
+            hero = plugin.getCharacterManager().getHero((Player) sender);
         }
         hero.setDebugging(!hero.isDebugging());
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +

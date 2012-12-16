@@ -3,24 +3,29 @@ package de.raidcraft.skills;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Silthus
  */
-public final class HeroManager {
+public final class CharacterManager {
 
     private final SkillsPlugin plugin;
     private final Map<String, Hero> heroes = new HashMap<>();
+    private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
 
-    public HeroManager(SkillsPlugin plugin) {
+    protected CharacterManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
     }
@@ -59,5 +64,17 @@ public final class HeroManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public CharacterTemplate getCharacter(LivingEntity entity) {
+
+        if (entity instanceof Player) {
+            return getHero((Player) entity);
+        }
+
+        if (!characters.containsKey(entity.getUniqueId())) {
+            characters.put(entity.getUniqueId(), new Creature(entity));
+        }
+        return characters.get(entity.getUniqueId());
     }
 }

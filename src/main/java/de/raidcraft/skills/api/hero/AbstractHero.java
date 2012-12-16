@@ -1,17 +1,13 @@
 package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.skill.type.AreaAttack;
-import de.raidcraft.skills.api.skill.type.Passive;
-import de.raidcraft.skills.api.skill.type.TargetedAttack;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -28,8 +24,10 @@ import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -146,40 +144,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             }
         }
         save();
-    }
-
-    @Override
-    public final void runSkill(Skill skill) throws CombatException, InvalidTargetException {
-
-        if (skill instanceof Passive) {
-            throw new CombatException(CombatException.Type.PASSIVE);
-        }
-        // lets check the resources of the skill and if the hero has it
-        if (skill.getTotalManaCost() > getMana()) {
-            throw new CombatException(CombatException.Type.LOW_MANA);
-        }
-        if (skill.getTotalStaminaCost() > getStamina()) {
-            throw new CombatException(CombatException.Type.LOW_STAMINA);
-        }
-        if (skill.getTotalHealthCost() > getHealth()) {
-            throw new CombatException(CombatException.Type.LOW_HEALTH);
-        }
-        // lets check if the player has the required reagents
-        for (ItemStack itemStack : skill.getProperties().getReagents()) {
-            if (!getPlayer().getInventory().contains(itemStack)) {
-                throw new CombatException(CombatException.Type.MISSING_REAGENT);
-            }
-        }
-
-        // TODO: do some fancy checks for the resistence and stuff
-
-        if (skill instanceof TargetedAttack) {
-            ((TargetedAttack) skill).run(this, player.getTarget());
-        } else if (skill instanceof AreaAttack) {
-            ((AreaAttack) skill).run(this, BukkitUtil.toBlock(player.getTargetBlock()).getLocation());
-        }
-        // keep this last or items will be removed before casting
-        getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }
 
     @Override
@@ -492,15 +456,15 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void damageEntity(LivingEntity target, int damage) throws CombatException {
+    public void damageEntity(CharacterTemplate target, int damage) throws CombatException {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getPlayer(), target, damage);
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(this, target, damage);
     }
 
     @Override
-    public void damageEntity(LivingEntity target, int damage, Callback callback) throws CombatException {
+    public void damageEntity(CharacterTemplate target, int damage, Callback callback) throws CombatException {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(getPlayer(), target, damage, callback);
+        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(this, target, damage, callback);
     }
 
     @Override
@@ -517,6 +481,19 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void kill() {
         //TODO: implement
+    }
+
+    @Override
+    public CharacterTemplate getTarget() {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager()
+                .getCharacter(BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class));
+    }
+
+    @Override
+    public Location getBlockTarget() {
+
+        return getEntity().getTargetBlock(null, 100).getLocation();
     }
 
     @Override

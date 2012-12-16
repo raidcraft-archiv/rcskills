@@ -8,13 +8,16 @@ import org.bukkit.entity.LivingEntity;
  */
 public class EntityHeroAttack extends AbstractAttack<LivingEntity, Hero> {
 
-    protected EntityHeroAttack(LivingEntity attacker, Hero target, int damage) {
+    public EntityHeroAttack(LivingEntity attacker, Hero target, int damage) {
 
         super(attacker, target, damage);
     }
 
     @Override
     public void run() {
-        //TODO: implement
+
+        // this means the damage is passed from the EntityDamageByEntity Event
+        // the damage in the event was set to 0 so we can handle the damage for the hero here
+        getTarget().damage(getDamage());
     }
 }

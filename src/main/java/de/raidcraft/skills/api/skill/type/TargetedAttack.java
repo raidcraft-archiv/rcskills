@@ -1,14 +1,14 @@
 package de.raidcraft.skills.api.skill.type;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import org.bukkit.entity.LivingEntity;
 
 /**
  * @author Silthus
  */
-public interface TargetedAttack extends Active<LivingEntity> {
+public interface TargetedAttack extends Active<CharacterTemplate> {
 
     @Override
-    public void run(Hero hero, LivingEntity target) throws CombatException;
+    public void run(Hero hero, CharacterTemplate target) throws CombatException;
 }

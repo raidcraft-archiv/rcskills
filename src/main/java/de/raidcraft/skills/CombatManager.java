@@ -1,6 +1,6 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills;
 
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedCallback;
@@ -35,7 +35,7 @@ public final class CombatManager implements Listener {
     // reflection field of the NMS EntityLiving class
     private Field nmsHealth = null;
 
-    public CombatManager(SkillsPlugin plugin) {
+    protected CombatManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
@@ -87,12 +87,12 @@ public final class CombatManager implements Listener {
 
         // handle all damage done to heroes
         if (event.getEntity() instanceof Player) {
-            damageHero(event, plugin.getHeroManager().getHero((Player) event.getEntity()));
+            damageHero(event, plugin.getCharacterManager().getHero((Player) event.getEntity()));
         // modify damage done by players to any non heroes
         } else if (event.getDamager() instanceof Player
                 && event.getEntity() instanceof LivingEntity) {
             // get the attacker hero
-            Hero attacker = plugin.getHeroManager().getHero((Player) event.getDamager());
+            Hero attacker = plugin.getCharacterManager().getHero((Player) event.getDamager());
             int damage = attacker.getDamage();
             if (damage > 0) {
                 event.setDamage(damage);
@@ -110,7 +110,7 @@ public final class CombatManager implements Listener {
         if (event.getDamager() instanceof Creature) {
             event.setDamage(plugin.getDamageManager().getCreatureDamage(event.getDamager().getType()));
         } else if (event.getDamager() instanceof Player) {
-            Hero attacker = plugin.getHeroManager().getHero((Player) event.getDamager());
+            Hero attacker = plugin.getCharacterManager().getHero((Player) event.getDamager());
             newHealth = oldHealth - attacker.getDamage();
         }
 
@@ -187,7 +187,7 @@ public final class CombatManager implements Listener {
         effects.add(effect);
     }
 
-    public void damageEntity(LivingEntity source, LivingEntity target, int damage, Callback callback) throws CombatException {
+    public void damageEntity(CharacterTemplate source, LivingEntity target, int damage, Callback callback) throws CombatException {
 
         // TODO: rework this to an extra monster class
         damageEntity(source, target, damage);
@@ -200,7 +200,7 @@ public final class CombatManager implements Listener {
         }
     }
 
-    public void castRangeAttack(LivingEntity source, Callback callback) {
+    public void castRangeAttack(CharacterTemplate source, Callback callback) {
 
         // lets add it to the listener
         final SourcedCallback cb = new SourcedCallback(source, callback);
@@ -214,7 +214,7 @@ public final class CombatManager implements Listener {
         }, plugin.getCommonConfig().callback_purge_time);
     }
 
-    public void knockBack(LivingEntity attacker, LivingEntity target, double power) {
+    public void knockBack(CharacterTemplate attacker, LivingEntity target, double power) {
 
         // TODO: make effect out of this
         // knocks back the target based on the attackers center position
@@ -227,7 +227,7 @@ public final class CombatManager implements Listener {
         target.setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
     }
 
-    public void damageEntity(LivingEntity attacker, LivingEntity target, int damage) throws CombatException {
+    public void damageEntity(CharacterTemplateCharacterTemplate attacker, LivingEntity target, int damage) throws CombatException {
 
         damageEntity(attacker, target, damage, EntityDamageEvent.DamageCause.CUSTOM);
     }
@@ -257,9 +257,9 @@ public final class CombatManager implements Listener {
         setHealth(target, newHealth);
 
         if (attacker instanceof Player) {
-            plugin.getHeroManager().getHero((Player) attacker).debug(oldHealth - newHealth + " damage inflicted");
+            plugin.getCharacterManager().getHero((Player) attacker).debug(oldHealth - newHealth + " damage inflicted");
         } else if (target instanceof Player) {
-            plugin.getHeroManager().getHero((Player) target).debug(oldHealth - newHealth + " damage taken");
+            plugin.getCharacterManager().getHero((Player) target).debug(oldHealth - newHealth + " damage taken");
         }
 
         if (newHealth <= 0) {

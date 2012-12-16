@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.combat.attack;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.entity.LivingEntity;
 
@@ -8,13 +10,14 @@ import org.bukkit.entity.LivingEntity;
  */
 public class HeroEntityAttack extends AbstractAttack<Hero, LivingEntity> {
 
-    protected HeroEntityAttack(Hero attacker, LivingEntity target) {
+    public HeroEntityAttack(Hero attacker, LivingEntity target) {
 
         super(attacker, target, attacker.getDamage());
     }
 
     @Override
     public void run() {
-        //TODO: implement
+
+        RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(getTarget());
     }
 }

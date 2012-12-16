@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.attack.SkillAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -39,7 +40,7 @@ public class CastCommand {
         }
 
         Hero hero;
-        hero = plugin.getHeroManager().getHero((Player) sender);
+        hero = plugin.getCharacterManager().getHero((Player) sender);
 
         // lets parse the argument for a valid spell
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
@@ -52,7 +53,7 @@ public class CastCommand {
         }
 
         try {
-            hero.runSkill(skill);
+            new SkillAttack<>(skill, hero.getTarget()).run();
         } catch (CombatException | InvalidTargetException e) {
             throw new CommandException(e.getMessage());
         }

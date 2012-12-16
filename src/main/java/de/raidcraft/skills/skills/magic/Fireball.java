@@ -1,9 +1,9 @@
 package de.raidcraft.skills.skills.magic;
 
-import de.raidcraft.skills.api.skill.type.AreaAttack;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.effect.AbstractEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -11,10 +11,10 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.skill.type.AreaAttack;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 /**
@@ -63,10 +63,10 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
         // lets register a spell callback that is called when the fireball hits
         hero.castRangeAttack(new RangedCallback() {
             @Override
-            public void run(LivingEntity target) throws CombatException {
+            public void run(CharacterTemplate target) throws CombatException {
 
                 hero.damageEntity(target, getTotalDamage());
-                addEffect(new FireballEffect(Fireball.this), target);
+                target.addEffect(new FireballEffect(Fireball.this));
                 // add some exp to the profession and skill
                 getProfession().getLevel().addExp(2);
                 getLevel().addExp(5);
@@ -87,7 +87,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
         }
 
         @Override
-        public void apply(Hero hero, LivingEntity target) throws CombatException {
+        public void apply(Hero hero, CharacterTemplate target) throws CombatException {
 
             // reminder: this method is called every set interval for the duration after the delay
             // damage entity for 5 and let it burn for 1 second

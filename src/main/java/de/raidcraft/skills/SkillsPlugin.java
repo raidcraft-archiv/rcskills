@@ -9,8 +9,6 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.skills.api.combat.CombatManager;
-import de.raidcraft.skills.api.combat.DamageManager;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
@@ -34,7 +32,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
     private ProfessionManager professionManager;
-    private HeroManager heroManager;
+    private CharacterManager characterManager;
     private CombatManager combatManager;
     private DamageManager damageManager;
     private LocalConfiguration configuration;
@@ -63,7 +61,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerSkills();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
-        this.heroManager = new HeroManager(this);
+        this.characterManager = new CharacterManager(this);
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
     }
@@ -111,9 +109,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return professionManager;
     }
 
-    public HeroManager getHeroManager() {
+    public CharacterManager getCharacterManager() {
 
-        return heroManager;
+        return characterManager;
     }
 
     public CombatManager getCombatManager() {
@@ -196,6 +194,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        getHeroManager().getHero(event.getPlayer()).save();
+        getCharacterManager().getHero(event.getPlayer()).save();
     }
 }

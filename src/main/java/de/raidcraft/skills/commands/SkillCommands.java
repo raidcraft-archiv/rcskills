@@ -30,7 +30,7 @@ public class SkillCommands {
     )
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
-        Hero hero = plugin.getHeroManager().getHero((Player) sender);
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
         sender.sendMessage(SkillUtil.formatHeader(skill));

@@ -1,9 +1,9 @@
 package de.raidcraft.skills.api.combat.effect;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.entity.LivingEntity;
 
 /**
  * An effect is something that can be applied to entities around in the world.
@@ -18,7 +18,7 @@ public interface Effect {
 
     }
 
-    public void apply(Hero source, LivingEntity target) throws CombatException;
+    public void apply(Hero source, CharacterTemplate target) throws CombatException;
 
     public String getName();
 

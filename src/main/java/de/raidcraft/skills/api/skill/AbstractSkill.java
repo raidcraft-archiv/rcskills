@@ -1,10 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.combat.effect.Effect;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,7 +8,6 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,25 +100,6 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void load(DataMap data) {
         // override this when needed
-    }
-
-    /*/////////////////////////////////////////////////////////////////
-    //    Methods that handle applying of effects are here
-    /////////////////////////////////////////////////////////////////*/
-
-    public final void addEffect(Effect effect, LivingEntity target) {
-
-        addEffect(effect, getHero(), target);
-    }
-
-    public final void addEffect(Effect effect, Hero source, LivingEntity target) {
-
-        // dont add invalid effects
-        if (!effect.getClass().isAnnotationPresent(EffectInformation.class)) {
-            RaidCraft.LOGGER.warning("The effect " + effect.getClass().getCanonicalName() + " has no EffectInformation!");
-            return;
-        }
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().addEffect(effect, source, target);
     }
 
     /*/////////////////////////////////////////////////////////////////

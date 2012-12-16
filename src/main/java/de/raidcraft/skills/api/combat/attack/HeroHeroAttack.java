@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.hero.Hero;
  */
 public class HeroHeroAttack extends AbstractAttack<Hero, Hero> {
 
-    protected HeroHeroAttack(Hero attacker, Hero target) {
+    public HeroHeroAttack(Hero attacker, Hero target) {
 
         super(attacker, target, attacker.getDamage());
     }

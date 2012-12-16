@@ -1,7 +1,7 @@
-package de.raidcraft.skills.api.combat;
+package de.raidcraft.skills;
 
 import de.raidcraft.api.config.SimpleConfiguration;
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -24,7 +24,7 @@ public final class DamageManager {
     private Map<EntityDamageEvent.DamageCause, Double> environmentalDamage;
     private Map<ProjectileType, Integer> projectileDamage;
 
-    public DamageManager(SkillsPlugin plugin) {
+    protected DamageManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         this.config = new SimpleConfiguration(plugin, CONFIG_NAME);

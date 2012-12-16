@@ -39,7 +39,7 @@ public class SkillsCommand {
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
         final Hero hero;
-        hero = plugin.getHeroManager().getHero((Player) sender);
+        hero = plugin.getCharacterManager().getHero((Player) sender);
         // Profession profession = null;
         List<Skill> skills = new ArrayList<>();
         // get the profession

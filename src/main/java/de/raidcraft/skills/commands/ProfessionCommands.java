@@ -41,7 +41,7 @@ public class ProfessionCommands {
             return;
         }
 
-        final Hero hero = plugin.getHeroManager().getHero((Player) sender);
+        final Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         List<Profession> professions;
         try {
             professions = plugin.getProfessionManager().getAllProfessions(hero);
@@ -90,7 +90,7 @@ public class ProfessionCommands {
         boolean force = args.hasFlag('f');
 
         try {
-            Hero hero = plugin.getHeroManager().getHero((Player) sender);
+            Hero hero = plugin.getCharacterManager().getHero((Player) sender);
             Profession profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
             boolean primary = profession.getProperties().isPrimary();
 
@@ -138,7 +138,7 @@ public class ProfessionCommands {
     )
     public void info(CommandContext args, CommandSender sender) {
 
-        Hero hero = plugin.getHeroManager().getHero((Player) sender);
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         Profession profession = hero.getSelectedProfession();
 
         sender.sendMessage(ChatColor.YELLOW + profession.getProperties().getFriendlyName());

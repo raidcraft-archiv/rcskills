@@ -15,8 +15,8 @@ public interface Active<T> {
      * So when processing this method only focus on executing the spell/skill.
      *
      * @param hero that triggered the skill
-     * @param trigger of the skill
+     * @param target of the skill
      * @throws CombatException is thrown when an error in the skill execution occured
      */
-    public void run(Hero hero, T trigger) throws CombatException;
+    public void run(Hero hero, T target) throws CombatException;
 }

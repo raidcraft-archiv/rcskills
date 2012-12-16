@@ -24,7 +24,7 @@ public final class SkillManager extends JarFilesSkillLoader {
     // holds all skills that are triggered every few ticks
     private final List<Skill> passiveSkills = new ArrayList<>();
 
-    public SkillManager(SkillsPlugin plugin) {
+    protected SkillManager(SkillsPlugin plugin) {
 
         super(plugin.getLogger(), new File(plugin.getDataFolder(), "/skills/"));
         this.plugin = plugin;

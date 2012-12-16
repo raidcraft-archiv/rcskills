@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills.physical;
 
-import de.raidcraft.skills.api.skill.type.TargetedAttack;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -9,8 +9,8 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.skill.type.TargetedAttack;
 import de.raidcraft.skills.tables.THeroSkill;
-import org.bukkit.entity.LivingEntity;
 
 /**
  * @author Silthus
@@ -28,13 +28,13 @@ public class Strike extends AbstractLevelableSkill implements TargetedAttack {
     }
 
     @Override
-    public void run(Hero hero, LivingEntity target) throws CombatException {
+    public void run(Hero hero, CharacterTemplate target) throws CombatException {
 
         hero.damageEntity(target, getTotalDamage(), new Callback() {
             @Override
-            public void run(LivingEntity entity) {
+            public void run(CharacterTemplate target) {
 
-                entity.setFireTicks(100);
+                target.getEntity().setFireTicks(100);
             }
         });
     }
