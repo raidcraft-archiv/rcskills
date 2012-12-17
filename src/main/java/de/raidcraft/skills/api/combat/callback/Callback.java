@@ -8,5 +8,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Callback {
 
-    public void run(CharacterTemplate entity) throws CombatException;
+    public void run(CharacterTemplate target) throws CombatException;
 }

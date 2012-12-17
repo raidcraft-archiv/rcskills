@@ -1,22 +1,33 @@
 package de.raidcraft.skills.api.combat.callback;
 
-import org.bukkit.entity.LivingEntity;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 
 /**
  * @author Silthus
  */
 public class SourcedCallback {
 
-    private final LivingEntity source;
+    private final CharacterTemplate source;
     private final Callback callback;
+    private int taskId = -1;
 
-    public SourcedCallback(LivingEntity source, Callback callback) {
+    public SourcedCallback(CharacterTemplate source, Callback callback) {
 
         this.source = source;
         this.callback = callback;
     }
 
-    public LivingEntity getSource() {
+    public int getTaskId() {
+
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+
+        this.taskId = taskId;
+    }
+
+    public CharacterTemplate getSource() {
 
         return source;
     }

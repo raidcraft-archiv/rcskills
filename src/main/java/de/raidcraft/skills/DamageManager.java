@@ -1,10 +1,24 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.attack.EnvironmentAttack;
+import de.raidcraft.skills.api.combat.attack.PhysicalAttack;
+import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.util.ConfigUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Map;
@@ -12,7 +26,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public final class DamageManager {
+public final class DamageManager implements Listener {
 
     private static final String CONFIG_NAME = "damages.yml";
 
@@ -30,6 +44,8 @@ public final class DamageManager {
         this.config = new SimpleConfiguration(plugin, CONFIG_NAME);
         this.config.load();
         loadConfig();
+        // register ourself as listener
+        plugin.registerEvents(this);
     }
 
     private void loadConfig() {
@@ -79,5 +95,75 @@ public final class DamageManager {
             return projectileDamage.get(type);
         }
         return 0;
+    }
+
+    /*/////////////////////////////////////////////////////////////////////////
+    //    Bukkit Events are called beyond this line - put your buckets on!
+    /////////////////////////////////////////////////////////////////////////*/
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onEntitySpawn(CreatureSpawnEvent event) {
+
+        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
+        if (character instanceof Hero) {
+            return;
+        }
+        // lets set the health and damage of the entity
+        character.setHealth(getCreatureHealth(character.getEntity().getType()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
+            return;
+        }
+        if (event.getDamage() == 0) {
+            return;
+        }
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+        if (event.getDamager() instanceof Projectile && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+            // the projectile callbacks are handled in the CombatManager
+            return;
+        }
+
+        CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+        CharacterTemplate attacker = null;
+        if (event.getDamager() instanceof LivingEntity) {
+            attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+        }
+
+        try {
+            if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                if (!(event.getDamager() instanceof LivingEntity)) {
+                    return;
+                }
+                attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+                PhysicalAttack attack = new PhysicalAttack(event);
+                attack.run();
+                if (attacker instanceof Hero) {
+                    ((Hero) attacker).debug("You->" + target.getName() + ": " + attack.getDamage() + "dmg");
+                }
+                if (target instanceof Hero) {
+                    ((Hero) target).debug(attacker.getName() + "->You: " + attack.getDamage() + "dmg");
+                }
+            } else {
+                if (environmentalDamage.containsKey(event.getCause())) {
+                    EnvironmentAttack attack = new EnvironmentAttack(event, environmentalDamage.get(event.getCause()));
+                    attack.run();
+                } else {
+                    // TODO: process other damage sources based on the config loaded above
+                }
+            }
+        } catch (CombatException | InvalidTargetException e) {
+            if (attacker != null && attacker instanceof Hero) {
+                ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
+            }
+            if (target instanceof Hero) {
+                ((Hero) target).debug((attacker != null ? attacker.getName() : event.getCause().name()) + "->You: " + e.getMessage());
+            }
+        }
     }
 }

@@ -53,7 +53,7 @@ public class CastCommand {
         }
 
         try {
-            new SkillAttack<>(skill, hero.getTarget()).run();
+            new SkillAttack(skill, hero.getTarget()).run();
         } catch (CombatException | InvalidTargetException e) {
             throw new CommandException(e.getMessage());
         }

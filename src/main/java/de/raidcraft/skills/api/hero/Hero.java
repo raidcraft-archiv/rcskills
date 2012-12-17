@@ -1,9 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
-import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -12,7 +9,6 @@ import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -71,10 +67,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void save();
 
-    public void kill(LivingEntity attacker);
-
-    public void kill();
-
     public boolean hasSkill(Skill skill);
 
     public boolean hasSkill(String id);
@@ -86,12 +78,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public boolean hasProfession(String id);
 
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
-
-    public void damageEntity(CharacterTemplate target, int damage) throws CombatException;
-
-    public void damageEntity(CharacterTemplate target, int damage, Callback callback) throws CombatException;
-
-    public void castRangeAttack(RangedCallback callback) throws CombatException;
 
     public void sendMessage(String... messages);
 

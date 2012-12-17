@@ -77,4 +77,9 @@ public final class CharacterManager {
         }
         return characters.get(entity.getUniqueId());
     }
+
+    public void clearCacheOf(CharacterTemplate character) {
+
+        characters.remove(character.getEntity().getUniqueId());
+    }
 }

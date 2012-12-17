@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.character;
 
+import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
+import org.bukkit.EntityEffect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -41,6 +43,24 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         int health = getHealth() - damage;
         if (health < 0) health = 0;
         setHealth(health);
+        getEntity().playEffect(EntityEffect.HURT);
+    }
+
+    @Override
+    public void damage(Attack attack) {
+
+        damage(attack.getDamage());
+    }
+
+    @Override
+    public void kill(CharacterTemplate killer) {
+
+        kill();
+    }
+
+    @Override
+    public void kill() {
+        //TODO: implement
     }
 
     @Override

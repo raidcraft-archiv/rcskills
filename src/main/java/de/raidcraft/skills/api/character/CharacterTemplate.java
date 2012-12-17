@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.character;
 
+import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import org.bukkit.entity.LivingEntity;
 
@@ -19,6 +20,12 @@ public interface CharacterTemplate {
     public int getMaxHealth();
 
     public void damage(int damage);
+
+    public void damage(Attack attack);
+
+    public void kill(CharacterTemplate killer);
+
+    public void kill();
 
     public void addEffect(Effect effect);
 

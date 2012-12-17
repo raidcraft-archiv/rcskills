@@ -8,9 +8,6 @@ import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
-import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -456,25 +453,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void damageEntity(CharacterTemplate target, int damage) throws CombatException {
-
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(this, target, damage);
-    }
-
-    @Override
-    public void damageEntity(CharacterTemplate target, int damage, Callback callback) throws CombatException {
-
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().damageEntity(this, target, damage, callback);
-    }
-
-    @Override
-    public void castRangeAttack(RangedCallback callback) {
-
-        RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().castRangeAttack(getPlayer(), callback);
-    }
-
-    @Override
-    public void kill(LivingEntity attacker) {
+    public void kill(CharacterTemplate attacker) {
         //TODO: implement
     }
 

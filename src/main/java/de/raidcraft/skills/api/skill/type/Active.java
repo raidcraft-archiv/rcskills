@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill.type;
 
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 
@@ -18,5 +19,5 @@ public interface Active<T> {
      * @param target of the skill
      * @throws CombatException is thrown when an error in the skill execution occured
      */
-    public void run(Hero hero, T target) throws CombatException;
+    public void run(Hero hero, T target) throws CombatException, InvalidTargetException;
 }
