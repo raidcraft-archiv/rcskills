@@ -1,31 +1,22 @@
 package de.raidcraft.skills.api.combat.attack;
 
-import de.raidcraft.skills.api.character.CharacterTemplate;
-
 /**
  * @author Silthus
  */
-public abstract class AbstractAttack implements Attack {
+public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements Attack<S, T> {
 
-    private final CharacterTemplate attacker;
-    private final CharacterTemplate target;
+    private final T target;
     private int damage;
 
-    protected AbstractAttack(CharacterTemplate attacker, CharacterTemplate target, int damage) {
+    protected AbstractAttack(S attacker, T target, int damage) {
 
-        this.attacker = attacker;
+        super(attacker);
         this.target = target;
         this.damage = damage;
     }
 
     @Override
-    public CharacterTemplate getAttacker() {
-
-        return attacker;
-    }
-
-    @Override
-    public CharacterTemplate getTarget() {
+    public T getTarget() {
 
         return target;
     }

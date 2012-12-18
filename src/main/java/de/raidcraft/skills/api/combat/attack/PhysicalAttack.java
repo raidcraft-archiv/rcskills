@@ -16,13 +16,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
  *
  * @author Silthus
  */
-public class PhysicalAttack extends AbstractAttack {
+public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterTemplate> {
 
     private Callback callback;
 
-    public PhysicalAttack(CharacterTemplate attacker, CharacterTemplate target, int damage) {
+    public PhysicalAttack(CharacterTemplate source, CharacterTemplate target, int damage) {
 
-        super(attacker, target, damage);
+        super(source, target, damage);
     }
 
     public PhysicalAttack(CharacterTemplate attacker, CharacterTemplate target, Callback callback) {
@@ -50,7 +50,7 @@ public class PhysicalAttack extends AbstractAttack {
     public void run() throws CombatException, InvalidTargetException {
 
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-                getAttacker().getEntity(),
+                getSource().getEntity(),
                 getTarget().getEntity(),
                 EntityDamageEvent.DamageCause.CUSTOM,
                 0);

@@ -3,6 +3,7 @@ package de.raidcraft.skills.creature;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import net.minecraft.server.EntityLiving;
 import org.bukkit.EntityEffect;
@@ -50,19 +51,21 @@ public class Creature extends AbstractCharacterTemplate {
     public void damage(Attack attack) {
 
         super.damage(attack);
-        LivingEntity attacker = attack.getAttacker().getEntity();
-        LivingEntity target = attack.getTarget().getEntity();
-        // make the creature angry if it is attacked
-        if (target instanceof Wolf) {
-            Wolf wolf = (Wolf) target;
-            wolf.setAngry(true);
-            wolf.setTarget(attacker);
-        } else if (target instanceof PigZombie) {
-            PigZombie pigZombie = (PigZombie) target;
-            pigZombie.setAngry(true);
-            pigZombie.setTarget(attacker);
-        } else if (target instanceof org.bukkit.entity.Creature) {
-            ((org.bukkit.entity.Creature) target).setTarget(attacker);
+        if (attack.getSource() instanceof CharacterTemplate && attack.getTarget() instanceof CharacterTemplate) {
+            LivingEntity attacker = ((CharacterTemplate) attack.getSource()).getEntity();
+            LivingEntity target = ((CharacterTemplate) attack.getTarget()).getEntity();
+            // make the creature angry if it is attacked
+            if (target instanceof Wolf) {
+                Wolf wolf = (Wolf) target;
+                wolf.setAngry(true);
+                wolf.setTarget(attacker);
+            } else if (target instanceof PigZombie) {
+                PigZombie pigZombie = (PigZombie) target;
+                pigZombie.setAngry(true);
+                pigZombie.setTarget(attacker);
+            } else if (target instanceof org.bukkit.entity.Creature) {
+                ((org.bukkit.entity.Creature) target).setTarget(attacker);
+            }
         }
     }
 

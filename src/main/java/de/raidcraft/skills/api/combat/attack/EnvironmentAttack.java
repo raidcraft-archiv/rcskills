@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.combat.attack;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -10,11 +11,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 /**
  * @author Silthus
  */
-public class EnvironmentAttack extends AbstractAttack {
+public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.DamageCause, CharacterTemplate> {
 
     public EnvironmentAttack(EntityDamageByEntityEvent event, double damageModifier) {
 
-        super(null,
+        super(event.getCause(),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 (int) (event.getDamage() * damageModifier));
     }
