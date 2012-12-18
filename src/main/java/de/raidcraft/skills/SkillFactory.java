@@ -4,15 +4,14 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.EffectProperties;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.DataMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,14 +27,12 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class SkillFactory extends ConfigurationBase implements SkillProperties, EffectProperties {
+public final class SkillFactory extends ConfigurationBase implements SkillProperties {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     private final SkillInformation information;
     private boolean createDefaults = false;
-
-    private ConfigurationSection professionConfig;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
@@ -76,9 +73,10 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
 
         // set the config that overrides the default skill parameters with the profession config
-        this.professionConfig = factory.getConfigurationSection("skills." + information.name().toLowerCase());
-        if (this.professionConfig == null) {
-            this.professionConfig = factory.createSection("skills." + information.name().toLowerCase());
+        setOverrideConfig(factory.getConfigurationSection("skills." + information.name().toLowerCase()));
+
+        if (getOverrideConfig() == null) {
+            setOverrideConfig(factory.createSection("skills." + information.name().toLowerCase()));
         }
         // lets load the database
         THeroSkill database = loadDatabase(hero, factory);
@@ -127,62 +125,11 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
         return information;
     }
 
-    private <V> V getValue(String key, Class<V> vClass, V def) {
-
-        if (professionConfig != null) {
-            if (professionConfig.isSet(key)) {
-                return vClass.cast(professionConfig.get(key));
-            }
-        }
-        if (!isSet(key)) {
-            if (vClass == Double.class) set(key, def);
-            if (vClass == Integer.class) set(key, def);
-            if (vClass == Boolean.class) set(key, def);
-            if (vClass == String.class) set(key, def);
-            save();
-        }
-        return vClass.cast(get(key, def));
-    }
-
-    private double getOverrideDouble(String key, double def) {
-
-        return getValue(key, Double.class, def);
-    }
-
-    private int getOverrideInt(String key, int def) {
-
-        return getValue(key, Integer.class, def);
-    }
-
-    private boolean getOverrideBool(String key, boolean def) {
-
-        return getValue(key, Boolean.class, def);
-    }
-
-    private String getOverrideString(String key, String def) {
-
-        return getValue(key, String.class, def);
-    }
-
-    private List<String> getOverrideStringList(String path) {
-
-        if (professionConfig != null) {
-            if (professionConfig.isSet(path)) {
-                return professionConfig.getStringList(path);
-            }
-        }
-        if (!isSet(path)) {
-            set(path, new ArrayList<String>());
-            save();
-        }
-        return getStringList(path);
-    }
-
     private ConfigurationSection getOverrideSection(String path) {
 
         ConfigurationSection section;
-        if (professionConfig != null) {
-            section = professionConfig.getConfigurationSection(path);
+        if (getOverrideConfig() != null) {
+            section = getOverrideConfig().getConfigurationSection(path);
             if (section != null) {
                 return section;
             }
@@ -197,13 +144,13 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public String getFriendlyName() {
 
-        return getOverrideString("name", information.name());
+        return getOverride("name", information.name());
     }
 
     @Override
     public String getDescription() {
 
-        return getOverrideString("description", information.desc());
+        return getOverride("description", information.desc());
     }
 
     @Override
@@ -244,10 +191,10 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public DataMap getData() {
 
-        ConfigurationSection custom = professionConfig.getConfigurationSection("custom");
+        ConfigurationSection custom = getOverrideConfig().getConfigurationSection("custom");
         if (custom == null) {
-            professionConfig.createSection("custom");
-            custom = professionConfig.getConfigurationSection("custom");
+            getOverrideConfig().createSection("custom");
+            custom = getOverrideConfig().getConfigurationSection("custom");
         }
         return new DataMap(custom);
     }
@@ -255,210 +202,132 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public int getManaCost() {
 
-        return getOverrideInt("mana.base-cost", 0);
+        return getOverride("mana.base-cost", 0);
     }
 
     @Override
     public double getManaLevelModifier() {
 
-        return getOverrideDouble("mana.level-modifier", 0);
+        return getOverride("mana.level-modifier", 0);
     }
 
     @Override
     public int getStaminaCost() {
 
-        return getOverrideInt("stamina.base-cost", 0);
+        return getOverride("stamina.base-cost", 0);
     }
 
     @Override
     public double getStaminaLevelModifier() {
 
-        return getOverrideDouble("stamina.level-modifier", 0);
+        return getOverride("stamina.level-modifier", 0);
     }
 
     @Override
     public int getHealthCost() {
 
-        return getOverrideInt("health.base-cost", 0);
+        return getOverride("health.base-cost", 0);
     }
 
     @Override
     public double getHealthLevelModifier() {
 
-        return getOverrideDouble("health.level-modifier", 0);
+        return getOverride("health.level-modifier", 0);
     }
 
     @Override
     public int getRequiredLevel() {
 
-        return getOverrideInt("level", 1);
+        return getOverride("level", 1);
     }
 
     @Override
     public int getDamage() {
 
-        return getOverrideInt("damage.base", 0);
+        return getOverride("damage.base", 0);
     }
 
     @Override
     public double getDamageLevelModifier() {
 
-        return getOverrideDouble("damage.level-modifier", 0);
+        return getOverride("damage.level-modifier", 0);
     }
 
     @Override
     public int getCastTime() {
 
-        return getOverrideInt("casttime.base", 0);
+        return getOverride("casttime.base", 0);
     }
 
     @Override
     public double getCastTimeLevelModifier() {
 
-        return getOverrideDouble("casttime.level-modifier", 0);
+        return getOverride("casttime.level-modifier", 0);
     }
 
     @Override
     public int getMaxLevel() {
 
-        return getOverrideInt("max-level", 10);
+        return getOverride("max-level", 10);
     }
 
     @Override
     public double getSkillLevelDamageModifier() {
 
-        return getOverrideDouble("damage.skill-level-modifier", 0);
+        return getOverride("damage.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelManaCostModifier() {
 
-        return getOverrideDouble("mana.skill-level-modifier", 0);
+        return getOverride("mana.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelStaminaCostModifier() {
 
-        return getOverrideDouble("stamina.skill-level-modifier", 0);
+        return getOverride("stamina.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelHealthCostModifier() {
 
-        return getOverrideDouble("health.skill-level-modifier", 0);
+        return getOverride("health.skill-level-modifier", 0);
     }
 
     @Override
     public double getSkillLevelCastTimeModifier() {
 
-        return getOverrideDouble("casttime.skill-level-modifier", 0);
+        return getOverride("casttime.skill-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelDamageModifier() {
 
-        return getOverrideDouble("damage.prof-level-modifier", 0);
+        return getOverride("damage.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelManaCostModifier() {
 
-        return getOverrideDouble("mana.prof-level-modifier", 0);
+        return getOverride("mana.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelStaminaCostModifier() {
 
-        return getOverrideDouble("stamina.prof-level-modifier", 0);
+        return getOverride("stamina.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelHealthCostModifier() {
 
-        return getOverrideDouble("health.prof-level-modifier", 0);
+        return getOverride("health.prof-level-modifier", 0);
     }
 
     @Override
     public double getProfLevelCastTimeModifier() {
 
-        return getOverrideDouble("casttime.prof-level-modifier", 0);
-    }
-
-    @Override
-    public double getEffectPriority() {
-
-        return getOverrideDouble("effect.priority", plugin.getCommonConfig().default_effect_priority);
-    }
-
-    @Override
-    public int getEffectDuration() {
-
-        return getOverrideInt("effect.duration", 0);
-    }
-
-    @Override
-    public int getEffectDelay() {
-
-        return getOverrideInt("effect.delay", 0);
-    }
-
-    @Override
-    public int getEffectInterval() {
-
-        return getOverrideInt("effect.interval", 0);
-    }
-
-    @Override
-    public double getEffectDurationLevelModifier() {
-
-        return getOverrideDouble("effect.duration-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDurationSkillLevelModifier() {
-
-        return getOverrideDouble("effect.duration-skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDurationProfLevelModifier() {
-
-        return getOverrideDouble("effect.duration-prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDelayLevelModifier() {
-
-        return getOverrideDouble("effect.delay-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDelaySkillLevelModifier() {
-
-        return getOverrideDouble("effect.delay-skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDelayProfLevelModifier() {
-
-        return getOverrideDouble("effect.delay-prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectIntervalLevelModifier() {
-
-        return getOverrideDouble("effect.interval-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectIntervalSkillLevelModifier() {
-
-        return getOverrideDouble("effect.interval-skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectIntervalProfLevelModifier() {
-
-        return getOverrideDouble("effect.interval-prof-level-modifier", 0.0);
+        return getOverride("casttime.prof-level-modifier", 0);
     }
 }

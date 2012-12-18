@@ -18,14 +18,13 @@
 
 package de.raidcraft.skills.api.loader;
 
-import de.raidcraft.skills.api.skill.Skill;
-
 import java.util.Collection;
 
-public interface SkillLoader {
+public interface Loader<T> {
 
-    public Collection<Class<? extends Skill>> loadSkillClasses();
+    public Class<T> getRequiredClass();
 
-    public boolean isSkillClass(Class<?> clazz);
+    public boolean isClass(Class<?> clazz);
 
+    public Collection<Class<? extends T>> loadClasses();
 }

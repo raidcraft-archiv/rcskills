@@ -92,7 +92,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public boolean hasEffectType(Effect.Type type) {
 
         for (Effect effect : effects.values()) {
-            if (effect.hasType(type)) {
+            if (effect.isOfType(type)) {
                 return true;
             }
         }

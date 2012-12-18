@@ -18,29 +18,34 @@
 
 package de.raidcraft.skills.api.loader;
 
-import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.skill.SkillInformation;
-
 import java.util.logging.Logger;
 
 /**
  * A parent class that contains several useful component loader helper methods
  */
-public abstract class AbstractSkillLoader implements SkillLoader {
+public abstract class AbstractLoader<T> implements Loader<T> {
 
     private final Logger logger;
+    private final Class<T> tClass;
     
-    protected AbstractSkillLoader(Logger logger) {
+    protected AbstractLoader(Class<T> tClass, Logger logger) {
 
         this.logger = logger;
+        this.tClass = tClass;
     }
 
     @Override
-    public boolean isSkillClass(Class<?> clazz) {
+    public Class<T> getRequiredClass() {
 
-        return clazz != null && Skill.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(SkillInformation.class);
+        return tClass;
     }
-    
+
+    @Override
+    public boolean isClass(Class<?> clazz) {
+
+        return clazz != null && getClass().isAssignableFrom(clazz);
+    }
+
     protected Logger getLogger() {
         return logger;
     }

@@ -1,41 +1,31 @@
 package de.raidcraft.skills.api.combat.effect;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.persistance.EffectData;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractEffect implements Effect {
+public abstract class AbstractEffect<S, T> implements Effect<S, T> {
 
-    private final Skill skill;
     private final EffectInformation info;
-    private final Type[] types;
-    private int taskId;
+    private final String name;
+    private final S source;
+    private final T target;
     private double priority;
-    // messures how long this effect was running for
-    private int duration = 0;
-    private int damage = 0;
-    private int totalDuration = 0;
-    private int delay = 0;
-    private int interval = 0;
 
-    protected AbstractEffect(Skill skill) {
+    protected AbstractEffect(S source, T target, EffectData data) {
 
-        this.skill = skill;
-        this.info = getClass().getAnnotation(EffectInformation.class);
-        this.types = info.types();
-        this.priority = skill.getEffectProperties().getEffectPriority();
-        this.totalDuration = skill.getTotalEffectDuration();
-        this.delay = skill.getTotalEffectDelay();
-        this.interval = skill.getTotalEffectInterval();
+        this.info = data.getInformation();
+        this.name = convertName(info.name());
+        this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
+        this.source = source;
+        this.target = target;
     }
 
     @Override
     public String getName() {
 
-        return convertName(info.name());
+        return name;
     }
 
     @Override
@@ -47,13 +37,13 @@ public abstract class AbstractEffect implements Effect {
     @Override
     public Type[] getTypes() {
 
-        return types;
+        return info.types();
     }
 
     @Override
-    public boolean hasType(Type type) {
+    public boolean isOfType(Type type) {
 
-        for (Type t : types) {
+        for (Type t : info.types()) {
             if (type == t) {
                 return true;
             }
@@ -62,100 +52,27 @@ public abstract class AbstractEffect implements Effect {
     }
 
     @Override
-    public final double getPriority() {
+    public double getPriority() {
 
-        // calculates the virtual strength of this effect
-        // this a decision base for other effects to override this
-        if (priority == RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().default_effect_priority) {
-            return (interval * (totalDuration - duration)) * getDamage();
-        } else {
-            return priority;
-        }
+        return priority;
     }
 
     @Override
-    public void increaseDuration() {
+    public void setPriority(double priority) {
 
-        if (duration == 0) {
-            duration = delay;
-        } else {
-            duration += interval;
-        }
+        this.priority = priority;
     }
 
     @Override
-    public int getDuration() {
+    public S getSource() {
 
-        return duration;
+        return source;
     }
 
     @Override
-    public Skill getSkill() {
+    public T getTarget() {
 
-        return skill;
-    }
-
-    @Override
-    public final int getTaskId() {
-
-        return taskId;
-    }
-
-    @Override
-    public final void setTaskId(int taskId) {
-
-        this.taskId = taskId;
-    }
-
-    @Override
-    public int getDamage() {
-
-        return damage;
-    }
-
-    @Override
-    public void setDamage(int damage) {
-
-        this.damage = damage;
-    }
-
-    @Override
-    public Effect setTotalDuration(int duration) {
-
-        this.totalDuration = duration;
-        return this;
-    }
-
-    @Override
-    public int getTotalDuration() {
-
-        return totalDuration;
-    }
-
-    @Override
-    public Effect setDelay(int delay) {
-
-        this.delay = delay;
-        return this;
-    }
-
-    @Override
-    public int getDelay() {
-
-        return delay;
-    }
-
-    @Override
-    public Effect setInterval(int interval) {
-
-        this.interval = interval;
-        return this;
-    }
-
-    @Override
-    public int getInterval() {
-
-        return interval;
+        return target;
     }
 
     private String convertName(String name) {
@@ -166,8 +83,6 @@ public abstract class AbstractEffect implements Effect {
     @Override
     public boolean equals(Object obj) {
 
-        // IMPORTANT: An effect has a skill but is compared by its name and not the skill
-        // this is important for checking duplicate or stronger effects from different skills
         return obj instanceof Effect
                 && ((Effect) obj).getName().equalsIgnoreCase(getName());
     }

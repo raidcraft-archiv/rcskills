@@ -1,7 +1,5 @@
 package de.raidcraft.skills.api.loader;
 
-import de.raidcraft.skills.api.skill.Skill;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -20,13 +18,13 @@ import java.util.logging.Logger;
 /**
  * A skill loader that loads components from all the jar files in a given folder
  */
-public abstract class JarFilesSkillLoader extends FileSkillLoader {
+public abstract class JarFileLoader<T> extends FileLoader<T> {
 
     private final File jarDir;
 
-    public JarFilesSkillLoader(Logger logger, File jarDir) {
+    public JarFileLoader(Class<T> tClass, Logger logger, File jarDir) {
 
-        super(logger);
+        super(tClass, logger);
         this.jarDir = jarDir;
         if (!jarDir.exists()) {
             jarDir.mkdirs();
@@ -35,19 +33,19 @@ public abstract class JarFilesSkillLoader extends FileSkillLoader {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends Skill>> loadSkillClasses() {
+    public Collection<Class<? extends T>> loadClasses() {
 
-        final List<Class<? extends Skill>> skills = new ArrayList<>();
+        final List<Class<? extends T>> skills = new ArrayList<>();
 
         // Iterate through the files in the jar dirs
         for (final File file : jarDir.listFiles()) {
             if (!file.getName().endsWith(".jar")) continue;
             JarFile jarFile;
-            ClassLoader loader;
+            URLClassLoader loader;
             try {
                 jarFile = new JarFile(file);
-                loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
+                loader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+                    public URLClassLoader run() {
                         try {
                             return new URLClassLoader(new URL[] {file.toURI().toURL()}, getClass().getClassLoader());
                         } catch (MalformedURLException e) {
@@ -72,9 +70,9 @@ public abstract class JarFilesSkillLoader extends FileSkillLoader {
                     e.printStackTrace();
                 }
 
-                if (!isSkillClass(clazz)) continue;
+                if (!isClass(clazz)) continue;
 
-                skills.add((Class<? extends Skill>) clazz);
+                skills.add((Class<? extends T>) clazz);
             }
         }
         return skills;

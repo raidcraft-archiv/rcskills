@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.EffectProperties;
+import de.raidcraft.skills.api.persistance.PeriodicEffectData;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -73,7 +73,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalEffectDuration() {
 
-        EffectProperties properties = getEffectProperties();
+        PeriodicEffectData properties = getEffectProperties();
         return (int) (properties.getEffectDuration()
                 + (properties.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
                 + (properties.getEffectDurationProfLevelModifier() * getProfession().getLevel().getLevel()));
@@ -82,7 +82,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalEffectInterval() {
 
-        EffectProperties properties = getEffectProperties();
+        PeriodicEffectData properties = getEffectProperties();
         return (int) (properties.getEffectInterval()
                 + (properties.getEffectIntervalLevelModifier() * hero.getLevel().getLevel())
                 + (properties.getEffectIntervalProfLevelModifier() * getProfession().getLevel().getLevel()));
@@ -91,7 +91,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalEffectDelay() {
 
-        EffectProperties properties = getEffectProperties();
+        PeriodicEffectData properties = getEffectProperties();
         return (int) (properties.getEffectDelay()
                 + (properties.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
                 + (properties.getEffectDelayProfLevelModifier() * getProfession().getLevel().getLevel()));
@@ -160,9 +160,9 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public EffectProperties getEffectProperties() {
+    public PeriodicEffectData getEffectProperties() {
 
-        return (EffectProperties) properties;
+        return (PeriodicEffectData) properties;
     }
 
     protected final void setDescription(String description) {

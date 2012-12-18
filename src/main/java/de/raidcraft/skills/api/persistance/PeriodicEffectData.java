@@ -3,9 +3,7 @@ package de.raidcraft.skills.api.persistance;
 /**
  * @author Silthus
  */
-public interface EffectProperties {
-
-    public double getEffectPriority();
+public interface PeriodicEffectData extends EffectData {
 
     public int getEffectDuration();
 
@@ -15,19 +13,13 @@ public interface EffectProperties {
 
     public double getEffectDurationLevelModifier();
 
-    public double getEffectDurationSkillLevelModifier();
-
     public double getEffectDurationProfLevelModifier();
 
     public double getEffectDelayLevelModifier();
 
-    public double getEffectDelaySkillLevelModifier();
-
     public double getEffectDelayProfLevelModifier();
 
     public double getEffectIntervalLevelModifier();
-
-    public double getEffectIntervalSkillLevelModifier();
 
     public double getEffectIntervalProfLevelModifier();
 }

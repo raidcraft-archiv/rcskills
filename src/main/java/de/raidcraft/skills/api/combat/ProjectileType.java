@@ -1,37 +1,53 @@
 package de.raidcraft.skills.api.combat;
 
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Snowball;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import org.bukkit.entity.*;
 
 /**
  * @author Silthus
  */
 public enum ProjectileType {
 
-    ARROW,
-    EGG,
-    SNOWBALL;
+    ARROW(Arrow.class),
+    EGG(Egg.class),
+    SNOWBALL(Snowball.class),
+    FIREBALL(Fireball.class);
+
+    private final Class<? extends Projectile> clazz;
+
+    private ProjectileType(Class<? extends Projectile> clazz) {
+
+        this.clazz = clazz;
+    }
+
+    public Class<? extends Projectile> getClazz() {
+
+        return clazz;
+    }
+
+    public Projectile spawn(CharacterTemplate character) {
+
+        Projectile projectile = character.getEntity().launchProjectile(getClazz());
+        projectile.setShooter(character.getEntity());
+        return projectile;
+    }
 
     public static ProjectileType matchProjectile(String name) {
-        if (name.equalsIgnoreCase("arrow"))
-            return ARROW;
-        if (name.equalsIgnoreCase("snowball"))
-            return SNOWBALL;
-        if (name.equalsIgnoreCase("egg")) {
-            return EGG;
+
+        for (ProjectileType type : values()) {
+            if (type.name().equalsIgnoreCase(name) || type.getClazz().getSimpleName().equalsIgnoreCase(name)) {
+                return type;
+            }
         }
         return null;
     }
 
     public static ProjectileType valueOf(Entity entity) {
-        if ((entity instanceof Arrow))
-            return ARROW;
-        if ((entity instanceof Snowball))
-            return SNOWBALL;
-        if ((entity instanceof Egg)) {
-            return EGG;
+
+        for (ProjectileType type : values()) {
+            if (type.getClazz().isInstance(entity)) {
+                return type;
+            }
         }
         return null;
     }

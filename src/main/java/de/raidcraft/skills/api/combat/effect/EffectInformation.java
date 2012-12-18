@@ -17,4 +17,6 @@ public @interface EffectInformation {
     public String description();
 
     public Effect.Type[] types();
+
+    public double priority() default 0.0;
 }

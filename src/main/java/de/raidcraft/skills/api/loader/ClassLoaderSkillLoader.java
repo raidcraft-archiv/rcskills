@@ -32,13 +32,13 @@ import java.util.logging.Logger;
 /**
  * A component loader that loads components from a directory of classes.
  */
-public abstract class ClassLoaderSkillLoader extends FileSkillLoader {
+public abstract class ClassLoaderSkillLoader<T> extends FileLoader<T> {
     private final URLClassLoader loader;
     private final File classDir;
 
-    public ClassLoaderSkillLoader(final Logger logger, final File classDir) {
+    public ClassLoaderSkillLoader(Class<T> tClass, final Logger logger, final File classDir) {
 
-        super(logger);
+        super(tClass, logger);
         this.classDir = classDir;
         this.loader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
             public URLClassLoader run() {
@@ -53,9 +53,9 @@ public abstract class ClassLoaderSkillLoader extends FileSkillLoader {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends Skill>> loadSkillClasses() {
+    public Collection<Class<? extends T>> loadClasses() {
 
-        final List<Class<? extends Skill>> skills = new ArrayList<>();
+        final List<Class<? extends T>> skills = new ArrayList<>();
 
         for (String string : getClassNames()) {
             Class<?> clazz = null;
@@ -64,9 +64,9 @@ public abstract class ClassLoaderSkillLoader extends FileSkillLoader {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            if (!isSkillClass(clazz)) continue;
+            if (!isClass(clazz)) continue;
 
-            skills.add((Class<? extends Skill>) clazz);
+            skills.add((Class<? extends T>) clazz);
         }
         return skills;
     }

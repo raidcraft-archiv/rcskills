@@ -1,23 +1,20 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.skill.type.Passive;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.loader.JarFilesSkillLoader;
+import de.raidcraft.skills.api.skill.type.Passive;
 
-import java.io.File;
 import java.util.*;
 
 /**
  * @author Silthus
  */
-public final class SkillManager extends JarFilesSkillLoader {
+public final class SkillManager extends GenericJarFileManager<Skill> {
 
-    private final SkillsPlugin plugin;
-    private final File configDir;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
@@ -26,28 +23,15 @@ public final class SkillManager extends JarFilesSkillLoader {
 
     protected SkillManager(SkillsPlugin plugin) {
 
-        super(plugin.getLogger(), new File(plugin.getDataFolder(), "/skills/"));
-        this.plugin = plugin;
+        super(Skill.class, plugin);
+    }
 
-        // lets go thru all the skill configs and remove the .disabled
-        this.configDir = new File(plugin.getDataFolder(), "/skill-configs/");
-        configDir.mkdirs();
-        for (File file : configDir.listFiles()) {
-            if (file.getName().endsWith(".disabled")) {
-                file.renameTo(new File(file, file.getName().replace(".disabled", "")));
-            }
-        }
+    @Override
+    protected void loadFactories() {
 
-        for (Class<? extends Skill> clazz : loadSkillClasses()) {
+        for (Class<? extends Skill> clazz : loadClasses()) {
             skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
                     plugin.configure(new SkillFactory(plugin, clazz, configDir)));
-        }
-
-        // and now go thru all loaded skills and add disabled annotations to the configs
-        for (File file : configDir.listFiles()) {
-            if (!skillFactories.containsKey(file.getName().replace(".yml", "").toLowerCase().trim())) {
-                file.renameTo(new File(file, ".disabled"));
-            }
         }
     }
 
@@ -55,15 +39,16 @@ public final class SkillManager extends JarFilesSkillLoader {
      * Registers a skill directly with the skill manager making it possible to use that skill.
      * Skills in external files are loaded via our own class loader on loadSkillClasses() call.
      *
-     * @param clazz of the skill
+     * @param skillClass of the skill
      */
-    public void registerSkill(Class<? extends Skill> clazz) {
+    @Override
+    public void registerClass(Class<Skill> skillClass) {
 
-        if (clazz.isAnnotationPresent(SkillInformation.class)) {
-            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
-                    plugin.configure(new SkillFactory(plugin, clazz, configDir)));
+        if (skillClass.isAnnotationPresent(SkillInformation.class)) {
+            skillFactories.put(skillClass.getAnnotation(SkillInformation.class).name().toLowerCase(),
+                    plugin.configure(new SkillFactory(plugin, skillClass, configDir)));
         } else {
-            plugin.getLogger().warning("Found skill without SkillInformation: " + clazz.getCanonicalName());
+            plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
     }
 

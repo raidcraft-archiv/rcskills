@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -15,18 +16,18 @@ import org.bukkit.entity.Projectile;
  */
 public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
 
-    private final Class<? extends Projectile> projectile;
+    private final ProjectileType projectileType;
     private RangedCallback callback;
 
-    public RangedAttack(CharacterTemplate source, Class<? extends Projectile> projectile) {
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
 
         super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), 0);
-        this.projectile = projectile;
+        this.projectileType = projectileType;
     }
 
-    public RangedAttack(CharacterTemplate attacker, Class<? extends Projectile> projectile, RangedCallback callback) {
+    public RangedAttack(CharacterTemplate attacker, ProjectileType projectileType, RangedCallback callback) {
 
-        this(attacker, projectile);
+        this(attacker, projectileType);
         this.callback = callback;
     }
 
@@ -34,8 +35,7 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
     public void run() throws CombatException, InvalidTargetException {
 
         // TODO: add fancy resitence checks and so on
-        Projectile projectile = getSource().getEntity().launchProjectile(this.projectile);
-        projectile.setShooter(getSource().getEntity());
+        Projectile projectile = projectileType.spawn(getSource());
         projectile.setBounce(false);
         projectile.setFireTicks(0);
         // queue the ranged callback to be called if the projectile hits
