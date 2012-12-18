@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.ProfessionManager;
@@ -463,10 +464,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public CharacterTemplate getTarget() {
+    public CharacterTemplate getTarget() throws InvalidTargetException {
 
+        LivingEntity target = BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class);
+        if (target == null) {
+            throw new InvalidTargetException("Du hast kein Ziel anvisiert!");
+        }
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager()
-                .getCharacter(BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class));
+                .getCharacter(target);
     }
 
     @Override

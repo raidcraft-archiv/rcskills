@@ -125,22 +125,6 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
         return information;
     }
 
-    private ConfigurationSection getOverrideSection(String path) {
-
-        ConfigurationSection section;
-        if (getOverrideConfig() != null) {
-            section = getOverrideConfig().getConfigurationSection(path);
-            if (section != null) {
-                return section;
-            }
-        }
-        section = getConfigurationSection(path);
-        if (section == null) {
-            section = createSection(path);
-        }
-        return section;
-    }
-
     @Override
     public String getFriendlyName() {
 
@@ -191,12 +175,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public DataMap getData() {
 
-        ConfigurationSection custom = getOverrideConfig().getConfigurationSection("custom");
-        if (custom == null) {
-            getOverrideConfig().createSection("custom");
-            custom = getOverrideConfig().getConfigurationSection("custom");
-        }
-        return new DataMap(custom);
+        return new DataMap(getOverrideSection("custom"));
     }
 
     @Override
@@ -208,7 +187,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getManaLevelModifier() {
 
-        return getOverride("mana.level-modifier", 0);
+        return getOverride("mana.level-modifier", 0.0);
     }
 
     @Override
@@ -220,7 +199,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getStaminaLevelModifier() {
 
-        return getOverride("stamina.level-modifier", 0);
+        return getOverride("stamina.level-modifier", 0.0);
     }
 
     @Override
@@ -232,7 +211,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getHealthLevelModifier() {
 
-        return getOverride("health.level-modifier", 0);
+        return getOverride("health.level-modifier", 0.0);
     }
 
     @Override
@@ -250,7 +229,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getDamageLevelModifier() {
 
-        return getOverride("damage.level-modifier", 0);
+        return getOverride("damage.level-modifier", 0.0);
     }
 
     @Override
@@ -262,7 +241,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getCastTimeLevelModifier() {
 
-        return getOverride("casttime.level-modifier", 0);
+        return getOverride("casttime.level-modifier", 0.0);
     }
 
     @Override
@@ -274,60 +253,60 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public double getSkillLevelDamageModifier() {
 
-        return getOverride("damage.skill-level-modifier", 0);
+        return getOverride("damage.skill-level-modifier", 0.0);
     }
 
     @Override
     public double getSkillLevelManaCostModifier() {
 
-        return getOverride("mana.skill-level-modifier", 0);
+        return getOverride("mana.skill-level-modifier", 0.0);
     }
 
     @Override
     public double getSkillLevelStaminaCostModifier() {
 
-        return getOverride("stamina.skill-level-modifier", 0);
+        return getOverride("stamina.skill-level-modifier", 0.0);
     }
 
     @Override
     public double getSkillLevelHealthCostModifier() {
 
-        return getOverride("health.skill-level-modifier", 0);
+        return getOverride("health.skill-level-modifier", 0.0);
     }
 
     @Override
     public double getSkillLevelCastTimeModifier() {
 
-        return getOverride("casttime.skill-level-modifier", 0);
+        return getOverride("casttime.skill-level-modifier", 0.0);
     }
 
     @Override
     public double getProfLevelDamageModifier() {
 
-        return getOverride("damage.prof-level-modifier", 0);
+        return getOverride("damage.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getProfLevelManaCostModifier() {
 
-        return getOverride("mana.prof-level-modifier", 0);
+        return getOverride("mana.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getProfLevelStaminaCostModifier() {
 
-        return getOverride("stamina.prof-level-modifier", 0);
+        return getOverride("stamina.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getProfLevelHealthCostModifier() {
 
-        return getOverride("health.prof-level-modifier", 0);
+        return getOverride("health.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getProfLevelCastTimeModifier() {
 
-        return getOverride("casttime.prof-level-modifier", 0);
+        return getOverride("casttime.prof-level-modifier", 0.0);
     }
 }

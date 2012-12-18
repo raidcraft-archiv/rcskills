@@ -1,6 +1,10 @@
 package de.raidcraft.skills.api.combat.effect;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.util.DataMap;
 
 /**
  * @author Silthus
@@ -20,6 +24,12 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
+        load(data.getDataMap());
+    }
+
+    @Override
+    public void load(DataMap data) {
+        // override if needed
     }
 
     @Override
@@ -74,6 +84,21 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
 
         return target;
     }
+
+    @Override
+    public void apply() throws CombatException {
+
+        // TODO: check restistance and that fancy stuff
+        apply(getTarget());
+        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
+            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": applied effect - " + getName());
+        }
+        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
+            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: applied effect - " + getName());
+        }
+    }
+
+    protected abstract void apply(T target) throws CombatException;
 
     private String convertName(String name) {
 

@@ -12,22 +12,18 @@ import org.bukkit.ChatColor;
 /**
  * @author Silthus
  */
-public abstract class AbstractPeriodicEffect<S, T> extends AbstractEffect<S, T> implements PeriodicEffect<S, T> {
+public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S, T> implements PeriodicEffect<S, T> {
 
-    private final int taskId;
+    private int taskId = -1;
     private final PeriodicEffectData data;
     private long remainingTicks;
+    private boolean started = false;
 
     protected AbstractPeriodicEffect(S source, T target, PeriodicEffectData data) {
 
         super(source, target, data);
         this.data = data;
         this.remainingTicks = getDuration() + getDelay();
-        this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                RaidCraft.getComponent(SkillsPlugin.class),
-                this,
-                getDelay(),
-                getInterval());
     }
 
     @Override
@@ -40,18 +36,6 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractEffect<S, T> 
     public double getPriority() {
 
         return super.getPriority() + remainingTicks;
-    }
-
-    @Override
-    public int getDuration() {
-
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            return (int) (data.getEffectDuration()
-                                + (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
-                                + (data.getEffectDurationProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel()));
-        }
-        return data.getEffectDuration();
     }
 
     @Override
@@ -79,9 +63,26 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractEffect<S, T> 
     }
 
     @Override
+    public void apply() throws CombatException {
+
+        if (!started) {
+            if (getInterval() > 0) {
+                this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+                        RaidCraft.getComponent(SkillsPlugin.class),
+                        this,
+                        getDelay(),
+                        getInterval());
+                started = true;
+            } else {
+                RaidCraft.getComponent(SkillsPlugin.class).getLogger().warning("Effect(" + getName() + ") interval must be over 0!");
+            }
+        }
+    }
+
+    @Override
     public void run() {
 
-        if (this.remainingTicks > 0) {
+        if (started && this.remainingTicks > 0) {
             try {
                 apply(getTarget());
                 // debug messages
@@ -110,7 +111,7 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractEffect<S, T> 
         }
 
         // lets cancel the task if the effect expired
-        if (this.remainingTicks <= 0) {
+        if (started && this.remainingTicks <= 0) {
             Bukkit.getScheduler().cancelTask(getTaskId());
             // some debug messages
             if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {

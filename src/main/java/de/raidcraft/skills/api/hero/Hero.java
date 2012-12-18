@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -81,7 +82,7 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void sendMessage(String... messages);
 
-    public CharacterTemplate getTarget();
+    public CharacterTemplate getTarget() throws InvalidTargetException;
 
     public Location getBlockTarget();
 }

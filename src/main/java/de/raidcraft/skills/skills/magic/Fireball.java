@@ -2,6 +2,7 @@ package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.attack.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -12,6 +13,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.AreaAttack;
+import de.raidcraft.skills.effects.common.BurnEffect;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.DataMap;
 import org.bukkit.Location;
@@ -49,10 +51,12 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
     @Override
     public void run(final Hero hero, final Location target) throws CombatException, InvalidTargetException {
 
-        new RangedAttack(hero, org.bukkit.entity.Fireball.class, new RangedCallback() {
+        new RangedAttack(hero, ProjectileType.FIREBALL, new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
+                hero.debug("Fireball Range Callback called!");
+                target.addEffect(hero, BurnEffect.class);
                 target.damage(getTotalDamage());
                 // TODO: replace with generic burn effect from effects common package
                 // target.addEffect(new FireballEffect(Fireball.this));

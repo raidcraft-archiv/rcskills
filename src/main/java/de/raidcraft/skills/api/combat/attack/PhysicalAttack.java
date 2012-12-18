@@ -42,8 +42,6 @@ public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterT
         this(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getDamager()),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 event.getDamage());
-        // cancel the event (we will call our own event later on)
-        event.setCancelled(true);
     }
 
     @Override

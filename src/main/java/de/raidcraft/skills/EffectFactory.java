@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.PeriodicEffectData;
+import de.raidcraft.util.DataMap;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -33,12 +34,14 @@ public final class EffectFactory extends ConfigurationBase implements PeriodicEf
 
         // its reflection time yay!
         try {
-            Constructor<? extends Effect> constructor = eClass.getDeclaredConstructor(
-                    source.getClass(),
-                    target.getClass(),
-                    PeriodicEffectData.class);
-            return (Effect<S, T>) constructor.newInstance(source, target, this);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            for (Constructor<?> constructor : eClass.getConstructors()) {
+                if (constructor.getParameterTypes().length == 3
+                        && constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
+                        && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())) {
+                    return (Effect<S, T>) constructor.newInstance(source, target, this);
+                }
+            }
+        } catch ( InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
@@ -52,6 +55,12 @@ public final class EffectFactory extends ConfigurationBase implements PeriodicEf
     }
 
     @Override
+    public DataMap getDataMap() {
+
+        return new DataMap(getOverrideSection("custom"));
+    }
+
+    @Override
     public EffectInformation getInformation() {
 
         return this.information;
@@ -60,60 +69,60 @@ public final class EffectFactory extends ConfigurationBase implements PeriodicEf
     @Override
     public double getEffectPriority() {
 
-        return getOverride("effect.priority", plugin.getCommonConfig().default_effect_priority);
+        return getOverride("priority", plugin.getCommonConfig().default_effect_priority);
     }
 
     @Override
     public int getEffectDuration() {
 
-        return getOverride("effect.duration", 0);
+        return getOverride("duration.base", 0);
     }
 
     @Override
     public int getEffectDelay() {
 
-        return getOverride("effect.delay", 0);
+        return getOverride("delay.base", 0);
     }
 
     @Override
     public int getEffectInterval() {
 
-        return getOverride("effect.interval", 0);
+        return getOverride("interval.base", 0);
     }
 
     @Override
     public double getEffectDurationLevelModifier() {
 
-        return getOverride("effect.duration-level-modifier", 0.0);
+        return getOverride("duration.level-modifier", 0.0);
     }
 
     @Override
     public double getEffectDurationProfLevelModifier() {
 
-        return getOverride("effect.duration-prof-level-modifier", 0.0);
+        return getOverride("duration.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getEffectDelayLevelModifier() {
 
-        return getOverride("effect.delay-level-modifier", 0.0);
+        return getOverride("delay.level-modifier", 0.0);
     }
 
     @Override
     public double getEffectDelayProfLevelModifier() {
 
-        return getOverride("effect.delay-prof-level-modifier", 0.0);
+        return getOverride("delay.prof-level-modifier", 0.0);
     }
 
     @Override
     public double getEffectIntervalLevelModifier() {
 
-        return getOverride("effect.interval-level-modifier", 0.0);
+        return getOverride("interval.level-modifier", 0.0);
     }
 
     @Override
     public double getEffectIntervalProfLevelModifier() {
 
-        return getOverride("effect.interval-prof-level-modifier", 0.0);
+        return getOverride("interval.prof-level-modifier", 0.0);
     }
 }

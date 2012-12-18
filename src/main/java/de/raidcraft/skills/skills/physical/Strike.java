@@ -1,5 +1,6 @@
 package de.raidcraft.skills.skills.physical;
 
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
@@ -29,7 +30,7 @@ public class Strike extends AbstractLevelableSkill implements TargetedAttack {
     }
 
     @Override
-    public void run(Hero hero, CharacterTemplate target) throws CombatException {
+    public void run(Hero hero, CharacterTemplate target) throws CombatException, InvalidTargetException {
 
         new PhysicalAttack(hero, target, getTotalDamage(), new Callback() {
             @Override
@@ -37,6 +38,6 @@ public class Strike extends AbstractLevelableSkill implements TargetedAttack {
 
                 target.getEntity().setFireTicks(100);
             }
-        });
+        }).run();
     }
 }

@@ -1,8 +1,9 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.callback.SourcedCallback;
+import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ import java.util.Map;
 public final class CombatManager implements Listener {
 
     private final SkillsPlugin plugin;
-    private final Map<Integer, SourcedCallback> callbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback> callbacks = new HashMap<>();
 
     protected CombatManager(SkillsPlugin plugin) {
 
@@ -31,7 +33,7 @@ public final class CombatManager implements Listener {
         plugin.registerEvents(this);
     }
 
-    public void queueCallback(final SourcedCallback sourcedCallback) {
+    public void queueCallback(final SourcedRangeCallback sourcedCallback) {
 
         // remove the callback from the queue after the configured time
         sourcedCallback.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -42,6 +44,9 @@ public final class CombatManager implements Listener {
             }
         }, plugin.getCommonConfig().callback_purge_time));
         callbacks.put(sourcedCallback.getTaskId(), sourcedCallback);
+        if (sourcedCallback.getSource() instanceof Hero) {
+            ((Hero) sourcedCallback.getSource()).debug("Queued Range Callback - " + sourcedCallback.getTaskId());
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
@@ -51,6 +56,7 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
 
+        // lets check for dying players and characters
         LivingEntity entity = event.getEntity();
         CharacterTemplate character = plugin.getCharacterManager().getCharacter(entity);
         if (entity.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
@@ -74,8 +80,8 @@ public final class CombatManager implements Listener {
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
             // and go thru all registered callbacks
-            for (SourcedCallback sourcedCallback : callbacks.values()) {
-                if (sourcedCallback.getSource().equals(((Projectile) event.getDamager()).getShooter())) {
+            for (SourcedRangeCallback sourcedCallback : new ArrayList<>(callbacks.values())) {
+                if (sourcedCallback.getProjectile().equals(event.getDamager())) {
                     try {
                         // the shooter is our source so lets call back and remove
                         sourcedCallback.getCallback().run(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()));

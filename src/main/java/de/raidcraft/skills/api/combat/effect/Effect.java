@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.util.DataMap;
 
 /**
  * An effect is something that can be applied to entities around in the world.
@@ -31,5 +32,7 @@ public interface Effect<S, T> {
 
     public T getTarget();
 
-    public void apply(T target) throws CombatException;
+    public void load(DataMap data);
+
+    public void apply() throws CombatException;
 }

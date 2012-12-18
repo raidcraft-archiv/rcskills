@@ -42,7 +42,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
      * @param skillClass of the skill
      */
     @Override
-    public void registerClass(Class<Skill> skillClass) {
+    public void registerClass(Class<? extends Skill> skillClass) {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
             skillFactories.put(skillClass.getAnnotation(SkillInformation.class).name().toLowerCase(),

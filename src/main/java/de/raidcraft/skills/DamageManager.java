@@ -17,7 +17,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -44,7 +43,6 @@ public final class DamageManager implements Listener {
         this.config = new SimpleConfiguration(plugin, CONFIG_NAME);
         this.config.load();
         loadConfig();
-        // register ourself as listener
         plugin.registerEvents(this);
     }
 
@@ -102,17 +100,6 @@ public final class DamageManager implements Listener {
     /////////////////////////////////////////////////////////////////////////*/
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onEntitySpawn(CreatureSpawnEvent event) {
-
-        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
-        if (character instanceof Hero) {
-            return;
-        }
-        // lets set the health and damage of the entity
-        character.setHealth(getCreatureHealth(character.getEntity().getType()));
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
@@ -142,6 +129,8 @@ public final class DamageManager implements Listener {
                 }
                 attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
                 PhysicalAttack attack = new PhysicalAttack(event);
+                // lets set the event damage to 0 and handle it in our attack
+                event.setDamage(0);
                 attack.run();
                 if (attacker instanceof Hero) {
                     ((Hero) attacker).debug("You->" + target.getName() + ": " + attack.getDamage() + "dmg");

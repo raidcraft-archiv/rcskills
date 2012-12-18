@@ -1,7 +1,13 @@
 package de.raidcraft.skills.api.character;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
+import de.raidcraft.skills.api.combat.effect.PeriodicEffect;
+import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,7 +22,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final String name;
     private final LivingEntity entity;
-    private final Map<String, Effect> effects = new HashMap<>();
+    private final Map<Class<? extends Effect<?, CharacterTemplate>>, Effect<?, CharacterTemplate>> effects = new HashMap<>();
     private boolean inCombat = false;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
@@ -64,16 +70,44 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void addEffect(Effect effect) {
+    public <S> Effect<S, CharacterTemplate> addEffect(S source, Class<? extends Effect<S, CharacterTemplate>> eClass)
+            throws CombatException {
 
-        // TODO: add priority checks
-        effects.put(effect.getName().toLowerCase(), effect);
+        Effect<S, CharacterTemplate> effect =
+                RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        // lets check the priority of the existing effect
+        if (effects.containsKey(eClass)) {
+            if (effects.get(eClass).getPriority() > effect.getPriority()) {
+                throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
+            }
+        }
+        // TODO: do some fancy resistence checks
+        effects.put(eClass, effect);
+        // applying the effect will start the task if periodic or trigger it once
+        effect.apply();
+        return effect;
     }
 
     @Override
-    public void removeEffect(Effect effect) {
+    public <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
 
-        effects.remove(effect.getName().toLowerCase());
+        Effect<?, CharacterTemplate> effect = effects.remove(eClass);
+        if (effect instanceof PeriodicEffect) {
+            Bukkit.getScheduler().cancelTask(((PeriodicEffect) effect).getTaskId());
+        }
+        // some debug output
+        if (effect != null) {
+            if (effect.getSource() instanceof Hero) {
+                ((Hero) effect.getSource()).debug(
+                        "You->" + getName() + ": effect(" + effect.getPriority() + ") manually removed - " + effect.getName());
+            }
+            if (effect.getTarget() instanceof Hero) {
+                ((Hero) effect.getTarget()).debug(
+                        (effect.getSource() instanceof CharacterTemplate ? ((CharacterTemplate) effect.getSource()).getName() : "UNKNOWN")
+                                + "->You: effect(" + effect.getPriority() + ") manually removed - " + effect.getName()
+                );
+            }
+        }
     }
 
     @Override
@@ -82,10 +116,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         effects.clear();
     }
 
-    @Override
-    public boolean hasEffect(Effect effect) {
 
-        return effects.containsKey(effect.getName().toLowerCase());
+    @Override
+    public <S> boolean hasEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
+
+        return effects.containsKey(eClass);
     }
 
     @Override

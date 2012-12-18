@@ -6,7 +6,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
-import de.raidcraft.skills.api.combat.callback.SourcedCallback;
+import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.Location;
 import org.bukkit.entity.Projectile;
@@ -41,7 +41,7 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
         // queue the ranged callback to be called if the projectile hits
         if (callback != null) {
             RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().queueCallback(
-                    new SourcedCallback(getSource(), callback)
+                    new SourcedRangeCallback(getSource(), projectile, callback)
             );
         }
     }

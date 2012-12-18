@@ -1,19 +1,22 @@
 package de.raidcraft.skills.api.combat.callback;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import org.bukkit.entity.Projectile;
 
 /**
  * @author Silthus
  */
-public class SourcedCallback {
+public class SourcedRangeCallback {
 
     private final CharacterTemplate source;
-    private final Callback callback;
+    private final Projectile projectile;
+    private final RangedCallback callback;
     private int taskId = -1;
 
-    public SourcedCallback(CharacterTemplate source, Callback callback) {
+    public SourcedRangeCallback(CharacterTemplate source, Projectile projectile, RangedCallback callback) {
 
         this.source = source;
+        this.projectile = projectile;
         this.callback = callback;
     }
 
@@ -32,7 +35,12 @@ public class SourcedCallback {
         return source;
     }
 
-    public Callback getCallback() {
+    public Projectile getProjectile() {
+
+        return projectile;
+    }
+
+    public RangedCallback getCallback() {
 
         return callback;
     }

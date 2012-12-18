@@ -11,6 +11,10 @@ import de.raidcraft.skills.tables.THero;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +23,7 @@ import java.util.UUID;
 /**
  * @author Silthus
  */
-public final class CharacterManager {
+public final class CharacterManager implements Listener {
 
     private final SkillsPlugin plugin;
     private final Map<String, Hero> heroes = new HashMap<>();
@@ -28,6 +32,7 @@ public final class CharacterManager {
     protected CharacterManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+        plugin.registerEvents(this);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException {
@@ -81,5 +86,20 @@ public final class CharacterManager {
     public void clearCacheOf(CharacterTemplate character) {
 
         characters.remove(character.getEntity().getUniqueId());
+    }
+
+    /*/////////////////////////////////////////////////////////////////////////
+    //    Bukkit Events are called beyond this line - put your buckets on!
+    /////////////////////////////////////////////////////////////////////////*/
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onEntitySpawn(CreatureSpawnEvent event) {
+
+        CharacterTemplate character = getCharacter(event.getEntity());
+        if (character instanceof Hero) {
+            return;
+        }
+        // lets set the health and damage of the entity
+        character.setHealth(plugin.getDamageManager().getCreatureHealth(character.getEntity().getType()));
     }
 }

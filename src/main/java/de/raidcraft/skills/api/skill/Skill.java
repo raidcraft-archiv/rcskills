@@ -78,12 +78,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public PeriodicEffectData getEffectProperties();
 
-    public int getTotalEffectDuration();
-
-    public int getTotalEffectInterval();
-
-    public int getTotalEffectDelay();
-
     public Profession getProfession();
 
     public void save();

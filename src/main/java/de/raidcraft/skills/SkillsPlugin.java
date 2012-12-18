@@ -10,6 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.commands.*;
+import de.raidcraft.skills.effects.common.BurnEffect;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -31,6 +32,7 @@ import java.util.List;
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
+    private EffectManager effectManager;
     private ProfessionManager professionManager;
     private CharacterManager characterManager;
     private CombatManager combatManager;
@@ -57,8 +59,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
+        this.effectManager = new EffectManager(this);
         // register our inhouse skills
         registerSkills();
+        registerEffects();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.characterManager = new CharacterManager(this);
@@ -83,10 +87,16 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private void registerSkills() {
 
-        SkillManager m = getSkillManager();
-        m.registerSkill(Fireball.class);
-        m.registerSkill(PermissionSkill.class);
-        m.registerSkill(Strike.class);
+        SkillManager skillManager = getSkillManager();
+        skillManager.registerClass(Fireball.class);
+        skillManager.registerClass(PermissionSkill.class);
+        skillManager.registerClass(Strike.class);
+    }
+
+    private void registerEffects() {
+
+        EffectManager effectManager = getEffectManager();
+        effectManager.registerClass(BurnEffect.class);
     }
 
     @Override
@@ -102,6 +112,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public SkillManager getSkillManager() {
 
         return skillManager;
+    }
+
+    public EffectManager getEffectManager() {
+
+        return effectManager;
     }
 
     public ProfessionManager getProfessionManager() {
