@@ -5,10 +5,10 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.Attack;
-import net.minecraft.server.EntityLiving;
+import net.minecraft.server.v1_4_5.EntityLiving;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.Field;
@@ -37,12 +37,13 @@ public class Creature extends AbstractCharacterTemplate {
 
         super.kill();
         // play the death sound
-        getEntity().getWorld().playSound(
+        /*getEntity().getWorld().playSound(
                 getEntity().getLocation(),
                 getDeathSound(getEntity().getType()),
                 1.0F,
                 getSoundStrength(getEntity())
         );
+        */
         // play the death effect
         getEntity().playEffect(EntityEffect.DEATH);
     }
