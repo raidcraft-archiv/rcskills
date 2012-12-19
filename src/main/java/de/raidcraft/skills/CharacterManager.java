@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,5 +102,11 @@ public final class CharacterManager implements Listener {
         }
         // lets set the health and damage of the entity
         character.setHealth(plugin.getDamageManager().getCreatureHealth(character.getEntity().getType()));
+    }
+
+    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
+    public void onHeroSpawn(PlayerRespawnEvent event) {
+
+        getHero(event.getPlayer()).reset();
     }
 }

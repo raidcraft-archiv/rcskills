@@ -5,11 +5,13 @@ import de.raidcraft.skills.api.hero.Hero;
 /**
  * @author Silthus
  */
-public interface UserInterface extends Runnable {
+public interface UserInterface {
 
     public Hero getHero();
 
     public boolean isEnabled();
 
     public void setEnabled(boolean enabled);
+
+    public void refresh();
 }

@@ -124,20 +124,13 @@ public final class DamageManager implements Listener {
 
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                if (!(event.getDamager() instanceof LivingEntity)) {
+                if (attacker == null) {
                     return;
                 }
-                attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
                 PhysicalAttack attack = new PhysicalAttack(event);
                 // lets set the event damage to 0 and handle it in our attack
                 event.setDamage(0);
                 attack.run();
-                if (attacker instanceof Hero) {
-                    ((Hero) attacker).debug("You->" + target.getName() + ": " + attack.getDamage() + "dmg");
-                }
-                if (target instanceof Hero) {
-                    ((Hero) target).debug(attacker.getName() + "->You: " + attack.getDamage() + "dmg");
-                }
             } else {
                 if (environmentalDamage.containsKey(event.getCause())) {
                     EnvironmentAttack attack = new EnvironmentAttack(event, environmentalDamage.get(event.getCause()));

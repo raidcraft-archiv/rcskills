@@ -145,6 +145,20 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public void reset() {
+
+        // TODO(BUG): does not seem to be called
+        //TODO: add more reset stuff
+        setHealth(getMaxHealth());
+        setStamina(getMaxStamina());
+        setMana(getMaxMana());
+        setInCombat(false);
+        clearEffects();
+        getUserInterface().refresh();
+        debug("Reseted all active stats to max");
+    }
+
+    @Override
     public int getId() {
 
         return id;
@@ -241,13 +255,23 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setHealth(int health) {
 
         this.health = health;
+        getUserInterface().refresh();
+        debug("Health set to " + health);
     }
 
     @Override
     public int getMaxHealth() {
 
-        return (int) (primaryProfession.getProperties().getBaseHealth()
-                        + primaryProfession.getProperties().getBaseHealthModifier() * primaryProfession.getLevel().getLevel());
+        Profession profession;
+        if (getPrimaryProfession() != null ) {
+            profession = getPrimaryProfession();
+        } else if (getSecundaryProfession() != null) {
+            profession = getSecundaryProfession();
+        } else {
+            return getEntity().getMaxHealth();
+        }
+        return (int) (profession.getProperties().getBaseHealth()
+                + profession.getProperties().getBaseHealthModifier() * profession.getLevel().getLevel());
     }
 
     @Override
@@ -386,6 +410,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public Profession getSelectedProfession() {
 
+        if (selectedProfession == null) {
+            if (getPrimaryProfession() != null) {
+                setSelectedProfession(getPrimaryProfession());
+            } else if (getSecundaryProfession() != null) {
+                setSelectedProfession(getSecundaryProfession());
+            }
+        }
         return selectedProfession;
     }
 
@@ -393,7 +424,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setSelectedProfession(Profession profession) {
 
         this.selectedProfession = profession;
-        //TODO: update graphics
+        getUserInterface().refresh();
     }
 
     @Override
@@ -417,7 +448,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void onLevelUp(Level<Hero> level) {
 
-        // override if needed
+        reset();
     }
 
     @Override

@@ -54,7 +54,7 @@ public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterT
                 0);
         if (!event.isCancelled()) {
             // TODO: add fancy resitence checks and so on
-            getTarget().damage(getDamage());
+            getTarget().damage(this);
             // if no exceptions was thrown to this point issue the callback
             if (callback != null && !(callback instanceof RangedCallback)) {
                 callback.run(getTarget());

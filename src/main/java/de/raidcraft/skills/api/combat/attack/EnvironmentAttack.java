@@ -24,6 +24,6 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
     public void run() throws CombatException, InvalidTargetException {
 
         // TODO: check resistance and the fancy stuff
-        getTarget().damage(getDamage());
+        getTarget().damage(this);
     }
 }

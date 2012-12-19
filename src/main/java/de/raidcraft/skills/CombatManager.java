@@ -1,10 +1,12 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -86,9 +88,13 @@ public final class CombatManager implements Listener {
                         // the shooter is our source so lets call back and remove
                         sourcedCallback.getCallback().run(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()));
                         callbacks.remove(sourcedCallback.getTaskId());
-                    } catch (CombatException e) {
-                        // print to console
-                        plugin.getLogger().info(e.getMessage());
+                        if (sourcedCallback.getSource() instanceof Hero) {
+                            ((Hero) sourcedCallback.getSource()).debug("Called Range Callback - " + sourcedCallback.getTaskId());
+                        }
+                    } catch (CombatException | InvalidTargetException e) {
+                        if (sourcedCallback.getSource() instanceof Hero) {
+                            ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
+                        }
                     }
                 }
             }

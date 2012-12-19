@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.ui.UserInterface;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -24,11 +25,15 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public Player getPlayer();
 
+    public UserInterface getUserInterface();
+
     public boolean isDebugging();
 
     public void setDebugging(boolean debug);
 
     public void debug(String message);
+
+    public void reset();
 
     public int getDamage();
 

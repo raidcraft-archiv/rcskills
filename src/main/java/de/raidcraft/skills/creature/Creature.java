@@ -71,16 +71,18 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public int getHealth() {
+    public final int getHealth() {
 
         return getEntity().getHealth();
     }
 
     @Override
-    public void setHealth(int health) {
+    public final void setHealth(int health) {
 
-        if (health < getMaxHealth()) {
+        if (health < 0) {
             health = 0;
+        } else if (health > getMaxHealth()) {
+            health = getMaxHealth();
         }
         try {
             nmsHealth.setInt(((CraftLivingEntity) getEntity()).getHandle(), health);

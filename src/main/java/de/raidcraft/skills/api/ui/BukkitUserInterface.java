@@ -41,7 +41,7 @@ public class BukkitUserInterface implements UserInterface {
     }
 
     @Override
-    public void run() {
+    public void refresh() {
 
         if (player == null || !isEnabled()) {
             return;

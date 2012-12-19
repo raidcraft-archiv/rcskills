@@ -3,6 +3,7 @@ package de.raidcraft.skills.skills.magic;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.attack.MagicalAttack;
 import de.raidcraft.skills.api.combat.attack.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -53,11 +54,10 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
         new RangedAttack(hero, ProjectileType.FIREBALL, new RangedCallback() {
             @Override
-            public void run(CharacterTemplate target) throws CombatException {
+            public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
-                hero.debug("Fireball Range Callback called!");
                 target.addEffect(hero, BurnEffect.class);
-                target.damage(getTotalDamage());
+                new MagicalAttack(hero, target, getTotalDamage()).run();
                 // TODO: replace with generic burn effect from effects common package
                 // target.addEffect(new FireballEffect(Fireball.this));
                 // add some exp to the profession and skill

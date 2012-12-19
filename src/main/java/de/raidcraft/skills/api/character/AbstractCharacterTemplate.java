@@ -46,16 +46,26 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void damage(int damage) {
 
-        int health = getHealth() - damage;
-        if (health < 0) health = 0;
-        setHealth(health);
+        int newHealth = getHealth() - damage;
+        if (newHealth < 0) newHealth = 0;
+        setHealth(newHealth);
         getEntity().playEffect(EntityEffect.HURT);
+        if (this instanceof Hero) {
+            ((Hero)this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
+        }
+        if (getHealth() <= 0) {
+            kill();
+        }
     }
 
     @Override
     public void damage(Attack attack) {
 
         damage(attack.getDamage());
+        if (attack.getSource() instanceof Hero) {
+            ((Hero) attack.getSource()).debug(
+                    "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
+        }
     }
 
     @Override
@@ -66,7 +76,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     @Override
     public void kill() {
-        //TODO: implement
+
+        getEntity().setHealth(0);
+        getEntity().playEffect(EntityEffect.DEATH);
+        // TODO: add playSound effect when it works...
     }
 
     @Override
