@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
  */
 public final class EffectFactory extends ConfigurationBase implements EffectData {
 
-    private static final Pattern PATTERN = Pattern.compile("^.*?effects\\.(.*?)$");
-
     private final SkillsPlugin plugin;
     private final Class<? extends Effect> eClass;
     private final EffectInformation information;
@@ -58,16 +56,14 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
 
     public <S, T> Effect<S, T> create(S source, T target, ConfigurationSection override) throws UnknownEffectException {
 
+        String effectName = information.name().toLowerCase().replace(" ", "-").trim();
+        Pattern pattern = Pattern.compile("^.*?" + effectName + "\\.(.*?)$");
         // we still need to add our base values for this to work
         YamlDataMap rootMap = new YamlDataMap(this, this);
         for (Map.Entry<String, Object> entry : override.getValues(true).entrySet()) {
-            Matcher matcher = PATTERN.matcher(entry.getKey());
+            Matcher matcher = pattern.matcher(entry.getKey());
             if (matcher.matches()) {
-                String path = information.name().toLowerCase().replace(" ", "-").trim() + ".";
-                String key = matcher.group(0).replace(path, "");
-                if (key != null && !key.equals("")) {
-                    rootMap.set(key, entry.getValue());
-                }
+                rootMap.set(matcher.group(1), entry.getValue());
             }
         }
         setOverrideConfig(rootMap);
