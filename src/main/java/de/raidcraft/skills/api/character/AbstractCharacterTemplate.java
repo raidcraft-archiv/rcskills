@@ -1,11 +1,10 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.combat.effect.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -13,7 +12,6 @@ import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -102,6 +100,21 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().playEffect(EntityEffect.DEATH);
     }
 
+    private <S> void addEffect(Class<? extends Effect<S, CharacterTemplate>> eClass, Effect<S, CharacterTemplate> effect)
+            throws CombatException {
+
+        // lets check the priority of the existing effect
+        if (effects.containsKey(eClass)) {
+            if (effects.get(eClass).getPriority() > effect.getPriority()) {
+                throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
+            }
+        }
+        // TODO: do some fancy resistence checks
+        effects.put(eClass, effect);
+        // applying the effect will start the task if periodic or trigger it once
+        effect.apply();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public final <S> Effect<S, CharacterTemplate> addEffect(Skill skill, Class<? extends Effect<S, CharacterTemplate>> eClass)
@@ -109,17 +122,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         try {
             S source = (S) skill.getHero();
-            if (skill.getProperties() instanceof ConfigurationBase) {
-
-                String path = "effects." + eClass.getAnnotation(EffectInformation.class).name().toLowerCase().replace(" ", "-").trim();
-                // we want to create a new section effect and not be some weird sub-sub-sub-section
-                ConfigurationSection section = ((ConfigurationBase) skill.getProperties()).getConfigurationSection(path);
-                if (section == null) {
-                    section = ((ConfigurationBase) skill.getProperties()).createSection(path);
-                }
-                // create the actual effect with the given override config from the skill
+            DataMap config = skill.getEffectConfiguration();
+            if (config != null) {
+                // okay we have a config from the skills now lets create a wicked effect with lots of override
                 Effect<S, CharacterTemplate> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
-                        .getEffect(source, this, eClass, section);
+                        .getEffect(source, this, eClass, config);
                 addEffect(eClass, effect);
 
                 return effect;
@@ -139,21 +146,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         return effect;
-    }
-
-    private <S> void addEffect(Class<? extends Effect<S, CharacterTemplate>> eClass, Effect<S, CharacterTemplate> effect)
-            throws CombatException {
-
-        // lets check the priority of the existing effect
-        if (effects.containsKey(eClass)) {
-            if (effects.get(eClass).getPriority() > effect.getPriority()) {
-                throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
-            }
-        }
-        // TODO: do some fancy resistence checks
-        effects.put(eClass, effect);
-        // applying the effect will start the task if periodic or trigger it once
-        effect.apply();
     }
 
     @Override

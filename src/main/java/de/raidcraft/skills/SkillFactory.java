@@ -3,7 +3,6 @@ package de.raidcraft.skills;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.DataMap;
-import de.raidcraft.api.config.YamlDataMap;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -145,7 +144,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public DataMap getData() {
 
-        return new YamlDataMap(getOverrideSection("custom"), this);
+        return getOverrideDataMap("custom");
     }
 
     @Override

@@ -12,11 +12,16 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Silthus
  */
 public final class EffectFactory extends ConfigurationBase implements EffectData {
+
+    private static final Pattern PATTERN = Pattern.compile("^.*?effects\\.(.*?)$");
 
     private final SkillsPlugin plugin;
     private final Class<? extends Effect> eClass;
@@ -53,7 +58,19 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
 
     public <S, T> Effect<S, T> create(S source, T target, ConfigurationSection override) throws UnknownEffectException {
 
-        setOverrideConfig(override);
+        // we still need to add our base values for this to work
+        YamlDataMap rootMap = new YamlDataMap(this, this);
+        for (Map.Entry<String, Object> entry : override.getValues(true).entrySet()) {
+            Matcher matcher = PATTERN.matcher(entry.getKey());
+            if (matcher.matches()) {
+                String path = information.name().toLowerCase().replace(" ", "-").trim() + ".";
+                String key = matcher.group(0).replace(path, "");
+                if (key != null && !key.equals("")) {
+                    rootMap.set(key, entry.getValue());
+                }
+            }
+        }
+        setOverrideConfig(rootMap);
         return create(source, target);
     }
 

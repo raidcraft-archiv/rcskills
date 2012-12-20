@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
@@ -20,6 +21,7 @@ public abstract class AbstractSkill implements Skill {
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
+    private final DataMap effectConfig;
     protected final THeroSkill database;
     private String description;
     private final Collection<Skill> strongParents = new HashSet<>();
@@ -33,6 +35,13 @@ public abstract class AbstractSkill implements Skill {
         this.database = database;
         this.description = data.getDescription();
         this.profession = profession;
+
+        if (data instanceof ConfigurationBase) {
+            // lets load properties from the skill config first and then go thru the profession skill config
+            this.effectConfig = ((ConfigurationBase) data).getOverrideDataMap("effects");
+        } else {
+            effectConfig = null;
+        }
 
         load(data.getData());
     }
@@ -168,6 +177,12 @@ public abstract class AbstractSkill implements Skill {
     public final Profession getProfession() {
 
         return profession;
+    }
+
+    @Override
+    public DataMap getEffectConfiguration() {
+
+        return effectConfig;
     }
 
     @Override

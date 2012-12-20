@@ -37,9 +37,9 @@ public interface CharacterTemplate {
 
     public <S> boolean hasEffect(Class<? extends Effect<S, CharacterTemplate>> eClass);
 
-    public void clearEffects();
-
     public boolean hasEffectType(Effect.Type type);
+
+    public void clearEffects();
 
     public boolean isInCombat();
 

@@ -77,6 +77,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public Profession getProfession();
 
+    public DataMap getEffectConfiguration();
+
     public void save();
 
     /**
