@@ -486,12 +486,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     @Override
     public void kill(CharacterTemplate attacker) {
-        //TODO: implement
-    }
 
-    @Override
-    public void kill() {
-        //TODO: implement
+        super.kill(attacker);
+        debug(attacker.getName() + " killed YOU");
     }
 
     @Override

@@ -1,12 +1,11 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.PeriodicEffectData;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.util.DataMap;
 import org.bukkit.ChatColor;
 
 import java.util.Collection;
@@ -72,7 +71,7 @@ public abstract class AbstractSkill implements Skill {
 
     @Override
     public void load(DataMap data) {
-        // override this when needed
+        // implement if needed
     }
 
     /*/////////////////////////////////////////////////////////////////
@@ -130,12 +129,6 @@ public abstract class AbstractSkill implements Skill {
     public final SkillProperties getProperties() {
 
         return properties;
-    }
-
-    @Override
-    public PeriodicEffectData getEffectProperties() {
-
-        return (PeriodicEffectData) properties;
     }
 
     protected final void setDescription(String description) {

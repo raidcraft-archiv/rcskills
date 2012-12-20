@@ -1,24 +1,34 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
+import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.combat.effect.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
+import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Silthus
  */
 public abstract class AbstractCharacterTemplate implements CharacterTemplate {
+
+    private static final Random RANDOM = new Random();
 
     private final String name;
     private final LivingEntity entity;
@@ -72,22 +82,68 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void kill(CharacterTemplate killer) {
 
         kill();
+        if (killer instanceof Hero) {
+            ((Hero) killer).debug("YOU killed " + getName());
+        }
     }
 
     @Override
     public void kill() {
 
         getEntity().setHealth(0);
+        // play the death sound
+        getEntity().getWorld().playSound(
+                getEntity().getLocation(),
+                getDeathSound(getEntity().getType()),
+                1.0F,
+                getSoundStrength(getEntity())
+        );
+        // play the death effect
         getEntity().playEffect(EntityEffect.DEATH);
-        // TODO: add playSound effect when it works...
     }
 
     @Override
-    public <S> Effect<S, CharacterTemplate> addEffect(S source, Class<? extends Effect<S, CharacterTemplate>> eClass)
+    @SuppressWarnings("unchecked")
+    public final <S> Effect<S, CharacterTemplate> addEffect(Skill skill, Class<? extends Effect<S, CharacterTemplate>> eClass)
+            throws CombatException {
+
+        try {
+            S source = (S) skill.getHero();
+            if (skill.getProperties() instanceof ConfigurationBase) {
+
+                String path = "effects." + eClass.getAnnotation(EffectInformation.class).name().toLowerCase().replace(" ", "-").trim();
+                // we want to create a new section effect and not be some weird sub-sub-sub-section
+                ConfigurationSection section = ((ConfigurationBase) skill.getProperties()).getConfigurationSection(path);
+                if (section == null) {
+                    section = ((ConfigurationBase) skill.getProperties()).createSection(path);
+                }
+                // create the actual effect with the given override config from the skill
+                Effect<S, CharacterTemplate> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
+                        .getEffect(source, this, eClass, section);
+                addEffect(eClass, effect);
+
+                return effect;
+            } else {
+                return addEffect(source, eClass);
+            }
+        } catch (ClassCastException e) {
+            throw new CombatException(eClass.getCanonicalName() + " can only be applied from a CharacterTemplate!");
+        }
+    }
+
+    @Override
+    public final <S> Effect<S, CharacterTemplate> addEffect(S source, Class<? extends Effect<S, CharacterTemplate>> eClass)
             throws CombatException {
 
         Effect<S, CharacterTemplate> effect =
                 RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        addEffect(eClass, effect);
+        return effect;
+    }
+
+    private <S> void addEffect(Class<? extends Effect<S, CharacterTemplate>> eClass, Effect<S, CharacterTemplate> effect)
+            throws CombatException {
+
         // lets check the priority of the existing effect
         if (effects.containsKey(eClass)) {
             if (effects.get(eClass).getPriority() > effect.getPriority()) {
@@ -98,11 +154,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         effects.put(eClass, effect);
         // applying the effect will start the task if periodic or trigger it once
         effect.apply();
-        return effect;
     }
 
     @Override
-    public <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
+    public final <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
 
         Effect<?, CharacterTemplate> effect = effects.remove(eClass);
         if (effect instanceof PeriodicEffect) {
@@ -124,20 +179,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void clearEffects() {
+    public final void clearEffects() {
 
         effects.clear();
     }
 
 
     @Override
-    public <S> boolean hasEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
+    public final  <S> boolean hasEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
 
         return effects.containsKey(eClass);
     }
 
     @Override
-    public boolean hasEffectType(Effect.Type type) {
+    public final boolean hasEffectType(Effect.Type type) {
 
         for (Effect effect : effects.values()) {
             if (effect.isOfType(type)) {
@@ -157,5 +212,55 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
+    }
+
+    protected float getSoundStrength(LivingEntity target) {
+
+        if (!(target instanceof Ageable)) {
+            return 1.0F;
+        }
+        if (((Ageable) target).isAdult()) {
+            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.0F;
+        } else {
+            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.5F;
+        }
+    }
+
+    protected Sound getDeathSound(EntityType type) {
+
+        switch (type) {
+
+            case COW:
+                return Sound.COW_IDLE;
+            case BLAZE:
+                return Sound.BLAZE_DEATH;
+            case CHICKEN:
+                return Sound.CHICKEN_HURT;
+            case CREEPER:
+                return Sound.CREEPER_DEATH;
+            case SKELETON:
+                return Sound.SKELETON_DEATH;
+            case IRON_GOLEM:
+                return Sound.IRONGOLEM_DEATH;
+            case GHAST:
+                return Sound.GHAST_DEATH;
+            case PIG:
+                return Sound.PIG_DEATH;
+            case OCELOT:
+                return Sound.CAT_HIT;
+            case SHEEP:
+                return Sound.SHEEP_IDLE;
+            case SPIDER:
+            case CAVE_SPIDER:
+                return Sound.SPIDER_DEATH;
+            case WOLF:
+                return Sound.WOLF_DEATH;
+            case ZOMBIE:
+                return Sound.ZOMBIE_DEATH;
+            case PIG_ZOMBIE:
+                return Sound.ZOMBIE_PIG_DEATH;
+            default:
+                return Sound.HURT_FLESH;
+        }
     }
 }

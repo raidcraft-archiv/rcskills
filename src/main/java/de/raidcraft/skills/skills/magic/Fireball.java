@@ -16,7 +16,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.AreaAttack;
 import de.raidcraft.skills.effects.common.BurnEffect;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.util.DataMap;
 import org.bukkit.Location;
 
 /**
@@ -30,23 +29,9 @@ import org.bukkit.Location;
 )
 public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
-    private boolean incinerate = false;
-    private boolean bounce = false;
-    private float yield = 1.0F;
-    private int fireTicks = 0;
-
     public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
-    }
-
-    @Override
-    public void load(DataMap data) {
-
-        incinerate = data.getBoolean("incinerate", incinerate);
-        bounce = data.getBoolean("bounce", bounce);
-        yield = (float) data.getDouble("strength", yield);
-        fireTicks = data.getInt("fireticks", fireTicks);
     }
 
     @Override
@@ -56,10 +41,8 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
             @Override
             public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
-                target.addEffect(hero, BurnEffect.class);
                 new MagicalAttack(hero, target, getTotalDamage()).run();
-                // TODO: replace with generic burn effect from effects common package
-                // target.addEffect(new FireballEffect(Fireball.this));
+                target.addEffect(Fireball.this, BurnEffect.class);
                 // add some exp to the profession and skill
                 getProfession().getLevel().addExp(2);
                 getLevel().addExp(5);

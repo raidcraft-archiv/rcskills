@@ -7,7 +7,7 @@ public interface PeriodicEffect<S, T> extends TimedEffect<S, T>, Runnable {
 
     public int getTaskId();
 
-    public int getDelay();
+    public long getDelay();
 
-    public int getInterval();
+    public long getInterval();
 }

@@ -11,6 +11,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.effects.common.BurnEffect;
+import de.raidcraft.skills.effects.common.KnockBackEffect;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -97,6 +98,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         EffectManager effectManager = getEffectManager();
         effectManager.registerClass(BurnEffect.class);
+        effectManager.registerClass(KnockBackEffect.class);
     }
 
     @Override

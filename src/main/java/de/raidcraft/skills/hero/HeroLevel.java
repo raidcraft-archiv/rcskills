@@ -13,4 +13,11 @@ public class HeroLevel extends AbstractLevel<Hero> {
 
         super(levelObject, data);
     }
+
+    @Override
+    public int getNeededExpForLevel(int level) {
+
+        // TODO: calculate formula for exp
+        return 1;
+    }
 }

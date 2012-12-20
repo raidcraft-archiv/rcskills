@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         }
     }
 
-    @Override
-    public void registerClass(Class<? extends Effect> effectClass) {
+    public <S, T> void registerClass(Class<? extends Effect<S, T>> effectClass) {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = plugin.configure(new EffectFactory(plugin, effectClass, configDir));
@@ -45,10 +45,15 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public <S, T> Effect<S, T> getEffect(S source, T target, String effect) {
 
+        return getEffect(source, target, effect, null);
+    }
+
+    public <S, T> Effect<S, T> getEffect(S source, T target, String effect, ConfigurationSection override) {
+
         try {
             effect = effect.toLowerCase();
             if (effectFactories.containsKey(effect)) {
-                return effectFactories.get(effect).create(source, target);
+                return effectFactories.get(effect).create(source, target, override);
             }
         } catch (UnknownEffectException e) {
             e.printStackTrace();
@@ -59,9 +64,14 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public <S, T> Effect<S, T> getEffect(S source, T target, Class<? extends Effect<S, T>> eClass) {
 
+        return getEffect(source, target, eClass, null);
+    }
+
+    public <S, T> Effect<S, T> getEffect(S source, T target, Class<? extends Effect<S, T>> eClass, ConfigurationSection override) {
+
         try {
             if (effectFactoryClasses.containsKey(eClass)) {
-                return effectFactoryClasses.get(eClass).create(source, target);
+                return effectFactoryClasses.get(eClass).create(source, target, override);
             }
         } catch (UnknownEffectException e) {
             e.printStackTrace();

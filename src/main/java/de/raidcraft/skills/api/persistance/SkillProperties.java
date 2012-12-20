@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.util.DataMap;
 import org.bukkit.inventory.ItemStack;
 
 /**

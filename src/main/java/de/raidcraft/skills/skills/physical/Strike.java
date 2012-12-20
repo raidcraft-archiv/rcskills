@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.TargetedAttack;
+import de.raidcraft.skills.effects.common.KnockBackEffect;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
@@ -36,7 +37,7 @@ public class Strike extends AbstractLevelableSkill implements TargetedAttack {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                target.getEntity().setFireTicks(100);
+                target.addEffect(Strike.this, KnockBackEffect.class);
             }
         }).run();
     }

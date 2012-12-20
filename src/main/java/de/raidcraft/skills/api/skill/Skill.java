@@ -1,12 +1,11 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.PeriodicEffectData;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.util.DataMap;
 
 /**
  * @author Silthus
@@ -75,8 +74,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public int getTotalHealthCost();
 
     public SkillProperties getProperties();
-
-    public PeriodicEffectData getEffectProperties();
 
     public Profession getProfession();
 

@@ -25,6 +25,4 @@ public abstract class GenericJarFileManager<T> extends JarFileLoader<T> {
     }
 
     protected abstract void loadFactories();
-
-    public abstract void registerClass(Class<? extends T> tClass);
 }

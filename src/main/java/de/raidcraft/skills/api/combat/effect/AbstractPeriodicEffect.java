@@ -5,7 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.PeriodicEffectData;
+import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -15,14 +15,38 @@ import org.bukkit.ChatColor;
 public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S, T> implements PeriodicEffect<S, T> {
 
     private int taskId = -1;
-    private final PeriodicEffectData data;
+    private long delay;
+    private long interval;
+    private long duration;
     private long remainingTicks;
     private boolean started = false;
 
-    protected AbstractPeriodicEffect(S source, T target, PeriodicEffectData data) {
+    protected AbstractPeriodicEffect(S source, T target, EffectData data) {
 
         super(source, target, data);
-        this.data = data;
+        load(data);
+
+    }
+
+    private void load(EffectData data) {
+
+        // load the delay
+        this.delay = data.getEffectDelay();
+        if (getSource() instanceof Hero) {
+            Hero hero = (Hero) getSource();
+            this.delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
+                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+        }
+
+        // load the interval
+        this.interval = data.getEffectInterval();
+        if (getSource() instanceof Hero) {
+            Hero hero = (Hero) getSource();
+            this.interval += (data.getEffectIntervalLevelModifier() * hero.getLevel().getLevel())
+                    + (data.getEffectIntervalProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+        }
+
+        // set the remaining ticks
         this.remainingTicks = getDuration() + getDelay();
     }
 
@@ -39,27 +63,15 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     }
 
     @Override
-    public int getDelay() {
+    public long getDelay() {
 
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            return (int) (data.getEffectDelay()
-                    + (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel()));
-        }
-        return data.getEffectDelay();
+        return delay;
     }
 
     @Override
-    public int getInterval() {
+    public long getInterval() {
 
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            return (int) (data.getEffectInterval()
-                    + (data.getEffectIntervalLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectIntervalProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel()));
-        }
-        return data.getEffectInterval();
+        return interval;
     }
 
     @Override
@@ -72,9 +84,9 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
                         this,
                         getDelay(),
                         getInterval());
-                started = true;
             } else {
-                RaidCraft.getComponent(SkillsPlugin.class).getLogger().warning("Effect(" + getName() + ") interval must be over 0!");
+                // only run once
+                run();
             }
         }
     }
@@ -82,7 +94,8 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     @Override
     public void run() {
 
-        if (started && this.remainingTicks > 0) {
+        if (!started || this.remainingTicks > 0) {
+            started = true;
             try {
                 apply(getTarget());
                 // debug messages
@@ -111,7 +124,7 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
         }
 
         // lets cancel the task if the effect expired
-        if (started && this.remainingTicks <= 0) {
+        if (started && this.remainingTicks <= 0 && getTaskId() > 0) {
             Bukkit.getScheduler().cancelTask(getTaskId());
             // some debug messages
             if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {

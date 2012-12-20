@@ -5,5 +5,5 @@ package de.raidcraft.skills.api.combat.effect;
  */
 public interface TimedEffect<S, T> extends Effect<S, T> {
 
-    public int getDuration();
+    public long getDuration();
 }

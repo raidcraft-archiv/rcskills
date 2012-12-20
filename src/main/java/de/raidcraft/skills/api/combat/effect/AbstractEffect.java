@@ -1,10 +1,10 @@
 package de.raidcraft.skills.api.combat.effect;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.util.DataMap;
 
 /**
  * @author Silthus

@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.combat.effect;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.util.DataMap;
 
 /**
  * An effect is something that can be applied to entities around in the world.

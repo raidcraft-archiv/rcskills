@@ -1,11 +1,12 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.DataMap;
+import de.raidcraft.api.config.YamlDataMap;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
-import de.raidcraft.skills.api.persistance.PeriodicEffectData;
-import de.raidcraft.util.DataMap;
+import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Silthus
  */
-public final class EffectFactory extends ConfigurationBase implements PeriodicEffectData {
+public final class EffectFactory extends ConfigurationBase implements EffectData {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Effect> eClass;
@@ -34,10 +35,12 @@ public final class EffectFactory extends ConfigurationBase implements PeriodicEf
 
         // its reflection time yay!
         try {
-            for (Constructor<?> constructor : eClass.getConstructors()) {
+            for (Constructor<?> constructor : eClass.getDeclaredConstructors()) {
                 if (constructor.getParameterTypes().length == 3
                         && constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
-                        && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())) {
+                        && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
+                        && constructor.getParameterTypes()[2].isAssignableFrom(this.getClass())) {
+                    constructor.setAccessible(true);
                     return (Effect<S, T>) constructor.newInstance(source, target, this);
                 }
             }
@@ -57,7 +60,7 @@ public final class EffectFactory extends ConfigurationBase implements PeriodicEf
     @Override
     public DataMap getDataMap() {
 
-        return new DataMap(getOverrideSection("custom"));
+        return new YamlDataMap(getOverrideSection("custom"), this);
     }
 
     @Override

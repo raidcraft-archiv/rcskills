@@ -13,4 +13,11 @@ public class ProfessionLevel extends AbstractLevel<Profession> {
 
         super(levelObject, data);
     }
+
+    @Override
+    public int getNeededExpForLevel(int level) {
+
+        // TODO: add formula to calculate exp
+        return 1;
+    }
 }

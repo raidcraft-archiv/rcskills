@@ -1,10 +1,11 @@
 package de.raidcraft.skills.effects.common;
 
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.AbstractTimedEffect;
+import de.raidcraft.skills.api.combat.effect.AbstractPeriodicEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.persistance.PeriodicEffectData;
+import de.raidcraft.skills.api.persistance.EffectData;
 
 /**
  * @author Silthus
@@ -14,16 +15,24 @@ import de.raidcraft.skills.api.persistance.PeriodicEffectData;
         description = "Verbrennt das Ziel",
         types = {}
 )
-public class BurnEffect extends AbstractTimedEffect<CharacterTemplate, CharacterTemplate> {
+public class BurnEffect extends AbstractPeriodicEffect<CharacterTemplate, CharacterTemplate> {
 
-    public BurnEffect(CharacterTemplate source, CharacterTemplate target, PeriodicEffectData data) {
+    private int fireTicks;
+
+    public BurnEffect(CharacterTemplate source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
 
     @Override
+    public void load(DataMap data) {
+
+        this.fireTicks = data.getInt("fire-ticks", 60);
+    }
+
+    @Override
     public void apply(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().setFireTicks(getDuration());
+        target.getEntity().setFireTicks(fireTicks);
     }
 }

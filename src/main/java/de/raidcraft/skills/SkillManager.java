@@ -41,7 +41,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
      *
      * @param skillClass of the skill
      */
-    @Override
     public void registerClass(Class<? extends Skill> skillClass) {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {

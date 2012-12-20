@@ -2,6 +2,8 @@ package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.DataMap;
+import de.raidcraft.api.config.YamlDataMap;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -11,8 +13,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.util.DataMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     private final SkillInformation information;
-    private boolean createDefaults = false;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
@@ -40,34 +38,6 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
         this.plugin = plugin;
         this.sClass = sClass;
         this.information = sClass.getAnnotation(SkillInformation.class);
-        this.createDefaults = !getFile().exists();
-    }
-
-    @Override
-    public void load() {
-
-        super.load();
-        if (createDefaults) {
-            createDefaults();
-            createDefaults = false;
-        }
-        plugin.getLogger().info("Skill loaded: " + information.name().toLowerCase());
-    }
-
-    private void createDefaults() {
-
-        String name = information.name().toLowerCase();
-
-        if (createDefaults) {
-            // yes we do so lets parse the defaults and go
-            set("name", name);
-            set("description", information.desc());
-            set("usage", new ArrayList<String>());
-            set("strong-parents", new ArrayList<String>());
-            set("weak-parents", new ArrayList<String>());
-            createSection("custom", ConfigUtil.parseSkillDefaults(information.defaults()));
-            save();
-        }
     }
 
     protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
@@ -175,7 +145,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public DataMap getData() {
 
-        return new DataMap(getOverrideSection("custom"));
+        return new YamlDataMap(getOverrideSection("custom"), this);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.raidcraft.skills.skills.misc;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -8,7 +9,6 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.util.DataMap;
 import net.milkbowl.vault.permission.Permission;
 
 import java.util.Collection;
