@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.attack;
 
 import de.raidcraft.api.InvalidTargetException;
+import de.raidcraft.skills.api.combat.effect.common.CombatEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -58,6 +59,8 @@ public class SkillAction extends AbstractAction<Hero> {
             // simply apply the skill - if it is overriden something will trigger
             skill.apply(getSource());
         }
+        // add a combat effect when a skill is beeing casted
+        getSource().addEffect(skill, CombatEffect.class);
         // keep this last or items will be removed before casting
         getSource().getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }
