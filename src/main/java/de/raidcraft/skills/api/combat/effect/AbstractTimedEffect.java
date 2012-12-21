@@ -10,7 +10,7 @@ public abstract class AbstractTimedEffect<S, T> extends AbstractEffect<S, T> imp
 
     private long duration = 0;
 
-    protected AbstractTimedEffect(S source, T target, EffectData data) {
+    public AbstractTimedEffect(S source, T target, EffectData data) {
 
         super(source, target, data);
         load(data);

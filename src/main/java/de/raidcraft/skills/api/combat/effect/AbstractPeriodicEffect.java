@@ -21,11 +21,10 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     private long remainingTicks;
     private boolean started = false;
 
-    protected AbstractPeriodicEffect(S source, T target, EffectData data) {
+    public AbstractPeriodicEffect(S source, T target, EffectData data) {
 
         super(source, target, data);
         load(data);
-
     }
 
     private void load(EffectData data) {
@@ -74,20 +73,59 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
         return interval;
     }
 
+    private void startTask() {
+
+        this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+                RaidCraft.getComponent(SkillsPlugin.class),
+                this,
+                getDelay(),
+                getInterval());
+        started = true;
+    }
+
+    @Override
+    public void renew() throws CombatException {
+
+        if (Bukkit.getScheduler().isQueued(getTaskId())) {
+            return;
+        }
+        // lets cancel the existing task and start a new task
+        Bukkit.getScheduler().cancelTask(getTaskId());
+        startTask();
+        renew(getTarget());
+    }
+
+    protected abstract void renew(T target);
+
     @Override
     public void apply() throws CombatException {
 
         if (!started) {
             if (getInterval() > 0) {
-                this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                        RaidCraft.getComponent(SkillsPlugin.class),
-                        this,
-                        getDelay(),
-                        getInterval());
+                startTask();
             } else {
                 // only run once
-                run();
+                super.apply();
             }
+        }
+    }
+
+    @Override
+    public void remove() throws CombatException {
+
+        if (started) {
+            Bukkit.getScheduler().cancelTask(getTaskId());
+            started = false;
+            remove(getTarget());
+            // some debug messages
+            if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
+                ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": removed effect - " + getName());
+            }
+            if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
+                ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: removed effect - " + getName());
+            }
+        } else {
+            super.remove();
         }
     }
 
@@ -125,13 +163,12 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
 
         // lets cancel the task if the effect expired
         if (started && this.remainingTicks <= 0 && getTaskId() > 0) {
-            Bukkit.getScheduler().cancelTask(getTaskId());
-            // some debug messages
-            if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
-                ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": removed effect - " + getName());
-            }
-            if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
-                ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: removed effect - " + getName());
+            try {
+                remove();
+            } catch (CombatException e) {
+                if (getSource() instanceof Hero) {
+                    ((Hero) getSource()).sendMessage(ChatColor.RED + e.getMessage());
+                }
             }
         }
     }

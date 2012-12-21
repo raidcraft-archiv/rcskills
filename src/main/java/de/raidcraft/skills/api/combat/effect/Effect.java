@@ -34,5 +34,9 @@ public interface Effect<S, T> {
 
     public void load(DataMap data);
 
+    public void renew() throws CombatException;
+
     public void apply() throws CombatException;
+
+    public void remove() throws CombatException;
 }

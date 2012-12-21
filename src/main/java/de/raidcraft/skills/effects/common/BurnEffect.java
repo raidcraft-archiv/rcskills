@@ -35,4 +35,16 @@ public class BurnEffect extends AbstractPeriodicEffect<CharacterTemplate, Charac
 
         target.getEntity().setFireTicks(fireTicks);
     }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().setFireTicks(0);
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) {
+
+        target.getEntity().setFireTicks(fireTicks);
+    }
 }

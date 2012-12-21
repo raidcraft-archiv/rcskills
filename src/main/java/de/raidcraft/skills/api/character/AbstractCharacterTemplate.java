@@ -5,11 +5,9 @@ import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
-import de.raidcraft.skills.api.combat.effect.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Ageable;
@@ -105,14 +103,25 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         // lets check the priority of the existing effect
         if (effects.containsKey(eClass)) {
-            if (effects.get(eClass).getPriority() > effect.getPriority()) {
+            Effect<?, CharacterTemplate> existingEffect = effects.get(eClass);
+            if (existingEffect.getPriority() > effect.getPriority()) {
                 throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
+            } else if (existingEffect.getPriority() == effect.getPriority()) {
+                // prios are the same so lets renew the existing one
+                existingEffect.renew();
+                throw new CombatException("Der bestehende Effekt wurde erneuert!");
+            } else {
+                // lets renew the effect with the more powerful one
+                effects.put(eClass, effect);
+                effect.renew();
+                throw new CombatException("Der bestehende Effekt wurde ersetzt!");
             }
+        } else {
+            // TODO: do some fancy resistence checks
+            effects.put(eClass, effect);
+            // applying the effect will start the task if periodic or trigger it once
+            effect.apply();
         }
-        // TODO: do some fancy resistence checks
-        effects.put(eClass, effect);
-        // applying the effect will start the task if periodic or trigger it once
-        effect.apply();
     }
 
     @Override
@@ -149,24 +158,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) {
+    public final <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) throws CombatException {
 
         Effect<?, CharacterTemplate> effect = effects.remove(eClass);
-        if (effect instanceof PeriodicEffect) {
-            Bukkit.getScheduler().cancelTask(((PeriodicEffect) effect).getTaskId());
-        }
         // some debug output
         if (effect != null) {
-            if (effect.getSource() instanceof Hero) {
-                ((Hero) effect.getSource()).debug(
-                        "You->" + getName() + ": effect(" + effect.getPriority() + ") manually removed - " + effect.getName());
-            }
-            if (effect.getTarget() instanceof Hero) {
-                ((Hero) effect.getTarget()).debug(
-                        (effect.getSource() instanceof CharacterTemplate ? ((CharacterTemplate) effect.getSource()).getName() : "UNKNOWN")
-                                + "->You: effect(" + effect.getPriority() + ") manually removed - " + effect.getName()
-                );
-            }
+            effect.remove();
         }
     }
 

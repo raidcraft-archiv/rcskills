@@ -17,7 +17,7 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
     private final T target;
     private double priority;
 
-    protected AbstractEffect(S source, T target, EffectData data) {
+    public AbstractEffect(S source, T target, EffectData data) {
 
         this.info = data.getInformation();
         this.name = convertName(info.name());
@@ -86,6 +86,18 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
     }
 
     @Override
+    public void renew() throws CombatException {
+
+        apply(getTarget());
+        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
+            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": renewed effect - " + getName());
+        }
+        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
+            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: renewed effect - " + getName());
+        }
+    }
+
+    @Override
     public void apply() throws CombatException {
 
         // TODO: check restistance and that fancy stuff
@@ -98,7 +110,22 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
         }
     }
 
+    @Override
+    public void remove() throws CombatException {
+
+        // TODO: check restistance and that fancy stuff
+        remove(getTarget());
+        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
+            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": removed effect - " + getName());
+        }
+        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
+            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: removed effect - " + getName());
+        }
+    }
+
     protected abstract void apply(T target) throws CombatException;
+
+    protected abstract void remove(T target) throws CombatException;
 
     private String convertName(String name) {
 

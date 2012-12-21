@@ -3,19 +3,19 @@ package de.raidcraft.skills;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
+import de.raidcraft.skills.api.combat.effect.common.CombatEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,8 +73,22 @@ public final class CombatManager implements Listener {
         plugin.getCharacterManager().clearCacheOf(character);
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void combatEnterEvent(EntityDamageByEntityEvent event) {
+
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity) {
+            try {
+                Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
+                CharacterTemplate damager = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+                hero.addEffect(damager, CombatEffect.class);
+            } catch (CombatException e) {
+                // do not display messages for the combat event
+            }
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
@@ -100,18 +114,5 @@ public final class CombatManager implements Listener {
             }
 
         }
-    }
-
-    public void knockBack(CharacterTemplate attacker, LivingEntity target, double power) {
-
-        // TODO: make effect out of this
-        // knocks back the target based on the attackers center position
-        Location knockBackCenter = attacker.getEntity().getLocation();
-        double xOff = target.getLocation().getX() - knockBackCenter.getX();
-        double yOff = target.getLocation().getY() - knockBackCenter.getY();
-        double zOff = target.getLocation().getZ() - knockBackCenter.getZ();
-        // power is the velocity applied to the target
-        // a power of 0.4 is a player jumping
-        target.setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
     }
 }

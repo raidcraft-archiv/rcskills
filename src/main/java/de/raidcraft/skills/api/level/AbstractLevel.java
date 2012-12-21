@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.level;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.events.RCLevelEvent;
 import de.raidcraft.skills.api.persistance.LevelData;
-import de.raidcraft.util.BukkitUtil;
 
 /**
  * @author Silthus
@@ -109,8 +109,8 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void addLevel(int level) {
 
-        RCLevelEvent event = new RCLevelEvent(this, getLevel() + 1);
-        BukkitUtil.callEvent(event);
+        RCLevelEvent<T> event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
             increaseLevel();
             this.level += level;
@@ -124,8 +124,8 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void removeLevel(int level) {
 
-        RCLevelEvent event = new RCLevelEvent(this, getLevel() - 1);
-        BukkitUtil.callEvent(event);
+        RCLevelEvent<T> event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
             decreaseLevel();
             this.level -= level;

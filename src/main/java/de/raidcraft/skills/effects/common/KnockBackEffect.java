@@ -45,4 +45,12 @@ public class KnockBackEffect extends AbstractEffect<CharacterTemplate, Character
         // a power of 0.4 is a player jumping
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
     }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        // not much we can do...
+    }
+
+
 }

@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.HashMap;
@@ -104,8 +105,17 @@ public final class CharacterManager implements Listener {
         character.setHealth(plugin.getDamageManager().getCreatureHealth(character.getEntity().getType()));
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+
+        // save the hero first
+        getHero(event.getPlayer()).save();
+        // lets clear the cache for the hero
+        heroes.remove(event.getPlayer().getName());
+    }
+
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
-    public void onHeroSpawn(PlayerRespawnEvent event) {
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         getHero(event.getPlayer()).reset();
     }
