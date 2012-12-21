@@ -109,7 +109,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void addLevel(int level) {
 
-        RCLevelEvent<T> event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
         RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
             increaseLevel();
@@ -124,7 +124,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void removeLevel(int level) {
 
-        RCLevelEvent<T> event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
         RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
             decreaseLevel();

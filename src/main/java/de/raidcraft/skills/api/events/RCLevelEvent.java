@@ -9,26 +9,26 @@ import org.bukkit.event.HandlerList;
 /**
  * @author Silthus
  */
-public class RCLevelEvent<T extends Levelable<T>> extends Event implements Cancellable {
+public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cancellable {
 
-    private final T source;
+    private final S source;
     private final int oldLevel;
     private final int newLevel;
     private boolean cancelled = false;
 
-    public RCLevelEvent(T source, int oldLevel, int newLevel) {
+    public RCLevelEvent(S source, int oldLevel, int newLevel) {
 
         this.source = source;
         this.oldLevel = oldLevel;
         this.newLevel = newLevel;
     }
 
-    public T getSource() {
+    public S getSource() {
 
         return source;
     }
 
-    public Level<T> getLevel() {
+    public Level<S> getLevel() {
 
         return source.getLevel();
     }
