@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
+import de.raidcraft.skills.api.combat.effect.ScheduledEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
@@ -29,13 +30,15 @@ public interface CharacterTemplate {
 
     public void kill();
 
-    public <S> Effect<S, CharacterTemplate> addEffect(Skill skill, Class<? extends Effect<S, CharacterTemplate>> eClass) throws CombatException;
+    public <S> Effect<S> addEffect(Skill skill, Class<? extends Effect<S>> eClass) throws CombatException;
 
-    public <S> Effect<S, CharacterTemplate> addEffect(S source, Class<? extends Effect<S, CharacterTemplate>> eClass) throws CombatException;
+    public <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException;
 
-    public <S> void removeEffect(Class<? extends Effect<S, CharacterTemplate>> eClass) throws CombatException;
+    public void removeEffect(Class<? extends ScheduledEffect> eClass) throws CombatException;
 
-    public <S> boolean hasEffect(Class<? extends Effect<S, CharacterTemplate>> eClass);
+    public void removeEffect(String name) throws CombatException;
+
+    public <S> boolean hasEffect(Class<? extends ScheduledEffect<S>> eClass);
 
     public boolean hasEffectType(Effect.Type type);
 

@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
         description = "Knocks back the target",
         types = {}
 )
-public class KnockBackEffect extends AbstractEffect<CharacterTemplate, CharacterTemplate> {
+public class KnockBackEffect extends AbstractEffect<CharacterTemplate> {
 
     private double power;
 
@@ -44,12 +44,6 @@ public class KnockBackEffect extends AbstractEffect<CharacterTemplate, Character
         // power is the velocity applied to the target
         // a power of 0.4 is a player jumping
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        // not much we can do...
     }
 
 

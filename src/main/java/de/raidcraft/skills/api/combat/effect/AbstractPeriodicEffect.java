@@ -12,30 +12,18 @@ import org.bukkit.ChatColor;
 /**
  * @author Silthus
  */
-public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S, T> implements PeriodicEffect<S, T> {
+public abstract class AbstractPeriodicEffect<S> extends AbstractDelayedEffect<S> {
 
-    private int taskId = -1;
-    private long delay;
-    private long interval;
-    private long duration;
+    protected long interval;
     private long remainingTicks;
-    private boolean started = false;
 
-    public AbstractPeriodicEffect(S source, T target, EffectData data) {
+    public AbstractPeriodicEffect(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         load(data);
     }
 
     private void load(EffectData data) {
-
-        // load the delay
-        this.delay = data.getEffectDelay();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            this.delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
-        }
 
         // load the interval
         this.interval = data.getEffectInterval();
@@ -50,57 +38,40 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     }
 
     @Override
-    public int getTaskId() {
-
-        return taskId;
-    }
-
-    @Override
     public double getPriority() {
 
         return super.getPriority() + remainingTicks;
     }
 
-    @Override
-    public long getDelay() {
-
-        return delay;
-    }
-
-    @Override
     public long getInterval() {
 
         return interval;
     }
 
-    private void startTask() {
+    @Override
+    public void startTask() {
 
-        this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+        setTask(Bukkit.getScheduler().runTaskTimer(
                 RaidCraft.getComponent(SkillsPlugin.class),
                 this,
                 getDelay(),
-                getInterval());
-        started = true;
+                getInterval()
+        ));
     }
 
     @Override
     public void renew() throws CombatException {
 
-        if (Bukkit.getScheduler().isQueued(getTaskId())) {
-            return;
-        }
         // lets cancel the existing task and start a new task
-        Bukkit.getScheduler().cancelTask(getTaskId());
+        stopTask();
         startTask();
         renew(getTarget());
     }
 
-    protected abstract void renew(T target);
-
     @Override
     public void apply() throws CombatException {
 
-        if (!started) {
+        if (!isStarted()) {
             if (getInterval() > 0) {
                 startTask();
             } else {
@@ -113,13 +84,12 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     @Override
     public void remove() throws CombatException {
 
-        if (started) {
-            Bukkit.getScheduler().cancelTask(getTaskId());
-            started = false;
+        if (isStarted()) {
+            stopTask();
             remove(getTarget());
             // some debug messages
-            if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
-                ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": removed effect - " + getName());
+            if (getSource() instanceof Hero) {
+                ((Hero) getSource()).debug("You->" + getTarget().getName() + ": removed effect - " + getName());
             }
             if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
                 ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: removed effect - " + getName());
@@ -132,8 +102,7 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
     @Override
     public void run() {
 
-        if (!started || this.remainingTicks > 0) {
-            started = true;
+        if (this.remainingTicks > 0) {
             try {
                 apply(getTarget());
                 // debug messages
@@ -162,7 +131,7 @@ public abstract class AbstractPeriodicEffect<S, T> extends AbstractTimedEffect<S
         }
 
         // lets cancel the task if the effect expired
-        if (started && this.remainingTicks <= 0 && getTaskId() > 0) {
+        if (this.remainingTicks <= 0) {
             try {
                 remove();
             } catch (CombatException e) {

@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -58,17 +57,7 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
 
-        // lets check for dying players and characters
-        LivingEntity entity = event.getEntity();
-        CharacterTemplate character = plugin.getCharacterManager().getCharacter(entity);
-        if (entity.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
-            if (((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager() instanceof LivingEntity) {
-                character.kill(plugin.getCharacterManager().getCharacter(
-                        (LivingEntity) ((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager()));
-            }
-        } else {
-            character.kill();
-        }
+        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
         // lets remove that poor character from our cache... may he Rest in Peace :*(
         plugin.getCharacterManager().clearCacheOf(character);
     }
@@ -76,13 +65,23 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void combatEnterEvent(EntityDamageByEntityEvent event) {
 
-        if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity) {
+        if (event.getEntity() instanceof LivingEntity) {
+            CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+            CharacterTemplate attacker;
+            if (event.getDamager() instanceof LivingEntity) {
+                attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+            } else if (event.getDamager() instanceof Projectile) {
+                attacker = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+            } else {
+                // no combat event
+                return;
+            }
             try {
-                Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
-                CharacterTemplate damager = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
-                hero.addEffect(damager, CombatEffect.class);
+                // add the combat effect to the attacker and victim
+                victim.addEffect(attacker, CombatEffect.class);
+                attacker.addEffect(victim, CombatEffect.class);
             } catch (CombatException e) {
-                // do not display messages for the combat event
+                e.printStackTrace();
             }
         }
     }

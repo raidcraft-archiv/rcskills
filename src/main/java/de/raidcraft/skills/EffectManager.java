@@ -1,7 +1,9 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.combat.effect.ScheduledEffect;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +18,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     private final Map<String, EffectFactory> effectFactories = new HashMap<>();
     private final Map<Class<? extends Effect>, EffectFactory> effectFactoryClasses = new HashMap<>();
+    private final Map<String, Class<? extends ScheduledEffect>> scheduledEffectNames = new HashMap<>();
 
     protected EffectManager(SkillsPlugin plugin) {
 
@@ -26,29 +29,30 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
     protected void loadFactories() {
 
         for (Class<? extends Effect> clazz : loadClasses()) {
-            EffectFactory factory = plugin.configure(new EffectFactory(plugin, clazz, configDir));
-            effectFactories.put(clazz.getAnnotation(EffectInformation.class).name().toLowerCase(), factory);
-            effectFactoryClasses.put(clazz, factory);
+            registerClass(clazz);
         }
     }
 
-    public <S, T> void registerClass(Class<? extends Effect<S, T>> effectClass) {
+    public void registerClass(Class<? extends Effect> effectClass) {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = plugin.configure(new EffectFactory(plugin, effectClass, configDir));
             effectFactories.put(effectClass.getAnnotation(EffectInformation.class).name().toLowerCase(), factory);
             effectFactoryClasses.put(effectClass, factory);
+            if (ScheduledEffect.class.isAssignableFrom(effectClass)) {
+                scheduledEffectNames.put(factory.getName(), (Class<? extends ScheduledEffect>) effectClass);
+            }
         } else {
             plugin.getLogger().warning("Found effect without EffectInformation: " + effectClass.getCanonicalName());
         }
     }
 
-    public <S, T> Effect<S, T> getEffect(S source, T target, String effect) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, String effect) {
 
         return getEffect(source, target, effect, null);
     }
 
-    public <S, T> Effect<S, T> getEffect(S source, T target, String effect, ConfigurationSection override) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, String effect, ConfigurationSection override) {
 
         try {
             effect = effect.toLowerCase();
@@ -62,21 +66,32 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <S, T> Effect<S, T> getEffect(S source, T target, Class<? extends Effect<S, T>> eClass) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass) {
 
         return getEffect(source, target, eClass, null);
     }
 
-    public <S, T> Effect<S, T> getEffect(S source, T target, Class<? extends Effect<S, T>> eClass, ConfigurationSection override) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass, ConfigurationSection override) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {
                 return effectFactoryClasses.get(eClass).create(source, target, override);
+            } else {
+                registerClass(eClass);
+                return getEffect(source, target, eClass, override);
             }
         } catch (UnknownEffectException e) {
             e.printStackTrace();
             plugin.getLogger().warning(e.getMessage());
         }
         return null;
+    }
+
+    public Class<? extends ScheduledEffect> getEffectForName(String name) throws UnknownEffectException {
+
+        if (scheduledEffectNames.containsKey(name)) {
+            return scheduledEffectNames.get(name);
+        }
+        throw new UnknownEffectException("Es gibt keinen Effekt mit dem Namen: " + name);
     }
 }

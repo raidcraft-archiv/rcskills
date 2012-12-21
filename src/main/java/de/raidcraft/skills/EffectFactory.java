@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.config.YamlDataMap;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
@@ -34,7 +35,7 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
     }
 
     @SuppressWarnings("unchecked")
-    public <S, T> Effect<S, T> create(S source, T target) throws UnknownEffectException {
+    public <S> Effect<S> create(S source, CharacterTemplate target) throws UnknownEffectException {
 
         // its reflection time yay!
         try {
@@ -44,7 +45,7 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
                         && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
                         && constructor.getParameterTypes()[2].isAssignableFrom(this.getClass())) {
                     constructor.setAccessible(true);
-                    return (Effect<S, T>) constructor.newInstance(source, target, this);
+                    return (Effect<S>) constructor.newInstance(source, target, this);
                 }
             }
         } catch ( InvocationTargetException | InstantiationException | IllegalAccessException e) {
@@ -54,7 +55,11 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
         throw new UnknownEffectException("Error when loading effect for class: " + eClass.getCanonicalName());
     }
 
-    public <S, T> Effect<S, T> create(S source, T target, ConfigurationSection override) throws UnknownEffectException {
+    public <S> Effect<S> create(S source, CharacterTemplate target, ConfigurationSection override) throws UnknownEffectException {
+
+        if (override == null) {
+            return create(source, target);
+        }
 
         String effectName = information.name().toLowerCase().replace(" ", "-").trim();
         Pattern pattern = Pattern.compile("^.*?" + effectName + "\\.(.*?)$");
@@ -68,6 +73,12 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
         }
         setOverrideConfig(rootMap);
         return create(source, target);
+    }
+
+    @Override
+    public String getName() {
+
+        return information.name().toLowerCase().replace(" ", "-").trim();
     }
 
     @Override

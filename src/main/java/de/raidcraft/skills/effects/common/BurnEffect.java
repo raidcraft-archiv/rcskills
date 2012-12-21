@@ -15,7 +15,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
         description = "Verbrennt das Ziel",
         types = {}
 )
-public class BurnEffect extends AbstractPeriodicEffect<CharacterTemplate, CharacterTemplate> {
+public class BurnEffect extends AbstractPeriodicEffect<CharacterTemplate> {
 
     private int fireTicks;
 

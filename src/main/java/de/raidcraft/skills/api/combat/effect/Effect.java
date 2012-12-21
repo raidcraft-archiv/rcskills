@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.api.config.DataMap;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
 /**
@@ -9,7 +10,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  *
  * @author Silthus
  */
-public interface Effect<S, T> {
+public interface Effect<S> {
 
     public enum Type {
 
@@ -30,13 +31,9 @@ public interface Effect<S, T> {
 
     public S getSource();
 
-    public T getTarget();
+    public CharacterTemplate getTarget();
 
     public void load(DataMap data);
 
-    public void renew() throws CombatException;
-
     public void apply() throws CombatException;
-
-    public void remove() throws CombatException;
 }

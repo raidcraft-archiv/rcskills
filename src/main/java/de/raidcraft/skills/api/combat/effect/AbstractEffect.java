@@ -9,15 +9,15 @@ import de.raidcraft.skills.api.persistance.EffectData;
 /**
  * @author Silthus
  */
-public abstract class AbstractEffect<S, T> implements Effect<S, T> {
+public abstract class AbstractEffect<S> implements Effect<S> {
 
     private final EffectInformation info;
     private final String name;
     private final S source;
-    private final T target;
+    private final CharacterTemplate target;
     private double priority;
 
-    public AbstractEffect(S source, T target, EffectData data) {
+    public AbstractEffect(S source, CharacterTemplate target, EffectData data) {
 
         this.info = data.getInformation();
         this.name = convertName(info.name());
@@ -80,21 +80,9 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
     }
 
     @Override
-    public T getTarget() {
+    public CharacterTemplate getTarget() {
 
         return target;
-    }
-
-    @Override
-    public void renew() throws CombatException {
-
-        apply(getTarget());
-        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
-            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": renewed effect - " + getName());
-        }
-        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
-            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: renewed effect - " + getName());
-        }
     }
 
     @Override
@@ -102,30 +90,15 @@ public abstract class AbstractEffect<S, T> implements Effect<S, T> {
 
         // TODO: check restistance and that fancy stuff
         apply(getTarget());
-        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
-            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": applied effect - " + getName());
+        if (getSource() instanceof Hero) {
+            ((Hero) getSource()).debug("You->" + getTarget().getName() + ": applied effect - " + getName());
         }
         if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
             ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: applied effect - " + getName());
         }
     }
 
-    @Override
-    public void remove() throws CombatException {
-
-        // TODO: check restistance and that fancy stuff
-        remove(getTarget());
-        if (getSource() instanceof Hero && getTarget() instanceof CharacterTemplate) {
-            ((Hero) getSource()).debug("You->" + ((CharacterTemplate) getTarget()).getName() + ": removed effect - " + getName());
-        }
-        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
-            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: removed effect - " + getName());
-        }
-    }
-
-    protected abstract void apply(T target) throws CombatException;
-
-    protected abstract void remove(T target) throws CombatException;
+    protected abstract void apply(CharacterTemplate target) throws CombatException;
 
     private String convertName(String name) {
 

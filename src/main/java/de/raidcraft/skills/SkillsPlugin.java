@@ -63,7 +63,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.effectManager = new EffectManager(this);
         // register our inhouse skills
         registerSkills();
-        registerEffects();
+        // registerEffects();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.characterManager = new CharacterManager(this);
@@ -99,6 +99,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         EffectManager effectManager = getEffectManager();
         effectManager.registerClass(BurnEffect.class);
         effectManager.registerClass(KnockBackEffect.class);
+        effectManager.registerClass(BurnEffect.class);
     }
 
     @Override
