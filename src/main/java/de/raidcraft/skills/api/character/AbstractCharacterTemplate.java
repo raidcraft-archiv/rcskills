@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.character;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.ScheduledEffect;
@@ -114,9 +115,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (effects.containsKey(effectClass)) {
                 ScheduledEffect<?> existingEffect = effects.get(effectClass);
                 // lets check priorities
-                if (existingEffect.getPriority() > effect.getPriority()) {
+                // the -1.0 is a special case for skill casted effects
+                if (scheduledEffect.getPriority() == -1.0 && scheduledEffect.getSource().equals(existingEffect.getSource())) {
+                    removeEffect(effectClass);
+                    addEffect(effectClass, scheduledEffect);
+                } else if (existingEffect.getPriority() > effect.getPriority()) {
                     throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
-                } else if (existingEffect.getPriority() == effect.getPriority()) {
+                } else if (existingEffect.getPriority() == scheduledEffect.getPriority()) {
                     existingEffect.renew();
                 } else {
                     // remove the existing effect and apply our stronger effect
@@ -131,34 +136,21 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public final <S> Effect<S> addEffect(Skill skill, Class<? extends Effect<S>> eClass)
-            throws CombatException {
+    public final Effect<CharacterTemplate> addEffect(Skill skill, Class<? extends Effect<CharacterTemplate>> eClass) throws CombatException {
 
-        try {
-            S source = (S) skill.getHero();
-            DataMap config = skill.getEffectConfiguration();
-            if (config != null) {
-                // okay we have a config from the skills now lets create a wicked effect with lots of override
-                Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
-                        .getEffect(source, this, eClass, config);
-                addEffect(eClass, effect);
-
-                return effect;
-            } else {
-                return addEffect(source, eClass);
-            }
-        } catch (ClassCastException e) {
-            throw new CombatException(eClass.getCanonicalName() + " can only be applied from a CharacterTemplate!");
-        }
+        DataMap config = skill.getEffectConfiguration();
+        // okay we have a config from the skills now lets create a wicked effect with lots of override
+        Effect<CharacterTemplate> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
+                .getEffect(skill.getHero(), this, eClass, config);
+        addEffect(eClass, effect);
+        return effect;
     }
 
     @Override
     public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass)
             throws CombatException {
 
-        Effect<S> effect =
-                RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         return effect;
     }
@@ -176,10 +168,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void removeEffect(String name) throws CombatException {
+    public void removeEffect(Effect effect) throws CombatException {
 
         try {
-            removeEffect(RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffectForName(name));
+            removeEffect(RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffectForName(effect.getName()));
         } catch (UnknownEffectException e) {
             throw new CombatException(e.getMessage());
         }
@@ -199,7 +191,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final boolean hasEffectType(Effect.Type type) {
+    public final boolean hasEffectType(EffectType type) {
 
         for (Effect effect : effects.values()) {
             if (effect.isOfType(type)) {

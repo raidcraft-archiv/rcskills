@@ -70,8 +70,9 @@ public abstract class AbstractDelayedEffect<S> extends AbstractTimedEffect<S> {
     public void run() {
 
         try {
-            super.apply();
-            setTask(null);
+            ((AbstractEffect)this).apply();
+            stopTask();
+            getTarget().removeEffect(this);
         } catch (CombatException e) {
             if (getSource() instanceof Hero) {
                 ((Hero) getSource()).sendMessage(ChatColor.RED + e.getMessage());

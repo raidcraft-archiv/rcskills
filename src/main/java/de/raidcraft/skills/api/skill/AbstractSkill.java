@@ -83,6 +83,14 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public int getTotalCastTime() {
+
+        return (int) (properties.getCastTime()
+                        + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getProfLevelCastTimeModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
     public void load(DataMap data) {
         // implement if needed
     }

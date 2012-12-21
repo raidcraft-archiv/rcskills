@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.combat.effect.common;
 
-import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.effect.AbstractTimedEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
@@ -15,8 +14,7 @@ import org.bukkit.ChatColor;
 @EffectInformation(
         name = "Combat",
         description = "Is applied when a character enters combat",
-        priority = 1.0,
-        types = {EffectType.BUFF}
+        priority = 1.0
 )
 public class CombatEffect extends AbstractTimedEffect<CharacterTemplate> {
 

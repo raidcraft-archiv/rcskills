@@ -63,6 +63,12 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public int getTotalCastTime() {
+
+        return (int) (super.getTotalCastTime() + (getProperties().getSkillLevelCastTimeModifier() * getLevel().getLevel()));
+    }
+
+    @Override
     public final boolean isMastered() {
 
         return getLevel().getMaxLevel() == getLevel().getLevel();

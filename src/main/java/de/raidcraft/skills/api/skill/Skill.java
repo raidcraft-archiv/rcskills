@@ -48,6 +48,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public int getTotalHealthCost();
 
+    public int getTotalCastTime();
+
     public SkillProperties getProperties();
 
     public Profession getProfession();

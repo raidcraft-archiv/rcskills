@@ -103,7 +103,7 @@ public abstract class AbstractTimedEffect<S> extends AbstractEffect<S> implement
         if (isStarted()) {
             stopTask();
             remove(getTarget());
-            getTarget().removeEffect(getName());
+            getTarget().removeEffect(this);
             if (getSource() instanceof Hero) {
                 ((Hero) getSource()).debug("You->" + getTarget().getName() + ": removed effect - " + getName());
             }

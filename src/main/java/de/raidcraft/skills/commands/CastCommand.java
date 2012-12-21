@@ -6,6 +6,7 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.attack.SkillAction;
+import de.raidcraft.skills.api.combat.effect.common.CastTime;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -53,7 +54,11 @@ public class CastCommand {
         }
 
         try {
-            new SkillAction(skill).run();
+            if (skill.getTotalCastTime() > 0) {
+                hero.addEffect(skill, CastTime.class);
+            } else {
+                new SkillAction(skill).run();
+            }
         } catch (CombatException | InvalidTargetException e) {
             throw new CommandException(e.getMessage());
         }

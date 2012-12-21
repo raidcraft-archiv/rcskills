@@ -76,7 +76,7 @@ public abstract class AbstractPeriodicEffect<S> extends AbstractDelayedEffect<S>
                 startTask();
             } else {
                 // only run once
-                super.apply();
+                ((AbstractEffect)this).apply();
             }
         }
     }
