@@ -1,5 +1,8 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +19,7 @@ public @interface SkillInformation {
 
     public String desc();
 
-    public String[] defaults() default {};
+    public EffectType[] types();
 
-    public Skill.Type[] types();
+    public EffectElement[] elements() default {};
 }

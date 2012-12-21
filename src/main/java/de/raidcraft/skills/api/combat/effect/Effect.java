@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.api.config.DataMap;
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
@@ -12,18 +14,15 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Effect<S> {
 
-    public enum Type {
-
-
-    }
-
     public String getName();
 
     public String getDescription();
 
-    public Type[] getTypes();
+    public EffectType[] getTypes();
 
-    public boolean isOfType(Type type);
+    public EffectElement[] getElements();
+
+    public boolean isOfType(EffectType type);
 
     public double getPriority();
 

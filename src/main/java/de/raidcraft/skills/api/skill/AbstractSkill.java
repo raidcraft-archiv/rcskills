@@ -3,6 +3,8 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -22,6 +24,7 @@ public abstract class AbstractSkill implements Skill {
     private final SkillProperties properties;
     private final Profession profession;
     private final DataMap effectConfig;
+    private final SkillInformation information;
     protected final THeroSkill database;
     private String description;
     private final Collection<Skill> strongParents = new HashSet<>();
@@ -35,6 +38,7 @@ public abstract class AbstractSkill implements Skill {
         this.database = database;
         this.description = data.getDescription();
         this.profession = profession;
+        this.information = data.getInformation();
 
         if (data instanceof ConfigurationBase) {
             // lets load properties from the skill config first and then go thru the profession skill config
@@ -123,9 +127,15 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final Type[] getSkillTypes() {
+    public final EffectType[] getTypes() {
 
-        return getProperties().getSkillTypes();
+        return information.types();
+    }
+
+    @Override
+    public EffectElement[] getElements() {
+
+        return information.elements();
     }
 
     @Override

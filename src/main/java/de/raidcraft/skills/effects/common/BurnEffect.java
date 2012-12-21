@@ -1,6 +1,8 @@
 package de.raidcraft.skills.effects.common;
 
 import de.raidcraft.api.config.DataMap;
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.effect.AbstractPeriodicEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
@@ -13,7 +15,8 @@ import de.raidcraft.skills.api.persistance.EffectData;
 @EffectInformation(
         name = "BurnEffect",
         description = "Verbrennt das Ziel",
-        types = {}
+        types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF},
+        elements = {EffectElement.FIRE}
 )
 public class BurnEffect extends AbstractPeriodicEffect<CharacterTemplate> {
 

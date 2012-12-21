@@ -1,5 +1,8 @@
 package de.raidcraft.skills.api.combat.effect;
 
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +19,9 @@ public @interface EffectInformation {
 
     public String description();
 
-    public Effect.Type[] types();
+    public EffectType[] types() default {};
+
+    public EffectElement[] elements() default {};
 
     public double priority() default 0.0;
 }

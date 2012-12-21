@@ -2,11 +2,11 @@ package de.raidcraft.skills.skills.misc;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.config.DataMap;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
 import net.milkbowl.vault.permission.Permission;
@@ -19,8 +19,7 @@ import java.util.Collection;
 @SkillInformation(
         name = "permission-skill",
         desc = "Represents a generic permissions skill.",
-        defaults = {"groups:[foobar,barfoo]", "permissions:[foo.bar,bar.foo]"},
-        types = {Skill.Type.UNBINDABLE}
+        types = {EffectType.UNBINDABLE}
 )
 public class PermissionSkill extends AbstractSkill {
 

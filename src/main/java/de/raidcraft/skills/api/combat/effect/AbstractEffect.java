@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.combat.effect;
 
 import de.raidcraft.api.config.DataMap;
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -45,15 +47,21 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     }
 
     @Override
-    public Type[] getTypes() {
+    public EffectType[] getTypes() {
 
         return info.types();
     }
 
     @Override
-    public boolean isOfType(Type type) {
+    public EffectElement[] getElements() {
 
-        for (Type t : info.types()) {
+        return info.elements();
+    }
+
+    @Override
+    public boolean isOfType(EffectType type) {
+
+        for (EffectType t : info.types()) {
             if (type == t) {
                 return true;
             }

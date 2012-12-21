@@ -3,6 +3,8 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
+import de.raidcraft.skills.api.EffectElement;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -11,35 +13,6 @@ import de.raidcraft.skills.api.profession.Profession;
  * @author Silthus
  */
 public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
-
-    public enum Type {
-
-        BUFF,
-        COUNTER,
-        DARK,
-        DAMAGING,
-        DEBUFF,
-        FIRE,
-        ICE,
-        INTERRUPT,
-        ITEM,
-        EARTH,
-        FORCE,
-        HARMFUL,
-        HEAL,
-        ILLUSION,
-        KNOWLEDGE,
-        LIGHT,
-        LIGHTNING,
-        MANA,
-        MOVEMENT,
-        PHYSICAL,
-        SILENCABLE,
-        STEALTHY,
-        SUMMON,
-        TELEPORT,
-        UNBINDABLE;
-    }
 
     public void load(DataMap data);
 
@@ -53,7 +26,9 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public String[] getUsage();
 
-    public Skill.Type[] getSkillTypes();
+    public EffectType[] getTypes();
+
+    public EffectElement[] getElements();
 
     public Hero getHero();
 
