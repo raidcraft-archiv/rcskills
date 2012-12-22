@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.combat.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.AbstractTimedEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.combat.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -16,9 +16,9 @@ import org.bukkit.ChatColor;
         description = "Is applied when a character enters combat",
         priority = 1.0
 )
-public class CombatEffect extends AbstractTimedEffect<CharacterTemplate> {
+public class Combat extends ExpirableEffect<CharacterTemplate> {
 
-    public CombatEffect(CharacterTemplate source, CharacterTemplate target, EffectData data) {
+    public Combat(CharacterTemplate source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         // the combat effect should always have a default priority of 1.0

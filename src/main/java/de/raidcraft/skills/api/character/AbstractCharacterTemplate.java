@@ -6,7 +6,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.combat.effect.Effect;
-import de.raidcraft.skills.api.combat.effect.ScheduledEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -31,7 +30,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final String name;
     private final LivingEntity entity;
-    private final Map<Class<? extends ScheduledEffect>, ScheduledEffect> effects = new HashMap<>();
+    private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
     private boolean inCombat = false;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
@@ -101,54 +100,41 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().playEffect(EntityEffect.DEATH);
     }
 
-    @SuppressWarnings("unchecked")
-    private <S> void addEffect(Class<? extends Effect<S>> eClass, Effect<S> effect)
-            throws CombatException {
+    private <S> void addEffect(Class<? extends Effect> eClass, Effect<S> effect) throws CombatException {
 
-        if (!(effect instanceof ScheduledEffect)) {
-            effect.apply();
-        } else {
-            Class<? extends ScheduledEffect<S>> effectClass =
-                    (Class<? extends ScheduledEffect<S>>) eClass;
-            ScheduledEffect<S> scheduledEffect = (ScheduledEffect<S>) effect;
-            // lets only apply scheduled effects because the other ones are only applied exactly once
-            if (effects.containsKey(effectClass)) {
-                ScheduledEffect<?> existingEffect = effects.get(effectClass);
-                // lets check priorities
-                // the -1.0 is a special case for skill casted effects
-                if (scheduledEffect.getPriority() == -1.0 && scheduledEffect.getSource().equals(existingEffect.getSource())) {
-                    removeEffect(effectClass);
-                    addEffect(effectClass, scheduledEffect);
-                } else if (existingEffect.getPriority() > effect.getPriority()) {
-                    throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
-                } else if (existingEffect.getPriority() == scheduledEffect.getPriority()) {
-                    existingEffect.renew();
-                } else {
-                    // remove the existing effect and apply our stronger effect
-                    removeEffect(effectClass);
-                    addEffect(effectClass, scheduledEffect);
-                }
+        if (effects.containsKey(eClass)) {
+            Effect<?> existingEffect = effects.get(eClass);
+            // lets check priorities
+            if (existingEffect.getPriority() > effect.getPriority()) {
+                throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
+            } else if (existingEffect.getPriority() == effect.getPriority()) {
+                // lets renew the existing effect
+                existingEffect.renew();
             } else {
-                effects.put(effectClass, scheduledEffect);
-                scheduledEffect.apply();
+                // the new effect has a higher priority so lets remove the old one
+                existingEffect.remove();
+                addEffect(eClass, effect);
             }
+        } else {
+            // apply the new effect
+            effects.put(eClass, effect);
+            effect.apply();
         }
     }
 
     @Override
-    public final Effect<CharacterTemplate> addEffect(Skill skill, Class<? extends Effect<CharacterTemplate>> eClass) throws CombatException {
+    public final Effect<Hero> addEffect(Skill skill, Class<? extends Effect> eClass) throws CombatException {
 
         DataMap config = skill.getEffectConfiguration();
         // okay we have a config from the skills now lets create a wicked effect with lots of override
-        Effect<CharacterTemplate> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
+        Effect<Hero> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
                 .getEffect(skill.getHero(), this, eClass, config);
         addEffect(eClass, effect);
         return effect;
     }
 
     @Override
-    public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass)
-            throws CombatException {
+    public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException {
 
         Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
@@ -156,24 +142,24 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final void removeEffect(Class<? extends ScheduledEffect> eClass) throws CombatException {
+    public void removeEffect(Effect effect) throws CombatException {
 
-        ScheduledEffect<?> effect = effects.remove(eClass);
-        // some debug output
-        if (effect != null) {
-            if (effect.isStarted()) {
-                effect.remove();
-            }
+        try {
+            // lets silently remove the effect from the list of applied effects
+            // we asume the remove() method of the effect has already been called at this point
+            effects.remove(RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffectForName(effect.getName()));
+        } catch (UnknownEffectException e) {
+            // this cant be true oh noes!!!!
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void removeEffect(Effect effect) throws CombatException {
+    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException {
 
-        try {
-            removeEffect(RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffectForName(effect.getName()));
-        } catch (UnknownEffectException e) {
-            throw new CombatException(e.getMessage());
+        Effect<?> effect = effects.remove(eClass);
+        if (effect != null) {
+            effect.remove();
         }
     }
 
@@ -185,7 +171,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
 
     @Override
-    public final  <S> boolean hasEffect(Class<? extends ScheduledEffect<S>> eClass) {
+    public final boolean hasEffect(Class<? extends Effect<?>> eClass) {
 
         return effects.containsKey(eClass);
     }

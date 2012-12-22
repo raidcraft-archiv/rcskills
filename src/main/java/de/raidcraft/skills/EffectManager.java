@@ -3,7 +3,6 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.effect.Effect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
-import de.raidcraft.skills.api.combat.effect.ScheduledEffect;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -19,7 +18,6 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     private final Map<String, EffectFactory> effectFactories = new HashMap<>();
     private final Map<Class<? extends Effect>, EffectFactory> effectFactoryClasses = new HashMap<>();
-    private final Map<String, Class<? extends ScheduledEffect>> scheduledEffectNames = new HashMap<>();
 
     protected EffectManager(SkillsPlugin plugin) {
 
@@ -42,11 +40,8 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = plugin.configure(new EffectFactory(plugin, effectClass, configDir));
-            effectFactories.put(effectClass.getAnnotation(EffectInformation.class).name().toLowerCase(), factory);
+            effectFactories.put(factory.getName(), factory);
             effectFactoryClasses.put(effectClass, factory);
-            if (ScheduledEffect.class.isAssignableFrom(effectClass)) {
-                scheduledEffectNames.put(factory.getName(), (Class<? extends ScheduledEffect>) effectClass);
-            }
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());
         }
@@ -71,12 +66,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass) {
 
         return getEffect(source, target, eClass, null);
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass, ConfigurationSection override) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass, ConfigurationSection override) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {
@@ -92,10 +87,10 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public Class<? extends ScheduledEffect> getEffectForName(String name) throws UnknownEffectException {
+    public Class<? extends Effect> getEffectForName(String name) throws UnknownEffectException {
 
-        if (scheduledEffectNames.containsKey(name)) {
-            return scheduledEffectNames.get(name);
+        if (effectFactories.containsKey(name)) {
+            return effectFactories.get(name).getEffectClass();
         }
         throw new UnknownEffectException("Es gibt keinen Effekt mit dem Namen: " + name);
     }

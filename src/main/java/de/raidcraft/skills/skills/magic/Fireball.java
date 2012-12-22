@@ -15,7 +15,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.AreaAttack;
-import de.raidcraft.skills.effects.common.BurnEffect;
+import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Location;
 
@@ -43,7 +43,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
             public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
                 new MagicalAttack(hero, target, getTotalDamage()).run();
-                target.addEffect(Fireball.this, BurnEffect.class);
+                target.addEffect(Fireball.this, Burn.class);
                 // add some exp to the profession and skill
                 getProfession().getLevel().addExp(2);
                 getLevel().addExp(5);

@@ -5,7 +5,7 @@ import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.SkillAction;
-import de.raidcraft.skills.api.combat.effect.AbstractDelayedEffect;
+import de.raidcraft.skills.api.combat.effect.DelayedEffect;
 import de.raidcraft.skills.api.combat.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -21,7 +21,7 @@ import org.bukkit.event.Listener;
         description = "Keeps track of the casttime for a char template",
         priority = -1.0
 )
-public class CastTime extends AbstractDelayedEffect<Skill> implements Listener {
+public class CastTime extends DelayedEffect<Skill> implements Listener {
 
     public CastTime(Skill source, CharacterTemplate target, EffectData data) {
 

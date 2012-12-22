@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
@@ -98,15 +99,46 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
         // TODO: check restistance and that fancy stuff
         apply(getTarget());
-        if (getSource() instanceof Hero) {
-            ((Hero) getSource()).debug("You->" + getTarget().getName() + ": applied effect - " + getName());
-        }
-        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
-            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: applied effect - " + getName());
-        }
+        debug("applied effect");
+    }
+
+    @Override
+    public void remove() throws CombatException {
+
+        remove(getTarget());
+        getTarget().removeEffect(this);
+        debug("removed effect");
+    }
+
+    @Override
+    public void renew() throws CombatException {
+
+        renew(getTarget());
+        debug("renewed effect");
     }
 
     protected abstract void apply(CharacterTemplate target) throws CombatException;
+
+    protected abstract void remove(CharacterTemplate target) throws CombatException;
+
+    protected abstract void renew(CharacterTemplate target) throws CombatException;
+
+    protected void debug(String message) {
+
+        if (getSource() instanceof Hero) {
+            ((Hero) getSource()).debug("You->" + getTarget().getName() + ": " + message + " - " + getName());
+        }
+        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
+            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: " + message + " - " + getName());
+        }
+    }
+
+    protected void warn(String message) {
+
+        if (getSource() instanceof Hero) {
+            ((Hero) getSource()).sendMessage(ChatColor.RED + message);
+        }
+    }
 
     private String convertName(String name) {
 

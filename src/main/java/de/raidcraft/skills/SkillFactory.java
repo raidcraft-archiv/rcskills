@@ -114,12 +114,6 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     }
 
     @Override
-    public Skill.Type[] getSkillTypes() {
-
-        return information.types();
-    }
-
-    @Override
     public ItemStack[] getReagents() {
 
         ConfigurationSection section = getOverrideSection("reagents");

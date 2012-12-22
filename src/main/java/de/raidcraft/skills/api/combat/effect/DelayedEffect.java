@@ -7,16 +7,15 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractDelayedEffect<S> extends AbstractTimedEffect<S> {
+public abstract class DelayedEffect<S> extends ScheduledEffect<S> {
 
-    protected int delay = 0;
+    protected long delay = 0;
 
-    public AbstractDelayedEffect(S source, CharacterTemplate target, EffectData data) {
+    public DelayedEffect(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         load(data);
@@ -33,7 +32,7 @@ public abstract class AbstractDelayedEffect<S> extends AbstractTimedEffect<S> {
         }
     }
 
-    public int getDelay() {
+    public long getDelay() {
 
         return delay;
     }
@@ -70,13 +69,10 @@ public abstract class AbstractDelayedEffect<S> extends AbstractTimedEffect<S> {
     public void run() {
 
         try {
-            ((AbstractEffect)this).apply();
+            super.apply();
             stopTask();
-            getTarget().removeEffect(this);
         } catch (CombatException e) {
-            if (getSource() instanceof Hero) {
-                ((Hero) getSource()).sendMessage(ChatColor.RED + e.getMessage());
-            }
+            warn(e.getMessage());
         }
     }
 }

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.effects.common;
+package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -17,11 +17,11 @@ import org.bukkit.util.Vector;
         description = "Knocks back the target",
         types = {}
 )
-public class KnockBackEffect extends AbstractEffect<CharacterTemplate> {
+public class KnockBack extends AbstractEffect<CharacterTemplate> {
 
     private double power;
 
-    public KnockBackEffect(CharacterTemplate source, CharacterTemplate target, EffectData data) {
+    public KnockBack(CharacterTemplate source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -46,5 +46,13 @@ public class KnockBackEffect extends AbstractEffect<CharacterTemplate> {
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
     }
 
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+        // not much to do here
+    }
 
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+        // not much to do here
+    }
 }

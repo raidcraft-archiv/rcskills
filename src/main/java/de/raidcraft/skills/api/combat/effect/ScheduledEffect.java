@@ -1,22 +1,45 @@
 package de.raidcraft.skills.api.combat.effect;
 
-import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author Silthus
  */
-public interface ScheduledEffect<S> extends Effect<S>, Runnable {
+public abstract class ScheduledEffect<S> extends AbstractEffect<S> implements Scheduled {
 
-    public BukkitTask getTask();
+    private BukkitTask task;
 
-    public boolean isStarted();
+    public ScheduledEffect(S source, CharacterTemplate target, EffectData data) {
 
-    public void startTask();
+        super(source, target, data);
+    }
 
-    public void stopTask();
+    @Override
+    public final BukkitTask getTask() {
 
-    public void remove() throws CombatException;
+        return task;
+    }
 
-    public void renew() throws CombatException;
+    @Override
+    public final void setTask(BukkitTask task) {
+
+        this.task = task;
+    }
+
+    @Override
+    public final boolean isStarted() {
+
+        return task != null;
+    }
+
+    @Override
+    public final void stopTask() {
+
+        if (isStarted()) {
+            task.cancel();
+            task = null;
+        }
+    }
 }

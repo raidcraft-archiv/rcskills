@@ -75,6 +75,11 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
         return create(source, target);
     }
 
+    public Class<? extends Effect> getEffectClass() {
+
+        return eClass;
+    }
+
     @Override
     public String getName() {
 
@@ -84,7 +89,10 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
     @Override
     public DataMap getDataMap() {
 
-        return new YamlDataMap(getOverrideSection("custom"), this);
+        if (getOverrideConfig() == null) {
+            return new YamlDataMap(getOverrideSection("custom"), this);
+        }
+        return getOverrideDataMap("custom");
     }
 
     @Override

@@ -3,7 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
-import de.raidcraft.skills.api.combat.effect.common.CombatEffect;
+import de.raidcraft.skills.api.combat.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
@@ -78,8 +78,8 @@ public final class CombatManager implements Listener {
             }
             try {
                 // add the combat effect to the attacker and victim
-                victim.addEffect(attacker, CombatEffect.class);
-                attacker.addEffect(victim, CombatEffect.class);
+                victim.addEffect(attacker, Combat.class);
+                attacker.addEffect(victim, Combat.class);
             } catch (CombatException e) {
                 e.printStackTrace();
             }
