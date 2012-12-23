@@ -50,8 +50,12 @@ public abstract class DelayedEffect<S> extends ScheduledEffect<S> {
     @Override
     public void apply() throws CombatException {
 
-        // only start the task and dont apply yet
-        startTask();
+        if (isStarted()) {
+            renew();
+        } else {
+            // only start the task and dont apply yet
+            startTask();
+        }
     }
 
     @Override
@@ -59,10 +63,19 @@ public abstract class DelayedEffect<S> extends ScheduledEffect<S> {
 
         if (isStarted()) {
             stopTask();
+            super.remove();
         } else {
             // this means the effect was already applied
             super.remove();
         }
+    }
+
+    @Override
+    public void renew() throws CombatException {
+
+        stopTask();
+        startTask();
+        super.renew();
     }
 
     @Override

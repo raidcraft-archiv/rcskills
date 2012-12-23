@@ -128,16 +128,23 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         if (getSource() instanceof Hero) {
             ((Hero) getSource()).debug("You->" + getTarget().getName() + ": " + message + " - " + getName());
         }
-        if (getTarget() instanceof Hero && getSource() instanceof CharacterTemplate) {
-            ((Hero) getTarget()).debug(((CharacterTemplate) getSource()).getName() + "->You: " + message + " - " + getName());
+        if (getTarget() instanceof Hero) {
+            ((Hero) getTarget()).debug(
+                    (getSource() instanceof CharacterTemplate? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
+                            "->You: " + message + " - " + getName());
         }
     }
 
     protected void warn(String message) {
 
         if (getSource() instanceof Hero) {
-            ((Hero) getSource()).sendMessage(ChatColor.RED + message);
+            warn((Hero) getSource(), message);
         }
+    }
+
+    protected void warn(Hero hero, String message) {
+
+        hero.sendMessage(ChatColor.RED + message);
     }
 
     private String convertName(String name) {
