@@ -7,9 +7,9 @@ import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Ageable;
@@ -17,6 +17,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -55,14 +56,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void damage(int damage) {
 
         int newHealth = getHealth() - damage;
-        if (newHealth < 0) newHealth = 0;
-        setHealth(newHealth);
+        if (newHealth <= 0) {
+            kill();
+        } else {
+            setHealth(newHealth);
+        }
         getEntity().playEffect(EntityEffect.HURT);
         if (this instanceof Hero) {
             ((Hero)this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
-        }
-        if (getHealth() <= 0) {
-            kill();
         }
     }
 
@@ -146,18 +147,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        try {
-            // lets silently remove the effect from the list of applied effects
-            // we asume the remove() method of the effect has already been called at this point
-            effects.remove(RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffectForName(effect.getName()));
-        } catch (UnknownEffectException e) {
-            // this cant be true oh noes!!!!
-            e.printStackTrace();
-        }
+        // lets silently remove the effect from the list of applied effects
+        // we asume the remove() method of the effect has already been called at this point
+        effects.remove(effect.getClass());
     }
 
     @Override
-    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException {
+    public void removeEffect(Class<? extends Effect> eClass) throws CombatException {
 
         Effect<?> effect = effects.remove(eClass);
         if (effect != null) {
@@ -168,7 +164,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void clearEffects() {
 
-        effects.clear();
+        for (Effect effect : new ArrayList<>(effects.values())) {
+            try {
+                effect.remove();
+            } catch (CombatException e) {
+                if (effect.getTarget() instanceof Hero) {
+                    ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
+        }
     }
 
 

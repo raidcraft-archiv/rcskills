@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
+import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
@@ -60,9 +61,8 @@ public final class CombatManager implements Listener {
         // lets remove that poor character from our cache... may he Rest in Peace :*(
         plugin.getCharacterManager().clearCacheOf(character);
     }
-/*
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void combatEnterEvent(EntityDamageByEntityEvent event) {
+
+    public void enterCombat(EntityDamageByEntityEvent event) {
 
         if (event.getEntity() instanceof LivingEntity) {
             CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
@@ -84,13 +84,15 @@ public final class CombatManager implements Listener {
             }
         }
     }
-*/
+
     @EventHandler(ignoreCancelled = true)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
+        // lets enter combat for that player
+        enterCombat(event);
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
             // and go thru all registered callbacks

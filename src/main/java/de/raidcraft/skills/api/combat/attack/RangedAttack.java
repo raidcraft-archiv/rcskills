@@ -17,6 +17,7 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
 
     private final ProjectileType projectileType;
     private RangedCallback callback;
+    private Projectile projectile;
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
 
@@ -30,11 +31,26 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
         this.callback = callback;
     }
 
+    public void addCallback(RangedCallback callback) {
+
+        this.callback = callback;
+    }
+
+    public ProjectileType getProjectileType() {
+
+        return projectileType;
+    }
+
+    public Projectile getProjectile() {
+
+        return projectile;
+    }
+
     @Override
     public void run() throws CombatException {
 
         // TODO: add fancy resitence checks and so on
-        Projectile projectile = projectileType.spawn(getSource());
+        projectile = projectileType.spawn(getSource());
         projectile.setBounce(false);
         projectile.setFireTicks(0);
         // queue the ranged callback to be called if the projectile hits

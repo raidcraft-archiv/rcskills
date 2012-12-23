@@ -39,17 +39,19 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
     @Override
     public void run(final Hero hero, final Location target) throws CombatException {
 
-        new RangedAttack(hero, ProjectileType.FIREBALL, new RangedCallback() {
+        final RangedAttack rangedAttack = new RangedAttack(hero, ProjectileType.FIREBALL);
+        rangedAttack.addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
                 new MagicalAttack(hero, target, getTotalDamage()).run();
                 addEffect(target, Burn.class);
-                addEffect(hero.getEntity().getLocation(), target, KnockBack.class);
+                addEffect(rangedAttack.getProjectile().getLocation(), target, KnockBack.class);
                 // add some exp to the profession and skill
-                getProfession().getLevel().addExp(2);
+                getProfession().getLevel().addExp(1);
                 getLevel().addExp(5);
             }
-        }).run();
+        });
+        rangedAttack.run();
     }
 }

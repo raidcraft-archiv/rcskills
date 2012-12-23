@@ -9,6 +9,6 @@ public final class TimeUtil {
 
     public static double ticksToSeconds(long ticks) {
 
-        return ((int)(ticks/20) * 100) / 100;
+        return ((int)((ticks/20) * 100)) / 100;
     }
 }

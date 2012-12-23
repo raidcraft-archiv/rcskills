@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.util.HeroUtil;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 /**
@@ -43,12 +44,12 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void refresh() {
 
-        if (player == null || !isEnabled()) {
+        if (player == null || !isEnabled() || player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
         // set the players health bar to a percentage of his actual health
-        int health = (int) Math.ceil((hero.getHealth() / hero.getMaxHealth()) * player.getMaxHealth());
+        int health = (int) Math.ceil(((double)hero.getHealth() / hero.getMaxHealth()) * player.getMaxHealth());
         player.setHealth(health);
 
         // set the stamina bar to a percentage of the actual stamina
@@ -60,7 +61,7 @@ public class BukkitUserInterface implements UserInterface {
 
         // set the manabar if it changed
         long time = System.currentTimeMillis();
-        if (time < lastUpdate + RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().manabar_update_interval) {
+        if (time < lastUpdate + RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_update_interval) {
             if (hero.getMana() < hero.getMaxMana()) {
                 hero.sendMessage(HeroUtil.createManaBar(hero.getMana(), hero.getMaxMana()));
                 this.lastUpdate = time;

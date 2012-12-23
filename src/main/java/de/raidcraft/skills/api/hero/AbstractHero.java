@@ -25,6 +25,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
-        this.health = data.getHealth();
+        setHealth(data.getHealth());
         this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
@@ -147,6 +148,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void reset() {
 
+        if (getPlayer().getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
         // TODO(BUG): does not seem to be called
         //TODO: add more reset stuff
         setHealth(getMaxHealth());
@@ -255,7 +259,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setHealth(int health) {
 
         this.health = health;
-        getUserInterface().refresh();
+        if (getUserInterface() != null) {
+            getUserInterface().refresh();
+        }
         debug("Health set to " + health);
     }
 
@@ -325,8 +331,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void save() {
 
+        THero database = Ebean.find(THero.class, getId());
+        database.setHealth(getHealth());
+        Ebean.save(database);
         saveProfessions();
-        saveLevelProgress(level);
+        saveLevelProgress(getLevel());
         saveSkills();
     }
 

@@ -67,6 +67,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager = new CharacterManager(this);
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
+        new StaminaManager(this);
     }
 
     private void registerSkills() {
@@ -150,7 +151,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @Setting("profession.change-level-modifier")
         public double profession_change_level_modifier = 1.0;
         @Setting("manabar.update_interval")
-        public long manabar_update_interval = 5 * 1000;
+        public long interface_update_interval = 5 * 1000;
 
         public LocalConfiguration(BasePlugin plugin) {
 

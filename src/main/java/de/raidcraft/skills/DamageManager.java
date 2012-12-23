@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
@@ -139,7 +138,7 @@ public final class DamageManager implements Listener {
                     // TODO: process other damage sources based on the config loaded above
                 }
             }
-        } catch (CombatException | InvalidTargetException e) {
+        } catch (CombatException e) {
             if (attacker != null && attacker instanceof Hero) {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
             }

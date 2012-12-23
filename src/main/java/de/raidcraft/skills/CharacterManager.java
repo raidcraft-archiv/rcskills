@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -35,6 +36,20 @@ public final class CharacterManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        startUserInterfaceRefreshTask();
+    }
+
+    private void startUserInterfaceRefreshTask() {
+
+        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    getHero(player).getUserInterface().refresh();
+                }
+            }
+        }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException {
@@ -52,6 +67,7 @@ public final class CharacterManager implements Listener {
                 heroTable.setPlayer(name);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
+                heroTable.setHealth(20);
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
@@ -118,5 +134,12 @@ public final class CharacterManager implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         getHero(event.getPlayer()).reset();
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        // init once to set the health from the db and so on
+        getHero(event.getPlayer());
     }
 }

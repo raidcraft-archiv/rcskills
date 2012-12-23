@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.TargetedAttack;
-import de.raidcraft.skills.effects.disabling.KnockBack;
+import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
@@ -37,7 +37,7 @@ public class Strike extends AbstractLevelableSkill implements TargetedAttack {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                target.addEffect(hero.getEntity().getLocation(), KnockBack.class);
+                target.addEffect(Strike.this, hero, Stun.class);
             }
         }).run();
     }

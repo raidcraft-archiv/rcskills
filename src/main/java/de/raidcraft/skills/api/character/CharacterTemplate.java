@@ -34,7 +34,7 @@ public interface CharacterTemplate {
 
     public <E extends Effect> E addEffect(Object source, Class<E> eClass) throws CombatException;
 
-    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException;
+    public void removeEffect(Class<? extends Effect> eClass) throws CombatException;
 
     public void removeEffect(Effect effect) throws CombatException;
 
