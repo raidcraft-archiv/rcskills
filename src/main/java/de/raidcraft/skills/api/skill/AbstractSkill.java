@@ -5,6 +5,9 @@ import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -48,6 +51,11 @@ public abstract class AbstractSkill implements Skill {
         }
 
         load(data.getData());
+    }
+
+    protected final Effect addEffect(CharacterTemplate target, Class<? extends Effect> eClass) throws CombatException {
+
+        return target.addSkillEffect(this, eClass);
     }
 
     @Override

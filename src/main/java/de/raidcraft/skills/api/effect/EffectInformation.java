@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.effect;
+package de.raidcraft.skills.api.effect;
 
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;

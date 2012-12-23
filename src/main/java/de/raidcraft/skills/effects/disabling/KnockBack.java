@@ -2,8 +2,8 @@ package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.AbstractEffect;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.AbstractEffect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.effect;
+package de.raidcraft.skills.api.effect;
 
 import org.bukkit.scheduler.BukkitTask;
 

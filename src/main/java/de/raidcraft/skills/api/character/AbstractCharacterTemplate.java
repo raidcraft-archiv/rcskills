@@ -5,7 +5,7 @@ import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
-import de.raidcraft.skills.api.combat.effect.Effect;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -123,17 +123,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final <S> Effect addEffect(S source, Class<? extends Effect> eClass) throws CombatException {
+    public Effect addSkillEffect(Skill source, Class<? extends Effect> eClass) throws CombatException {
 
-        Effect effect;
-        if (source instanceof Skill) {
-            DataMap config = ((Skill) source).getEffectConfiguration();
-            // okay we have a config from the skills now lets create a wicked effect with lots of override
-            effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
-                    .getEffect(source, this, eClass, config);
-        } else {
-            effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
-        }
+        DataMap config = source.getEffectConfiguration();
+        Effect effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, config);
+        addEffect(eClass, effect);
+        return effect;
+    }
+
+    @Override
+    public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException {
+
+        Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         return effect;
     }

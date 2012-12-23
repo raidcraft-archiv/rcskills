@@ -1,8 +1,8 @@
-package de.raidcraft.skills.api.combat.effect.common;
+package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
-import de.raidcraft.skills.api.combat.effect.ExpirableEffect;
+import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;

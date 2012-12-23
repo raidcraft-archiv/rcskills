@@ -4,8 +4,8 @@ import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
-import de.raidcraft.skills.api.combat.effect.PeriodicExpirableEffect;
+import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.persistance.EffectData;
 
 /**

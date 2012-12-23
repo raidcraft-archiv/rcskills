@@ -2,8 +2,9 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
-import de.raidcraft.skills.api.combat.effect.Effect;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -29,7 +30,9 @@ public interface CharacterTemplate {
 
     public void kill();
 
-    public <S> Effect addEffect(S source, Class<? extends Effect> eClass) throws CombatException;
+    public Effect addSkillEffect(Skill source, Class<? extends Effect> eClass) throws CombatException;
+
+    public <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException;
 
     public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException;
 

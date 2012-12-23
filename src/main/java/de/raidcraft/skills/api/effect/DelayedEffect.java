@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.effect;
+package de.raidcraft.skills.api.effect;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
@@ -11,11 +11,11 @@ import org.bukkit.Bukkit;
 /**
  * @author Silthus
  */
-public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
+public abstract class DelayedEffect<S> extends ScheduledEffect<S> {
 
-    protected long duration = 0;
+    protected long delay = 0;
 
-    public ExpirableEffect(S source, CharacterTemplate target, EffectData data) {
+    public DelayedEffect(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         load(data);
@@ -23,34 +23,35 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        this.duration = data.getEffectDuration();
+        // load the delay
+        this.delay = data.getEffectDelay();
         if (getSource() instanceof Hero) {
             Hero hero = (Hero) getSource();
-            this.duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDurationProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+            this.delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
+                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
         }
     }
 
-    public long getDuration() {
+    public long getDelay() {
 
-        return duration;
+        return delay;
     }
 
     @Override
     public void startTask() {
 
-        // lets run a task to remove this effect after the given duration
         setTask(Bukkit.getScheduler().runTaskLater(
                 RaidCraft.getComponent(SkillsPlugin.class),
                 this,
-                getDuration()));
+                getDelay()
+        ));
     }
 
     @Override
     public void apply() throws CombatException {
 
+        // only start the task and dont apply yet
         startTask();
-        super.apply();
     }
 
     @Override
@@ -58,24 +59,18 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
         if (isStarted()) {
             stopTask();
+        } else {
+            // this means the effect was already applied
             super.remove();
         }
-    }
-
-    @Override
-    public void renew() throws CombatException {
-
-        stopTask();
-        startTask();
-        super.renew();
     }
 
     @Override
     public void run() {
 
         try {
-            // this is called when the task is scheduled to be removed
-            remove();
+            super.apply();
+            stopTask();
         } catch (CombatException e) {
             warn(e.getMessage());
         }

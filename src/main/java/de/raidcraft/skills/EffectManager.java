@@ -1,8 +1,8 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.effect.Effect;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -66,7 +66,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <S> Effect getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass) {
+    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass) {
 
         return getEffect(source, target, eClass, null);
     }

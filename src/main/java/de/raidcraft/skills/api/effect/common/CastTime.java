@@ -1,12 +1,12 @@
-package de.raidcraft.skills.api.combat.effect.common;
+package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.SkillAction;
-import de.raidcraft.skills.api.combat.effect.DelayedEffect;
-import de.raidcraft.skills.api.combat.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.DelayedEffect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;

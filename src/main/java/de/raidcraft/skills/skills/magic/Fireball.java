@@ -43,7 +43,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
             public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
                 new MagicalAttack(hero, target, getTotalDamage()).run();
-                target.addEffect(Fireball.this, Burn.class);
+                addEffect(target, Burn.class);
                 // add some exp to the profession and skill
                 getProfession().getLevel().addExp(2);
                 getLevel().addExp(5);
