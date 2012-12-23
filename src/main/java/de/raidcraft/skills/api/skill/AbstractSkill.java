@@ -53,10 +53,16 @@ public abstract class AbstractSkill implements Skill {
         load(data.getData());
     }
 
-    protected final Effect addEffect(CharacterTemplate target, Class<? extends Effect> eClass) throws CombatException {
+    protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
-        return target.addSkillEffect(this, eClass);
+        return target.addEffect(this, getHero(), eClass);
     }
+
+    protected final <E extends Effect> E addEffect(Object source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.addEffect(this, source, eClass);
+    }
+
 
     @Override
     public int getTotalDamage() {

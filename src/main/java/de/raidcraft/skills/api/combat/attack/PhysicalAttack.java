@@ -45,7 +45,7 @@ public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterT
     }
 
     @Override
-    public void run() throws CombatException, InvalidTargetException {
+    public void run() throws CombatException {
 
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
                 getSource().getEntity(),
@@ -57,7 +57,11 @@ public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterT
             getTarget().damage(this);
             // if no exceptions was thrown to this point issue the callback
             if (callback != null && !(callback instanceof RangedCallback)) {
-                callback.run(getTarget());
+                try {
+                    callback.run(getTarget());
+                } catch (InvalidTargetException e) {
+                    throw new CombatException(e.getMessage());
+                }
             }
         }
     }

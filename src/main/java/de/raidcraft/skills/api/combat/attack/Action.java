@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.combat.attack;
 
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
 /**
@@ -10,5 +9,5 @@ public interface Action<T> {
 
     public T getSource();
 
-    public void run() throws CombatException, InvalidTargetException;
+    public void run() throws CombatException;
 }

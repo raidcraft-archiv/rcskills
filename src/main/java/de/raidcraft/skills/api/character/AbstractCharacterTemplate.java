@@ -100,12 +100,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().playEffect(EntityEffect.DEATH);
     }
 
-    private void addEffect(Class<? extends Effect> eClass, Effect effect) throws CombatException {
+    private <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
 
         if (effects.containsKey(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);
             // lets check priorities
-            if (existingEffect.getPriority() > effect.getPriority()) {
+            if (existingEffect.getPriority() < 0) {
+                // prio less then 0 is special and means always replace
+                existingEffect.remove();
+                addEffect(eClass, effect);
+            } else if (existingEffect.getPriority() > effect.getPriority()) {
                 throw new CombatException("Es ist bereits ein stärkerer Effekt aktiv!");
             } else if (existingEffect.getPriority() == effect.getPriority()) {
                 // lets renew the existing effect
@@ -123,18 +127,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Effect addSkillEffect(Skill source, Class<? extends Effect> eClass) throws CombatException {
+    public final <E extends Effect> E addEffect(Skill skill, Object source, Class<E> eClass) throws CombatException {
 
-        DataMap config = source.getEffectConfiguration();
-        Effect effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, config);
+        DataMap config = skill.getEffectConfiguration();
+        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, config);
         addEffect(eClass, effect);
         return effect;
     }
 
     @Override
-    public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException {
+    public final <E extends Effect> E addEffect(Object source, Class<E> eClass) throws CombatException {
 
-        Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         return effect;
     }

@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.attack;
 
 import de.raidcraft.api.InvalidTargetException;
+import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -17,15 +18,22 @@ import org.bukkit.inventory.ItemStack;
 public class SkillAction extends AbstractAction<Hero> {
 
     private final Skill skill;
+    private boolean delayed = false;
 
     public SkillAction(Skill skill) {
 
         super(skill.getHero());
         this.skill = skill;
+        this.delayed = skill.getTotalCastTime() > 0;
+    }
+
+    public Skill getSkill() {
+
+        return skill;
     }
 
     @Override
-    public void run() throws CombatException, InvalidTargetException {
+    public void run() throws CombatException {
 
         if (skill instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
@@ -48,19 +56,28 @@ public class SkillAction extends AbstractAction<Hero> {
         }
 
         // TODO: do some fancy checks for the resistence and stuff
+        if (delayed) {
+            getSource().addEffect(skill, this, CastTime.class);
+            this.delayed = false;
+            return;
+        }
 
         if (skill instanceof Active) {
-            if (skill instanceof TargetedAttack) {
-                ((TargetedAttack) skill).run(getSource(), getSource().getTarget());
-            } else if (skill instanceof AreaAttack) {
-                ((AreaAttack) skill).run(getSource(), getSource().getBlockTarget());
+            try {
+                if (skill instanceof TargetedAttack) {
+                    ((TargetedAttack) skill).run(getSource(), getSource().getTarget());
+                } else if (skill instanceof AreaAttack) {
+                    ((AreaAttack) skill).run(getSource(), getSource().getBlockTarget());
+                }
+            } catch (InvalidTargetException e) {
+                throw new CombatException(e.getMessage());
             }
         } else {
             // simply apply the skill - if it is overriden something will trigger
             skill.apply(getSource());
         }
         // add a combat effect when a skill is beeing casted
-        getSource().addSkillEffect(skill, Combat.class);
+        getSource().addEffect(skill, Combat.class);
         // keep this last or items will be removed before casting
         getSource().getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }

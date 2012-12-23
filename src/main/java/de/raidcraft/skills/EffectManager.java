@@ -14,10 +14,11 @@ import java.util.Map;
 /**
  * @author Silthus
  */
+@SuppressWarnings("unchecked")
 public final class EffectManager extends GenericJarFileManager<Effect> {
 
     private final Map<String, EffectFactory> effectFactories = new HashMap<>();
-    private final Map<Class<? extends Effect>, EffectFactory> effectFactoryClasses = new HashMap<>();
+    private final Map<Class<? extends Effect>, EffectFactory<? extends Effect>> effectFactoryClasses = new HashMap<>();
 
     protected EffectManager(SkillsPlugin plugin) {
 
@@ -36,10 +37,10 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         }
     }
 
-    public void registerClass(Class<? extends Effect> effectClass) throws InvalidEffectException {
+    public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
-            EffectFactory factory = plugin.configure(new EffectFactory(plugin, effectClass, configDir));
+            EffectFactory factory = plugin.configure(new EffectFactory<>(plugin, effectClass, configDir));
             effectFactories.put(factory.getName(), factory);
             effectFactoryClasses.put(effectClass, factory);
         } else {
@@ -47,12 +48,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         }
     }
 
-    public <S> Effect getEffect(S source, CharacterTemplate target, String effect) {
+    public Effect getEffect(Object source, CharacterTemplate target, String effect) {
 
         return getEffect(source, target, effect, null);
     }
 
-    public <S> Effect getEffect(S source, CharacterTemplate target, String effect, ConfigurationSection override) {
+    public Effect getEffect(Object source, CharacterTemplate target, String effect, ConfigurationSection override) {
 
         try {
             effect = effect.toLowerCase();
@@ -66,16 +67,16 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect<S>> eClass) {
+    public <E extends Effect> E getEffect(Object source, CharacterTemplate target, Class<E> eClass) {
 
         return getEffect(source, target, eClass, null);
     }
 
-    public <S> Effect getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass, ConfigurationSection override) {
+    public <E extends Effect> E getEffect(Object source, CharacterTemplate target, Class<E> eClass, ConfigurationSection override) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {
-                return effectFactoryClasses.get(eClass).create(source, target, override);
+                return (E) effectFactoryClasses.get(eClass).create(source, target, override);
             } else {
                 registerClass(eClass);
                 return getEffect(source, target, eClass, override);

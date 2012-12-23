@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.combat.attack;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -21,7 +20,7 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
     }
 
     @Override
-    public void run() throws CombatException, InvalidTargetException {
+    public void run() throws CombatException {
 
         // TODO: check resistance and the fancy stuff
         getTarget().damage(this);

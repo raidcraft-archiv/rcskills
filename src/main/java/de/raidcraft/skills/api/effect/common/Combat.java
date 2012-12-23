@@ -16,9 +16,9 @@ import org.bukkit.ChatColor;
         description = "Is applied when a character enters combat",
         priority = 1.0
 )
-public class Combat extends ExpirableEffect<CharacterTemplate> {
+public class Combat<S> extends ExpirableEffect<S> {
 
-    public Combat(CharacterTemplate source, CharacterTemplate target, EffectData data) {
+    public Combat(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         // the combat effect should always have a default priority of 1.0

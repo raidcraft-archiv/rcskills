@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.AreaAttack;
 import de.raidcraft.skills.effects.damaging.Burn;
+import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Location;
 
@@ -36,7 +37,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
     }
 
     @Override
-    public void run(final Hero hero, final Location target) throws CombatException, InvalidTargetException {
+    public void run(final Hero hero, final Location target) throws CombatException {
 
         new RangedAttack(hero, ProjectileType.FIREBALL, new RangedCallback() {
             @Override
@@ -44,6 +45,7 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
 
                 new MagicalAttack(hero, target, getTotalDamage()).run();
                 addEffect(target, Burn.class);
+                addEffect(hero.getEntity().getLocation(), target, KnockBack.class);
                 // add some exp to the profession and skill
                 getProfession().getLevel().addExp(2);
                 getLevel().addExp(5);

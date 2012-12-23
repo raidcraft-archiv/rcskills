@@ -52,7 +52,7 @@ public final class SkillUtil {
 
     public static String[] formatBody(Skill skill) {
 
-        String[] body = new String[4];
+        String[] body = new String[3];
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.YELLOW).append(skill.getProfession().getProperties().isPrimary() ? "Klassen Level: " : "Beruf Level: ");
         sb.append(ChatColor.AQUA).append(skill.getProfession().getLevel().getLevel());

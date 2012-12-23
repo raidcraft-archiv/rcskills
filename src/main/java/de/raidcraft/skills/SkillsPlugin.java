@@ -69,6 +69,14 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.damageManager = new DamageManager(this);
     }
 
+    private void registerSkills() {
+
+        SkillManager skillManager = getSkillManager();
+        skillManager.registerClass(Fireball.class);
+        skillManager.registerClass(PermissionSkill.class);
+        skillManager.registerClass(Strike.class);
+    }
+
     @Override
     public void disable() {
 
@@ -82,14 +90,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // will override all set variables
         // the garbage collector will take care of the rest
         loadEngine();
-    }
-
-    private void registerSkills() {
-
-        SkillManager skillManager = getSkillManager();
-        skillManager.registerClass(Fireball.class);
-        skillManager.registerClass(PermissionSkill.class);
-        skillManager.registerClass(Strike.class);
     }
 
     @Override

@@ -3,7 +3,6 @@ package de.raidcraft.skills;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
-import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
@@ -61,7 +60,7 @@ public final class CombatManager implements Listener {
         // lets remove that poor character from our cache... may he Rest in Peace :*(
         plugin.getCharacterManager().clearCacheOf(character);
     }
-
+/*
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void combatEnterEvent(EntityDamageByEntityEvent event) {
 
@@ -85,7 +84,7 @@ public final class CombatManager implements Listener {
             }
         }
     }
-
+*/
     @EventHandler(ignoreCancelled = true)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
@@ -111,7 +110,6 @@ public final class CombatManager implements Listener {
                     }
                 }
             }
-
         }
     }
 }

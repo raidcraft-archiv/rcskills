@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.combat.attack;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
@@ -32,7 +31,7 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
     }
 
     @Override
-    public void run() throws CombatException, InvalidTargetException {
+    public void run() throws CombatException {
 
         // TODO: add fancy resitence checks and so on
         Projectile projectile = projectileType.spawn(getSource());

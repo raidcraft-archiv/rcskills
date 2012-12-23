@@ -7,9 +7,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -22,13 +20,13 @@ import java.util.regex.Pattern;
 /**
  * @author Silthus
  */
-public final class EffectFactory extends ConfigurationBase implements EffectData {
+public final class EffectFactory<E extends Effect> extends ConfigurationBase implements EffectData {
 
     private final SkillsPlugin plugin;
-    private final Class<? extends Effect> eClass;
+    private final Class<E> eClass;
     private final EffectInformation information;
 
-    protected EffectFactory(SkillsPlugin plugin, Class<? extends Effect> eClass, File configDir) {
+    protected EffectFactory(SkillsPlugin plugin, Class<E> eClass, File configDir) {
 
         super(plugin, new File(configDir, eClass.getAnnotation(EffectInformation.class).name().toLowerCase() + ".yml"));
         this.plugin = plugin;
@@ -37,21 +35,16 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
     }
 
     @SuppressWarnings("unchecked")
-    public <S> Effect create(S source, CharacterTemplate target) throws UnknownEffectException {
+    public E create(Object source, CharacterTemplate target) throws UnknownEffectException {
 
         // its reflection time yay!
         try {
             for (Constructor<?> constructor : eClass.getDeclaredConstructors()) {
                 if (constructor.getParameterTypes().length == 3) {
-                    if (constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
+                    if (constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
+                            && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
                             && constructor.getParameterTypes()[2].isAssignableFrom(this.getClass())) {
-                        if (constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())) {
-                            return (Effect<S>) constructor.newInstance(source, target, this);
-                        } else if (source instanceof Skill
-                                // lets check if the effect takes a skill or CharacterTemplate
-                                && constructor.getParameterTypes()[0].isAssignableFrom(((Skill) source).getHero().getClass())) {
-                            return (Effect<Hero>) constructor.newInstance(((Skill) source).getHero(), target, this);
-                        }
+                        return (E) constructor.newInstance(source, target, this);
                     }
                 }
             }
@@ -62,7 +55,7 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
         throw new UnknownEffectException("Error when loading effect for class: " + eClass.getCanonicalName());
     }
 
-    public <S> Effect create(S source, CharacterTemplate target, ConfigurationSection override) throws UnknownEffectException {
+    public E create(Object source, CharacterTemplate target, ConfigurationSection override) throws UnknownEffectException {
 
         if (override == null) {
             return create(source, target);
@@ -82,7 +75,7 @@ public final class EffectFactory extends ConfigurationBase implements EffectData
         return create(source, target);
     }
 
-    public Class<? extends Effect> getEffectClass() {
+    public Class<E> getEffectClass() {
 
         return eClass;
     }
