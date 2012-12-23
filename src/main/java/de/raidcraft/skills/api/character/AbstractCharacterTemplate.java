@@ -100,7 +100,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().playEffect(EntityEffect.DEATH);
     }
 
-    private <S> void addEffect(Class<? extends Effect> eClass, Effect<S> effect) throws CombatException {
+    private void addEffect(Class<? extends Effect> eClass, Effect effect) throws CombatException {
 
         if (effects.containsKey(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);
@@ -123,20 +123,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final Effect<Hero> addEffect(Skill skill, Class<? extends Effect> eClass) throws CombatException {
+    public final <S> Effect addEffect(S source, Class<? extends Effect> eClass) throws CombatException {
 
-        DataMap config = skill.getEffectConfiguration();
-        // okay we have a config from the skills now lets create a wicked effect with lots of override
-        Effect<Hero> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
-                .getEffect(skill.getHero(), this, eClass, config);
-        addEffect(eClass, effect);
-        return effect;
-    }
-
-    @Override
-    public final <S> Effect<S> addEffect(S source, Class<? extends Effect<S>> eClass) throws CombatException {
-
-        Effect<S> effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        Effect effect;
+        if (source instanceof Skill) {
+            DataMap config = ((Skill) source).getEffectConfiguration();
+            // okay we have a config from the skills now lets create a wicked effect with lots of override
+            effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager()
+                    .getEffect(source, this, eClass, config);
+        } else {
+            effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
+        }
         addEffect(eClass, effect);
         return effect;
     }

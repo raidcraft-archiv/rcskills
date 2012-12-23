@@ -47,12 +47,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         }
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, String effect) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, String effect) {
 
         return getEffect(source, target, effect, null);
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, String effect, ConfigurationSection override) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, String effect, ConfigurationSection override) {
 
         try {
             effect = effect.toLowerCase();
@@ -66,12 +66,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass) {
 
         return getEffect(source, target, eClass, null);
     }
 
-    public <S> Effect<S> getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass, ConfigurationSection override) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, Class<? extends Effect> eClass, ConfigurationSection override) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {

@@ -17,11 +17,11 @@ import org.bukkit.util.Vector;
         description = "Knocks back the target",
         types = {}
 )
-public class KnockBack extends AbstractEffect<CharacterTemplate> {
+public class KnockBack extends AbstractEffect<Location> {
 
     private double power;
 
-    public KnockBack(CharacterTemplate source, CharacterTemplate target, EffectData data) {
+    public KnockBack(Location source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -35,9 +35,8 @@ public class KnockBack extends AbstractEffect<CharacterTemplate> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        CharacterTemplate attacker = getSource();
         // knocks back the target based on the attackers center position
-        Location knockBackCenter = attacker.getEntity().getLocation();
+        Location knockBackCenter = getSource();
         double xOff = target.getEntity().getLocation().getX() - knockBackCenter.getX();
         double yOff = target.getEntity().getLocation().getY() - knockBackCenter.getY();
         double zOff = target.getEntity().getLocation().getZ() - knockBackCenter.getZ();
