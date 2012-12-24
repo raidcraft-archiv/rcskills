@@ -13,8 +13,6 @@ public interface SkillProperties {
 
     public String getFriendlyName();
 
-    public String getAlias();
-
     public String getDescription();
 
     public String[] getUsage();

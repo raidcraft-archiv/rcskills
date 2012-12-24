@@ -123,12 +123,6 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public String getAlias() {
-
-        return getProperties().getAlias();
-    }
-
-    @Override
     public final String getDescription() {
 
         return description

@@ -22,8 +22,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public String getFriendlyName();
 
-    public String getAlias();
-
     public String getDescription();
 
     public String[] getUsage();

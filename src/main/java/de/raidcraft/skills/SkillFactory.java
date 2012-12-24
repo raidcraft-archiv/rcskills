@@ -30,7 +30,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     private final SkillInformation information;
-    private final String skillName;
+    private String skillName;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
@@ -48,14 +48,19 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
 
     protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
 
+        boolean useAlias = alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
         setOverrideConfig(null);
-        if (alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName)) {
+        if (useAlias) {
             getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
         }
 
         // set the config that overrides the default skill parameters with the profession config
         merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
 
+        if (useAlias) {
+            // set the skillname to the alias
+            this.skillName = alias;
+        }
         // lets load the database
         THeroSkill database = loadDatabase(hero, profession.getProperties().getName());
 
@@ -113,12 +118,6 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
     public String getDescription() {
 
         return getOverride("description", information.desc());
-    }
-
-    @Override
-    public String getAlias() {
-
-        return getOverride("skill", null);
     }
 
     @Override
