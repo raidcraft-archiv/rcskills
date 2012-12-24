@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * @author Silthus
  */
-public final class ProfessionFactory extends ConfigurationBase implements ProfessionProperties {
+public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> implements ProfessionProperties {
 
     private final SkillsPlugin plugin;
     private final String name;
@@ -74,7 +74,7 @@ public final class ProfessionFactory extends ConfigurationBase implements Profes
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
-                skills.add(plugin.getSkillManager().getSkill(hero, this, profession, skill));
+                skills.add(plugin.getSkillManager().getSkill(hero, profession, skill));
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
                 e.printStackTrace();

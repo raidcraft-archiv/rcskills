@@ -41,14 +41,14 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         this.skillName = StringUtil.formatName(information.name());
     }
 
-    protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
+    protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
         setOverrideConfig(null);
         // set the config that overrides the default skill parameters with the profession config
-        merge(factory, "skills." + skillName);
+        merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
 
         // lets load the database
-        THeroSkill database = loadDatabase(hero, factory);
+        THeroSkill database = loadDatabase(hero, profession.getProperties().getName());
 
         // its reflection time yay!
         try {
@@ -63,7 +63,15 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }
 
-    private THeroSkill loadDatabase(Hero hero, ProfessionFactory factory) {
+    protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
+
+        if (plugin.getAliasesConfig().hasSkill(alias, skillName)) {
+            getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
+        }
+        return create(hero, profession);
+    }
+
+    private THeroSkill loadDatabase(Hero hero, String profession) {
 
         THeroSkill database = Ebean.find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
@@ -76,7 +84,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
             database.setProfession(Ebean.find(THeroProfession.class).where()
-                    .eq("name", factory.getName())
+                    .eq("name", profession)
                     .eq("hero_id", hero.getId()).findUnique());
         }
         return database;

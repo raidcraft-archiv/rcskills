@@ -2,6 +2,7 @@ package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -58,14 +59,14 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
         }
     }
 
-    public boolean hasEffect(String name) {
+    public boolean hasEffect(String name, String effectName) {
 
-        return effects.containsKey(name);
+        return effects.containsKey(name) && effects.get(name).getString("effect").equals(effectName);
     }
 
-    public boolean hasSkill(String name) {
+    public boolean hasSkill(String name, String skillName) {
 
-        return skills.containsKey(name);
+        return skills.containsKey(name) && skills.get(name).getString("skill").equals(skillName);
     }
 
     public ConfigurationSection getEffectConfig(String name) {
@@ -76,5 +77,25 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
     public ConfigurationSection getSkillConfig(String name) {
 
         return skills.get(name);
+    }
+
+    public boolean hasSkill(String name) {
+
+        return skills.containsKey(name);
+    }
+
+    public boolean hasEffect(String effect) {
+
+        return effects.containsKey(effect);
+    }
+
+    public String getSkillName(String alias) {
+
+        return StringUtil.formatName(skills.get(alias).getString("skill"));
+    }
+
+    public String getEffectName(String alias) {
+
+        return StringUtil.formatName(effects.get(alias).getString("effect"));
     }
 }

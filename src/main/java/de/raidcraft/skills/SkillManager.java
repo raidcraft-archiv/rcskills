@@ -67,19 +67,28 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         return playerSkills.get(hero.getName()).get(skill);
     }
 
-    protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skillName) throws UnknownSkillException {
+    protected Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
 
         Skill skill;
         skillName = StringUtil.formatName(skillName);
-        if (!skillFactories.containsKey(skillName)) {
+        if (!skillFactories.containsKey(skillName) && !plugin.getAliasesConfig().hasSkill(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
+        }
+        if (skillFactories.containsKey(skillName) && plugin.getAliasesConfig().hasSkill(skillName)) {
+            throw new UnknownSkillException("Der Alias " + skillName + " überschreibt den Skill: " + skillName);
         }
         if (!playerSkills.containsKey(hero.getName())) {
             playerSkills.put(hero.getName(), new HashMap<String, Skill>());
         }
         if (!playerSkills.get(hero.getName()).containsKey(skillName)) {
-            // create a new skill instance for this hero and profession
-            skill = skillFactories.get(skillName).create(hero, profession, factory);
+            // lets check the aliases
+            if (plugin.getAliasesConfig().hasSkill(skillName)) {
+                // invoke the alias method
+                skill = skillFactories.get(plugin.getAliasesConfig().getSkillName(skillName)).create(hero, profession, skillName);
+            } else {
+                // create a new skill instance for this hero and profession
+                skill = skillFactories.get(skillName).create(hero, profession);
+            }
             playerSkills.get(hero.getName()).put(skillName, skill);
             // add skill to our passive list if it is a passive skill
             if (skill instanceof Passive) {
@@ -115,7 +124,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     public boolean hasSkill(String skill) {
 
-        skill = skill.toLowerCase().replace(" ", "-").trim();
+        skill = StringUtil.formatName(skill);
         return skillFactories.containsKey(skill);
     }
 }

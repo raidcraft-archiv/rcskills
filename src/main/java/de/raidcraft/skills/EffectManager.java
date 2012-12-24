@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +99,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public boolean hasEffect(String effect) {
 
-        effect = effect.toLowerCase().replace(" ", "-").trim();
-        return (effectFactories.containsKey(effect));
+        effect = StringUtil.formatName(effect);
+        return effectFactories.containsKey(effect);
     }
 }
