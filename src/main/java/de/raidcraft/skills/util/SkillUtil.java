@@ -20,10 +20,11 @@ public final class SkillUtil {
     public static Skill getSkillFromArgs(Hero hero, String input) throws CommandException {
 
         List<Skill> foundSkills = new ArrayList<>();
-        input = input.toLowerCase().trim();
+        input = de.raidcraft.skills.util.StringUtil.formatName(input);
         for (Skill skill : hero.getSkills()) {
-            if (skill.getName().toLowerCase().contains(input)
-                    || skill.getFriendlyName().toLowerCase().contains(input)) {
+            if (skill.getName().contains(input)
+                    || de.raidcraft.skills.util.StringUtil.formatName(skill.getFriendlyName()).contains(input)
+                    || (skill.getAlias() != null && skill.getAlias().contains(input))) {
                 foundSkills.add(skill);
             }
         }

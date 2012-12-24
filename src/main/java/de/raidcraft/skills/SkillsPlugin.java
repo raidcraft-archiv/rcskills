@@ -46,7 +46,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
-        this.aliasesConfig = configure(new AliasesConfig(this));
         // register our events
         registerEvents(this);
         loadEngine();
@@ -60,12 +59,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private void loadEngine() {
 
+        this.aliasesConfig = configure(new AliasesConfig(this));
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.effectManager = new EffectManager(this);
         // register our inhouse skills
         registerSkills();
-        // registerEffects();
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.characterManager = new CharacterManager(this);

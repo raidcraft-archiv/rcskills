@@ -60,13 +60,11 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase<Ski
             return create(source, target);
         }
         // lets get all the possible override configs and merge them
-        // at this point we need to merge the skill config with the
-        // profession config and then merge this config with the result
+        // at this point the skill config should already be merged with the respective profession config
+        // so we only need to merge the override config of the skill into our override config
         SkillFactory skillConfig = plugin.getSkillManager().getFactory(skill);
-        ProfessionFactory profConfig = plugin.getProfessionManager().getFactory(skill.getProfession());
-        skillConfig.merge(profConfig);
         // and now merge the result with this effet config
-        merge(skillConfig);
+        getOverrideConfig().merge(skillConfig.getOverrideSection("effects." + effectName));
         return create(source, target);
     }
 

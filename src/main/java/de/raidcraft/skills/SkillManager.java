@@ -31,8 +31,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     protected void loadFactories() {
 
         for (Class<? extends Skill> clazz : loadClasses()) {
-            skillFactories.put(clazz.getAnnotation(SkillInformation.class).name().toLowerCase(),
-                    plugin.configure(new SkillFactory(plugin, clazz, configDir)));
+            registerClass(clazz);
         }
     }
 
@@ -45,8 +44,29 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public void registerClass(Class<? extends Skill> skillClass) {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
-            skillFactories.put(skillClass.getAnnotation(SkillInformation.class).name().toLowerCase(),
-                    plugin.configure(new SkillFactory(plugin, skillClass, configDir)));
+            String skillName = StringUtil.formatName(skillClass.getAnnotation(SkillInformation.class).name());
+            // check for duplicate skills
+            if (skillFactories.containsKey(skillName)) {
+                plugin.getLogger().warning("Found duplicate Skill: " + skillName);
+                return;
+            }
+            // load the skill factory for the non alias
+            SkillFactory factory = plugin.configure(new SkillFactory(plugin, skillClass, configDir));
+            skillFactories.put(skillName, factory);
+            // lets put a duplicate of the factory into the map as alias
+            if (plugin.getAliasesConfig().hasSkillAliasFor(skillName)) {
+                String alias = plugin.getAliasesConfig().getSkillAliasFor(skillName);
+                if (alias.equalsIgnoreCase(skillName)) {
+                    plugin.getLogger().warning("There is already a skill for the alias: " + skillName);
+                    return;
+                }
+                if (skillFactories.containsKey(alias)) {
+                    plugin.getLogger().warning("Found duplicate alias: " + alias);
+                    return;
+                }
+                factory = plugin.configure(new SkillFactory(plugin, skillClass, configDir));
+                skillFactories.put(alias, factory);
+            }
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
@@ -71,11 +91,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         Skill skill;
         skillName = StringUtil.formatName(skillName);
-        if (!skillFactories.containsKey(skillName) && !plugin.getAliasesConfig().hasSkill(skillName)) {
+        if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
-        }
-        if (skillFactories.containsKey(skillName) && plugin.getAliasesConfig().hasSkill(skillName)) {
-            throw new UnknownSkillException("Der Alias " + skillName + " überschreibt den Skill: " + skillName);
         }
         if (!playerSkills.containsKey(hero.getName())) {
             playerSkills.put(hero.getName(), new HashMap<String, Skill>());
@@ -84,7 +101,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             // lets check the aliases
             if (plugin.getAliasesConfig().hasSkill(skillName)) {
                 // invoke the alias method
-                skill = skillFactories.get(plugin.getAliasesConfig().getSkillName(skillName)).create(hero, profession, skillName);
+                skill = skillFactories.get(skillName).create(hero, profession, skillName);
             } else {
                 // create a new skill instance for this hero and profession
                 skill = skillFactories.get(skillName).create(hero, profession);

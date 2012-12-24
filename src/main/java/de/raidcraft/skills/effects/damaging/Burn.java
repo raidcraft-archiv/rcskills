@@ -1,12 +1,12 @@
 package de.raidcraft.skills.effects.damaging;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.persistance.EffectData;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -27,7 +27,7 @@ public class Burn<S> extends PeriodicExpirableEffect<S> {
     }
 
     @Override
-    public void load(DataMap data) {
+    public void load(ConfigurationSection data) {
 
         this.fireTicks = data.getInt("fire-ticks", 60);
     }

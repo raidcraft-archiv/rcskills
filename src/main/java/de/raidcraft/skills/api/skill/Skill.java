@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.skills.api.EffectElement;
@@ -8,19 +7,22 @@ import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
 public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
-    public void load(DataMap data);
+    public void load(ConfigurationSection data);
 
     public int getId();
 
     public String getName();
 
     public String getFriendlyName();
+
+    public String getAlias();
 
     public String getDescription();
 
@@ -53,8 +55,6 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public SkillProperties getProperties();
 
     public Profession getProfession();
-
-    public DataMap getEffectConfiguration();
 
     public void save();
 

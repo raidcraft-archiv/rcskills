@@ -1,7 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
@@ -13,6 +11,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +25,6 @@ public abstract class AbstractSkill implements Skill {
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
-    private final DataMap effectConfig;
     private final SkillInformation information;
     protected final THeroSkill database;
     private String description;
@@ -42,13 +40,6 @@ public abstract class AbstractSkill implements Skill {
         this.description = data.getDescription();
         this.profession = profession;
         this.information = data.getInformation();
-
-        if (data instanceof ConfigurationBase) {
-            // lets load properties from the skill config first and then go thru the profession skill config
-            this.effectConfig = ((ConfigurationBase) data).getOverrideDataMap("effects");
-        } else {
-            effectConfig = null;
-        }
 
         load(data.getData());
     }
@@ -105,7 +96,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void load(DataMap data) {
+    public void load(ConfigurationSection data) {
         // implement if needed
     }
 
@@ -122,13 +113,19 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final String getName() {
 
-        return getProperties().getName().toLowerCase();
+        return getProperties().getName();
     }
 
     @Override
     public final String getFriendlyName() {
 
         return getProperties().getFriendlyName();
+    }
+
+    @Override
+    public String getAlias() {
+
+        return getProperties().getAlias();
     }
 
     @Override
@@ -209,12 +206,6 @@ public abstract class AbstractSkill implements Skill {
     public final Profession getProfession() {
 
         return profession;
-    }
-
-    @Override
-    public DataMap getEffectConfiguration() {
-
-        return effectConfig;
     }
 
     @Override

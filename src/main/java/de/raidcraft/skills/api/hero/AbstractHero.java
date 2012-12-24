@@ -120,6 +120,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void changeProfession(Profession profession) {
 
+        // lets save once before we change it all to make sure the levels are safed
+        save();
+        // now lets check what we actually need to change
         if (profession.getProperties().isPrimary()) {
             if (primaryProfession != null) primaryProfession.setActive(false);
             primaryProfession = profession;
@@ -130,18 +133,24 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         profession.setActive(true);
         professions.put(profession.getProperties().getName(), profession);
         setSelectedProfession(profession);
-        // go thru all skills and add/remove them from the skill list
-        for (Skill skill : profession.getSkills()) {
-            skills.put(skill.getName(), skill);
+        // lets clear all skills from the list and add them again for the profession
+        skills.clear();
+        // readd all skills and unlock if needed
+        ArrayList<Skill> skills = new ArrayList<>(profession.getSkills());
+        // and readd the skills from the second prof
+        if (profession.getProperties().isPrimary()) {
+            if (secundaryProfession != null) skills.addAll(secundaryProfession.getSkills());
+        } else {
+            if (primaryProfession != null) skills.addAll(primaryProfession.getSkills());
         }
-        for (Skill skill : new ArrayList<>(skills.values())) {
-            if (!skill.isActive()) {
-                skill.save();
-                skills.remove(skill.getName());
-            } else if (!skill.isUnlocked() && skill.getProfession().getLevel().getLevel() >= skill.getProperties().getRequiredLevel()) {
+        for (Skill skill : skills) {
+            if (!skill.isUnlocked() && skill.getProfession().getLevel().getLevel() >= skill.getProperties().getRequiredLevel()) {
                 skill.unlock();
             }
+            this.skills.put(skill.getName(), skill);
         }
+        // reset the current progress and save
+        reset();
         save();
     }
 

@@ -43,7 +43,16 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
 
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
+        return create(hero, profession, null);
+    }
+
+    protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
+
         setOverrideConfig(null);
+        if (alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName)) {
+            getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
+        }
+
         // set the config that overrides the default skill parameters with the profession config
         merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
 
@@ -61,14 +70,6 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             e.printStackTrace();
         }
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
-    }
-
-    protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
-
-        if (plugin.getAliasesConfig().hasSkill(alias, skillName)) {
-            getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
-        }
-        return create(hero, profession);
     }
 
     private THeroSkill loadDatabase(Hero hero, String profession) {
@@ -112,6 +113,12 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
     public String getDescription() {
 
         return getOverride("description", information.desc());
+    }
+
+    @Override
+    public String getAlias() {
+
+        return getOverride("skill", null);
     }
 
     @Override

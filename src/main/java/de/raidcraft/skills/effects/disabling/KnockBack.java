@@ -1,12 +1,12 @@
 package de.raidcraft.skills.effects.disabling;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
 /**
@@ -27,7 +27,7 @@ public class KnockBack extends AbstractEffect<Location> {
     }
 
     @Override
-    public void load(DataMap data) {
+    public void load(ConfigurationSection data) {
 
         this.power = data.getDouble("power", 0.4);
     }

@@ -1,10 +1,10 @@
 package de.raidcraft.skills.api.effect;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * An effect is something that can be applied to entities around in the world.
@@ -32,7 +32,7 @@ public interface Effect<S> {
 
     public CharacterTemplate getTarget();
 
-    public void load(DataMap data);
+    public void load(ConfigurationSection data);
 
     public void apply() throws CombatException;
 

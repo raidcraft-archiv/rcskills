@@ -67,14 +67,16 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
     public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
-        ConfigurationSection section = getConfigurationSection("skills");
-        if (section == null) section = createSection("skills");
+        ConfigurationSection section = getSafeConfigSection("skills");
         Set<String> keys = section.getKeys(false);
         if (keys == null) return skills;
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
-                skills.add(plugin.getSkillManager().getSkill(hero, profession, skill));
+                Skill profSkill = plugin.getSkillManager().getSkill(hero, profession, skill);
+                if (profSkill.getProfession().equals(profession)) {
+                    skills.add(profSkill);
+                }
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
                 e.printStackTrace();

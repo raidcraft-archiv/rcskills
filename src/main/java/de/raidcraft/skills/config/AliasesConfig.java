@@ -5,7 +5,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,41 +19,41 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
 
     public AliasesConfig(SkillsPlugin plugin) {
 
-        super(plugin, new File(plugin.getDataFolder(), CONFIG_NAME));
+        super(plugin, CONFIG_NAME);
+    }
+
+    @Override
+    public void load() {
+
+        super.load();
         loadEffects();
         loadSkills();
     }
 
     private void loadEffects() {
 
-        ConfigurationSection section = getConfigurationSection("effects");
-        if (section == null) {
-            section = createSection("effects");
-        }
+        ConfigurationSection section = getSafeConfigSection("effects");
         for (String key : section.getKeys(false)) {
             ConfigurationSection override = section.getConfigurationSection(key);
-            String effect = override.getString("effect");
-            if (effect == null || effect.equals("") || !getPlugin().getEffectManager().hasEffect(effect)) {
+            String effect = StringUtil.formatName(override.getString("effect"));
+            if (effect == null || effect.equals("")) {
                 getPlugin().getLogger().warning("effect " + effect + " in alias " + key + " does not exist!");
             } else {
-                effects.put(key, override);
+                effects.put(StringUtil.formatName(key), override);
             }
         }
     }
 
     public void loadSkills() {
 
-        ConfigurationSection section = getConfigurationSection("skills");
-        if (section == null) {
-            section = createSection("skills");
-        }
+        ConfigurationSection section = getSafeConfigSection("skills");
         for (String key : section.getKeys(false)) {
             ConfigurationSection override = section.getConfigurationSection(key);
-            String skill = override.getString("skill");
-            if (skill == null || skill.equals("") || !getPlugin().getSkillManager().hasSkill(skill)) {
+            String skill = StringUtil.formatName(override.getString("skill"));
+            if (skill == null || skill.equals("")) {
                 getPlugin().getLogger().warning("skill " + skill + " in alias " + key + " does not exist!");
             } else {
-                skills.put(key, override);
+                skills.put(StringUtil.formatName(key), override);
             }
         }
     }
@@ -97,5 +96,20 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
     public String getEffectName(String alias) {
 
         return StringUtil.formatName(effects.get(alias).getString("effect"));
+    }
+
+    public boolean hasSkillAliasFor(String skillName) {
+
+        return getSkillAliasFor(skillName) != null;
+    }
+
+    public String getSkillAliasFor(String skillName) {
+
+        for (Map.Entry<String, ConfigurationSection> entry : skills.entrySet()) {
+            if (entry.getValue().getString("skill").equalsIgnoreCase(skillName)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

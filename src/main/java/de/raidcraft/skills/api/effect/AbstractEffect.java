@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.effect;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -8,6 +7,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -27,11 +27,12 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
+
         load(data.getDataMap());
     }
 
     @Override
-    public void load(DataMap data) {
+    public void load(ConfigurationSection data) {
         // override if needed
     }
 

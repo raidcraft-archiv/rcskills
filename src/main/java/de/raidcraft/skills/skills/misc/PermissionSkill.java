@@ -1,7 +1,6 @@
 package de.raidcraft.skills.skills.misc;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -10,6 +9,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collection;
 
@@ -34,7 +34,7 @@ public class PermissionSkill extends AbstractSkill {
 
 
     @Override
-    public void load(DataMap data) {
+    public void load(ConfigurationSection data) {
 
         groups = data.getStringList("groups");
         permissions = data.getStringList("permissions");
