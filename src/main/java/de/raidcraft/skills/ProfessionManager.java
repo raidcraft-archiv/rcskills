@@ -61,4 +61,17 @@ public final class ProfessionManager {
         }
         return professions;
     }
+
+    public ProfessionFactory getFactory(String name) throws UnknownProfessionException {
+
+        if (professionFactories.containsKey(name)) {
+            return professionFactories.get(name);
+        }
+        throw new UnknownProfessionException("Es gibt keinen Beruf/Klasse mit dem Namen: " + name);
+    }
+
+    public ProfessionFactory getFactory(Profession profession) {
+
+        return professionFactories.get(profession.getProperties().getName());
+    }
 }

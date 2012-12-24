@@ -10,6 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.commands.*;
+import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -36,6 +37,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private CharacterManager characterManager;
     private CombatManager combatManager;
     private DamageManager damageManager;
+    private StaminaManager staminaManager;
+    private AliasesConfig aliasesConfig;
     private LocalConfiguration configuration;
 
     @Override
@@ -43,6 +46,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
+        this.aliasesConfig = configure(new AliasesConfig(this));
         // register our events
         registerEvents(this);
         loadEngine();
@@ -67,15 +71,14 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager = new CharacterManager(this);
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
-        new StaminaManager(this);
+        this.staminaManager = new StaminaManager(this);
     }
 
     private void registerSkills() {
 
-        SkillManager skillManager = getSkillManager();
-        skillManager.registerClass(Fireball.class);
-        skillManager.registerClass(PermissionSkill.class);
-        skillManager.registerClass(Strike.class);
+        getSkillManager().registerClass(Fireball.class);
+        getSkillManager().registerClass(PermissionSkill.class);
+        getSkillManager().registerClass(Strike.class);
     }
 
     @Override
@@ -88,6 +91,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void reload() {
 
         this.configuration.reload();
+        this.aliasesConfig.reload();
         // will override all set variables
         // the garbage collector will take care of the rest
         loadEngine();
@@ -131,6 +135,16 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public DamageManager getDamageManager() {
 
         return damageManager;
+    }
+
+    public StaminaManager getStaminaManager() {
+
+        return staminaManager;
+    }
+
+    public AliasesConfig getAliasesConfig() {
+
+        return aliasesConfig;
     }
 
     public LocalConfiguration getCommonConfig() {

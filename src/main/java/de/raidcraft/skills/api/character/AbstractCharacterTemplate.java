@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
@@ -130,8 +129,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final <E extends Effect> E addEffect(Skill skill, Object source, Class<E> eClass) throws CombatException {
 
-        DataMap config = skill.getEffectConfiguration();
-        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, config);
+        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, skill);
         addEffect(eClass, effect);
         return effect;
     }

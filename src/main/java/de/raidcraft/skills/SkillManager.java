@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.Passive;
+import de.raidcraft.skills.util.StringUtil;
 
 import java.util.*;
 
@@ -53,7 +54,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     public Skill getSkill(Hero hero, String skill) throws UnknownSkillException {
 
-        skill = skill.toLowerCase();
+        skill = StringUtil.formatName(skill);
         if (!skillFactories.containsKey(skill)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
         }
@@ -69,7 +70,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     protected Skill getSkill(Hero hero, ProfessionFactory factory, Profession profession, String skillName) throws UnknownSkillException {
 
         Skill skill;
-        skillName = skillName.toLowerCase();
+        skillName = StringUtil.formatName(skillName);
         if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
@@ -90,6 +91,19 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         return skill;
     }
 
+    public SkillFactory getFactory(String name) throws UnknownSkillException {
+
+        if (skillFactories.containsKey(name)) {
+            return skillFactories.get(name);
+        }
+        throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + name);
+    }
+
+    public SkillFactory getFactory(Skill skill) {
+
+        return skillFactories.get(skill.getName());
+    }
+
     public Collection<? extends Skill> getAllSkills() {
 
         Collection<Skill> skills = new ArrayList<>();
@@ -97,5 +111,11 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             skills.addAll(entry.values());
         }
         return skills;
+    }
+
+    public boolean hasSkill(String skill) {
+
+        skill = skill.toLowerCase().replace(" ", "-").trim();
+        return skillFactories.containsKey(skill);
     }
 }

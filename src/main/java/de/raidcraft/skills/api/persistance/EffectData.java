@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.effect.EffectInformation;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -10,7 +10,7 @@ public interface EffectData {
 
     public EffectInformation getInformation();
 
-    public DataMap getDataMap();
+    public ConfigurationSection getDataMap();
 
     public double getEffectPriority();
 

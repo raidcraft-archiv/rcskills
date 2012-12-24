@@ -2,7 +2,6 @@ package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,6 +11,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -25,11 +25,12 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class SkillFactory extends ConfigurationBase implements SkillProperties {
+public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implements SkillProperties {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     private final SkillInformation information;
+    private final String skillName;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
 
@@ -37,16 +38,15 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
         this.plugin = plugin;
         this.sClass = sClass;
         this.information = sClass.getAnnotation(SkillInformation.class);
+        this.skillName = StringUtil.formatName(information.name());
     }
 
     protected Skill create(Hero hero, Profession profession, ProfessionFactory factory) throws UnknownSkillException {
 
+        setOverrideConfig(null);
         // set the config that overrides the default skill parameters with the profession config
-        setOverrideConfig(factory.getConfigurationSection("skills." + information.name().toLowerCase()));
+        merge(factory, "skills." + skillName);
 
-        if (getOverrideConfig() == null) {
-            setOverrideConfig(factory.createSection("skills." + information.name().toLowerCase()));
-        }
         // lets load the database
         THeroSkill database = loadDatabase(hero, factory);
 
@@ -67,7 +67,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
 
         THeroSkill database = Ebean.find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
-                .eq("name", information.name().toLowerCase()).findUnique();
+                .eq("name", skillName).findUnique();
         if (database == null) {
             database = new THeroSkill();
             database.setName(getName());
@@ -85,7 +85,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public String getName() {
 
-        return information.name().toLowerCase();
+        return skillName;
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     @Override
     public String getFriendlyName() {
 
-        return getOverride("name", information.name());
+        return getOverride("name", skillName);
     }
 
     @Override
@@ -136,9 +136,9 @@ public final class SkillFactory extends ConfigurationBase implements SkillProper
     }
 
     @Override
-    public DataMap getData() {
+    public ConfigurationSection getData() {
 
-        return getOverrideDataMap("custom");
+        return getOverrideSection("custom");
     }
 
     @Override

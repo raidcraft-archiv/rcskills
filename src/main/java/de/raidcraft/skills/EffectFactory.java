@@ -1,30 +1,28 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.api.config.DataMap;
-import de.raidcraft.api.config.YamlDataMap;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Silthus
  */
-public final class EffectFactory<E extends Effect> extends ConfigurationBase implements EffectData {
+public final class EffectFactory<E extends Effect> extends ConfigurationBase<SkillsPlugin> implements EffectData {
 
     private final SkillsPlugin plugin;
     private final Class<E> eClass;
     private final EffectInformation information;
+    private final String effectName;
 
     protected EffectFactory(SkillsPlugin plugin, Class<E> eClass, File configDir) {
 
@@ -32,6 +30,7 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase imp
         this.plugin = plugin;
         this.eClass = eClass;
         this.information = eClass.getAnnotation(EffectInformation.class);
+        this.effectName = StringUtil.formatName(information.name());
     }
 
     @SuppressWarnings("unchecked")
@@ -55,23 +54,19 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase imp
         throw new UnknownEffectException("Error when loading effect for class: " + eClass.getCanonicalName());
     }
 
-    public E create(Object source, CharacterTemplate target, ConfigurationSection override) throws UnknownEffectException {
+    public E create(Object source, CharacterTemplate target, Skill skill) throws UnknownEffectException {
 
-        if (override == null) {
+        if (skill == null) {
             return create(source, target);
         }
-
-        String effectName = information.name().toLowerCase().replace(" ", "-").trim();
-        Pattern pattern = Pattern.compile("^.*?" + effectName + "\\.(.*?)$");
-        // we still need to add our base values for this to work
-        YamlDataMap rootMap = new YamlDataMap(this, this);
-        for (Map.Entry<String, Object> entry : override.getValues(true).entrySet()) {
-            Matcher matcher = pattern.matcher(entry.getKey());
-            if (matcher.matches()) {
-                rootMap.set(matcher.group(1), entry.getValue());
-            }
-        }
-        setOverrideConfig(rootMap);
+        // lets get all the possible override configs and merge them
+        // at this point we need to merge the skill config with the
+        // profession config and then merge this config with the result
+        SkillFactory skillConfig = plugin.getSkillManager().getFactory(skill);
+        ProfessionFactory profConfig = plugin.getProfessionManager().getFactory(skill.getProfession());
+        skillConfig.merge(profConfig);
+        // and now merge the result with this effet config
+        merge(skillConfig);
         return create(source, target);
     }
 
@@ -87,12 +82,9 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase imp
     }
 
     @Override
-    public DataMap getDataMap() {
+    public ConfigurationSection getDataMap() {
 
-        if (getOverrideConfig() == null) {
-            return new YamlDataMap(getOverrideSection("custom"), this);
-        }
-        return getOverrideDataMap("custom");
+        return getOverrideSection("custom");
     }
 
     @Override

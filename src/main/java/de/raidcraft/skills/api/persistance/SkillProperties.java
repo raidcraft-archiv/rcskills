@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -19,7 +19,7 @@ public interface SkillProperties {
 
     public ItemStack[] getReagents();
 
-    public DataMap getData();
+    public ConfigurationSection getData();
 
     public SkillInformation getInformation();
 
