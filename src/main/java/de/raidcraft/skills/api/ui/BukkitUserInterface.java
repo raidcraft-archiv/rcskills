@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.ui;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -60,6 +61,18 @@ public class BukkitUserInterface implements UserInterface {
         // see the minecraft wiki for the mechanics: http://www.minecraftwiki.net/wiki/Hunger#Mechanics
         player.setSaturation(20.0F);
         player.setExhaustion(0.0F);
+
+        Profession prof = hero.getSelectedProfession();
+        if (prof != null) {
+            // lets set the experience bar to the level of the player
+            player.setLevel(prof.getLevel().getLevel());
+            // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
+            float exp = ((float) prof.getLevel().getExp()) / ((float)prof.getLevel().getMaxExp());
+            player.setExp(exp);
+        }
+        // lets set the total exp to 0
+        // TODO: change this and implement something for entchantments
+        player.setTotalExperience(0);
 
         // set the manabar if it changed
         long time = System.currentTimeMillis();

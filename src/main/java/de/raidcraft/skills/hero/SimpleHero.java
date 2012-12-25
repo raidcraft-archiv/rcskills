@@ -36,8 +36,22 @@ public class SimpleHero extends AbstractHero {
     }
 
     @Override
-    public void onLevelUp(Level<Hero> level) {
+    public void onExpGain(int exp) {
+        //TODO: implement
+    }
 
-        reset();
+    @Override
+    public void onExpLoss(int exp) {
+        //TODO: implement
+    }
+
+    @Override
+    public void onLevelGain(int level) {
+        //TODO: implement
+    }
+
+    @Override
+    public void onLevelLoss(int level) {
+        //TODO: implement
     }
 }

@@ -69,13 +69,25 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public void onLevelUp(Level<LevelableSkill> level) {
+    public void onExpGain(int exp) {
 
         // override if needed
     }
 
     @Override
-    public void onLevelDown(Level<LevelableSkill> level) {
+    public void onExpLoss(int exp) {
+
+        // override if needed
+    }
+
+    @Override
+    public void onLevelGain(int level) {
+
+        // override if needed
+    }
+
+    @Override
+    public void onLevelLoss(int level) {
 
         // override if needed
     }

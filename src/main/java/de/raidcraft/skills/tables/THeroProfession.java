@@ -20,7 +20,7 @@ public class THeroProfession implements LevelData, Bean {
     @NotNull
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private THero hero;
 
     private int level;
@@ -28,7 +28,7 @@ public class THeroProfession implements LevelData, Bean {
     private boolean active;
     private boolean mastered;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "profession_id")
     private List<THeroSkill> skills;
 

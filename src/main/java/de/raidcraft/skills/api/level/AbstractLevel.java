@@ -75,6 +75,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     public void addExp(int exp) {
 
         this.exp += exp;
+        getLevelObject().onExpGain(exp);
         checkProgress();
     }
 
@@ -82,12 +83,18 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     public void removeExp(int exp) {
 
         this.exp -= exp;
+        getLevelObject().onExpLoss(exp);
         checkProgress();
     }
 
     @Override
     public void setExp(int exp) {
 
+        if (this.exp < exp) {
+            getLevelObject().onExpGain(exp - this.exp);
+        } else {
+            getLevelObject().onExpLoss(this.exp - exp);
+        }
         this.exp = exp;
         checkProgress();
     }
@@ -167,7 +174,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         setExp(getExp() - getMaxExp());
         calculateMaxExp();
         saveLevelProgress();
-        getLevelObject().onLevelUp(this);
+        getLevelObject().onLevelGain(1);
     }
 
     @SuppressWarnings("unchecked")
@@ -176,7 +183,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         this.level--;
         calculateMaxExp();
         saveLevelProgress();
-        levelObject.onLevelDown(this);
+        levelObject.onLevelLoss(1);
     }
 
     @Override

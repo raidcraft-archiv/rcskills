@@ -27,14 +27,12 @@ public class THero implements LevelData, HeroData, Bean {
     private int exp;
     private int level;
     private int health;
-    @OneToOne
-    private THeroProfession selectedProfession;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "hero_id")
     private List<THeroProfession> professions;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
 
@@ -114,20 +112,10 @@ public class THero implements LevelData, HeroData, Bean {
         this.level = level;
     }
 
-    public THeroProfession getSelectedProfession() {
-
-        return selectedProfession;
-    }
-
     @Override
     public LevelData getLevelData() {
 
         return this;
-    }
-
-    public void setSelectedProfession(THeroProfession selectedProfession) {
-
-        this.selectedProfession = selectedProfession;
     }
 
     public List<THeroProfession> getProfessions() {

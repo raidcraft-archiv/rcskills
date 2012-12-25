@@ -9,9 +9,13 @@ public interface Levelable<T extends Levelable> {
 
     public int getMaxLevel();
 
-    public void onLevelUp(Level<T> level);
+    public void onExpGain(int exp);
 
-    public void onLevelDown(Level<T> level);
+    public void onExpLoss(int exp);
+
+    public void onLevelGain(int level);
+
+    public void onLevelLoss(int level);
 
     public void saveLevelProgress(Level<T> level);
 }

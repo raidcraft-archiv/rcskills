@@ -18,6 +18,6 @@ public class ProfessionLevel extends AbstractLevel<Profession> {
     public int getNeededExpForLevel(int level) {
 
         // TODO: add formula to calculate exp
-        return 1;
+        return 5;
     }
 }

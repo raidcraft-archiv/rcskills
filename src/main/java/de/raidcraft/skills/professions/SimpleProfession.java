@@ -33,28 +33,42 @@ public class SimpleProfession extends AbstractProfession {
     }
 
     @Override
-    public void onLevelUp(Level<Profession> level) {
+    public void onExpGain(int exp) {
 
+        getHero().getUserInterface().refresh();
+    }
+
+    @Override
+    public void onExpLoss(int exp) {
+
+        getHero().getUserInterface().refresh();
+    }
+
+    @Override
+    public void onLevelGain(int level) {
+
+        // lets reset all stats to max
+        getHero().reset();
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + level.getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
         // check all skills and if we need to unlock any
         for (Skill skill : getSkills()) {
-            if (!skill.isUnlocked() && skill.getProperties().getRequiredLevel() <= level.getLevel()) {
+            if (!skill.isUnlocked() && skill.getProperties().getRequiredLevel() <= getLevel().getLevel()) {
                 skill.unlock();
             }
         }
     }
 
     @Override
-    public void onLevelDown(Level<Profession> level) {
+    public void onLevelLoss(int level) {
 
         getHero().sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + level.getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
         // check if we need to lock any skills
         for (Skill skill : getSkills()) {
-            if (skill.isUnlocked() && skill.getProperties().getRequiredLevel() > level.getLevel()) {
+            if (skill.isUnlocked() && skill.getProperties().getRequiredLevel() > getLevel().getLevel()) {
                 skill.lock();
             }
         }

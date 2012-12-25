@@ -41,6 +41,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public String getName() {
+
+        return getProperties().getName();
+    }
+
+    @Override
     public ProfessionProperties getProperties() {
 
         return properties;
@@ -95,16 +101,6 @@ public abstract class AbstractProfession implements Profession {
     public List<Skill> getUnlockedSkills() {
 
         return unlockedSkills;
-    }
-
-    @Override
-    public void onLevelUp(Level<Profession> level) {
-        // override if needed
-    }
-
-    @Override
-    public void onLevelDown(Level<Profession> level) {
-        // override if needed
     }
 
     @Override

@@ -16,6 +16,8 @@ public interface Profession extends Parent, Child<Profession>, Levelable<Profess
 
     public int getId();
 
+    public String getName();
+
     public Hero getHero();
 
     public boolean isActive();

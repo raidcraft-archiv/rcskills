@@ -1,7 +1,5 @@
 package de.raidcraft.skills.api.persistance;
 
-import de.raidcraft.skills.tables.THeroProfession;
-
 import java.util.List;
 
 /**
@@ -16,8 +14,6 @@ public interface HeroData {
     public String getName();
 
     public int getMaxLevel();
-
-    public THeroProfession getSelectedProfession();
 
     public List<String> getProfessionNames();
 

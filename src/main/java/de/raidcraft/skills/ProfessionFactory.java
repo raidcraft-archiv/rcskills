@@ -50,6 +50,7 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
         THeroProfession database = Ebean.find(THeroProfession.class).where()
                 .eq("name", name)
                 .eq("hero_id", hero.getId()).findUnique();
+
         if (database == null) {
             // create a new entry
             database = new THeroProfession();
@@ -59,6 +60,7 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
             database.setExp(0);
             database.setMastered(false);
             database.setActive(false);
+            Ebean.save(database);
         }
         return database;
     }
@@ -74,7 +76,7 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
         for (String skill : keys) {
             try {
                 Skill profSkill = plugin.getSkillManager().getSkill(hero, profession, skill);
-                if (profSkill.getProfession().equals(profession)) {
+                if (profSkill.getProfession().getId() == profession.getId()) {
                     skills.add(profSkill);
                 }
             } catch (UnknownSkillException e) {

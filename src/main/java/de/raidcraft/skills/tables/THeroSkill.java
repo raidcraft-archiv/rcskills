@@ -4,10 +4,7 @@ import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
@@ -22,10 +19,10 @@ public class THeroSkill implements LevelData, Bean {
     @NotNull
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private THeroProfession profession;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private THero hero;
 
     private int level;

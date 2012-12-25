@@ -41,6 +41,16 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         this.skillName = StringUtil.formatName(information.name());
     }
 
+    protected Skill create(Hero hero) throws UnknownSkillException {
+
+        return create(hero, null, null);
+    }
+
+    protected Skill create(Hero hero, String alias) throws UnknownSkillException {
+
+        return create(hero, null, alias);
+    }
+
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
         return create(hero, profession, null);
@@ -49,20 +59,23 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
     protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
 
         boolean useAlias = alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
+        boolean useProfession = profession != null;
         setOverrideConfig(null);
         if (useAlias) {
             getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
         }
 
-        // set the config that overrides the default skill parameters with the profession config
-        merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
+        if (useProfession) {
+            // set the config that overrides the default skill parameters with the profession config
+            merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
+        }
 
         if (useAlias) {
             // set the skillname to the alias
             this.skillName = alias;
         }
         // lets load the database
-        THeroSkill database = loadDatabase(hero, profession.getProperties().getName());
+        THeroSkill database = loadDatabase(hero, profession);
 
         // its reflection time yay!
         try {
@@ -77,11 +90,12 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }
 
-    private THeroSkill loadDatabase(Hero hero, String profession) {
+    private THeroSkill loadDatabase(Hero hero, Profession profession) {
 
         THeroSkill database = Ebean.find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
-                .eq("name", skillName).findUnique();
+                .eq("name", skillName)
+                .eq("profession_id", (profession == null ? null : profession.getId())).findUnique();
         if (database == null) {
             database = new THeroSkill();
             database.setName(getName());
@@ -89,9 +103,8 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             database.setExp(0);
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession(Ebean.find(THeroProfession.class).where()
-                    .eq("name", profession)
-                    .eq("hero_id", hero.getId()).findUnique());
+            database.setProfession((profession == null ? null : Ebean.find(THeroProfession.class, profession.getId())));
+            Ebean.save(database);
         }
         return database;
     }

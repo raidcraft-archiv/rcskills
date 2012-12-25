@@ -19,7 +19,6 @@ import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
@@ -29,6 +28,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.*;
 
@@ -36,6 +37,8 @@ import java.util.*;
  * @author Silthus
  */
 public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
+
+    private static final String META_DATA_KEY = "rcs_selected_prof";
 
     private final int id;
     private final RCPlayer player;
@@ -65,9 +68,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadProfessions(data.getProfessionNames());
         loadSkills();
 
-        if (professions.size() > 0 && data.getSelectedProfession() != null) {
-            this.selectedProfession = professions.get(data.getSelectedProfession().getName());
-        }
+        this.selectedProfession = getSelectedProfession();
+
         // add equipment from the primary and secundary profession
         // we need to make sure to add the secundary equipment first because it is overriden by the primary class
         if (getSecundaryProfession() != null) {
@@ -351,8 +353,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void saveLevelProgress(Level<Hero> level) {
 
         THero heroTable = Ebean.find(THero.class, getId());
-        if (selectedProfession != null)
-            heroTable.setSelectedProfession(Ebean.find(THeroProfession.class, selectedProfession.getId()));
         heroTable.setExp(getLevel().getExp());
         heroTable.setLevel(getLevel().getLevel());
         Database.save(heroTable);
@@ -420,10 +420,28 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Profession getSelectedProfession() {
 
         if (selectedProfession == null) {
-            if (getPrimaryProfession() != null) {
-                setSelectedProfession(getPrimaryProfession());
-            } else if (getSecundaryProfession() != null) {
-                setSelectedProfession(getSecundaryProfession());
+            SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+
+            // lets get the selected prof via the metadata values
+            if (professions.size() > 0) {
+                for (MetadataValue value : getEntity().getMetadata(META_DATA_KEY)) {
+                    if (value.getOwningPlugin().equals(plugin)) {
+                        try {
+                            this.selectedProfession = plugin.getProfessionManager().getProfession(this, value.asString());
+                        } catch (UnknownSkillException | UnknownProfessionException e) {
+                            e.printStackTrace();
+                            plugin.getLogger().warning(e.getMessage());
+                        }
+                    }
+                }
+            }
+            // if the metadata returned null choose the primary or secondary prof
+            if (this.selectedProfession == null) {
+                if (getPrimaryProfession() != null) {
+                    setSelectedProfession(getPrimaryProfession());
+                } else if (getSecundaryProfession() != null) {
+                    setSelectedProfession(getSecundaryProfession());
+                }
             }
         }
         return selectedProfession;
@@ -433,7 +451,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setSelectedProfession(Profession profession) {
 
         this.selectedProfession = profession;
-        getUserInterface().refresh();
+        // lets set the metadata
+        SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+        getEntity().setMetadata(META_DATA_KEY, new FixedMetadataValue(plugin, profession.getName()));
+        if (getUserInterface() != null) {
+            getUserInterface().refresh();
+        }
     }
 
     @Override
@@ -446,18 +469,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public int getMaxLevel() {
 
         return maxLevel;
-    }
-
-    @Override
-    public void onLevelUp(Level<Hero> level) {
-
-        reset();
-    }
-
-    @Override
-    public void onLevelDown(Level<Hero> level) {
-
-        // override if needed
     }
 
     @Override

@@ -151,7 +151,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return configuration;
     }
 
-    public static class LocalConfiguration extends ConfigurationBase {
+    public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
 
         @Setting("max-player-level")
         public int max_player_level;
@@ -164,9 +164,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @Setting("profession.change-level-modifier")
         public double profession_change_level_modifier = 1.0;
         @Setting("manabar.update_interval")
-        public long interface_update_interval = 5 * 1000;
+        public long interface_update_interval = 20;
 
-        public LocalConfiguration(BasePlugin plugin) {
+        public LocalConfiguration(SkillsPlugin plugin) {
 
             super(plugin, "config.yml");
         }
