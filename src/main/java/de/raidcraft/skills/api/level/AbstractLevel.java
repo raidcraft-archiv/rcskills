@@ -112,12 +112,11 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
         RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
-            increaseLevel();
-            this.level += level;
-            // set the exp
-            setExp(getExp() - getMaxExp());
-            calculateMaxExp();
-            saveLevelProgress();
+            for (int i = 0; i < level; i++) {
+                if (!hasReachedMaxLevel()) {
+                    increaseLevel();
+                }
+            }
         }
     }
 
@@ -127,10 +126,11 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
         RaidCraft.callEvent(event);
         if (!event.isCancelled()) {
-            decreaseLevel();
-            this.level -= level;
-            calculateMaxExp();
-            saveLevelProgress();
+            for (int i = 0; i < level; i++) {
+                if (1 < getLevel()) {
+                    decreaseLevel();
+                }
+            }
         }
     }
 
@@ -162,12 +162,20 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @SuppressWarnings("unchecked")
     private void increaseLevel() {
 
-        levelObject.onLevelUp(this);
+        this.level++;
+        // set the exp
+        setExp(getExp() - getMaxExp());
+        calculateMaxExp();
+        saveLevelProgress();
+        getLevelObject().onLevelUp(this);
     }
 
     @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
+        this.level--;
+        calculateMaxExp();
+        saveLevelProgress();
         levelObject.onLevelDown(this);
     }
 

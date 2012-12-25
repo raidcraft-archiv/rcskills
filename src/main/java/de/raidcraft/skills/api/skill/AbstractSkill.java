@@ -146,7 +146,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public EffectElement[] getElements() {
+    public final EffectElement[] getElements() {
 
         return information.elements();
     }
@@ -163,6 +163,7 @@ public abstract class AbstractSkill implements Skill {
         return properties;
     }
 
+    @SuppressWarnings("unused")
     protected final void setDescription(String description) {
 
         this.description = description;
@@ -175,13 +176,13 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isUnlocked() {
+    public final boolean isUnlocked() {
 
         return database.isUnlocked();
     }
 
     @Override
-    public void unlock() {
+    public final void unlock() {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(true);
@@ -189,7 +190,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void lock() {
+    public final void lock() {
 
         getHero().sendMessage(ChatColor.RED + "Skill wurde gesperrt: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(false);

@@ -12,18 +12,12 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
-    private Level<LevelableSkill> level;
+    private final Level<LevelableSkill> level;
 
     public AbstractLevelableSkill(Hero hero, SkillProperties data, Profession profession,  THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new SkillLevel(this, database));
-    }
-
-    @Override
-    public final void attachLevel(Level<LevelableSkill> level) {
-
-        this.level = level;
+        this.level = new SkillLevel(this, database);
     }
 
     @Override
@@ -63,7 +57,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public int getTotalCastTime() {
+    public final int getTotalCastTime() {
 
         return (int) (super.getTotalCastTime() + (getProperties().getSkillLevelCastTimeModifier() * getLevel().getLevel()));
     }
@@ -75,13 +69,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public void onLevelDown(Level<LevelableSkill> level) {
+    public void onLevelUp(Level<LevelableSkill> level) {
 
         // override if needed
     }
 
     @Override
-    public void onLevelUp(Level<LevelableSkill> level) {
+    public void onLevelDown(Level<LevelableSkill> level) {
 
         // override if needed
     }

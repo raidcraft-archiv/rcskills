@@ -18,7 +18,6 @@ import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -44,7 +43,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private int health;
     private int mana;
     private int stamina;
-    private Level<Hero> level;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -67,7 +65,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadProfessions(data.getProfessionNames());
         loadSkills();
 
-        attachLevel(new HeroLevel(this, data.getLevelData()));
         if (professions.size() > 0 && data.getSelectedProfession() != null) {
             this.selectedProfession = professions.get(data.getSelectedProfession().getName());
         }
@@ -332,12 +329,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void attachLevel(Level<Hero> level) {
-
-        this.level = level;
-    }
-
-    @Override
     public void save() {
 
         THero database = Ebean.find(THero.class, getId());
@@ -449,12 +440,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Set<Equipment> getEquipment() {
 
         return equipment;
-    }
-
-    @Override
-    public Level<Hero> getLevel() {
-
-        return level;
     }
 
     @Override

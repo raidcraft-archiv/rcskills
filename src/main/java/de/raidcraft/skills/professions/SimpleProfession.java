@@ -18,11 +18,18 @@ import org.bukkit.ChatColor;
  */
 public class SimpleProfession extends AbstractProfession {
 
+    private final Level<Profession> level;
 
     public SimpleProfession(Hero hero, ProfessionProperties properties, THeroProfession database) {
 
         super(hero, properties, database);
-        attachLevel(new ProfessionLevel(this, database));
+        this.level = new ProfessionLevel(this, database);
+    }
+
+    @Override
+    public Level<Profession> getLevel() {
+
+        return level;
     }
 
     @Override

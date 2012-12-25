@@ -25,8 +25,6 @@ public abstract class AbstractProfession implements Profession {
     // parent child collections
     private Set<Profession> strongParents = null;
     private Set<Profession> weakParents = null;
-    // the level object holding our level and stuff
-    private Level<Profession> level;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
@@ -97,18 +95,6 @@ public abstract class AbstractProfession implements Profession {
     public List<Skill> getUnlockedSkills() {
 
         return unlockedSkills;
-    }
-
-    @Override
-    public Level<Profession> getLevel() {
-
-        return level;
-    }
-
-    @Override
-    public void attachLevel(Level<Profession> level) {
-
-        this.level = level;
     }
 
     @Override
