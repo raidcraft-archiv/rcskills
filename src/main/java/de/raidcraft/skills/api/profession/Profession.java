@@ -31,4 +31,6 @@ public interface Profession extends Parent, Child<Profession>, Levelable<Profess
     public Collection<Skill> getSkills();
 
     public Collection<Skill> getUnlockedSkills();
+
+    public void save();
 }

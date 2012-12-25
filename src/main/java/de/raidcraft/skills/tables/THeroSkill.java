@@ -19,10 +19,10 @@ public class THeroSkill implements LevelData, Bean {
     @NotNull
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private THeroProfession profession;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private THero hero;
 
     private int level;

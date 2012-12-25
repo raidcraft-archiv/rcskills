@@ -34,6 +34,11 @@ public abstract class AbstractProfession implements Profession {
         this.database = database;
     }
 
+    public THeroProfession getDatabase() {
+
+        return database;
+    }
+
     @Override
     public int getId() {
 
@@ -89,6 +94,9 @@ public abstract class AbstractProfession implements Profession {
             this.skills = properties.loadSkills(getHero(), this);
             // go thru the skills and sort unlocked
             for (Skill skill : skills) {
+                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > getLevel().getLevel())) {
+                    skill.unlock();
+                }
                 if (skill.isUnlocked()) {
                     unlockedSkills.add(skill);
                 }
@@ -101,6 +109,15 @@ public abstract class AbstractProfession implements Profession {
     public List<Skill> getUnlockedSkills() {
 
         return unlockedSkills;
+    }
+
+    @Override
+    public void save() {
+
+        saveLevelProgress(getLevel());
+        database.setActive(isActive());
+        database.setMastered(isMastered());
+        Database.save(database);
     }
 
     @Override

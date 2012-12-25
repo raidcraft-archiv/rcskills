@@ -28,11 +28,11 @@ public class THero implements LevelData, HeroData, Bean {
     private int level;
     private int health;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "hero_id")
     private List<THeroProfession> professions;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
 

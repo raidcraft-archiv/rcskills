@@ -60,7 +60,6 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
             database.setExp(0);
             database.setMastered(false);
             database.setActive(false);
-            Ebean.save(database);
         }
         return database;
     }

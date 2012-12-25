@@ -5,11 +5,11 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.Material;
@@ -68,6 +68,8 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         if (useProfession) {
             // set the config that overrides the default skill parameters with the profession config
             merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
+            // also save the profession to generate a db entry if none exists
+            profession.save();
         }
 
         if (useAlias) {
@@ -96,6 +98,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
                 .eq("hero_id", hero.getId())
                 .eq("name", skillName)
                 .eq("profession_id", (profession == null ? null : profession.getId())).findUnique();
+
         if (database == null) {
             database = new THeroSkill();
             database.setName(getName());
@@ -103,8 +106,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             database.setExp(0);
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession((profession == null ? null : Ebean.find(THeroProfession.class, profession.getId())));
-            Ebean.save(database);
+            database.setProfession((profession == null ? null : ((AbstractProfession) profession).getDatabase()));
         }
         return database;
     }

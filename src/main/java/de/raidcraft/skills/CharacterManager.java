@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -140,6 +141,13 @@ public final class CharacterManager implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // init once to set the health from the db and so on
-        getHero(event.getPlayer());
+        plugin.getCharacterManager().getHero(event.getPlayer()).getUserInterface().refresh();
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPlayerGainExp(PlayerExpChangeEvent event) {
+
+        // TODO: handle exp for enchanting and stuff
+        event.setAmount(0);
     }
 }

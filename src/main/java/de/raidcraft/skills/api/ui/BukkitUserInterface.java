@@ -67,8 +67,12 @@ public class BukkitUserInterface implements UserInterface {
             // lets set the experience bar to the level of the player
             player.setLevel(prof.getLevel().getLevel());
             // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
-            float exp = ((float) prof.getLevel().getExp()) / ((float)prof.getLevel().getMaxExp());
+            float exp = ((float) prof.getLevel().getExp()) / ((float) prof.getLevel().getMaxExp());
             player.setExp(exp);
+        } else {
+            // lets set the level to 0
+            player.setExp(0F);
+            player.setLevel(0);
         }
         // lets set the total exp to 0
         // TODO: change this and implement something for entchantments

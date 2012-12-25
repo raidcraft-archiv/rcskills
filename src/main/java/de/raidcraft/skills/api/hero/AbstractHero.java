@@ -108,6 +108,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
             for (Skill skill : profession.getSkills()) {
+                // unlock skills if needed
+                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() < skill.getProfession().getLevel().getLevel())) {
+                    skill.unlock();
+                }
                 // only add active skills
                 if (skill.isActive()) {
                     skills.put(skill.getName(), skill);
@@ -143,10 +147,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             if (primaryProfession != null) skills.addAll(primaryProfession.getSkills());
         }
         for (Skill skill : skills) {
-            if (!skill.isUnlocked() && skill.getProfession().getLevel().getLevel() >= skill.getProperties().getRequiredLevel()) {
-                skill.unlock();
+            if (skill.isActive()) {
+                this.skills.put(skill.getName(), skill);
             }
-            this.skills.put(skill.getName(), skill);
         }
         // reset the current progress and save
         reset();
