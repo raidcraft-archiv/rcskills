@@ -36,22 +36,20 @@ public class SimpleHero extends AbstractHero {
     }
 
     @Override
-    public void onExpGain(int exp) {
-        //TODO: implement
-    }
+    public void onExpGain(int exp) {}
 
     @Override
-    public void onExpLoss(int exp) {
-        //TODO: implement
-    }
+    public void onExpLoss(int exp) {}
 
     @Override
     public void onLevelGain(int level) {
-        //TODO: implement
+
+        // TODO: display message of awesomeness
     }
 
     @Override
     public void onLevelLoss(int level) {
-        //TODO: implement
+
+        // TODO: display message of awesomeness
     }
 }

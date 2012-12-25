@@ -18,10 +18,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +43,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
-        // register our events
-        registerEvents(this);
         loadEngine();
         // and commands gogogo
         registerCommands(SkillsCommand.class);
@@ -89,6 +84,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @Override
     public void reload() {
 
+        // TODO: reload seems to be VERY buggy at the moment
+        // - player ui flickers with the stats before the reload
+        // - skills at higher level get unlocked (strike)
+        // - after a reload the player cant cast anything (different bug)
         this.configuration.reload();
         this.aliasesConfig.reload();
         // will override all set variables
@@ -163,8 +162,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
         public double profession_change_level_modifier = 1.0;
-        @Setting("manabar.update_interval")
+        @Setting("interface.updateinterval")
         public long interface_update_interval = 20;
+        @Setting("interface.mana-bar-interval")
+        public long interface_mana_bar_update = 5 * 1000;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
@@ -201,21 +202,5 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public void skill(CommandContext args, CommandSender sender) {
 
         }
-    }
-
-    /*///////////////////////////////////////////////////////////////
-    //          All Bukkit Events are handled here
-    ///////////////////////////////////////////////////////////////*/
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-
-
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerQuit(PlayerQuitEvent event) {
-
-        getCharacterManager().getHero(event.getPlayer()).save();
     }
 }

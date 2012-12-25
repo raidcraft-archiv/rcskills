@@ -80,7 +80,7 @@ public class BukkitUserInterface implements UserInterface {
 
         // set the manabar if it changed
         long time = System.currentTimeMillis();
-        if (time < lastUpdate + RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_update_interval) {
+        if (time < lastUpdate + RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_mana_bar_update) {
             if (hero.getMana() < hero.getMaxMana()) {
                 hero.sendMessage(HeroUtil.createManaBar(hero.getMana(), hero.getMaxMana()));
                 this.lastUpdate = time;

@@ -162,7 +162,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
-        // TODO(BUG): does not seem to be called
         //TODO: add more reset stuff
         setHealth(getMaxHealth());
         setStamina(getMaxStamina());

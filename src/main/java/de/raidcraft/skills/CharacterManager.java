@@ -105,6 +105,7 @@ public final class CharacterManager implements Listener {
     public void clearCacheOf(CharacterTemplate character) {
 
         characters.remove(character.getEntity().getUniqueId());
+        heroes.remove(character.getName());
     }
 
     /*/////////////////////////////////////////////////////////////////////////
@@ -126,7 +127,7 @@ public final class CharacterManager implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         // save the hero first
-        getHero(event.getPlayer()).save();
+        // getHero(event.getPlayer()).save();
         // lets clear the cache for the hero
         heroes.remove(event.getPlayer().getName());
     }

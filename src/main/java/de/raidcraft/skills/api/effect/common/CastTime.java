@@ -55,7 +55,8 @@ public class CastTime extends DelayedEffect<SkillAction> implements Listener {
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+        // nothing we need to do here
     }
 
     @Override
