@@ -6,7 +6,9 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,5 +57,45 @@ public class AdminCommands {
         hero.setDebugging(!hero.isDebugging());
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +
                 (hero.isDebugging() ? "on." : "off."));
+    }
+
+    @Command(
+            aliases = "addskill",
+            desc = "Adds a skill to a player - not the profession!",
+            usage = "<player> <skill>",
+            min = 2
+    )
+    public void addSkill(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            Skill skill = plugin.getSkillManager().getSkill(hero, hero.getVirtualProfession(), args.getString(1));
+            if (skill.isUnlocked()) {
+                throw new CommandException("Der Spieler hat den Skill bereits.");
+            }
+            hero.addSkill(skill);
+        } catch (UnknownPlayerException | UnknownSkillException e) {
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    @Command(
+            aliases = "removeskill",
+            desc = "Removes a virtual skill from the player",
+            usage = "<player> <skill>",
+            min = 2
+    )
+    public void removeSkill(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            Skill skill = plugin.getSkillManager().getSkill(hero, hero.getVirtualProfession(), args.getString(1));
+            if (!skill.isUnlocked()) {
+                throw new CommandException("Der Spieler hat den Skill nicht.");
+            }
+            hero.removeSkill(skill);
+        } catch (UnknownPlayerException | UnknownSkillException e) {
+            throw new CommandException(e.getMessage());
+        }
     }
 }

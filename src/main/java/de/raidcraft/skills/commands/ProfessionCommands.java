@@ -45,7 +45,7 @@ public class ProfessionCommands {
         List<Profession> professions;
         try {
             professions = plugin.getProfessionManager().getAllProfessions(hero);
-        } catch (UnknownSkillException e) {
+        } catch (UnknownSkillException | UnknownProfessionException e) {
             throw new CommandException(e.getMessage());
         }
 

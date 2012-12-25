@@ -188,15 +188,15 @@ public abstract class AbstractSkill implements Skill {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(true);
-        Database.save(database);
+        save();
     }
 
     @Override
     public final void lock() {
 
-        getHero().sendMessage(ChatColor.RED + "Skill wurde gesperrt: " + ChatColor.AQUA + getFriendlyName());
+        getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(false);
-        Database.save(database);
+        save();
     }
 
     @Override
@@ -254,11 +254,19 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public void apply(Hero hero) {
+        // override if needed
+    }
+
+    @Override
+    public void remove(Hero hero) {
+        // override if needed
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
-        return obj instanceof Skill
-                && ((Skill) obj).getName().equalsIgnoreCase(getName())
-                && ((Skill) obj).getHero().equals(getHero());
+        return obj instanceof Skill && ((Skill) obj).getId() == getId();
     }
 
     @Override
@@ -267,15 +275,5 @@ public abstract class AbstractSkill implements Skill {
         if (getProperties().getRequiredLevel() > o.getProperties().getRequiredLevel()) return 1;
         if (getProperties().getRequiredLevel() == o.getProperties().getRequiredLevel()) return 0;
         return -1;
-    }
-
-    @Override
-    public void apply(Hero hero) {
-        // override if needed
-    }
-
-    @Override
-    public void remove(Hero hero) {
-        // override if needed
     }
 }

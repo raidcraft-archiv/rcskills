@@ -10,8 +10,10 @@ import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.professions.SimpleProfession;
+import de.raidcraft.skills.professions.VirtualProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.util.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -23,25 +25,28 @@ import java.util.*;
 public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> implements ProfessionProperties {
 
     private final SkillsPlugin plugin;
-    private final String name;
+    private final String professionName;
 
     protected ProfessionFactory(SkillsPlugin plugin, File file) {
 
         super(plugin, file);
         this.plugin = plugin;
-        this.name = file.getName().toLowerCase().replace("profession", "").replace(".yml", "").trim();
+        this.professionName = StringUtil.formatName(file.getName().replace(".yml", ""));
     }
 
     @Override
     public void load() {
 
         super.load();
-        plugin.getLogger().info("Profession loaded: " + name);
+        plugin.getLogger().info("Profession loaded: " + professionName);
     }
 
     protected Profession create(Hero hero) throws UnknownSkillException {
 
-        return new SimpleProfession(hero, this, loadDatabase(hero, name));
+        if (professionName.equals(ProfessionManager.VIRTUAL_PROFESSION)) {
+            return new VirtualProfession(hero, this, loadDatabase(hero, professionName));
+        }
+        return new SimpleProfession(hero, this, loadDatabase(hero, professionName));
     }
 
     private THeroProfession loadDatabase(Hero hero, String name) {
@@ -68,16 +73,14 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
     public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
-        ConfigurationSection section = getSafeConfigSection("skills");
+        ConfigurationSection section = getOverrideSection("skills");
         Set<String> keys = section.getKeys(false);
         if (keys == null) return skills;
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
                 Skill profSkill = plugin.getSkillManager().getSkill(hero, profession, skill);
-                if (profSkill.getProfession().getId() == profession.getId()) {
-                    skills.add(profSkill);
-                }
+                skills.add(profSkill);
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
                 e.printStackTrace();
@@ -119,19 +122,19 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
     @Override
     public String getName() {
 
-        return name.toLowerCase();
+        return professionName;
     }
 
     @Override
     public String getTag() {
 
-        return getString("tag", name.substring(0, 3).toUpperCase().trim());
+        return getString("tag", professionName.substring(0, 3).toUpperCase().trim());
     }
 
     @Override
     public String getFriendlyName() {
 
-        return getString("name", name);
+        return getString("name", professionName);
     }
 
     @Override

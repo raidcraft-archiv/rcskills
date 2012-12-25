@@ -57,6 +57,8 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public Profession getSecundaryProfession();
 
+    public Profession getVirtualProfession();
+
     public void changeProfession(Profession profession);
 
     public List<Skill> getSkills();
@@ -77,8 +79,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public boolean hasSkill(String id);
 
-    public Skill getSkill(String id) throws UnknownSkillException;
-
     public boolean hasProfession(Profession profession);
 
     public boolean hasProfession(String id);
@@ -90,4 +90,8 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public CharacterTemplate getTarget() throws InvalidTargetException;
 
     public Location getBlockTarget();
+
+    public void addSkill(Skill skill);
+
+    public void removeSkill(Skill skill);
 }

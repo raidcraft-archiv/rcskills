@@ -59,18 +59,16 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
     protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
 
         boolean useAlias = alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
-        boolean useProfession = profession != null;
         setOverrideConfig(null);
         if (useAlias) {
             getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
         }
 
-        if (useProfession) {
-            // set the config that overrides the default skill parameters with the profession config
-            merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
-            // also save the profession to generate a db entry if none exists
-            profession.save();
-        }
+        // TODO(BUG): does not seem to load override config at second pass
+        // set the config that overrides the default skill parameters with the profession config
+        merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
+        // also save the profession to generate a db entry if none exists
+        profession.save();
 
         if (useAlias) {
             // set the skillname to the alias
@@ -97,7 +95,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         THeroSkill database = Ebean.find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
                 .eq("name", skillName)
-                .eq("profession_id", (profession == null ? null : profession.getId())).findUnique();
+                .eq("profession_id", profession.getId()).findUnique();
 
         if (database == null) {
             database = new THeroSkill();
@@ -106,7 +104,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             database.setExp(0);
             database.setLevel(0);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession((profession == null ? null : ((AbstractProfession) profession).getDatabase()));
+            database.setProfession((((AbstractProfession) profession).getDatabase()));
         }
         return database;
     }

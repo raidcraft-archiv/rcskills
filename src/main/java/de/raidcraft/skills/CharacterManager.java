@@ -99,9 +99,16 @@ public final class CharacterManager implements Listener {
         if (!heroes.containsKey(name)) {
             // lets try bukkit to autocomplete the name
             Player player = Bukkit.getPlayer(name);
-            if (player != null) name = player.getName();
+            THero heroTable = null;
+            if (player != null) {
+                name = player.getName();
+            } else {
+                // try to find a match in the db
+                heroTable = Ebean.find(THero.class).where().like("player", "name").findUnique();
+                if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
+            }
 
-            THero heroTable = Ebean.find(THero.class).where().eq("player", name).findUnique();
+            if (heroTable == null) heroTable = Ebean.find(THero.class).where().eq("player", name).findUnique();
             if (heroTable == null) {
                 // create a new entry
                 heroTable = new THero();

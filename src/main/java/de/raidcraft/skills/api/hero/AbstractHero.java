@@ -13,7 +13,6 @@ import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -53,6 +52,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     // primary and secondary professions are the ones defining items and stuff
     private Profession primaryProfession;
     private Profession secundaryProfession;
+    private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
 
@@ -69,6 +69,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadSkills();
 
         this.selectedProfession = getSelectedProfession();
+        this.virtualProfession = getVirtualProfession();
 
         // add equipment from the primary and secundary profession
         // we need to make sure to add the secundary equipment first because it is overriden by the primary class
@@ -86,13 +87,17 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         for (String professionName : professionNames) {
             try {
                 Profession profession = manager.getProfession(this, professionName);
-                professions.put(profession.getProperties().getName(), profession);
-                // set the primary and secundary profession
-                if (profession.isActive()) {
-                    if (profession.getProperties().isPrimary()) {
-                        primaryProfession = profession;
-                    } else {
-                        secundaryProfession = profession;
+                if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
+                    this.virtualProfession = profession;
+                } else {
+                    professions.put(profession.getProperties().getName(), profession);
+                    // set the primary and secundary profession
+                    if (profession.isActive()) {
+                        if (profession.getProperties().isPrimary()) {
+                            primaryProfession = profession;
+                        } else {
+                            secundaryProfession = profession;
+                        }
                     }
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
@@ -104,18 +109,25 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     private void loadSkills() {
 
+        skills.clear();
         // this simple creates a second reference to all skills owned by the player
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
             for (Skill skill : profession.getSkills()) {
                 // unlock skills if needed
-                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() < skill.getProfession().getLevel().getLevel())) {
+                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel())) {
                     skill.unlock();
                 }
                 // only add active skills
                 if (skill.isActive()) {
                     skills.put(skill.getName(), skill);
                 }
+            }
+        }
+        // make sure all virtual skills are added first so they are overriden by gained normal prof skills
+        for (Skill skill : getVirtualProfession().getSkills()) {
+            if (skill.isUnlocked()) {
+                skills.put(skill.getName(), skill);
             }
         }
     }
@@ -134,26 +146,29 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             secundaryProfession = profession;
         }
         profession.setActive(true);
-        professions.put(profession.getProperties().getName(), profession);
+        professions.put(profession.getName(), profession);
         setSelectedProfession(profession);
         // lets clear all skills from the list and add them again for the profession
-        skills.clear();
-        // readd all skills and unlock if needed
-        ArrayList<Skill> skills = new ArrayList<>(profession.getSkills());
-        // and readd the skills from the second prof
-        if (profession.getProperties().isPrimary()) {
-            if (secundaryProfession != null) skills.addAll(secundaryProfession.getSkills());
-        } else {
-            if (primaryProfession != null) skills.addAll(primaryProfession.getSkills());
-        }
-        for (Skill skill : skills) {
-            if (skill.isActive()) {
-                this.skills.put(skill.getName(), skill);
-            }
-        }
+        loadSkills();
         // reset the current progress and save
         reset();
         save();
+    }
+
+    @Override
+    public void addSkill(Skill skill) {
+
+        getVirtualProfession().addSkill(skill);
+        // we need to reload the skills in order for normal profession skills to load
+        loadSkills();
+    }
+
+    @Override
+    public void removeSkill(Skill skill) {
+
+        getVirtualProfession().removeSkill(skill);
+        // we need to reload the skills in order for normal profession skills to load
+        loadSkills();
     }
 
     @Override
@@ -368,9 +383,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void saveSkills() {
 
         for (Skill skill : getSkills()) {
-            if (skill instanceof Levelable) {
-                ((Levelable) skill).getLevel().saveLevelProgress();
-            }
+            skill.save();
+        }
+        for (Skill skill : getVirtualProfession().getSkills()) {
+            skill.save();
         }
     }
 
@@ -395,19 +411,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public boolean hasSkill(Skill skill) {
 
         return hasSkill(skill.getName().toLowerCase());
-    }
-
-    public Skill getSkill(String id) throws UnknownSkillException {
-
-        id = id.toLowerCase();
-        if (!hasSkill(id)) {
-            throw new UnknownSkillException("Der Spieler hat keinen Skill mit der ID: " + id);
-        }
-        if (!skills.containsKey(id)) {
-            Skill skill = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager().getSkill(this, id);
-            skills.put(id, skill);
-        }
-        return skills.get(id);
     }
 
     @Override
@@ -463,6 +466,15 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getUserInterface() != null) {
             getUserInterface().refresh();
         }
+    }
+
+    @Override
+    public Profession getVirtualProfession() {
+
+        if (virtualProfession == null) {
+            return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getVirtualProfession(this);
+        }
+        return virtualProfession;
     }
 
     @Override

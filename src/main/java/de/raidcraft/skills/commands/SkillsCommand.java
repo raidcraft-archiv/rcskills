@@ -52,7 +52,7 @@ public class SkillsCommand {
         } else if (args.hasFlag('s')) {
             skills.addAll(hero.getSelectedProfession().getSkills());
         } else if (args.hasFlag('a')) {
-            skills.addAll(plugin.getSkillManager().getAllSkills());
+            skills.addAll(plugin.getSkillManager().getAllSkills(hero));
         } else {
             // lets get the skills the sender wants to have displayed
             skills.addAll(hero.getSkills());
@@ -70,7 +70,7 @@ public class SkillsCommand {
                 int level = skill.getProperties().getRequiredLevel();
                 Profession profession = skill.getProfession();
 
-                sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
+                sb.append(ChatColor.YELLOW).append("[").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED)
                         .append(profession.getProperties().getTag()).append(":")
                         .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
                         .append(ChatColor.YELLOW).append("] ");

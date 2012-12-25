@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -7,7 +8,9 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.Passive;
+import de.raidcraft.skills.skills.PlayerSkill;
 import de.raidcraft.skills.util.StringUtil;
+import org.bukkit.ChatColor;
 
 import java.util.*;
 
@@ -18,7 +21,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     // holds skills that were already loaded for that player
-    private final Map<String, Map<String, Skill>> playerSkills = new HashMap<>();
+    private final Map<String, Set<PlayerSkill>> playerSkills = new HashMap<>();
     // holds all skills that are triggered every few ticks
     private final List<Skill> passiveSkills = new ArrayList<>();
 
@@ -72,22 +75,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         }
     }
 
-    public Skill getSkill(Hero hero, String skill) throws UnknownSkillException {
-
-        skill = StringUtil.formatName(skill);
-        if (!skillFactories.containsKey(skill)) {
-            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skill);
-        }
-        if (!playerSkills.containsKey(hero.getName())) {
-            playerSkills.put(hero.getName(), new HashMap<String, Skill>());
-        }
-        if (!playerSkills.get(hero.getName()).containsKey(skill)) {
-            throw new UnknownSkillException("Der Spieler " + skill + " hat den Skill " + skill + " nicht.");
-        }
-        return playerSkills.get(hero.getName()).get(skill);
-    }
-
-    protected Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
+    public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
 
         Skill skill;
         skillName = StringUtil.formatName(skillName);
@@ -95,24 +83,25 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
         if (!playerSkills.containsKey(hero.getName())) {
-            playerSkills.put(hero.getName(), new HashMap<String, Skill>());
+            playerSkills.put(hero.getName(), new LinkedHashSet<PlayerSkill>());
         }
-        if (!playerSkills.get(hero.getName()).containsKey(skillName)) {
-            // lets check the aliases
-            if (plugin.getAliasesConfig().hasSkill(skillName)) {
-                // invoke the alias method
-                skill = skillFactories.get(skillName).create(hero, profession, skillName);
-            } else {
-                // create a new skill instance for this hero and profession
-                skill = skillFactories.get(skillName).create(hero, profession);
+        for (PlayerSkill playerSkill : playerSkills.get(hero.getName())) {
+            if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
+                return playerSkill.getSkill();
             }
-            playerSkills.get(hero.getName()).put(skillName, skill);
-            // add skill to our passive list if it is a passive skill
-            if (skill instanceof Passive) {
-                passiveSkills.add(skill);
-            }
+        }
+        // lets check the aliases
+        if (plugin.getAliasesConfig().hasSkill(skillName)) {
+            // invoke the alias method
+            skill = skillFactories.get(skillName).create(hero, profession, skillName);
         } else {
-            skill = playerSkills.get(hero.getName()).get(skillName);
+            // create a new skill instance for this hero and profession
+            skill = skillFactories.get(skillName).create(hero, profession);
+        }
+        playerSkills.get(hero.getName()).add(new PlayerSkill(skill));
+        // add skill to our passive list if it is a passive skill
+        if (skill instanceof Passive) {
+            passiveSkills.add(skill);
         }
         return skill;
     }
@@ -130,11 +119,16 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         return skillFactories.get(skill.getName());
     }
 
-    public Collection<? extends Skill> getAllSkills() {
+    public Collection<? extends Skill> getAllSkills(Hero hero) {
 
-        Collection<Skill> skills = new ArrayList<>();
-        for (Map<String, Skill> entry : playerSkills.values()) {
-            skills.addAll(entry.values());
+        List<Skill> skills = new ArrayList<>();
+        try {
+            for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
+                skills.addAll(profession.getSkills());
+            }
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            hero.sendMessage(ChatColor.RED + e.getMessage());
+            e.printStackTrace();
         }
         return skills;
     }

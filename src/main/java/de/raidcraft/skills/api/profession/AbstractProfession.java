@@ -19,9 +19,8 @@ public abstract class AbstractProfession implements Profession {
     private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
-    private final List<Skill> unlockedSkills = new ArrayList<>();
     protected final THeroProfession database;
-    private List<Skill> skills;
+    protected List<Skill> skills;
     // parent child collections
     private Set<Profession> strongParents = null;
     private Set<Profession> weakParents = null;
@@ -92,15 +91,6 @@ public abstract class AbstractProfession implements Profession {
 
         if (skills == null || skills.size() < 1) {
             this.skills = properties.loadSkills(getHero(), this);
-            // go thru the skills and sort unlocked
-            for (Skill skill : skills) {
-                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > getLevel().getLevel())) {
-                    skill.unlock();
-                }
-                if (skill.isUnlocked()) {
-                    unlockedSkills.add(skill);
-                }
-            }
         }
         return skills;
     }
@@ -108,7 +98,25 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public List<Skill> getUnlockedSkills() {
 
-        return unlockedSkills;
+        List<Skill> skills = new ArrayList<>();
+        for (Skill skill : this.skills) {
+            if (skill.isUnlocked()) {
+                skills.add(skill);
+            }
+        }
+        return skills;
+    }
+
+    @Override
+    public void addSkill(Skill skill) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void removeSkill(Skill skill) {
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -121,7 +129,7 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public final void saveLevelProgress(Level<Profession> level) {
+    public void saveLevelProgress(Level<Profession> level) {
 
         database.setLevel(level.getLevel());
         database.setExp(level.getExp());
@@ -190,7 +198,6 @@ public abstract class AbstractProfession implements Profession {
     public boolean equals(Object obj) {
 
         return obj instanceof Profession
-                && ((Profession) obj).getProperties().getName().equalsIgnoreCase(getProperties().getName())
-                && getHero().equals(((Profession) obj).getHero());
+                && ((Profession) obj).getId() == getId();
     }
 }

@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.util.StringUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
  */
 public final class ProfessionManager {
 
+    public static final String VIRTUAL_PROFESSION = "virtual";
     private final SkillsPlugin plugin;
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
     private final Map<String, Map<String, Profession>> professions = new HashMap<>();
@@ -35,11 +37,26 @@ public final class ProfessionManager {
             ProfessionFactory factory = plugin.configure(new ProfessionFactory(plugin, file));
             professionFactories.put(factory.getName(), factory);
         }
+        // lets create the factory for the virtual profession
+        professionFactories.put(VIRTUAL_PROFESSION, plugin.configure(
+                new ProfessionFactory(plugin, new File(dir, VIRTUAL_PROFESSION + ".yml")))
+        );
+    }
+
+    public Profession getVirtualProfession(Hero hero) {
+
+        try {
+            return getProfession(hero, VIRTUAL_PROFESSION);
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            e.printStackTrace();
+            plugin.getLogger().warning(e.getMessage());
+        }
+        return null;
     }
 
     public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
 
-        profId = profId.toLowerCase();
+        profId = StringUtil.formatName(profId);
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
@@ -53,11 +70,13 @@ public final class ProfessionManager {
         return professions.get(hero.getName()).get(profId);
     }
 
-    public List<Profession> getAllProfessions(Hero hero) throws UnknownSkillException {
+    public List<Profession> getAllProfessions(Hero hero) throws UnknownSkillException, UnknownProfessionException {
 
         List<Profession> professions = new ArrayList<>();
-        for (ProfessionFactory factory : professionFactories.values()) {
-            professions.add(factory.create(hero));
+        for (String prof : professionFactories.keySet()) {
+            if (!prof.equals(VIRTUAL_PROFESSION)) {
+                professions.add(getProfession(hero, prof));
+            }
         }
         return professions;
     }
