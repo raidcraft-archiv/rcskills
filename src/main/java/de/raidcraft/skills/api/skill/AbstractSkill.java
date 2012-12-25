@@ -74,9 +74,11 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalStaminaCost() {
 
-        return (int) (properties.getStaminaCost()
-                        + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
-                        + (properties.getProfLevelStaminaCostModifier() * getProfession().getLevel().getLevel()));
+        int stamina = (int) (properties.getStaminaCost()
+                + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getProfLevelStaminaCostModifier() * getProfession().getLevel().getLevel()));
+        if (stamina > 20) stamina = 20;
+        return stamina;
     }
 
     @Override

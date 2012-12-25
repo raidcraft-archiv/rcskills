@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,7 @@ public class BukkitUserInterface implements UserInterface {
     private final Player player;
     private long lastUpdate = 0L;
     private boolean enabled = true;
+    private boolean maxedMana = false;
 
     public BukkitUserInterface(Hero hero) {
 
@@ -56,7 +58,7 @@ public class BukkitUserInterface implements UserInterface {
         player.setHealth(health);
 
         // set the stamina bar to a percentage of the actual stamina
-        int stamina = (int) Math.ceil((hero.getStamina() / hero.getMaxStamina()) * 20);
+        int stamina = (int) Math.ceil(((double)hero.getStamina() / hero.getMaxStamina()) * 20);
         player.setFoodLevel(stamina);
         // see the minecraft wiki for the mechanics: http://www.minecraftwiki.net/wiki/Hunger#Mechanics
         player.setSaturation(20.0F);
@@ -78,12 +80,14 @@ public class BukkitUserInterface implements UserInterface {
         // TODO: change this and implement something for entchantments
         player.setTotalExperience(0);
 
+        if (hero.getMana() < hero.getMaxMana()) maxedMana = false;
         // set the manabar if it changed
         long time = System.currentTimeMillis();
-        if (time < lastUpdate + RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_mana_bar_update) {
-            if (hero.getMana() < hero.getMaxMana()) {
-                hero.sendMessage(HeroUtil.createManaBar(hero.getMana(), hero.getMaxMana()));
+        if (time - RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_mana_bar_update > lastUpdate) {
+            if (hero.getMana() < hero.getMaxMana() || !maxedMana) {
+                hero.sendMessage(ChatColor.BLUE + "Mana: " + HeroUtil.createManaBar(hero.getMana(), hero.getMaxMana()));
                 this.lastUpdate = time;
+                if (hero.getMana() == hero.getMaxMana()) maxedMana = true;
             }
         }
     }

@@ -152,8 +152,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
 
-        @Setting("max-player-level")
-        public int max_player_level;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
@@ -166,6 +164,16 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long interface_update_interval = 20;
         @Setting("interface.mana-bar-interval")
         public long interface_mana_bar_update = 5 * 1000;
+        @Setting("hero.max-level")
+        public int hero_max_level = 100;
+        @Setting("hero.mana-regain-interval")
+        public long hero_mana_regain_interval = 50;
+        @Setting("hero.mana-regain-amount")
+        public int hero_mana_regain_amount = 5;
+        @Setting("hero.stamina-regain-interval")
+        public long hero_stamina_regain_interval = 25;
+        @Setting("hero.stamina-regain-amount")
+        public int hero_stamina_regain_amount = 1;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 

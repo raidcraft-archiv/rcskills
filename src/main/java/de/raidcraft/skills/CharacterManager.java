@@ -38,6 +38,8 @@ public final class CharacterManager implements Listener {
         this.plugin = plugin;
         plugin.registerEvents(this);
         startUserInterfaceRefreshTask();
+        startHeroManaRegainTask();
+        startHeroStaminaRegainTask();
     }
 
     private void startUserInterfaceRefreshTask() {
@@ -51,6 +53,44 @@ public final class CharacterManager implements Listener {
                 }
             }
         }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
+    }
+
+    private void startHeroManaRegainTask() {
+
+        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Hero hero = getHero(player);
+                    if (hero.getMana() < hero.getMaxMana()) {
+                        // refresh the mana
+                        int mana = hero.getMana() + plugin.getCommonConfig().hero_mana_regain_amount;
+                        if (mana > hero.getMaxMana()) mana = hero.getMaxMana();
+                        hero.setMana(mana);
+                    }
+                }
+            }
+        }, plugin.getCommonConfig().hero_mana_regain_interval, plugin.getCommonConfig().hero_mana_regain_interval);
+    }
+
+    private void startHeroStaminaRegainTask() {
+
+        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Hero hero = getHero(player);
+                    if (hero.getStamina() < hero.getMaxStamina()) {
+                        // refresh the mana
+                        int stamina = hero.getStamina() + plugin.getCommonConfig().hero_stamina_regain_amount;
+                        if (stamina > hero.getMaxStamina()) stamina = hero.getMaxStamina();
+                        hero.setStamina(stamina);
+                    }
+                }
+            }
+        }, plugin.getCommonConfig().hero_stamina_regain_interval, plugin.getCommonConfig().hero_stamina_regain_interval);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException {

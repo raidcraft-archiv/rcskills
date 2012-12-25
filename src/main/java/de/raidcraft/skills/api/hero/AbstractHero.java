@@ -300,6 +300,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setMana(int mana) {
 
         this.mana = mana;
+        debug("set mana to " + mana);
     }
 
     @Override
@@ -321,6 +322,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setStamina(int stamina) {
 
         this.stamina = stamina;
+        debug("set stamina to " + stamina);
     }
 
     @Override
@@ -328,8 +330,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         Profession profession = getPrimaryProfession();
         if (profession == null) return 20;
-        return (int) (profession.getProperties().getBaseStamina() +
-                        profession.getProperties().getBaseStaminaModifier() * profession.getLevel().getLevel());
+        int stamina = (int) (profession.getProperties().getBaseStamina() +
+                profession.getProperties().getBaseStaminaModifier() * profession.getLevel().getLevel());
+        if (stamina > 20) stamina = 20;
+        return stamina;
     }
 
     @Override

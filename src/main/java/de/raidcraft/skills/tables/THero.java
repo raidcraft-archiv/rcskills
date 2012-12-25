@@ -74,7 +74,7 @@ public class THero implements LevelData, HeroData, Bean {
     @Override
     public int getMaxLevel() {
 
-        return RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().max_player_level;
+        return RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().hero_max_level;
     }
 
     public void setId(int id) {

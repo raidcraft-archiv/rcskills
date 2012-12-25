@@ -9,20 +9,20 @@ public class CombatException extends RaidCraftException {
 
     public enum Type {
 
-        CANCELLED("Abgebrochen"),
-        INVALID_TARGET("Ungültiges Ziel"),
-        FAIL("Fehlgeschlagen"),
-        LOW_MANA("Zu wenig Mana"),
-        LOW_HEALTH("Zu wenig Leben"),
-        LOW_LEVEL("Level ist zu niedrig"),
-        LOW_STAMINA("Zu wenig Stamina"),
-        MISSING_REAGENT("Fehlendes Reagenz"),
-        NO_COMBAT("Kann nicht im Kampf verwendet werden"),
-        ON_GLOBAL_COOLDOWN("Globaler Cooldown"),
-        ON_COOLDOWN("Abklingzeit nicht vorbei"),
-        IMMUNE("Ziel ist immun"),
-        PASSIVE("Passive Skills können nicht gezaubert werden"),
-        UNKNOWN("");
+        CANCELLED("Abgebrochen."),
+        INVALID_TARGET("Ungültiges Ziel."),
+        FAIL("Fehlgeschlagen."),
+        LOW_MANA("Zu wenig Mana."),
+        LOW_HEALTH("Zu wenig Leben."),
+        LOW_LEVEL("Dein Level ist zu niedrig."),
+        LOW_STAMINA("Zu wenig Ausdauer."),
+        MISSING_REAGENT("Fehlendes Reagenz."),
+        NO_COMBAT("Kann nicht im Kampf verwendet werden."),
+        ON_GLOBAL_COOLDOWN("Globaler Cooldown."),
+        ON_COOLDOWN("Abklingzeit nicht vorbei."),
+        IMMUNE("Ziel ist immun."),
+        PASSIVE("Passive Skills können nicht gezaubert werden."),
+        UNKNOWN("Unbekannter Fehlschlag.");
 
         private final String message;
 

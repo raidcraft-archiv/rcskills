@@ -78,6 +78,10 @@ public class SkillAction extends AbstractAction<Hero> {
         }
         // add a combat effect when a skill is beeing casted
         getSource().addEffect(skill, Combat.class);
+        // substract the mana, health and stamina cost
+        if (getSkill().getTotalManaCost() > 0) getSource().setMana(getSource().getMana() - getSkill().getTotalManaCost());
+        if (getSkill().getTotalStaminaCost() > 0) getSource().setStamina(getSource().getStamina() - getSkill().getTotalStaminaCost());
+        if (getSkill().getTotalHealthCost() > 0) getSource().damage(getSkill().getTotalHealthCost());
         // keep this last or items will be removed before casting
         getSource().getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
     }
