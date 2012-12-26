@@ -9,15 +9,11 @@ public interface HeroData {
 
     public int getId();
 
-    public int getHealth();
-
     public String getName();
 
     public int getMaxLevel();
 
     public List<String> getProfessionNames();
-
-    public List<String> getSkillNames();
 
     public LevelData getLevelData();
 }

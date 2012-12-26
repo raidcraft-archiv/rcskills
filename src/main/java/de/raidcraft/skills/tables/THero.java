@@ -26,7 +26,6 @@ public class THero implements LevelData, HeroData, Bean {
     private String player;
     private int exp;
     private int level;
-    private int health;
 
     @OneToMany
     @JoinColumn(name = "hero_id")
@@ -43,18 +42,6 @@ public class THero implements LevelData, HeroData, Bean {
         if (getProfessions() != null) {
             for (THeroProfession profession : getProfessions()) {
                 strings.add(profession.getName());
-            }
-        }
-        return strings;
-    }
-
-    @Override
-    public List<String> getSkillNames() {
-
-        ArrayList<String> strings = new ArrayList<>();
-        if (getSkills() != null) {
-            for (THeroSkill skill : getSkills()) {
-                strings.add(skill.getName());
             }
         }
         return strings;
@@ -136,16 +123,5 @@ public class THero implements LevelData, HeroData, Bean {
     public void setSkills(List<THeroSkill> skills) {
 
         this.skills = skills;
-    }
-
-    @Override
-    public int getHealth() {
-
-        return health;
-    }
-
-    public void setHealth(int health) {
-
-        this.health = health;
     }
 }

@@ -19,6 +19,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +38,10 @@ import java.util.*;
  */
 public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
 
-    private static final String META_DATA_KEY = "rcs_selected_prof";
+    private static final String MD_SEL_PROF = "rcs_selected_prof";
+    private static final String MD_MANA = "rcs_mana";
+    private static final String MD_HEALTH = "rcs_health";
+    private static final String MD_STAMINA = "rcs_stamina";
 
     private final int id;
     private final RCPlayer player;
@@ -62,14 +66,16 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
-        setHealth(data.getHealth());
+        setHealth(loadHealth());
+        setMana(loadMana());
+        setStamina(loadStamina());
         this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
         loadSkills();
 
-        this.selectedProfession = getSelectedProfession();
         this.virtualProfession = getVirtualProfession();
+        this.selectedProfession = getSelectedProfession();
 
         // add equipment from the primary and secundary profession
         // we need to make sure to add the secundary equipment first because it is overriden by the primary class
@@ -113,6 +119,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // this simple creates a second reference to all skills owned by the player
         // to allow faster access to the player skills
         for (Profession profession : professions.values()) {
+            if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
+                continue;
+            }
             for (Skill skill : profession.getSkills()) {
                 // unlock skills if needed
                 if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel())) {
@@ -132,6 +141,21 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 skills.put(skill.getName(), skill);
             }
         }
+    }
+
+    private int loadHealth() {
+
+        return HeroUtil.getEntityMetaData(getEntity(), MD_HEALTH, 20);
+    }
+
+    private int loadMana() {
+
+        return HeroUtil.getEntityMetaData(getEntity(), MD_MANA, 100);
+    }
+
+    private int loadStamina() {
+
+        return HeroUtil.getEntityMetaData(getEntity(), MD_STAMINA, 20);
     }
 
     @Override
@@ -285,6 +309,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void setHealth(int health) {
 
+        if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
         if (getUserInterface() != null) {
             getUserInterface().refresh();
@@ -316,6 +341,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void setMana(int mana) {
 
+        if (mana > getMaxMana()) mana = getMaxMana();
         this.mana = mana;
         debug("set mana to " + mana);
     }
@@ -338,6 +364,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void setStamina(int stamina) {
 
+        if (stamina > getMaxStamina()) stamina = getMaxStamina();
         this.stamina = stamina;
         debug("set stamina to " + stamina);
     }
@@ -356,9 +383,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void save() {
 
-        THero database = Ebean.find(THero.class, getId());
-        database.setHealth(getHealth());
-        Ebean.save(database);
+        HeroUtil.setEntityMetaData(getEntity(), MD_HEALTH, getHealth());
+        HeroUtil.setEntityMetaData(getEntity(), MD_MANA, getMana());
+        HeroUtil.setEntityMetaData(getEntity(), MD_STAMINA, getStamina());
         saveProfessions();
         saveLevelProgress(getLevel());
         saveSkills();
@@ -435,7 +462,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
             // lets get the selected prof via the metadata values
             if (professions.size() > 0) {
-                for (MetadataValue value : getEntity().getMetadata(META_DATA_KEY)) {
+                for (MetadataValue value : getEntity().getMetadata(MD_SEL_PROF)) {
                     if (value.getOwningPlugin().equals(plugin)) {
                         try {
                             this.selectedProfession = plugin.getProfessionManager().getProfession(this, value.asString());
@@ -452,6 +479,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                     setSelectedProfession(getPrimaryProfession());
                 } else if (getSecundaryProfession() != null) {
                     setSelectedProfession(getSecundaryProfession());
+                } else {
+                    setSelectedProfession(getVirtualProfession());
                 }
             }
         }
@@ -464,7 +493,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.selectedProfession = profession;
         // lets set the metadata
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
-        getEntity().setMetadata(META_DATA_KEY, new FixedMetadataValue(plugin, profession.getName()));
+        getEntity().setMetadata(MD_SEL_PROF, new FixedMetadataValue(plugin, profession.getName()));
         if (getUserInterface() != null) {
             getUserInterface().refresh();
         }

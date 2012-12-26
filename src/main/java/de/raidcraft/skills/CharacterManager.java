@@ -126,7 +126,6 @@ public final class CharacterManager implements Listener {
                 heroTable.setPlayer(name);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                heroTable.setHealth(20);
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
