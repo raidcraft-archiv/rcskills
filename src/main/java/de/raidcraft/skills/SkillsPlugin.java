@@ -17,6 +17,7 @@ import de.raidcraft.skills.skills.physical.Strike;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
@@ -84,15 +85,20 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @Override
     public void reload() {
 
-        // TODO: reload seems to be VERY buggy at the moment
-        // - player ui flickers with the stats before the reload
-        // - skills at higher level get unlocked (strike)
-        // - after a reload the player cant cast anything (different bug)
+        // cancel all tasks
+        Bukkit.getScheduler().cancelTasks(this);
+        // and reload all of our managers
         this.configuration.reload();
         this.aliasesConfig.reload();
-        // will override all set variables
-        // the garbage collector will take care of the rest
-        loadEngine();
+        this.skillManager.reload();
+        registerSkills();
+        this.effectManager.reload();
+        this.professionManager.reload();
+        this.characterManager.reload();
+        this.combatManager.reload();
+        this.damageManager.reload();
+        this.staminaManager.reload();
+        this.characterManager.startTasks();
     }
 
     @Override

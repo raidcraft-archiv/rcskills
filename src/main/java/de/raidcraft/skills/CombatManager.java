@@ -34,6 +34,11 @@ public final class CombatManager implements Listener {
         plugin.registerEvents(this);
     }
 
+    public void reload() {
+
+        // dont clear the callbacks let them run out quietly to not interrupt combat
+    }
+
     public void queueCallback(final SourcedRangeCallback sourcedCallback) {
 
         // remove the callback from the queue after the configured time

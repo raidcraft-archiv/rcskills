@@ -35,7 +35,9 @@ public final class VirtualProfession extends AbstractProfession {
     public List<Skill> getSkills() {
 
         if (skills == null || skills.size() < 1) {
-            this.skills = getProperties().loadSkills(getHero(), this);
+            // at this point we normally load the skills from the config
+            // but virtual skills can only be given manually
+
             // also load all skills that are only added in the db
             SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
             List<THeroSkill> dbSkills = database.getSkills();

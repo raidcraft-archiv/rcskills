@@ -37,6 +37,17 @@ public final class CharacterManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        startTasks();
+    }
+
+    public void reload() {
+
+        heroes.clear();
+        characters.clear();
+    }
+
+    public void startTasks() {
+
         startUserInterfaceRefreshTask();
         startHeroManaRegainTask();
         startHeroStaminaRegainTask();
@@ -104,7 +115,7 @@ public final class CharacterManager implements Listener {
                 name = player.getName();
             } else {
                 // try to find a match in the db
-                heroTable = Ebean.find(THero.class).where().like("player", "name").findUnique();
+                heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
                 if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
             }
 
@@ -174,7 +185,7 @@ public final class CharacterManager implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         // save the hero first
-        // getHero(event.getPlayer()).save();
+        getHero(event.getPlayer()).save();
         // lets clear the cache for the hero
         heroes.remove(event.getPlayer().getName());
     }

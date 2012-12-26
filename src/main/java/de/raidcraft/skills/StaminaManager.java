@@ -19,6 +19,11 @@ public final class StaminaManager implements Listener {
         plugin.registerEvents(this);
     }
 
+    public void reload() {
+
+        // nothing to do here
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onRegainHealth(EntityRegainHealthEvent event) {
 

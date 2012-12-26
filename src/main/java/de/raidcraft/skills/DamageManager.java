@@ -45,6 +45,12 @@ public final class DamageManager implements Listener {
         plugin.registerEvents(this);
     }
 
+    public void reload() {
+
+        config.reload();
+        loadConfig();
+    }
+
     private void loadConfig() {
 
         this.creatureHealth = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-health"), EntityType.class, 20);

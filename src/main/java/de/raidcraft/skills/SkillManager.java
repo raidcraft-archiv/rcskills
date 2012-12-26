@@ -30,6 +30,14 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         super(Skill.class, plugin);
     }
 
+    public void reload() {
+
+        skillFactories.clear();
+        playerSkills.clear();
+        passiveSkills.clear();
+        loadFactories();
+    }
+
     @Override
     protected void loadFactories() {
 

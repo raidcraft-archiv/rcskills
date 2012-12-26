@@ -73,7 +73,7 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
     public List<Skill> loadSkills(Hero hero, Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
-        ConfigurationSection section = getOverrideSection("skills");
+        ConfigurationSection section = getSafeConfigSection("skills");
         Set<String> keys = section.getKeys(false);
         if (keys == null) return skills;
         // now load the skills - when a skill does not exist in the database we will insert it

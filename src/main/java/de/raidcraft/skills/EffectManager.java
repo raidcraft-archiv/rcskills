@@ -26,6 +26,13 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         super(Effect.class, plugin);
     }
 
+    public void reload() {
+
+        effectFactories.clear();
+        effectFactoryClasses.clear();
+        loadFactories();
+    }
+
     @Override
     protected void loadFactories() {
 

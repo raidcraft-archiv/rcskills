@@ -28,6 +28,13 @@ public final class ProfessionManager {
         loadProfessions();
     }
 
+    public void reload() {
+
+        professionFactories.clear();
+        professions.clear();
+        loadProfessions();
+    }
+
     private void loadProfessions() {
 
         File dir = new File(plugin.getDataFolder(), "/professions/");

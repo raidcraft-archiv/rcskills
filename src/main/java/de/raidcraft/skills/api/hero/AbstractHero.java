@@ -117,6 +117,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 // unlock skills if needed
                 if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel())) {
                     skill.unlock();
+                } else if (skill.isUnlocked() && skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel()) {
+                    skill.lock();
                 }
                 // only add active skills
                 if (skill.isActive()) {

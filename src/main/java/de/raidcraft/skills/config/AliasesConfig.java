@@ -49,7 +49,7 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
         ConfigurationSection section = getSafeConfigSection("skills");
         for (String key : section.getKeys(false)) {
             ConfigurationSection override = section.getConfigurationSection(key);
-            String skill = StringUtil.formatName(override.getString("skill"));
+            String skill = override.getString("skill");
             if (skill == null || skill.equals("")) {
                 getPlugin().getLogger().warning("skill " + skill + " in alias " + key + " does not exist!");
             } else {

@@ -46,11 +46,6 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         return create(hero, null, null);
     }
 
-    protected Skill create(Hero hero, String alias) throws UnknownSkillException {
-
-        return create(hero, null, alias);
-    }
-
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
         return create(hero, profession, null);
@@ -66,7 +61,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
 
         // TODO(BUG): does not seem to load override config at second pass
         // set the config that overrides the default skill parameters with the profession config
-        merge(plugin.getProfessionManager().getFactory(profession), "skills." + skillName);
+        merge(plugin.getProfessionManager().getFactory(profession), "skills." + (useAlias ? alias : skillName));
         // also save the profession to generate a db entry if none exists
         profession.save();
 

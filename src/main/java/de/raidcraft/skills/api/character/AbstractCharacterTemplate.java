@@ -151,7 +151,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void removeEffect(Class<? extends Effect> eClass) throws CombatException {
+    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException {
 
         Effect<?> effect = effects.remove(eClass);
         if (effect != null) {

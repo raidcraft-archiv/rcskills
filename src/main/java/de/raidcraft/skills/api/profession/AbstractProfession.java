@@ -20,7 +20,7 @@ public abstract class AbstractProfession implements Profession {
     private final ProfessionProperties properties;
     private final Hero hero;
     protected final THeroProfession database;
-    protected List<Skill> skills;
+    protected List<Skill> skills = new ArrayList<>();
     // parent child collections
     private Set<Profession> strongParents = null;
     private Set<Profession> weakParents = null;
