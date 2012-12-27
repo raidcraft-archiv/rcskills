@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.EffectConfig;
-import de.raidcraft.skills.util.StringUtil;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +31,7 @@ public final class EffectFactory<E extends Effect> {
         this.plugin = plugin;
         this.eClass = eClass;
         this.information = eClass.getAnnotation(EffectInformation.class);
-        this.effectName = StringUtil.formatName(information.name());
+        this.effectName = StringUtils.formatName(information.name());
         this.defaultConfig = plugin.configure(new EffectConfig(this));
     }
 

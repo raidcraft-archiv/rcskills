@@ -46,7 +46,7 @@ public final class SkillFactory {
 
         ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
         SkillConfig config;
-        if (!skillConfigs.containsKey(factory.getName())) {
+        if (!skillConfigs.containsKey(factory.getProfessionName())) {
             config = plugin.configure(new SkillConfig(this));
 
             // we need to set all the overrides to null because they are used multiple times
@@ -54,11 +54,11 @@ public final class SkillFactory {
                 config.getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
             }
             // set the config that overrides the default skill parameters with the profession config
-            config.merge(factory, "skills." + (useAlias() ? alias : skillName));
+            config.merge(factory.getConfig(), "skills." + (useAlias() ? alias : skillName));
 
-            skillConfigs.put(factory.getName(), config);
+            skillConfigs.put(factory.getProfessionName(), config);
         } else {
-            config = skillConfigs.get(factory.getName());
+            config = skillConfigs.get(factory.getProfessionName());
         }
 
         // also save the profession to generate a db entry if none exists

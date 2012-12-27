@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -9,8 +8,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.Passive;
 import de.raidcraft.skills.skills.PlayerSkill;
-import de.raidcraft.skills.util.StringUtil;
-import org.bukkit.ChatColor;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.util.*;
 
@@ -55,7 +53,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public void registerClass(Class<? extends Skill> skillClass) {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
-            String skillName = StringUtil.formatName(skillClass.getAnnotation(SkillInformation.class).name());
+            String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
             // check for duplicate skills
             if (skillFactories.containsKey(skillName)) {
                 plugin.getLogger().warning("Found duplicate Skill: " + skillName);
@@ -86,7 +84,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
 
         Skill skill;
-        skillName = StringUtil.formatName(skillName);
+        skillName = StringUtils.formatName(skillName);
         if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
@@ -124,20 +122,15 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public Collection<? extends Skill> getAllSkills(Hero hero) {
 
         List<Skill> skills = new ArrayList<>();
-        try {
-            for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
-                skills.addAll(profession.getSkills());
-            }
-        } catch (UnknownSkillException | UnknownProfessionException e) {
-            hero.sendMessage(ChatColor.RED + e.getMessage());
-            e.printStackTrace();
+        for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
+            skills.addAll(profession.getSkills());
         }
         return skills;
     }
 
     public boolean hasSkill(String skill) {
 
-        skill = StringUtil.formatName(skill);
+        skill = StringUtils.formatName(skill);
         return skillFactories.containsKey(skill);
     }
 }

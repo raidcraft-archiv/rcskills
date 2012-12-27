@@ -1,52 +1,37 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.persistance.Equipment;
-import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.professions.SimpleProfession;
 import de.raidcraft.skills.professions.VirtualProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
-import de.raidcraft.skills.util.StringUtil;
-import org.bukkit.configuration.ConfigurationSection;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * @author Silthus
  */
-public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> implements ProfessionProperties {
+public final class ProfessionFactory {
 
     private final SkillsPlugin plugin;
     private final String professionName;
+    private final ProfessionConfig config;
 
-    protected ProfessionFactory(SkillsPlugin plugin, File file) {
+    protected ProfessionFactory(SkillsPlugin plugin, String professionName) {
 
-        super(plugin, file);
         this.plugin = plugin;
-        this.professionName = StringUtil.formatName(file.getName().replace(".yml", ""));
-    }
-
-    @Override
-    public void load() {
-
-        super.load();
-        plugin.getLogger().info("Profession loaded: " + professionName);
+        this.professionName = professionName;
+        this.config = plugin.configure(new ProfessionConfig(this));
     }
 
     protected Profession create(Hero hero) throws UnknownSkillException {
 
         if (professionName.equals(ProfessionManager.VIRTUAL_PROFESSION)) {
-            return new VirtualProfession(hero, this, loadDatabase(hero, professionName));
+            return new VirtualProfession(hero, config, loadDatabase(hero, professionName));
         }
-        return new SimpleProfession(hero, this, loadDatabase(hero, professionName));
+        return new SimpleProfession(hero, config, loadDatabase(hero, professionName));
     }
 
     private THeroProfession loadDatabase(Hero hero, String name) {
@@ -59,7 +44,7 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
         if (database == null) {
             // create a new entry
             database = new THeroProfession();
-            database.setName(getName());
+            database.setName(getProfessionName());
             database.setHero(Ebean.find(THero.class, hero.getId()));
             database.setLevel(1);
             database.setExp(0);
@@ -69,139 +54,18 @@ public final class ProfessionFactory extends ConfigurationBase<SkillsPlugin> imp
         return database;
     }
 
-    @Override
-    public List<Skill> loadSkills(Hero hero, Profession profession) {
+    public SkillsPlugin getPlugin() {
 
-        List<Skill> skills = new ArrayList<>();
-        ConfigurationSection section = getSafeConfigSection("skills");
-        Set<String> keys = section.getKeys(false);
-        if (keys == null) return skills;
-        // now load the skills - when a skill does not exist in the database we will insert it
-        for (String skill : keys) {
-            try {
-                Skill profSkill = plugin.getSkillManager().getSkill(hero, profession, skill);
-                skills.add(profSkill);
-            } catch (UnknownSkillException e) {
-                plugin.getLogger().warning(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return skills;
+        return plugin;
     }
 
-    @Override
-    public Set<Profession> loadStrongParents(Hero hero, Profession profession) {
-
-        Set<Profession> parents = new LinkedHashSet<>();
-        for (String name : getStringList("strong-parents")) {
-            try {
-                parents.add(plugin.getProfessionManager().getProfession(hero, name));
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                plugin.getLogger().warning(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return parents;
-    }
-
-    @Override
-    public Set<Profession> loadWeakParents(Hero hero, Profession profession) {
-
-        Set<Profession> parents = new LinkedHashSet<>();
-        for (String name : getStringList("weak-parents")) {
-            try {
-                parents.add(plugin.getProfessionManager().getProfession(hero, name));
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                plugin.getLogger().warning(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return parents;
-    }
-
-    @Override
-    public String getName() {
+    public String getProfessionName() {
 
         return professionName;
     }
 
-    @Override
-    public String getTag() {
+    public ProfessionConfig getConfig() {
 
-        return getString("tag", professionName.substring(0, 3).toUpperCase().trim());
-    }
-
-    @Override
-    public String getFriendlyName() {
-
-        return getString("name", professionName);
-    }
-
-    @Override
-    public String getDescription() {
-
-        return getString("description", "Default description");
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        return getInt("max-level", 60);
-    }
-
-    @Override
-    public int getBaseHealth() {
-
-        return getInt("health.base", 20);
-    }
-
-    @Override
-    public double getBaseHealthModifier() {
-
-        return getDouble("health.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getBaseMana() {
-
-        return getInt("mana.base", 100);
-    }
-
-    @Override
-    public double getBaseManaModifier() {
-
-        return getDouble("mana.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getBaseStamina() {
-
-        return getInt("stamina.base", 20);
-    }
-
-    @Override
-    public double getBaseStaminaModifier() {
-
-        return getDouble("stamina.level-modifier", 0.0);
-    }
-
-    @Override
-    public boolean isPrimary() {
-
-        return getBoolean("primary", false);
-    }
-
-    @Override
-    public Set<Equipment> getEquipment() {
-
-        Set<Equipment> equipment = new HashSet<>();
-        ConfigurationSection section = getConfigurationSection("equipment");
-        if (section == null) section = createSection("equipment");
-        Set<String> keys = section.getKeys(false);
-        if (keys == null) return equipment;
-        for (String key : keys) {
-            equipment.add(new Equipment(section.getConfigurationSection(key)));
-        }
-        return equipment;
+        return config;
     }
 }

@@ -179,10 +179,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long hero_stamina_regain_interval = 25;
         @Setting("hero.stamina-regain-amount")
         public int hero_stamina_regain_amount = 1;
-        @Setting("paths.skill-config")
+        @Setting("paths.skill-configs")
         public String skill_config_path = "skill-configs/";
-        @Setting("paths.effect-config")
+        @Setting("paths.effect-configs")
         public String effect_config_path = "effect-configs/";
+        @Setting("paths.profession-configs")
+        public String profession_config_path = "professions/";
 
         public LocalConfiguration(SkillsPlugin plugin) {
 

@@ -2,7 +2,7 @@ package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.util.StringUtil;
+import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
             if (skill == null || skill.equals("")) {
                 getPlugin().getLogger().warning("skill " + skill + " in alias " + key + " does not exist!");
             } else {
-                skills.put(StringUtil.formatName(key), override);
+                skills.put(StringUtils.formatName(key), override);
             }
         }
     }
@@ -59,7 +59,7 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
 
     public String getSkillName(String alias) {
 
-        return StringUtil.formatName(skills.get(alias).getString("skill"));
+        return StringUtils.formatName(skills.get(alias).getString("skill"));
     }
 
     public boolean hasSkillAliasFor(String skillName) {

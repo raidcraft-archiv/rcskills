@@ -4,7 +4,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.util.StringUtil;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,17 +37,18 @@ public final class ProfessionManager {
 
     private void loadProfessions() {
 
-        File dir = new File(plugin.getDataFolder(), "/professions/");
+        File dir = new File(plugin.getDataFolder(), plugin.getCommonConfig().profession_config_path);
         dir.mkdirs();
         // go thru all files in the directory and register them as professions
-        for (File file : dir.listFiles()) {
-            ProfessionFactory factory = plugin.configure(new ProfessionFactory(plugin, file));
-            professionFactories.put(factory.getName(), factory);
+        for (String file : dir.list()) {
+            if (file.contains(VIRTUAL_PROFESSION) || !file.endsWith(".yml")) {
+                continue;
+            }
+            ProfessionFactory factory = new ProfessionFactory(plugin, file.replace(".yml", ""));
+            professionFactories.put(factory.getProfessionName(), factory);
         }
         // lets create the factory for the virtual profession
-        professionFactories.put(VIRTUAL_PROFESSION, plugin.configure(
-                new ProfessionFactory(plugin, new File(dir, VIRTUAL_PROFESSION + ".yml")))
-        );
+        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, VIRTUAL_PROFESSION));
     }
 
     public Profession getVirtualProfession(Hero hero) {
@@ -63,7 +64,7 @@ public final class ProfessionManager {
 
     public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
 
-        profId = StringUtil.formatName(profId);
+        profId = StringUtils.formatName(profId);
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
@@ -77,12 +78,17 @@ public final class ProfessionManager {
         return professions.get(hero.getName()).get(profId);
     }
 
-    public List<Profession> getAllProfessions(Hero hero) throws UnknownSkillException, UnknownProfessionException {
+    public List<Profession> getAllProfessions(Hero hero) {
 
         List<Profession> professions = new ArrayList<>();
         for (String prof : professionFactories.keySet()) {
             if (!prof.equals(VIRTUAL_PROFESSION)) {
-                professions.add(getProfession(hero, prof));
+                try {
+                    professions.add(getProfession(hero, prof));
+                } catch (UnknownSkillException | UnknownProfessionException e) {
+                    plugin.getLogger().warning(e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
         return professions;

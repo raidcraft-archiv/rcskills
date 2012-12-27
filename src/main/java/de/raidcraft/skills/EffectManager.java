@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.util.StringUtil;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +106,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public boolean hasEffect(String effect) {
 
-        effect = StringUtil.formatName(effect);
+        effect = StringUtils.formatName(effect);
         return effectFactories.containsKey(effect);
     }
 }

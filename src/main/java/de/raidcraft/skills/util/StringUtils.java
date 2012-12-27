@@ -3,7 +3,7 @@ package de.raidcraft.skills.util;
 /**
  * @author Silthus
  */
-public final class StringUtil {
+public final class StringUtils {
 
     public static String formatName(String name) {
 

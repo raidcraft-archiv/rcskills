@@ -6,10 +6,9 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -43,11 +42,7 @@ public class ProfessionCommands {
 
         final Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         List<Profession> professions;
-        try {
-            professions = plugin.getProfessionManager().getAllProfessions(hero);
-        } catch (UnknownSkillException | UnknownProfessionException e) {
-            throw new CommandException(e.getMessage());
-        }
+        professions = plugin.getProfessionManager().getAllProfessions(hero);
 
         if (professions == null || professions.size() < 1) {
             throw new CommandException("Da gibts noch nix zu sehen!");
@@ -91,7 +86,7 @@ public class ProfessionCommands {
 
         try {
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-            Profession profession = plugin.getProfessionManager().getProfession(hero, args.getString(0));
+            Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
             boolean primary = profession.getProperties().isPrimary();
 
             if (primary && hero.getPrimaryProfession() != null && hero.getPrimaryProfession().equals(profession)) {
@@ -119,12 +114,13 @@ public class ProfessionCommands {
                 sender.sendMessage(ChatColor.RED +
                         "Das wechseln deiner " +
                         (primary ? "deiner " + ChatColor.AQUA + "Klasse" : "deines " + ChatColor.AQUA + "Berufs") + ChatColor.RED +
+                        " zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
                         " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
                 new QueuedCaptchaCommand(sender, this,
                         getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
                         hero, profession);
             }
-        } catch (UnknownSkillException | UnknownProfessionException | InvalidChoiceException e) {
+        } catch (InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
