@@ -3,7 +3,6 @@ package de.raidcraft.skills;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
@@ -18,13 +17,6 @@ public final class BukkitEnvironmentManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerEnchant(PrepareItemEnchantEvent event) {
-
-        plugin.getCharacterManager().getHero(event.getEnchanter()).getUserInterface().setEnabled(false);
-        event.getEnchanter().setTotalExperience(event.getEnchanter().getTotalExperience());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)

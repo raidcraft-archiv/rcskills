@@ -203,11 +203,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
-        //TODO: add more reset stuff
         setHealth(getMaxHealth());
         setStamina(getMaxStamina());
         setMana(getMaxMana());
-        setInCombat(false);
         clearEffects();
         getUserInterface().refresh();
         debug("Reseted all active stats to max");

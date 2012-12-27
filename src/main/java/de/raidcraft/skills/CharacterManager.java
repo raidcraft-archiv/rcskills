@@ -183,8 +183,10 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+        Hero hero = getHero(event.getPlayer());
         // save the hero first
-        getHero(event.getPlayer()).save();
+        hero.save();
+        hero.clearEffects();
         // lets clear the cache for the hero
         heroes.remove(event.getPlayer().getName());
     }
