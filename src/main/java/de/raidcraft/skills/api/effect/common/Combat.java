@@ -4,9 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
@@ -32,9 +30,7 @@ public class Combat<S> extends ExpirableEffect<S> {
 
         // TODO: do more stuff like moving items into the inventory
         target.setInCombat(true);
-        if (target instanceof Hero) {
-            ((Hero) target).sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + "Du hast den Kampf betreten.");
-        }
+        info("Du hast den Kampf betreten.");
     }
 
     @Override
@@ -42,9 +38,7 @@ public class Combat<S> extends ExpirableEffect<S> {
 
         // TODO: do more stuff like moving items into the inventory
         target.setInCombat(false);
-        if (target instanceof Hero) {
-            ((Hero) target).sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + "Du hast den Kampf verlassen.");
-        }
+        info("Du hast den Kampf verlassen.");
     }
 
     @Override

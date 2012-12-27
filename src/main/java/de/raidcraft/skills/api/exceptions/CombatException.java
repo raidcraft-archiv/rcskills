@@ -22,7 +22,9 @@ public class CombatException extends RaidCraftException {
         ON_COOLDOWN("Abklingzeit nicht vorbei."),
         IMMUNE("Ziel ist immun."),
         PASSIVE("Passive Skills können nicht gezaubert werden."),
-        UNKNOWN("Unbekannter Fehlschlag.");
+        UNKNOWN("Unbekannter Fehlschlag."),
+        SILENCED("Ein Stille Effekt ist aktiv! Du kannst keine Zauber wirken."),
+        DISARMED("Du wurdest entwaffnet und kannst nicht angreifen!");
 
         private final String message;
 

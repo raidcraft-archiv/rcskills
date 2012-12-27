@@ -77,6 +77,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void heal(int amount) {
+
+        int newHealth = getHealth() + amount;
+        if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
+        setHealth(newHealth);
+        if (this instanceof Hero) {
+            ((Hero)this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
+        }
+    }
+
+    @Override
     public void kill(CharacterTemplate killer) {
 
         kill();
@@ -173,9 +184,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
     }
 
-
     @Override
-    public final boolean hasEffect(Class<? extends Effect<?>> eClass) {
+    public final boolean hasEffect(Class<? extends Effect> eClass) {
 
         return effects.containsKey(eClass);
     }

@@ -1,8 +1,11 @@
 package de.raidcraft.skills.api.combat.attack;
 
 import de.raidcraft.api.InvalidTargetException;
+import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
+import de.raidcraft.skills.api.effect.common.Disarm;
+import de.raidcraft.skills.api.effect.common.Silence;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -37,6 +40,13 @@ public class SkillAction extends AbstractAction<Hero> {
 
         if (skill instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
+        }
+        // check common effects here
+        if (skill.isOfType(EffectType.MAGICAL) && getSource().hasEffect(Silence.class)) {
+            throw new CombatException(CombatException.Type.SILENCED);
+        }
+        if (skill.isOfType(EffectType.PHYSICAL) && getSource().hasEffect(Disarm.class)) {
+            throw new CombatException(CombatException.Type.DISARMED);
         }
         // lets check the resources of the skill and if the hero has it
         if (skill.getTotalManaCost() > getSource().getMana()) {

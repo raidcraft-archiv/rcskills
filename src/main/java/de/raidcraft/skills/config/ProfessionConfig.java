@@ -10,6 +10,8 @@ import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.util.ItemUtils;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -157,11 +159,45 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public Set<Equipment> getEquipment() {
 
         Set<Equipment> equipment = new HashSet<>();
-        ConfigurationSection section = getOverrideSection("equipment");
-        Set<String> keys = section.getKeys(false);
-        if (keys == null) return equipment;
-        for (String key : keys) {
-            equipment.add(new Equipment(section.getConfigurationSection(key)));
+        ConfigurationSection section = getSafeConfigSection("equipment.groups");
+        // lets load the groups first
+        for (String key : section.getKeys(false)) {
+            if (getPlugin().getEquipmentConfig().hasGroup(key)) {
+                ConfigurationSection groupSection = section.getConfigurationSection(key);
+                // lets merge it so that the prof overrides
+                for (Equipment eq : getPlugin().getEquipmentConfig().getGroup(key)) {
+                    // we need to clone it
+                    eq = new Equipment(eq);
+                    eq.merge(groupSection);
+                    equipment.add(eq);
+                }
+            } else {
+                getPlugin().getLogger().warning("Unknown item group " + key + " in profession config " + getName());
+            }
+        }
+        // lets load all group lists
+        for (String key : section.getStringList("list")) {
+            if (getPlugin().getEquipmentConfig().hasGroup(key)) {
+                equipment.addAll(getPlugin().getEquipmentConfig().getGroup(key));
+            }
+        }
+        // lets load single equipments
+        section = getOverrideSection("equipment.single");
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection equipmentSection = section.getConfigurationSection(key);
+            if (getPlugin().getEquipmentConfig().hasEquipment(key)) {
+                Equipment eq = new Equipment(getPlugin().getEquipmentConfig().getEquipment(key));
+                eq.merge(equipmentSection);
+                equipment.add(eq);
+            } else {
+                Material item = ItemUtils.getItem(equipmentSection.getString("id"));
+                if (item != null) {
+                    equipment.add(new Equipment(item, equipmentSection.getInt("data", 0), equipmentSection));
+                } else {
+                    getPlugin().getLogger().warning(
+                            "Unknown item " + equipmentSection.getString("id") + " in profession config " + getName());
+                }
+            }
         }
         return equipment;
     }

@@ -26,7 +26,7 @@ import org.bukkit.Location;
 @SkillInformation(
         name = "fireball",
         desc = "Schießt einen Feuerball auf den Gegener.",
-        types = {EffectType.DAMAGING, EffectType.DEBUFF, EffectType.HARMFUL},
+        types = {EffectType.DAMAGING, EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MAGICAL},
         elements = {EffectElement.FIRE}
 )
 public class Fireball extends AbstractLevelableSkill implements AreaAttack {

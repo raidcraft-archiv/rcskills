@@ -138,14 +138,38 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void warn(String message) {
 
-        if (getSource() instanceof Hero) {
-            warn((Hero) getSource(), message);
+        if (getTarget() instanceof Hero) {
+            warn((Hero) getTarget(), message);
         }
     }
 
     protected void warn(Hero hero, String message) {
 
         hero.sendMessage(ChatColor.RED + message);
+    }
+
+    protected void info(String message) {
+
+        if (getTarget() instanceof Hero) {
+            info((Hero) getTarget(), message);
+        }
+    }
+
+    protected void info(Hero hero, String message) {
+
+        hero.sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + message);
+    }
+
+    protected void msg(String message) {
+
+        if (getTarget() instanceof Hero) {
+            msg((Hero) getTarget(), message);
+        }
+    }
+
+    protected void msg(Hero hero, String message) {
+
+        hero.sendMessage(message);
     }
 
     private String convertName(String name) {

@@ -1,52 +1,58 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.config.DataMap;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Silthus
  */
-public class Equipment extends ItemStack {
+public class Equipment extends DataMap {
 
-    private int minLevel;
-    private int baseDamage;
-    private double damageLevelModifier;
-    private double damageProfessionLevelModifier;
+    private final Material material;
+    private final byte data;
 
-    public Equipment(ConfigurationSection config) {
+    public Equipment(Material id, int data, ConfigurationSection config) {
 
-        super(config.getItemStack(""));
-        minLevel = config.getInt("min-level", 1);
-        baseDamage = config.getInt("damage.base", 0);
-        damageLevelModifier = config.getDouble("damage.level-modifier", 0.0);
-        damageProfessionLevelModifier = config.getDouble("damage.prof-level-modifier", 0.0);
+        super(config);
+        this.material = id;
+        this.data = (byte) data;
+    }
+
+    public Equipment(Equipment equipment) {
+
+        super(equipment.getValues(true));
+        this.material = equipment.getType();
+        this.data = equipment.getData();
+    }
+
+    public Material getType() {
+
+        return material;
+    }
+
+    public byte getData() {
+
+        return data;
     }
 
     public int getMinLevel() {
 
-        return minLevel;
+        return getInt("level", 1);
     }
 
     public int getBaseDamage() {
 
-        return baseDamage;
+        return getInt("damage.base");
     }
 
     public double getDamageLevelModifier() {
 
-        return damageLevelModifier;
+        return getDouble("damage.level-modifier", 0.0);
     }
 
     public double getDamageProfessionLevelModifier() {
 
-        return damageProfessionLevelModifier;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        return obj instanceof ItemStack
-                && ((ItemStack) obj).getType() == getType()
-                && ((ItemStack) obj).getData().getData() == getData().getData();
+        return getDouble("damage.prof-level-modifier", 0.0);
     }
 }

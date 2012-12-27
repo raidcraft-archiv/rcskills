@@ -26,6 +26,8 @@ public interface CharacterTemplate {
 
     public void damage(Attack attack);
 
+    public void heal(int amount);
+
     public void kill(CharacterTemplate killer);
 
     public void kill();
@@ -38,7 +40,7 @@ public interface CharacterTemplate {
 
     public void removeEffect(Effect effect) throws CombatException;
 
-    public boolean hasEffect(Class<? extends Effect<?>> eClass);
+    public boolean hasEffect(Class<? extends Effect> eClass);
 
     public boolean hasEffectType(EffectType type);
 

@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -66,6 +67,8 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public List<Profession> getProfessions();
 
     public Set<Equipment> getEquipment();
+
+    public boolean isAllowedItem(Material material);
 
     public boolean canChooseProfession(Profession profession) throws InvalidChoiceException;
 

@@ -28,7 +28,11 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public EffectType[] getTypes();
 
+    public boolean isOfType(EffectType type);
+
     public EffectElement[] getElements();
+
+    public boolean isOfElement(EffectElement element);
 
     public Hero getHero();
 

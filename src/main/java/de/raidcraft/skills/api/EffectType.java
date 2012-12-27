@@ -16,5 +16,5 @@ public enum EffectType {
     PHYSICAL,
     SILENCABLE,
     SUMMON,
-    UNBINDABLE
+    MAGICAL, UNBINDABLE
 }

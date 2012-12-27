@@ -7,6 +7,8 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.skill.type.Passive;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.PlayerSkill;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -102,6 +104,10 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         // add skill to our passive list if it is a passive skill
         if (skill instanceof Passive) {
             passiveSkills.add(skill);
+        }
+        // lets add the skill as a trigger handler
+        if (skill instanceof Triggered) {
+            TriggerManager.registerListeners((Triggered) skill);
         }
         return skill;
     }

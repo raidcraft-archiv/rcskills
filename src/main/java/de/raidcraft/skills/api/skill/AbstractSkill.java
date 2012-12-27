@@ -146,9 +146,31 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public boolean isOfType(EffectType type) {
+
+        for (EffectType t : getTypes()) {
+            if (t == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public final EffectElement[] getElements() {
 
         return information.elements();
+    }
+
+    @Override
+    public boolean isOfElement(EffectElement element) {
+
+        for (EffectElement el : getElements()) {
+            if (el == element) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -21,10 +21,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.BukkitUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -79,11 +76,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         // add equipment from the primary and secundary profession
         // we need to make sure to add the secundary equipment first because it is overriden by the primary class
-        if (getSecundaryProfession() != null) {
-            equipment.addAll(getSecundaryProfession().getProperties().getEquipment());
-        }
         if (getPrimaryProfession() != null) {
             equipment.addAll(getPrimaryProfession().getProperties().getEquipment());
+        }
+        if (getSecundaryProfession() != null) {
+            equipment.addAll(getSecundaryProfession().getProperties().getEquipment());
         }
     }
 
@@ -210,6 +207,19 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
     }
+
+    @Override
+    public boolean isAllowedItem(Material material) {
+
+        // TODO: maye only check armor and weapons
+        for (Equipment equipment : getEquipment()) {
+            if (equipment.getType() == material) {
+                return getLevel().getLevel() < equipment.getMinLevel();
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public int getId() {

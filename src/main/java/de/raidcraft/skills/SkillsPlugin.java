@@ -11,6 +11,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.config.AliasesConfig;
+import de.raidcraft.skills.config.EquipmentConfig;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -37,6 +38,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private DamageManager damageManager;
     private BukkitEnvironmentManager bukkitEnvironmentManager;
     private AliasesConfig aliasesConfig;
+    private EquipmentConfig equipmentConfig;
     private LocalConfiguration configuration;
 
     @Override
@@ -49,6 +51,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
         registerCommands(BaseCommands.class);
+        new BukkitEventDispatcher(this);
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
@@ -56,6 +59,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private void loadEngine() {
 
         this.aliasesConfig = configure(new AliasesConfig(this));
+        this.equipmentConfig = configure(new EquipmentConfig(this));
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.effectManager = new EffectManager(this);
@@ -90,6 +94,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // and reload all of our managers
         this.configuration.reload();
         this.aliasesConfig.reload();
+        this.equipmentConfig.reload();
+
         this.skillManager.reload();
         registerSkills();
         this.effectManager.reload();
@@ -148,6 +154,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public AliasesConfig getAliasesConfig() {
 
         return aliasesConfig;
+    }
+
+    public EquipmentConfig getEquipmentConfig() {
+
+        return equipmentConfig;
     }
 
     public LocalConfiguration getCommonConfig() {
