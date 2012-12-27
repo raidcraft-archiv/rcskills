@@ -21,7 +21,6 @@ import java.util.HashSet;
  */
 public abstract class AbstractSkill implements Skill {
 
-    private final int id;
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
@@ -33,7 +32,6 @@ public abstract class AbstractSkill implements Skill {
 
     protected AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
-        this.id = database.getId();
         this.hero = hero;
         this.properties = data;
         this.database = database;
@@ -109,7 +107,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final int getId() {
 
-        return id;
+        return database.getId();
     }
 
     @Override
@@ -264,16 +262,18 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean equals(Object obj) {
-
-        return obj instanceof Skill && ((Skill) obj).getId() == getId();
-    }
-
-    @Override
     public final int compareTo(Skill o) {
 
         if (getProperties().getRequiredLevel() > o.getProperties().getRequiredLevel()) return 1;
         if (getProperties().getRequiredLevel() == o.getProperties().getRequiredLevel()) return 0;
         return -1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return obj instanceof Skill
+                && ((Skill) obj).getId() != 0 && getId() != 0
+                && ((Skill) obj).getId() == getId();
     }
 }

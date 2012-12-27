@@ -395,7 +395,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void saveProfessions() {
 
         for (Profession profession : professions.values()) {
-            profession.getLevel().saveLevelProgress();
+            profession.save();
         }
     }
 
@@ -580,7 +580,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public boolean equals(Object obj) {
 
-        return obj instanceof Hero && ((Hero) obj).getName().equalsIgnoreCase(getName());
+        return obj instanceof Hero
+                && ((Hero) obj).getName().equals(getName());
     }
 
     @Override

@@ -16,7 +16,6 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
-    private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
     protected final THeroProfession database;
@@ -27,7 +26,6 @@ public abstract class AbstractProfession implements Profession {
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
-        this.id = database.getId();
         this.properties = data;
         this.hero = hero;
         this.database = database;
@@ -41,7 +39,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public int getId() {
 
-        return id;
+        return database.getId();
     }
 
     @Override
@@ -198,6 +196,7 @@ public abstract class AbstractProfession implements Profession {
     public boolean equals(Object obj) {
 
         return obj instanceof Profession
+                && ((Profession) obj).getId() != 0 && getId() != 0
                 && ((Profession) obj).getId() == getId();
     }
 }

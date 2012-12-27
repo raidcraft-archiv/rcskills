@@ -152,7 +152,7 @@ public class ProfessionCommands {
         hero.changeProfession(profession);
         hero.sendMessage(ChatColor.YELLOW  + "Du hast " +
                 (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.YELLOW +
-        " erfolgreich gewechselt.");
+        " erfolgreich zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
         hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
         + ChatColor.RED + " vom Konto abgezogen.");
     }
