@@ -244,7 +244,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final String toString() {
 
-        return "[S" + getId() + ":" + getName() + "]";
+        return "[S" + getId() + ":" + getProfession() + ":" + getName() + "]";
     }
 
     @Override

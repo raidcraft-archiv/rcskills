@@ -1,7 +1,6 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -9,66 +8,62 @@ import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.util.StringUtil;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Silthus
  */
-public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implements SkillProperties {
+public final class SkillFactory {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
-    private final SkillInformation information;
-    private String skillName;
+    // every profession needs its own config instance
+    private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
+    private final String skillName;
+    private final String alias;
 
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, File configDir) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName) {
 
-        super(plugin, new File(configDir, sClass.getAnnotation(SkillInformation.class).name().toLowerCase() + ".yml"));
-        this.plugin = plugin;
-        this.sClass = sClass;
-        this.information = sClass.getAnnotation(SkillInformation.class);
-        this.skillName = StringUtil.formatName(information.name());
+        this(plugin, sClass, skillName, null);
     }
 
-    protected Skill create(Hero hero) throws UnknownSkillException {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, String alias) {
 
-        return create(hero, null, null);
+        this.plugin = plugin;
+        this.sClass = sClass;
+        this.skillName = skillName;
+        this.alias = alias;
     }
 
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
-        return create(hero, profession, null);
-    }
+        ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
+        SkillConfig config;
+        if (!skillConfigs.containsKey(factory.getName())) {
+            config = plugin.configure(new SkillConfig(this));
 
-    protected Skill create(Hero hero, Profession profession, String alias) throws UnknownSkillException {
+            // we need to set all the overrides to null because they are used multiple times
+            if (useAlias()) {
+                config.getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
+            }
+            // set the config that overrides the default skill parameters with the profession config
+            config.merge(factory, "skills." + (useAlias() ? alias : skillName));
 
-        boolean useAlias = alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
-        setOverrideConfig(null);
-        if (useAlias) {
-            getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
+            skillConfigs.put(factory.getName(), config);
+        } else {
+            config = skillConfigs.get(factory.getName());
         }
 
-        // TODO(BUG): does not seem to load override config at second pass
-        // set the config that overrides the default skill parameters with the profession config
-        merge(plugin.getProfessionManager().getFactory(profession), "skills." + (useAlias ? alias : skillName));
         // also save the profession to generate a db entry if none exists
         profession.save();
 
-        if (useAlias) {
-            // set the skillname to the alias
-            this.skillName = alias;
-        }
         // lets load the database
         THeroSkill database = loadDatabase(hero, profession);
 
@@ -77,7 +72,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
             Constructor<? extends Skill> constructor =
                     sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(hero, this, profession, database);
+            return constructor.newInstance(hero, config, profession, database);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
@@ -94,7 +89,7 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
 
         if (database == null) {
             database = new THeroSkill();
-            database.setName(getName());
+            database.setName(getSkillName());
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(0);
@@ -104,194 +99,33 @@ public final class SkillFactory extends ConfigurationBase<SkillsPlugin> implemen
         return database;
     }
 
-    @Override
-    public String getName() {
+    public SkillsPlugin getPlugin() {
+
+        return plugin;
+    }
+
+    public SkillInformation getInformation() {
+
+        return sClass.getAnnotation(SkillInformation.class);
+    }
+
+    public String getSkillName() {
 
         return skillName;
     }
 
-    @Override
-    public SkillInformation getInformation() {
+    public String getAlias() {
 
-        return information;
+        return alias;
     }
 
-    @Override
-    public String getFriendlyName() {
+    public boolean useAlias() {
 
-        return getOverride("name", skillName);
+        return alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
     }
 
-    @Override
-    public String getDescription() {
+    public SkillConfig getConfig(Profession profession) {
 
-        return getOverride("description", information.desc());
-    }
-
-    @Override
-    public String[] getUsage() {
-
-        List<String> usage = getStringList("usage");
-        return usage.toArray(new String[usage.size()]);
-    }
-
-    @Override
-    public ItemStack[] getReagents() {
-
-        ConfigurationSection section = getOverrideSection("reagents");
-        Set<String> keys = section.getKeys(false);
-        ItemStack[] reagents = new ItemStack[keys.size()];
-        int i = 0;
-        for (String key : keys) {
-            Material material;
-            try {
-                material = Material.getMaterial(Integer.parseInt(key));
-            } catch (NumberFormatException e) {
-                material = Material.getMaterial(key);
-            }
-            if (material == null) {
-                plugin.getLogger().warning("Item " + key + " is non existant in bukkit! Skill: " + getName());
-            }
-            reagents[i] = new ItemStack(material, section.getInt(key));
-        }
-        return reagents;
-    }
-
-    @Override
-    public ConfigurationSection getData() {
-
-        return getOverrideSection("custom");
-    }
-
-    @Override
-    public int getManaCost() {
-
-        return getOverride("mana.base-cost", 0);
-    }
-
-    @Override
-    public double getManaLevelModifier() {
-
-        return getOverride("mana.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getStaminaCost() {
-
-        return getOverride("stamina.base-cost", 0);
-    }
-
-    @Override
-    public double getStaminaLevelModifier() {
-
-        return getOverride("stamina.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getHealthCost() {
-
-        return getOverride("health.base-cost", 0);
-    }
-
-    @Override
-    public double getHealthLevelModifier() {
-
-        return getOverride("health.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getRequiredLevel() {
-
-        return getOverride("level", 1);
-    }
-
-    @Override
-    public int getDamage() {
-
-        return getOverride("damage.base", 0);
-    }
-
-    @Override
-    public double getDamageLevelModifier() {
-
-        return getOverride("damage.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getCastTime() {
-
-        return getOverride("casttime.base", 0);
-    }
-
-    @Override
-    public double getCastTimeLevelModifier() {
-
-        return getOverride("casttime.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        return getOverride("max-level", 10);
-    }
-
-    @Override
-    public double getSkillLevelDamageModifier() {
-
-        return getOverride("damage.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getSkillLevelManaCostModifier() {
-
-        return getOverride("mana.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getSkillLevelStaminaCostModifier() {
-
-        return getOverride("stamina.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getSkillLevelHealthCostModifier() {
-
-        return getOverride("health.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getSkillLevelCastTimeModifier() {
-
-        return getOverride("casttime.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getProfLevelDamageModifier() {
-
-        return getOverride("damage.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getProfLevelManaCostModifier() {
-
-        return getOverride("mana.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getProfLevelStaminaCostModifier() {
-
-        return getOverride("stamina.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getProfLevelHealthCostModifier() {
-
-        return getOverride("health.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getProfLevelCastTimeModifier() {
-
-        return getOverride("casttime.prof-level-modifier", 0.0);
+        return skillConfigs.get(profession.getName());
     }
 }

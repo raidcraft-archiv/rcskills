@@ -1,40 +1,42 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
-import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.config.EffectConfig;
 import de.raidcraft.skills.util.StringUtil;
-import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Silthus
  */
-public final class EffectFactory<E extends Effect> extends ConfigurationBase<SkillsPlugin> implements EffectData {
+public final class EffectFactory<E extends Effect> {
 
     private final SkillsPlugin plugin;
     private final Class<E> eClass;
     private final EffectInformation information;
     private final String effectName;
+    private final Map<String, EffectConfig> effectConfigs = new HashMap<>();
+    private final EffectConfig defaultConfig;
 
-    protected EffectFactory(SkillsPlugin plugin, Class<E> eClass, File configDir) {
+    protected EffectFactory(SkillsPlugin plugin, Class<E> eClass) {
 
-        super(plugin, new File(configDir, eClass.getAnnotation(EffectInformation.class).name().toLowerCase() + ".yml"));
         this.plugin = plugin;
         this.eClass = eClass;
         this.information = eClass.getAnnotation(EffectInformation.class);
         this.effectName = StringUtil.formatName(information.name());
+        this.defaultConfig = plugin.configure(new EffectConfig(this));
     }
 
     @SuppressWarnings("unchecked")
-    public E create(Object source, CharacterTemplate target) throws UnknownEffectException {
+    public E create(Object source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
 
         // its reflection time yay!
         try {
@@ -42,8 +44,8 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase<Ski
                 if (constructor.getParameterTypes().length == 3) {
                     if (constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
                             && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
-                            && constructor.getParameterTypes()[2].isAssignableFrom(this.getClass())) {
-                        return (E) constructor.newInstance(source, target, this);
+                            && constructor.getParameterTypes()[2].isAssignableFrom(EffectConfig.class)) {
+                        return (E) constructor.newInstance(source, target, config);
                     }
                 }
             }
@@ -57,15 +59,25 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase<Ski
     public E create(Object source, CharacterTemplate target, Skill skill) throws UnknownEffectException {
 
         if (skill == null) {
-            return create(source, target);
+            return create(source, target, defaultConfig);
         }
-        // lets get all the possible override configs and merge them
-        // at this point the skill config should already be merged with the respective profession config
-        // so we only need to merge the override config of the skill into our override config
-        SkillFactory skillConfig = plugin.getSkillManager().getFactory(skill);
-        // and now merge the result with this effet config
-        getOverrideConfig().merge(skillConfig.getOverrideSection("effects." + effectName));
-        return create(source, target);
+
+        EffectConfig config;
+        if (!effectConfigs.containsKey(skill.getProfession().getName())) {
+            config = plugin.configure(new EffectConfig(this));
+            // lets get all the possible override configs and merge them
+            // at this point the skill config should already be merged with the respective profession config
+            // so we only need to merge the override config of the skill into our override config
+            SkillFactory skillFactory = plugin.getSkillManager().getFactory(skill);
+            // and now merge the result with this effet config
+            config.getOverrideConfig().merge(skillFactory.getConfig(skill.getProfession()).getOverrideSection("effects." + effectName));
+
+            effectConfigs.put(skill.getProfession().getName(), config);
+        } else {
+            config = effectConfigs.get(skill.getProfession().getName());
+        }
+
+        return create(source, target, config);
     }
 
     public Class<E> getEffectClass() {
@@ -73,81 +85,28 @@ public final class EffectFactory<E extends Effect> extends ConfigurationBase<Ski
         return eClass;
     }
 
-    @Override
-    public String getName() {
+    public SkillsPlugin getPlugin() {
 
-        return information.name().toLowerCase().replace(" ", "-").trim();
+        return plugin;
     }
 
-    @Override
-    public ConfigurationSection getDataMap() {
-
-        return getOverrideSection("custom");
-    }
-
-    @Override
     public EffectInformation getInformation() {
 
-        return this.information;
+        return information;
     }
 
-    @Override
-    public double getEffectPriority() {
+    public String getEffectName() {
 
-        return getOverride("priority", plugin.getCommonConfig().default_effect_priority);
+        return effectName;
     }
 
-    @Override
-    public int getEffectDuration() {
+    public EffectConfig getConfig(Profession profession) {
 
-        return getOverride("duration.base", 0);
+        return effectConfigs.get(profession.getName());
     }
 
-    @Override
-    public int getEffectDelay() {
+    public EffectConfig getDefaultConfig() {
 
-        return getOverride("delay.base", 0);
-    }
-
-    @Override
-    public int getEffectInterval() {
-
-        return getOverride("interval.base", 0);
-    }
-
-    @Override
-    public double getEffectDurationLevelModifier() {
-
-        return getOverride("duration.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDurationProfLevelModifier() {
-
-        return getOverride("duration.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDelayLevelModifier() {
-
-        return getOverride("delay.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectDelayProfLevelModifier() {
-
-        return getOverride("delay.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectIntervalLevelModifier() {
-
-        return getOverride("interval.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getEffectIntervalProfLevelModifier() {
-
-        return getOverride("interval.prof-level-modifier", 0.0);
+        return defaultConfig;
     }
 }

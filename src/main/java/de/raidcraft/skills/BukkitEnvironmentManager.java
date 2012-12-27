@@ -3,25 +3,28 @@ package de.raidcraft.skills;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 /**
  * @author Silthus
  */
-public final class StaminaManager implements Listener {
+public final class BukkitEnvironmentManager implements Listener {
 
     private final SkillsPlugin plugin;
 
-    public StaminaManager(SkillsPlugin plugin) {
+    public BukkitEnvironmentManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
     }
 
-    public void reload() {
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerEnchant(PrepareItemEnchantEvent event) {
 
-        // nothing to do here
+        plugin.getCharacterManager().getHero(event.getEnchanter()).getUserInterface().setEnabled(false);
+        event.getEnchanter().setTotalExperience(event.getEnchanter().getTotalExperience());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -37,7 +40,6 @@ public final class StaminaManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
 
-        //TODO: set saturation
         // cancel all food level change, since thats our stamina bar
         event.setCancelled(true);
     }

@@ -205,7 +205,7 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerGainExp(PlayerExpChangeEvent event) {
 
-        // TODO: handle exp for enchanting and stuff
         event.setAmount(0);
+        event.getPlayer().setTotalExperience(event.getPlayer().getTotalExperience() + event.getAmount());
     }
 }

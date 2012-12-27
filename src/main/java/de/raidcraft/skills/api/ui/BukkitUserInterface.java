@@ -76,9 +76,6 @@ public class BukkitUserInterface implements UserInterface {
             player.setExp(0F);
             player.setLevel(0);
         }
-        // lets set the total exp to 0
-        // TODO: change this and implement something for entchantments
-        player.setTotalExperience(0);
 
         if (hero.getMana() < hero.getMaxMana()) maxedMana = false;
         // set the manabar if it changed

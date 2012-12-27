@@ -62,7 +62,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 return;
             }
             // load the skill factory for the non alias
-            SkillFactory factory = plugin.configure(new SkillFactory(plugin, skillClass, configDir));
+            SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
             skillFactories.put(skillName, factory);
             // lets put a duplicate of the factory into the map as alias
             if (plugin.getAliasesConfig().hasSkillAliasFor(skillName)) {
@@ -75,7 +75,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                     plugin.getLogger().warning("Found duplicate alias: " + alias);
                     return;
                 }
-                factory = plugin.configure(new SkillFactory(plugin, skillClass, configDir));
+                factory = new SkillFactory(plugin, skillClass, skillName, alias);
                 skillFactories.put(alias, factory);
             }
         } else {
@@ -98,14 +98,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 return playerSkill.getSkill();
             }
         }
-        // lets check the aliases
-        if (plugin.getAliasesConfig().hasSkill(skillName)) {
-            // invoke the alias method
-            skill = skillFactories.get(skillName).create(hero, profession, skillName);
-        } else {
-            // create a new skill instance for this hero and profession
-            skill = skillFactories.get(skillName).create(hero, profession);
-        }
+        // lets create a new skill for this name
+        skill = skillFactories.get(skillName).create(hero, profession);
         playerSkills.get(hero.getName()).add(new PlayerSkill(skill));
         // add skill to our passive list if it is a passive skill
         if (skill instanceof Passive) {

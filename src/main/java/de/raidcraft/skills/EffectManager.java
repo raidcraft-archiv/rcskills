@@ -48,8 +48,8 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
     public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
-            EffectFactory factory = plugin.configure(new EffectFactory<>(plugin, effectClass, configDir));
-            effectFactories.put(factory.getName(), factory);
+            EffectFactory factory = new EffectFactory<>(plugin, effectClass);
+            effectFactories.put(factory.getEffectName(), factory);
             effectFactoryClasses.put(effectClass, factory);
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());

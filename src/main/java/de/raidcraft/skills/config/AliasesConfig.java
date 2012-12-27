@@ -14,7 +14,6 @@ import java.util.Map;
 public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
 
     private static final String CONFIG_NAME = "aliases.yml";
-    private final Map<String, ConfigurationSection> effects = new HashMap<>();
     private final Map<String, ConfigurationSection> skills = new HashMap<>();
 
     public AliasesConfig(SkillsPlugin plugin) {
@@ -26,22 +25,7 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
     public void load() {
 
         super.load();
-        loadEffects();
         loadSkills();
-    }
-
-    private void loadEffects() {
-
-        ConfigurationSection section = getSafeConfigSection("effects");
-        for (String key : section.getKeys(false)) {
-            ConfigurationSection override = section.getConfigurationSection(key);
-            String effect = StringUtil.formatName(override.getString("effect"));
-            if (effect == null || effect.equals("")) {
-                getPlugin().getLogger().warning("effect " + effect + " in alias " + key + " does not exist!");
-            } else {
-                effects.put(StringUtil.formatName(key), override);
-            }
-        }
     }
 
     public void loadSkills() {
@@ -58,19 +42,9 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
         }
     }
 
-    public boolean hasEffect(String name, String effectName) {
-
-        return effects.containsKey(name) && effects.get(name).getString("effect").equals(effectName);
-    }
-
     public boolean hasSkill(String name, String skillName) {
 
         return skills.containsKey(name) && skills.get(name).getString("skill").equals(skillName);
-    }
-
-    public ConfigurationSection getEffectConfig(String name) {
-
-        return effects.get(name);
     }
 
     public ConfigurationSection getSkillConfig(String name) {
@@ -83,19 +57,9 @@ public final class AliasesConfig extends ConfigurationBase<SkillsPlugin> {
         return skills.containsKey(name);
     }
 
-    public boolean hasEffect(String effect) {
-
-        return effects.containsKey(effect);
-    }
-
     public String getSkillName(String alias) {
 
         return StringUtil.formatName(skills.get(alias).getString("skill"));
-    }
-
-    public String getEffectName(String alias) {
-
-        return StringUtil.formatName(effects.get(alias).getString("effect"));
     }
 
     public boolean hasSkillAliasFor(String skillName) {

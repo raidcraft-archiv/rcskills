@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.api.ui.UserInterface;
+import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
@@ -44,12 +45,14 @@ public class SimpleHero extends AbstractHero {
     @Override
     public void onLevelGain(int level) {
 
-        // TODO: display message of awesomeness
+        sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 
     @Override
     public void onLevelLoss(int level) {
 
-        // TODO: display message of awesomeness
+        sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 }

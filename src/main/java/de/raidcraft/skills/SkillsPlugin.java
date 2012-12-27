@@ -35,7 +35,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private CharacterManager characterManager;
     private CombatManager combatManager;
     private DamageManager damageManager;
-    private StaminaManager staminaManager;
+    private BukkitEnvironmentManager bukkitEnvironmentManager;
     private AliasesConfig aliasesConfig;
     private LocalConfiguration configuration;
 
@@ -66,7 +66,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager = new CharacterManager(this);
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
-        this.staminaManager = new StaminaManager(this);
+        this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
     }
 
     private void registerSkills() {
@@ -97,7 +97,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager.reload();
         this.combatManager.reload();
         this.damageManager.reload();
-        this.staminaManager.reload();
         this.characterManager.startTasks();
     }
 
@@ -141,9 +140,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return damageManager;
     }
 
-    public StaminaManager getStaminaManager() {
+    public BukkitEnvironmentManager getBukkitEnvironmentManager() {
 
-        return staminaManager;
+        return bukkitEnvironmentManager;
     }
 
     public AliasesConfig getAliasesConfig() {
@@ -180,6 +179,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long hero_stamina_regain_interval = 25;
         @Setting("hero.stamina-regain-amount")
         public int hero_stamina_regain_amount = 1;
+        @Setting("paths.skill-config")
+        public String skill_config_path = "skill-configs/";
+        @Setting("paths.effect-config")
+        public String effect_config_path = "effect-configs/";
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
