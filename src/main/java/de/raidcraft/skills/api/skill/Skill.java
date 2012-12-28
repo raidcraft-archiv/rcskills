@@ -2,8 +2,8 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
-import de.raidcraft.skills.api.EffectElement;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectElement;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;

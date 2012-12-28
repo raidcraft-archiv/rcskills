@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.EffectElement;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectElement;
+import de.raidcraft.skills.api.combat.EffectType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -21,12 +21,11 @@ import java.util.List;
  */
 public final class VirtualProfession extends AbstractProfession {
 
-    private final Level<Profession> level;
 
     public VirtualProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
         super(hero, data, database);
-        this.level = new NullLevel(this, database);
+        attachLevel(new NullLevel(this, database));
         // lets save the virtual profession when its loaded
         save();
     }
@@ -81,12 +80,6 @@ public final class VirtualProfession extends AbstractProfession {
     public boolean isMastered() {
 
         return true;
-    }
-
-    @Override
-    public Level<Profession> getLevel() {
-
-        return level;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.api.EffectElement;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectElement;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.Disarm;

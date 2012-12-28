@@ -1,26 +1,19 @@
 package de.raidcraft.skills.trigger;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.trigger.BukkitEventTrigger;
 import de.raidcraft.skills.api.trigger.HandlerList;
-import de.raidcraft.skills.api.trigger.Trigger;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  * @author Silthus
  */
-public class BlockPlaceTrigger extends Trigger {
+public class BlockPlaceTrigger extends BukkitEventTrigger<BlockPlaceEvent> {
 
-    private final BlockPlaceEvent event;
 
     public BlockPlaceTrigger(Hero hero, BlockPlaceEvent event) {
 
-        super(hero);
-        this.event = event;
-    }
-
-    public BlockPlaceEvent getEvent() {
-
-        return event;
+        super(hero, event);
     }
 
     /*///////////////////////////////////////////////////

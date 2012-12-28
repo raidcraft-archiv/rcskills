@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
 
 /**
@@ -16,13 +17,15 @@ public class RegisteredTrigger {
     private final TriggerExecutor executor;
     private final Skill skill;
     private final boolean ignoreChecks;
+    private final boolean cancelEventOnFail;
 
-    public RegisteredTrigger(final Triggered listener, final TriggerExecutor executor, boolean ignoreChecks) {
+    public RegisteredTrigger(final Triggered listener, final TriggerExecutor executor, boolean ignoreChecks, boolean cancelEventOnFail) {
 
         this.listener = listener;
         this.executor = executor;
         this.skill = (listener instanceof Skill ? (Skill) listener : null);
         this.ignoreChecks = ignoreChecks;
+        this.cancelEventOnFail = cancelEventOnFail;
     }
 
     /**
@@ -54,28 +57,39 @@ public class RegisteredTrigger {
             return;
         }
 
-        if (ignoreChecks) {
+        if (!ignoreChecks) {
             try {
                 // check the skill usage
                 skill.checkUsage();
-                // add a combat effect when a skill is beeing casted
-                if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
             } catch (CombatException e) {
                 hero.sendMessage(ChatColor.RED + e.getMessage());
+                // lets check if we need to cancel a bukkit event
+                if (cancelEventOnFail && trigger instanceof BukkitEventTrigger) {
+                    if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {
+                        ((Cancellable) ((BukkitEventTrigger) trigger).getEvent()).setCancelled(true);
+                    }
+                }
+                return;
             }
-
-            // substract the mana, health and stamina cost
-            if (skill.getTotalManaCost() > 0) hero.setMana(hero.getMana() - skill.getTotalManaCost());
-            if (skill.getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - skill.getTotalStaminaCost());
-            if (skill.getTotalHealthCost() > 0) hero.damage(skill.getTotalHealthCost());
-            // keep this last or items will be removed before casting
-            hero.getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
         }
 
         try {
+            // add a combat effect when a skill is beeing casted
+            if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
+
+            // substrat the cost of the skill before it is triggered because a failed trigger costs too
+            if (!ignoreChecks) {
+                // substract the mana, health and stamina cost
+                if (skill.getTotalManaCost() > 0) hero.setMana(hero.getMana() - skill.getTotalManaCost());
+                if (skill.getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - skill.getTotalStaminaCost());
+                if (skill.getTotalHealthCost() > 0) hero.damage(skill.getTotalHealthCost());
+                // keep this last or items will be removed before casting
+                hero.getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
+            }
+
             // and lets pass on the trigger
             executor.execute(listener, trigger);
-        } catch (Exception e) {
+        } catch (CombatException e) {
             hero.sendMessage(ChatColor.RED + e.getMessage());
         }
     }

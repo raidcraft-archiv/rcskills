@@ -23,6 +23,7 @@ public abstract class AbstractProfession implements Profession {
     // parent child collections
     private Set<Profession> strongParents = null;
     private Set<Profession> weakParents = null;
+    private Level<Profession> level;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
@@ -34,6 +35,18 @@ public abstract class AbstractProfession implements Profession {
     public THeroProfession getDatabase() {
 
         return database;
+    }
+
+    @Override
+    public final Level<Profession> getLevel() {
+
+        return level;
+    }
+
+    @Override
+    public final void attachLevel(Level<Profession> level) {
+
+        this.level = level;
     }
 
     @Override

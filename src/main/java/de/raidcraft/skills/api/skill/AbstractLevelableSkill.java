@@ -12,7 +12,7 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
-    private final Level<LevelableSkill> level;
+    private Level<LevelableSkill> level;
 
     public AbstractLevelableSkill(Hero hero, SkillProperties data, Profession profession,  THeroSkill database) {
 
@@ -24,6 +24,12 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public final Level<LevelableSkill> getLevel() {
 
         return level;
+    }
+
+    @Override
+    public final void attachLevel(Level<LevelableSkill> level) {
+
+        this.level = level;
     }
 
     @Override

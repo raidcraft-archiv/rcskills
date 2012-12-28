@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.attack.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;

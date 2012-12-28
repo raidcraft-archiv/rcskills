@@ -1,26 +1,18 @@
 package de.raidcraft.skills.trigger;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.trigger.BukkitEventTrigger;
 import de.raidcraft.skills.api.trigger.HandlerList;
-import de.raidcraft.skills.api.trigger.Trigger;
 import org.bukkit.event.block.BlockBreakEvent;
 
 /**
  * @author Silthus
  */
-public class BlockBreakTrigger extends Trigger {
-
-    private final BlockBreakEvent event;
+public class BlockBreakTrigger extends BukkitEventTrigger<BlockBreakEvent> {
 
     public BlockBreakTrigger(Hero hero, BlockBreakEvent event) {
 
-        super(hero);
-        this.event = event;
-    }
-
-    public BlockBreakEvent getEvent() {
-
-        return event;
+        super(hero, event);
     }
 
     /*///////////////////////////////////////////////////

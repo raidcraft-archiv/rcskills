@@ -7,6 +7,8 @@ public interface Levelable<T extends Levelable> {
 
     public Level<T> getLevel();
 
+    public void attachLevel(Level<T> level);
+
     public int getMaxLevel();
 
     public void onExpGain(int exp);

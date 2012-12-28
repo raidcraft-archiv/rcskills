@@ -122,7 +122,7 @@ public class TriggerManager {
                     }
                 }
             };
-            eventSet.add(new RegisteredTrigger(listener, executor, annotation.ignoreChecks()));
+            eventSet.add(new RegisteredTrigger(listener, executor, annotation.ignoreChecks(), annotation.cancelEventOnFail()));
         }
         return ret;
     }

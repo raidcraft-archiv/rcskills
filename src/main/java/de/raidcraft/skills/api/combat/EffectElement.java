@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api;
+package de.raidcraft.skills.api.combat;
 
 /**
  * @author Silthus
@@ -6,6 +6,7 @@ package de.raidcraft.skills.api;
 public enum  EffectElement {
 
     FIRE,
+    WATER,
     ICE,
     EARTH,
     DARK,

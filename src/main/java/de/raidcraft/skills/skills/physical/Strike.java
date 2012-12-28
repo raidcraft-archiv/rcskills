@@ -1,7 +1,7 @@
 package de.raidcraft.skills.skills.physical;
 
 import de.raidcraft.api.InvalidTargetException;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.attack.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;

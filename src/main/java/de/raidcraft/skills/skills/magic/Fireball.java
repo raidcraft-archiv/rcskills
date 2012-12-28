@@ -1,8 +1,8 @@
 package de.raidcraft.skills.skills.magic;
 
 import de.raidcraft.api.InvalidTargetException;
-import de.raidcraft.skills.api.EffectElement;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectElement;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.attack.MagicalAttack;
@@ -14,6 +14,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.KnockBack;
@@ -37,6 +38,7 @@ public class Fireball extends AbstractLevelableSkill implements Triggered {
         super(hero, skillData, profession, database);
     }
 
+    @TriggerHandler
     public void run(CommandTrigger trigger) throws CombatException {
 
         final RangedAttack rangedAttack = new RangedAttack(getHero(), ProjectileType.FIREBALL);

@@ -42,6 +42,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     private final int id;
     private final RCPlayer player;
+    private Level<Hero> level;
     private boolean debugging = false;
     private int health;
     private int mana;
@@ -243,6 +244,18 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setDebugging(boolean debug) {
 
         this.debugging = debug;
+    }
+
+    @Override
+    public final Level<Hero> getLevel() {
+
+        return level;
+    }
+
+    @Override
+    public final void attachLevel(Level<Hero> level) {
+
+        this.level = level;
     }
 
     @Override

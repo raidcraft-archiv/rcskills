@@ -1,7 +1,7 @@
 package de.raidcraft.skills.effects.damaging;
 
-import de.raidcraft.skills.api.EffectElement;
-import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.combat.EffectElement;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;

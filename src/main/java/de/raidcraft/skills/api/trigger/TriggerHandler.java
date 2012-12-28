@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 public @interface TriggerHandler {
 
     public boolean ignoreChecks() default false;
+
+    public boolean cancelEventOnFail() default false;
 }
