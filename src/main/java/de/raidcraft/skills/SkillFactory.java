@@ -42,6 +42,39 @@ public final class SkillFactory {
         this.alias = alias;
     }
 
+    protected void createDefaults() {
+
+        // simply create new config
+        SkillProperties config = plugin.configure(new SkillConfig(this));
+        // calling these methods will create default entries if none exist
+        config.getFriendlyName();
+        config.getDescription();
+        config.getUsage();
+        config.getRequiredLevel();
+        config.getMaxLevel();
+        config.getReagents();
+        config.getManaCost();
+        config.getManaCostLevelModifier();
+        config.getManaCostProfLevelModifier();
+        config.getManaCostSkillLevelModifier();
+        config.getCooldown();
+        config.getCooldownLevelModifier();
+        config.getCooldownProfLevelModifier();
+        config.getCooldownSkillLevelModifier();
+        config.getHealthCost();
+        config.getHealthCostLevelModifier();
+        config.getHealthCostProfLevelModifier();
+        config.getHealthCostSkillLevelModifier();
+        config.getStaminaCost();
+        config.getStaminaCostLevelModifier();
+        config.getStaminaCostProfLevelModifier();
+        config.getStaminaCostSkillLevelModifier();
+        config.getCastTime();
+        config.getCastTimeLevelModifier();
+        config.getCastTimeProfLevelModifier();
+        config.getCastTimeSkillLevelModifier();
+    }
+
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
         ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);

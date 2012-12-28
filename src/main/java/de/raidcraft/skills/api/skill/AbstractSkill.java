@@ -119,16 +119,16 @@ public abstract class AbstractSkill implements Skill {
     public int getTotalManaCost() {
 
         return (int) (properties.getManaCost()
-                        + (properties.getManaLevelModifier() * hero.getLevel().getLevel())
-                        + (properties.getProfLevelManaCostModifier() * getProfession().getLevel().getLevel()));
+                        + (properties.getManaCostLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getManaCostProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
     public int getTotalStaminaCost() {
 
         int stamina = (int) (properties.getStaminaCost()
-                + (properties.getStaminaLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelStaminaCostModifier() * getProfession().getLevel().getLevel()));
+                + (properties.getStaminaCostLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getStaminaCostProfLevelModifier() * getProfession().getLevel().getLevel()));
         if (stamina > 20) stamina = 20;
         return stamina;
     }
@@ -137,8 +137,8 @@ public abstract class AbstractSkill implements Skill {
     public int getTotalHealthCost() {
 
         return (int) (properties.getHealthCost()
-                        + (properties.getHealthLevelModifier() * hero.getLevel().getLevel())
-                        + (properties.getProfLevelHealthCostModifier() * getProfession().getLevel().getLevel()));
+                        + (properties.getHealthCostLevelModifier() * hero.getLevel().getLevel())
+                        + (properties.getHealthCostProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
@@ -146,7 +146,7 @@ public abstract class AbstractSkill implements Skill {
 
         return (int) (properties.getCastTime()
                                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
-                                + (properties.getProfLevelCastTimeModifier() * getProfession().getLevel().getLevel()));
+                                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override

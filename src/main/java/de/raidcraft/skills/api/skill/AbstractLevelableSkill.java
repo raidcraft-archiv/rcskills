@@ -47,13 +47,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final int getTotalManaCost() {
 
-        return (int) (super.getTotalManaCost() + (getProperties().getSkillLevelManaCostModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalManaCost() + (getProperties().getManaCostSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override
     public final int getTotalStaminaCost() {
 
-        int stamina = (int) (super.getTotalStaminaCost() + (getProperties().getSkillLevelStaminaCostModifier() * getLevel().getLevel()));
+        int stamina = (int) (super.getTotalStaminaCost() + (getProperties().getStaminaCostSkillLevelModifier() * getLevel().getLevel()));
         if (stamina > 20) stamina = 20;
         return stamina;
     }
@@ -61,19 +61,19 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final int getTotalHealthCost() {
 
-        return (int) (super.getTotalHealthCost() + (getProperties().getSkillLevelHealthCostModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalHealthCost() + (getProperties().getHealthCostSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override
     public final int getTotalCastTime() {
 
-        return (int) (super.getTotalCastTime() + (getProperties().getSkillLevelCastTimeModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalCastTime() + (getProperties().getCastTimeSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override
     public final double getTotalCooldown() {
 
-        return (super.getTotalCooldown() + (getProperties().getSkillLevelCooldownModifier() * getLevel().getLevel()));
+        return (super.getTotalCooldown() + (getProperties().getCooldownSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override

@@ -51,6 +51,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
             effectFactories.put(factory.getEffectName(), factory);
             effectFactoryClasses.put(effectClass, factory);
+            factory.createDefaults();
             plugin.getLogger().info("Loaded Effect: " + factory.getEffectName());
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());

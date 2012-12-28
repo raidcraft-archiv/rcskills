@@ -98,7 +98,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getManaLevelModifier() {
+    public double getManaCostLevelModifier() {
 
         return getOverride("mana.level-modifier", 0.0);
     }
@@ -110,7 +110,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getStaminaLevelModifier() {
+    public double getStaminaCostLevelModifier() {
 
         return getOverride("stamina.level-modifier", 0.0);
     }
@@ -122,7 +122,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getHealthLevelModifier() {
+    public double getHealthCostLevelModifier() {
 
         return getOverride("health.level-modifier", 0.0);
     }
@@ -170,25 +170,25 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getSkillLevelManaCostModifier() {
+    public double getManaCostSkillLevelModifier() {
 
         return getOverride("mana.skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getSkillLevelStaminaCostModifier() {
+    public double getStaminaCostSkillLevelModifier() {
 
         return getOverride("stamina.skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getSkillLevelHealthCostModifier() {
+    public double getHealthCostSkillLevelModifier() {
 
         return getOverride("health.skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getSkillLevelCastTimeModifier() {
+    public double getCastTimeSkillLevelModifier() {
 
         return getOverride("casttime.skill-level-modifier", 0.0);
     }
@@ -200,25 +200,25 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getProfLevelManaCostModifier() {
+    public double getManaCostProfLevelModifier() {
 
         return getOverride("mana.prof-level-modifier", 0.0);
     }
 
     @Override
-    public double getProfLevelStaminaCostModifier() {
+    public double getStaminaCostProfLevelModifier() {
 
         return getOverride("stamina.prof-level-modifier", 0.0);
     }
 
     @Override
-    public double getProfLevelHealthCostModifier() {
+    public double getHealthCostProfLevelModifier() {
 
         return getOverride("health.prof-level-modifier", 0.0);
     }
 
     @Override
-    public double getProfLevelCastTimeModifier() {
+    public double getCastTimeProfLevelModifier() {
 
         return getOverride("casttime.prof-level-modifier", 0.0);
     }
@@ -236,7 +236,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getSkillLevelCooldownModifier() {
+    public double getCooldownSkillLevelModifier() {
 
         return getOverride("cooldown.skill-level-modifier", 0.0);
     }

@@ -64,6 +64,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             // load the skill factory for the non alias
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
             skillFactories.put(skillName, factory);
+            // lets create the skill once to make a default config
+            factory.createDefaults();
+            plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
             // lets put a duplicate of the factory into the map as alias
             if (plugin.getAliasesConfig().hasSkillAliasFor(skillName)) {
                 String alias = plugin.getAliasesConfig().getSkillAliasFor(skillName);
@@ -77,8 +80,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 }
                 factory = new SkillFactory(plugin, skillClass, skillName, alias);
                 skillFactories.put(alias, factory);
+                plugin.getLogger().info("Loaded Skill Alias: " + factory.getAlias());
             }
-            plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }

@@ -27,15 +27,15 @@ public interface SkillProperties {
 
     public int getManaCost();
 
-    public double getManaLevelModifier();
+    public double getManaCostLevelModifier();
 
     public int getStaminaCost();
 
-    public double getStaminaLevelModifier();
+    public double getStaminaCostLevelModifier();
 
     public int getHealthCost();
 
-    public double getHealthLevelModifier();
+    public double getHealthCostLevelModifier();
 
     public int getRequiredLevel();
 
@@ -51,27 +51,27 @@ public interface SkillProperties {
 
     public double getCooldownLevelModifier();
 
-    public double getSkillLevelCooldownModifier();
+    public double getCooldownSkillLevelModifier();
 
     public double getCooldownProfLevelModifier();
 
     public double getSkillLevelDamageModifier();
 
-    public double getSkillLevelManaCostModifier();
+    public double getManaCostSkillLevelModifier();
 
-    public double getSkillLevelStaminaCostModifier();
+    public double getStaminaCostSkillLevelModifier();
 
-    public double getSkillLevelHealthCostModifier();
+    public double getHealthCostSkillLevelModifier();
 
-    public double getSkillLevelCastTimeModifier();
+    public double getCastTimeSkillLevelModifier();
 
     public double getProfLevelDamageModifier();
 
-    public double getProfLevelManaCostModifier();
+    public double getManaCostProfLevelModifier();
 
-    public double getProfLevelStaminaCostModifier();
+    public double getStaminaCostProfLevelModifier();
 
-    public double getProfLevelHealthCostModifier();
+    public double getHealthCostProfLevelModifier();
 
-    public double getProfLevelCastTimeModifier();
+    public double getCastTimeProfLevelModifier();
 }

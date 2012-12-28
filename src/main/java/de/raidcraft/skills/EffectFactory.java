@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
+import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -37,8 +38,23 @@ public final class EffectFactory<E extends Effect> {
         this.defaultConfig = plugin.configure(new EffectConfig(this));
     }
 
+    protected void createDefaults() {
+
+        EffectData data = defaultConfig;
+        data.getEffectPriority();
+        data.getEffectDelay();
+        data.getEffectDelayLevelModifier();
+        data.getEffectDelayProfLevelModifier();
+        data.getEffectDuration();
+        data.getEffectDurationLevelModifier();
+        data.getEffectDurationProfLevelModifier();
+        data.getEffectInterval();
+        data.getEffectIntervalLevelModifier();
+        data.getEffectIntervalProfLevelModifier();
+    }
+
     @SuppressWarnings("unchecked")
-    public E create(Object source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
+    private E create(Object source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
 
         // its reflection time yay!
         try {
