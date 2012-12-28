@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.attack;
+package de.raidcraft.skills.api.combat.action;
 
 /**
  * @author Silthus

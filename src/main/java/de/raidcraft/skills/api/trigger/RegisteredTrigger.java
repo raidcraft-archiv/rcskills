@@ -53,7 +53,7 @@ public class RegisteredTrigger {
             return;
         }
 
-        if (!skill.isActive() || !skill.isUnlocked() && !hero.equals(skill.getHero())) {
+        if (!skill.isActive() || !skill.isUnlocked() || !hero.equals(skill.getHero())) {
             return;
         }
 
@@ -79,12 +79,7 @@ public class RegisteredTrigger {
 
             // substrat the cost of the skill before it is triggered because a failed trigger costs too
             if (!ignoreChecks) {
-                // substract the mana, health and stamina cost
-                if (skill.getTotalManaCost() > 0) hero.setMana(hero.getMana() - skill.getTotalManaCost());
-                if (skill.getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - skill.getTotalStaminaCost());
-                if (skill.getTotalHealthCost() > 0) hero.damage(skill.getTotalHealthCost());
-                // keep this last or items will be removed before casting
-                hero.getPlayer().getInventory().removeItem(skill.getProperties().getReagents());
+                skill.substractUsageCost();
             }
 
             // and lets pass on the trigger

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.attack;
+package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.Callback;

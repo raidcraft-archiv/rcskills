@@ -29,6 +29,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public void checkUsage() throws CombatException;
 
+    public void substractUsageCost();
+
     public EffectType[] getTypes();
 
     public boolean isOfType(EffectType type);

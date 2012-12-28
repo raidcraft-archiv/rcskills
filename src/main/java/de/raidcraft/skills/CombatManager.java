@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
+import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -15,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,16 @@ public final class CombatManager implements Listener {
     //////////////////////////////////////////////////////////////////////////////*/
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInteract(PlayerInteractEvent event) {
+
+        try {
+            plugin.getCharacterManager().getHero(event.getPlayer()).removeEffect(CastTime.class);
+        } catch (CombatException e) {
+            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
 
         CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
@@ -67,6 +79,7 @@ public final class CombatManager implements Listener {
         plugin.getCharacterManager().clearCacheOf(character);
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void enterCombat(EntityDamageByEntityEvent event) {
 
         if (event.getEntity() instanceof LivingEntity) {

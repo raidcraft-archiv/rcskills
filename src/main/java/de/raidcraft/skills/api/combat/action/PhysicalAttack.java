@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.combat.attack;
+package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.InvalidTargetException;

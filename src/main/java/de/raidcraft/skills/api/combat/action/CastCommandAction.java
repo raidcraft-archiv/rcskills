@@ -1,12 +1,11 @@
-package de.raidcraft.skills.api.combat.attack;
+package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.trigger.CommandTrigger;
+import de.raidcraft.skills.api.trigger.CommandTriggered;
 
 /**
  * @author Silthus
@@ -33,6 +32,10 @@ public class CastCommandAction extends AbstractAction<Hero> {
     @Override
     public void run() throws CombatException {
 
+        if (!(skill instanceof CommandTriggered)) {
+            throw new CombatException("Du kannst diesen Skill nicht via Command ausführen.");
+        }
+
         // check if we meet all requirements to use the skill
         getSkill().checkUsage();
 
@@ -46,6 +49,10 @@ public class CastCommandAction extends AbstractAction<Hero> {
             return;
         }
 
-        TriggerManager.callTrigger(new CommandTrigger(getSource(), args));
+        // lets remove the costs
+        skill.substractUsageCost();
+
+        // and call the trigger
+        ((CommandTriggered) skill).runCommand(args);
     }
 }

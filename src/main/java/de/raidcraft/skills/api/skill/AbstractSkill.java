@@ -76,6 +76,18 @@ public abstract class AbstractSkill implements Skill {
         }
     }
 
+    @Override
+    public void substractUsageCost() {
+
+        // substract the mana, health and stamina cost
+        if (getTotalManaCost() > 0) hero.setMana(hero.getMana() - getTotalManaCost());
+        if (getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - getTotalStaminaCost());
+        if (getTotalHealthCost() > 0) hero.damage(getTotalHealthCost());
+        // keep this last or items will be removed before casting
+        // TODO: replace with working util method
+        hero.getPlayer().getInventory().removeItem(getProperties().getReagents());
+    }
+
     protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, getHero(), eClass);

@@ -1,9 +1,6 @@
 package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.trigger.CommandTrigger;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventException;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -105,13 +102,6 @@ public class TriggerManager {
                 public void execute(Triggered listener, Trigger event) throws EventException {
                     try {
                         if (!eventClass.isAssignableFrom(event.getClass())) {
-                            if (eventClass == CommandTrigger.class) {
-                                // inform the player that he cannot cast that skill
-                                if (listener instanceof Skill) {
-                                    ((Skill) listener).getHero().sendMessage(
-                                            ChatColor.RED + "Du kannst diesen Skill nicht via Command ausführen!");
-                                }
-                            }
                             return;
                         }
                         method.invoke(listener, event);

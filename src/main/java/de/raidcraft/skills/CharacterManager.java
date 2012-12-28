@@ -226,7 +226,7 @@ public final class CharacterManager implements Listener {
 
     private void checkItems(Hero hero, int slot) {
 
-        if (slot < 0) {
+        if (slot > 0) {
             checkSlotItem(hero, slot);
         } else {
             for (int i = 0; i < 9; i++) {

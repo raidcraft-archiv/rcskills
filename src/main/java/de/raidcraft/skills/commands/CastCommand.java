@@ -4,10 +4,11 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.combat.attack.CastCommandAction;
+import de.raidcraft.skills.api.combat.action.CastCommandAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.util.SkillUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -49,6 +50,9 @@ public class CastCommand {
         }
         if (!skill.isUnlocked()) {
             throw new CommandException("Du hast diesen Skill noch nicht freigeschaltet.");
+        }
+        if (!(skill instanceof CommandTriggered)) {
+            throw new CommandException("Du kannst diesen Skill nicht via Command ausführen.");
         }
 
         try {
