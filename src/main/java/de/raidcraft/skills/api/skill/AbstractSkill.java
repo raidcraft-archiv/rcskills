@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -12,6 +13,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TSkillData;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -139,6 +141,56 @@ public abstract class AbstractSkill implements Skill {
         return (int) (properties.getCastTime()
                                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
                                 + (properties.getProfLevelCastTimeModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    protected <V> void setData(String key, V value) {
+
+        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        if (data == null) {
+            data = new TSkillData();
+            data.setKey(key);
+            data.setSkill(database);
+        }
+        data.setValue(value);
+        Database.save(data);
+    }
+
+    protected void removeData(String key) {
+
+        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        if (data != null) {
+            Ebean.delete(data);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <V> V getData(String key, V def) {
+
+        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        if (data == null) {
+            return def;
+        }
+        return (V) data.getValue();
+    }
+
+    protected int getDataInt(String key) {
+
+        return getData(key, 0);
+    }
+
+    protected double getDataDouble(String key) {
+
+        return getData(key, 0.0);
+    }
+
+    protected String getDataString(String key) {
+
+        return getData(key, null);
+    }
+
+    protected boolean getDataBool(String key) {
+
+        return getData(key, false);
     }
 
     @Override

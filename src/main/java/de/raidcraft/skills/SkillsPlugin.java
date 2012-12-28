@@ -17,6 +17,7 @@ import de.raidcraft.skills.skills.physical.Strike;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TSkillData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
@@ -109,6 +110,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         classes.add(THero.class);
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);
+        classes.add(TSkillData.class);
         return classes;
     }
 

@@ -5,6 +5,7 @@ import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -24,6 +25,10 @@ public class THeroSkill implements LevelData, Bean {
 
     @ManyToOne
     private THero hero;
+
+    @OneToMany
+    @JoinColumn(name = "skill_id")
+    private List<TSkillData> skillData;
 
     private int level;
     private int exp;
@@ -97,5 +102,15 @@ public class THeroSkill implements LevelData, Bean {
     public void setUnlocked(boolean unlocked) {
 
         this.unlocked = unlocked;
+    }
+
+    public List<TSkillData> getSkillData() {
+
+        return skillData;
+    }
+
+    public void setSkillData(List<TSkillData> skillData) {
+
+        this.skillData = skillData;
     }
 }
