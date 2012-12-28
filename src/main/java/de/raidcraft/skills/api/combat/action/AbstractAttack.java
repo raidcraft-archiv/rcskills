@@ -7,6 +7,7 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
 
     private final T target;
     private int damage;
+    private boolean cancelled = false;
 
     protected AbstractAttack(S attacker, T target, int damage) {
 
@@ -31,5 +32,17 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     public void setDamage(int damage) {
 
         this.damage = damage;
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+
+        this.cancelled = cancelled;
+    }
+
+    @Override
+    public boolean isCancelled() {
+
+        return cancelled;
     }
 }

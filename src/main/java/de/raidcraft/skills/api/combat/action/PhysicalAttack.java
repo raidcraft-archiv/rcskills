@@ -7,6 +7,10 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -53,6 +57,16 @@ public class PhysicalAttack extends AbstractAttack<CharacterTemplate, CharacterT
                 EntityDamageEvent.DamageCause.CUSTOM,
                 0);
         if (!event.isCancelled()) {
+            // lets run the triggers first to give the skills a chance to cancel the attack or do what not
+            if (getSource() instanceof Hero) {
+                TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this));
+            }
+            if (getTarget() instanceof Hero) {
+                TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this));
+            }
+            if (isCancelled()) {
+                throw new CombatException(CombatException.Type.CANCELLED);
+            }
             // TODO: add fancy resitence checks and so on
             getTarget().damage(this);
             // if no exceptions was thrown to this point issue the callback

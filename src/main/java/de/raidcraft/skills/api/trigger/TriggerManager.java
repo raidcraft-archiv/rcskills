@@ -21,7 +21,7 @@ public class TriggerManager {
      *
      * @param trigger    Trigger to handle
      */
-    public static void callTrigger(Trigger trigger) {
+    public static Trigger callTrigger(Trigger trigger) {
 
         HandlerList handlerlist = trigger.getHandlers();
         handlerlist.bake();
@@ -36,6 +36,7 @@ public class TriggerManager {
                 t.printStackTrace();
             }
         }
+        return trigger;
     }
 
     public static void registerListeners(Triggered listener) {
