@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TriggerHandler {
 
-    public boolean ignoreChecks() default false;
+    public boolean ignoreChecks() default true;
 
     public boolean cancelEventOnFail() default false;
 }
