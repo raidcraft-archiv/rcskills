@@ -22,4 +22,6 @@ public @interface SkillInformation {
     public EffectType[] types();
 
     public EffectElement[] elements() default {};
+
+    public boolean triggerCombat();
 }

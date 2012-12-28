@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.type.Passive;
+import de.raidcraft.skills.api.skill.Passive;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.PlayerSkill;

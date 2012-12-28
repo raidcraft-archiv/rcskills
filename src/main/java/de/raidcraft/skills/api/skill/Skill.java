@@ -4,6 +4,7 @@ import de.raidcraft.api.inheritance.Child;
 import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -25,6 +26,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public String getDescription();
 
     public String[] getUsage();
+
+    public void checkUsage() throws CombatException;
 
     public EffectType[] getTypes();
 
@@ -62,17 +65,11 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     /**
      * Applies the skill to the {@link Hero}. Is called when the skill is first added to the hero.
-     * If {@link de.raidcraft.skills.api.skill.type.Passive} is implemented this method will be
-     * called every few ticks.
-     *
-     * @param hero to apply skill to.
      */
-    public void apply(Hero hero);
+    public void apply();
 
     /**
      * Removes the skill from the {@link Hero}. Is called when the skill was removed from the hero.
-     *
-     * @param hero to apply skill to.
      */
-    public void remove(Hero hero);
+    public void remove();
 }

@@ -1,6 +1,9 @@
 package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.trigger.CommandTrigger;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventException;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -76,7 +79,7 @@ public class TriggerManager {
         Set<Method> methods;
 
             Method[] publicMethods = listener.getClass().getMethods();
-            methods = new HashSet<Method>(publicMethods.length, Float.MAX_VALUE);
+            methods = new HashSet<>(publicMethods.length, Float.MAX_VALUE);
             Collections.addAll(methods, publicMethods);
             Collections.addAll(methods, listener.getClass().getDeclaredMethods());
 
@@ -84,6 +87,7 @@ public class TriggerManager {
 
             if (!method.isAnnotationPresent(TriggerHandler.class)) continue;
 
+            TriggerHandler annotation = method.getAnnotation(TriggerHandler.class);
             final Class<?> checkClass = method.getParameterTypes()[0];
             if (!Trigger.class.isAssignableFrom(checkClass) || method.getParameterTypes().length != 1) {
                 RaidCraft.LOGGER.severe("SkillsPlugin attempted to register an invalid TriggerHandler method signature \"" + method.toGenericString() + "\" in " + listener.getClass());
@@ -101,6 +105,13 @@ public class TriggerManager {
                 public void execute(Triggered listener, Trigger event) throws EventException {
                     try {
                         if (!eventClass.isAssignableFrom(event.getClass())) {
+                            if (eventClass == CommandTrigger.class) {
+                                // inform the player that he cannot cast that skill
+                                if (listener instanceof Skill) {
+                                    ((Skill) listener).getHero().sendMessage(
+                                            ChatColor.RED + "Du kannst diesen Skill nicht via Command ausführen!");
+                                }
+                            }
                             return;
                         }
                         method.invoke(listener, event);
@@ -111,7 +122,7 @@ public class TriggerManager {
                     }
                 }
             };
-            eventSet.add(new RegisteredTrigger(listener, executor));
+            eventSet.add(new RegisteredTrigger(listener, executor, annotation.ignoreChecks()));
         }
         return ret;
     }

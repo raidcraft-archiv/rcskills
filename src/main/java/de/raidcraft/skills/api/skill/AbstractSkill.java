@@ -5,6 +5,8 @@ import de.raidcraft.skills.api.EffectElement;
 import de.raidcraft.skills.api.EffectType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.common.Disarm;
+import de.raidcraft.skills.api.effect.common.Silence;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,6 +14,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,6 +43,37 @@ public abstract class AbstractSkill implements Skill {
         this.information = data.getInformation();
 
         load(data.getData());
+    }
+
+    @Override
+    public void checkUsage() throws CombatException {
+
+        if (this instanceof Passive) {
+            throw new CombatException(CombatException.Type.PASSIVE);
+        }
+        // check common effects here
+        if (this.isOfType(EffectType.MAGICAL) && getHero().hasEffect(Silence.class)) {
+            throw new CombatException(CombatException.Type.SILENCED);
+        }
+        if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
+            throw new CombatException(CombatException.Type.DISARMED);
+        }
+        // lets check the resources of the skill and if the hero has it
+        if (this.getTotalManaCost() > getHero().getMana()) {
+            throw new CombatException(CombatException.Type.LOW_MANA);
+        }
+        if (this.getTotalStaminaCost() > getHero().getStamina()) {
+            throw new CombatException(CombatException.Type.LOW_STAMINA);
+        }
+        if (this.getTotalHealthCost() > getHero().getHealth()) {
+            throw new CombatException(CombatException.Type.LOW_HEALTH);
+        }
+        // lets check if the player has the required reagents
+        for (ItemStack itemStack : getProperties().getReagents()) {
+            if (!getHero().getPlayer().getInventory().contains(itemStack)) {
+                throw new CombatException(CombatException.Type.MISSING_REAGENT);
+            }
+        }
     }
 
     protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
@@ -209,6 +243,8 @@ public abstract class AbstractSkill implements Skill {
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(true);
         save();
+        // apply the skill
+        apply();
     }
 
     @Override
@@ -217,6 +253,8 @@ public abstract class AbstractSkill implements Skill {
         getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(false);
         save();
+        // remove the skill
+        remove();
     }
 
     @Override
@@ -271,16 +309,6 @@ public abstract class AbstractSkill implements Skill {
     public void save() {
 
         Database.save(database);
-    }
-
-    @Override
-    public void apply(Hero hero) {
-        // override if needed
-    }
-
-    @Override
-    public void remove(Hero hero) {
-        // override if needed
     }
 
     @Override

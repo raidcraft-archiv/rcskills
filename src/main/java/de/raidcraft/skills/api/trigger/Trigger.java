@@ -44,16 +44,4 @@ public abstract class Trigger {
      * @return HandlerList to call event with
      */
     protected abstract HandlerList getHandlers();
-
-    /**
-     * Get event type name.
-     *
-     * @return event name
-     */
-    protected abstract String getTriggerName();
-
-    public String toString() {
-
-        return getTriggerName() + " (" + this.getClass().getName() + ")";
-    }
 }

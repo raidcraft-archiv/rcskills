@@ -23,12 +23,6 @@ public class BlockBreakTrigger extends Trigger {
         return event;
     }
 
-    @Override
-    protected String getTriggerName() {
-
-        return "BlockBreakTrigger";
-    }
-
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/

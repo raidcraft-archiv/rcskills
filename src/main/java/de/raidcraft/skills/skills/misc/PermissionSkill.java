@@ -19,7 +19,8 @@ import java.util.Collection;
 @SkillInformation(
         name = "permission-skill",
         desc = "Represents a generic permissions skill.",
-        types = {EffectType.UNBINDABLE}
+        types = {EffectType.UNBINDABLE},
+        triggerCombat = false
 )
 public class PermissionSkill extends AbstractSkill {
 
@@ -42,29 +43,29 @@ public class PermissionSkill extends AbstractSkill {
     }
 
     @Override
-    public void apply(Hero hero) {
+    public void apply() {
 
         Permission pex = RaidCraft.getPermissions();
         for (String world : worlds) {
             for (String perm : permissions) {
-                pex.playerAdd(world, hero.getName(), perm);
+                pex.playerAdd(world, getHero().getName(), perm);
             }
             for (String grp : groups) {
-                pex.playerAddGroup(world, hero.getName(), grp);
+                pex.playerAddGroup(world, getHero().getName(), grp);
             }
         }
     }
 
     @Override
-    public void remove(Hero hero) {
+    public void remove() {
 
         Permission pex = RaidCraft.getPermissions();
         for (String world : worlds) {
             for (String perm : permissions) {
-                pex.playerRemove(world, hero.getName(), perm);
+                pex.playerRemove(world, getHero().getName(), perm);
             }
             for (String grp : groups) {
-                pex.playerRemoveGroup(world, hero.getName(), grp);
+                pex.playerRemoveGroup(world, getHero().getName(), grp);
             }
         }
     }

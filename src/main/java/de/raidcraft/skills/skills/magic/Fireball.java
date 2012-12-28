@@ -14,11 +14,11 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.type.AreaAttack;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
-import org.bukkit.Location;
+import de.raidcraft.skills.trigger.CommandTrigger;
 
 /**
  * @author Silthus
@@ -27,24 +27,24 @@ import org.bukkit.Location;
         name = "fireball",
         desc = "Schießt einen Feuerball auf den Gegener.",
         types = {EffectType.DAMAGING, EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MAGICAL},
-        elements = {EffectElement.FIRE}
+        elements = {EffectElement.FIRE},
+        triggerCombat = true
 )
-public class Fireball extends AbstractLevelableSkill implements AreaAttack {
+public class Fireball extends AbstractLevelableSkill implements Triggered {
 
     public Fireball(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
     }
 
-    @Override
-    public void run(final Hero hero, final Location target) throws CombatException {
+    public void run(CommandTrigger trigger) throws CombatException {
 
-        final RangedAttack rangedAttack = new RangedAttack(hero, ProjectileType.FIREBALL);
+        final RangedAttack rangedAttack = new RangedAttack(getHero(), ProjectileType.FIREBALL);
         rangedAttack.addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException, InvalidTargetException {
 
-                new MagicalAttack(hero, target, getTotalDamage()).run();
+                new MagicalAttack(getHero(), target, getTotalDamage()).run();
                 addEffect(target, Burn.class);
                 addEffect(rangedAttack.getProjectile().getLocation(), target, KnockBack.class);
                 // add some exp to the profession and skill
@@ -53,5 +53,15 @@ public class Fireball extends AbstractLevelableSkill implements AreaAttack {
             }
         });
         rangedAttack.run();
+    }
+
+    @Override
+    public void apply() {
+        //TODO: implement
+    }
+
+    @Override
+    public void remove() {
+        //TODO: implement
     }
 }

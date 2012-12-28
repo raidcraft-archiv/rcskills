@@ -1,26 +1,26 @@
 package de.raidcraft.skills.trigger;
 
+import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.HandlerList;
 import de.raidcraft.skills.api.trigger.Trigger;
-import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  * @author Silthus
  */
-public class BlockPlaceTrigger extends Trigger {
+public class CommandTrigger extends Trigger {
 
-    private final BlockPlaceEvent event;
+    private final CommandContext commandContext;
 
-    public BlockPlaceTrigger(Hero hero, BlockPlaceEvent event) {
+    public CommandTrigger(Hero hero, CommandContext commandContext) {
 
         super(hero);
-        this.event = event;
+        this.commandContext = commandContext;
     }
 
-    public BlockPlaceEvent getEvent() {
+    public CommandContext getCommandContext() {
 
-        return event;
+        return commandContext;
     }
 
     /*///////////////////////////////////////////////////
