@@ -222,4 +222,28 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
 
         return getOverride("casttime.prof-level-modifier", 0.0);
     }
+
+    @Override
+    public double getCooldown() {
+
+        return getOverride("cooldown.base", 0.0);
+    }
+
+    @Override
+    public double getCooldownLevelModifier() {
+
+        return getOverride("cooldown.level-modifier", 0.0);
+    }
+
+    @Override
+    public double getSkillLevelCooldownModifier() {
+
+        return getOverride("cooldown.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getCooldownProfLevelModifier() {
+
+        return getOverride("cooldown.prof-level-modifier", 0.0);
+    }
 }

@@ -47,6 +47,14 @@ public interface SkillProperties {
 
     public double getCastTimeLevelModifier();
 
+    public double getCooldown();
+
+    public double getCooldownLevelModifier();
+
+    public double getSkillLevelCooldownModifier();
+
+    public double getCooldownProfLevelModifier();
+
     public double getSkillLevelDamageModifier();
 
     public double getSkillLevelManaCostModifier();

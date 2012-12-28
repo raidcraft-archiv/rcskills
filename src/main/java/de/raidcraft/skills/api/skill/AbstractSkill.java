@@ -34,6 +34,7 @@ public abstract class AbstractSkill implements Skill {
     private String description;
     private final Collection<Skill> strongParents = new HashSet<>();
     private final Collection<Skill> weakParents = new HashSet<>();
+    private long lastCast;
 
     protected AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -59,6 +60,9 @@ public abstract class AbstractSkill implements Skill {
         }
         if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
+        }
+        if (this.getRemainingCooldown() > 0) {
+            throw new CombatException(CombatException.Type.ON_COOLDOWN);
         }
         // lets check the resources of the skill and if the hero has it
         if (this.getTotalManaCost() > getHero().getMana()) {
@@ -88,6 +92,8 @@ public abstract class AbstractSkill implements Skill {
         // keep this last or items will be removed before casting
         // TODO: replace with working util method
         hero.getPlayer().getInventory().removeItem(getProperties().getReagents());
+        // and lets set the cooldown because it is like a usage cost for further casting
+        setLastCast(System.currentTimeMillis());
     }
 
     protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
@@ -141,6 +147,26 @@ public abstract class AbstractSkill implements Skill {
         return (int) (properties.getCastTime()
                                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
                                 + (properties.getProfLevelCastTimeModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public double getTotalCooldown() {
+
+        return (properties.getCooldown()
+                + (properties.getCooldownLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getCooldownProfLevelModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public long getRemainingCooldown() {
+
+        return (long) ((lastCast + (getTotalCooldown() * 1000)) - System.currentTimeMillis());
+    }
+
+    @Override
+    public void setLastCast(long time) {
+
+        this.lastCast = time;
     }
 
     protected <V> void setData(String key, V value) {

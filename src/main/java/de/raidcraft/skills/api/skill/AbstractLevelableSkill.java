@@ -71,6 +71,12 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public final double getTotalCooldown() {
+
+        return (super.getTotalCooldown() + (getProperties().getSkillLevelCooldownModifier() * getLevel().getLevel()));
+    }
+
+    @Override
     public final boolean isMastered() {
 
         return getLevel().getMaxLevel() == getLevel().getLevel();

@@ -59,6 +59,12 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public int getTotalCastTime();
 
+    public double getTotalCooldown();
+
+    public long getRemainingCooldown();
+
+    public void setLastCast(long time);
+
     public SkillProperties getProperties();
 
     public Profession getProfession();
