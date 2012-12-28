@@ -43,7 +43,7 @@ public abstract class AbstractLoader<T> implements Loader<T> {
     @Override
     public boolean isClass(Class<?> clazz) {
 
-        return clazz != null && getClass().isAssignableFrom(clazz);
+        return clazz != null && getRequiredClass().isAssignableFrom(clazz);
     }
 
     protected Logger getLogger() {

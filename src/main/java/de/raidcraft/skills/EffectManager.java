@@ -34,7 +34,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
     }
 
     @Override
-    protected void loadFactories() {
+    public void loadFactories() {
 
         for (Class<? extends Effect> clazz : loadClasses()) {
             try {
@@ -51,6 +51,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
             effectFactories.put(factory.getEffectName(), factory);
             effectFactoryClasses.put(effectClass, factory);
+            plugin.getLogger().info("Loaded Effect: " + factory.getEffectName());
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());
         }

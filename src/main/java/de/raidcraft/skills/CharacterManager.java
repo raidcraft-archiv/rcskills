@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -181,6 +182,17 @@ public final class CharacterManager implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDeath(EntityDeathEvent event) {
+
+        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
+        character.clearEffects();
+        if (!(character instanceof Hero)) {
+            // lets remove that poor character from our cache... may he Rest in Peace :*(
+            clearCacheOf(character);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         Hero hero = getHero(event.getPlayer());
@@ -188,7 +200,7 @@ public final class CharacterManager implements Listener {
         hero.save();
         hero.clearEffects();
         // lets clear the cache for the hero
-        heroes.remove(event.getPlayer().getName());
+        clearCacheOf(hero);
     }
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)

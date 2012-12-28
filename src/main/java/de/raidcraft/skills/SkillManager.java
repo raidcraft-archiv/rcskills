@@ -39,7 +39,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     }
 
     @Override
-    protected void loadFactories() {
+    public void loadFactories() {
 
         for (Class<? extends Skill> clazz : loadClasses()) {
             registerClass(clazz);
@@ -78,6 +78,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 factory = new SkillFactory(plugin, skillClass, skillName, alias);
                 skillFactories.put(alias, factory);
             }
+            plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }

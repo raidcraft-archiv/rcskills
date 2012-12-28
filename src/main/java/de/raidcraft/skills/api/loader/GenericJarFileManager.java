@@ -20,9 +20,7 @@ public abstract class GenericJarFileManager<T> extends JarFileLoader<T> {
         // lets go thru all the skill configs and remove the .disabled
         this.configDir = new File(plugin.getDataFolder(), "/" + tClass.getSimpleName().toLowerCase() + "-configs/");
         configDir.mkdirs();
-
-        loadFactories();
     }
 
-    protected abstract void loadFactories();
+    public abstract void loadFactories();
 }

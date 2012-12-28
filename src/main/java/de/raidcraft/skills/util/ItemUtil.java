@@ -44,38 +44,69 @@ public final class ItemUtil {
         return false;
     }
 
-    public static final Material[] ARMOR = {
-            Material.LEATHER_HELMET,
-            Material.LEATHER_CHESTPLATE,
-            Material.LEATHER_LEGGINGS,
-            Material.LEATHER_BOOTS,
+    public enum ArmorSlot {
 
-            Material.IRON_HELMET,
-            Material.IRON_CHESTPLATE,
-            Material.IRON_LEGGINGS,
-            Material.IRON_BOOTS,
+        HEAD(
+                Material.LEATHER_HELMET,
+                Material.IRON_HELMET,
+                Material.CHAINMAIL_HELMET,
+                Material.GOLD_HELMET,
+                Material.DIAMOND_HELMET
+        ),
+        CHEST(
+                Material.LEATHER_CHESTPLATE,
+                Material.IRON_CHESTPLATE,
+                Material.CHAINMAIL_CHESTPLATE,
+                Material.GOLD_CHESTPLATE,
+                Material.DIAMOND_CHESTPLATE
+        ),
+        LEGS(
+                Material.LEATHER_LEGGINGS,
+                Material.IRON_LEGGINGS,
+                Material.CHAINMAIL_LEGGINGS,
+                Material.GOLD_LEGGINGS,
+                Material.DIAMOND_LEGGINGS
+        ),
+        FEET(
+                Material.LEATHER_BOOTS,
+                Material.IRON_BOOTS,
+                Material.CHAINMAIL_BOOTS,
+                Material.GOLD_BOOTS,
+                Material.DIAMOND_BOOTS
+        )
+        ;
 
-            Material.CHAINMAIL_HELMET,
-            Material.CHAINMAIL_CHESTPLATE,
-            Material.CHAINMAIL_LEGGINGS,
-            Material.CHAINMAIL_BOOTS,
+        private final Material[] armor;
 
-            Material.GOLD_HELMET,
-            Material.GOLD_CHESTPLATE,
-            Material.GOLD_LEGGINGS,
-            Material.GOLD_BOOTS,
+        private ArmorSlot(Material... armor) {
 
-            Material.DIAMOND_HELMET,
-            Material.DIAMOND_CHESTPLATE,
-            Material.DIAMOND_LEGGINGS,
-            Material.DIAMOND_BOOTS
-    };
+            this.armor = armor;
+        }
+
+        public Material[] getArmor() {
+
+            return armor;
+        }
+
+        public static ArmorSlot fromMaterial(Material material) {
+            for (ArmorSlot slot : ArmorSlot.values()) {
+                for (Material armor : slot.getArmor()) {
+                    if (material == armor) {
+                        return slot;
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
     public static boolean isArmor(Material material) {
 
-        for (Material armor : ARMOR) {
-            if (armor == material) {
-                return true;
+        for (ArmorSlot slot : ArmorSlot.values()) {
+            for (Material armor : slot.getArmor()) {
+                if (material == armor) {
+                    return true;
+                }
             }
         }
         return false;

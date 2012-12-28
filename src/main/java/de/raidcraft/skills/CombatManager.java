@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
@@ -69,14 +68,6 @@ public final class CombatManager implements Listener {
         } catch (CombatException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDeath(EntityDeathEvent event) {
-
-        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
-        // lets remove that poor character from our cache... may he Rest in Peace :*(
-        plugin.getCharacterManager().clearCacheOf(character);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

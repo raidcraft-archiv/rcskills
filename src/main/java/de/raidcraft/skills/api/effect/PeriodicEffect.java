@@ -67,6 +67,10 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
     @Override
     public void apply() throws CombatException {
 
+        // dont start if interval is not configured
+        if (getInterval() < 1) {
+            remove();
+        }
         if (!isStarted()) {
             // lets start the task
             startTask();
