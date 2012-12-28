@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.util.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,9 +15,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -209,42 +209,5 @@ public final class CharacterManager implements Listener {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
         event.setAmount(0);
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onItemHeld(PlayerItemHeldEvent event) {
-
-        checkItems(getHero(event.getPlayer()), event.getNewSlot());
-
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInventoryClose(InventoryCloseEvent event) {
-
-        checkItems(getHero((Player) event.getPlayer()), -1);
-    }
-
-    private void checkItems(Hero hero, int slot) {
-
-        if (slot > 0) {
-            checkSlotItem(hero, slot);
-        } else {
-            for (int i = 0; i < 9; i++) {
-                checkSlotItem(hero, i);
-            }
-        }
-        // also check the armor
-        ItemUtil.armorCheck(hero);
-    }
-
-    private void checkSlotItem(Hero hero, int slot) {
-
-        ItemStack item = hero.getPlayer().getInventory().getItem(slot);
-        // lets check for weapons
-        if (item != null && ItemUtil.isWeapon(item.getType()) && !hero.isAllowedItem(item.getType())) {
-            ItemUtil.moveItem(hero, slot, item);
-        } else {
-            ItemUtil.disarmCheck(hero);
-        }
     }
 }

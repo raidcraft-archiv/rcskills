@@ -6,16 +6,13 @@ import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Levelable;
-import de.raidcraft.skills.api.persistance.Equipment;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -35,8 +32,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public void debug(String message);
 
     public void reset();
-
-    public int getDamage();
 
     public int getMana();
 
@@ -65,10 +60,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public List<Skill> getSkills();
 
     public List<Profession> getProfessions();
-
-    public Set<Equipment> getEquipment();
-
-    public boolean isAllowedItem(Material material);
 
     public boolean canChooseProfession(Profession profession) throws InvalidChoiceException;
 

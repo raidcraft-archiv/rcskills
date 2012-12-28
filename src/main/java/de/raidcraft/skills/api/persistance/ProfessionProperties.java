@@ -41,6 +41,4 @@ public interface ProfessionProperties {
     public Set<Profession> loadStrongParents(Hero hero, Profession profession);
 
     public Set<Profession> loadWeakParents(Hero hero, Profession profession);
-
-    public Set<Equipment> getEquipment();
 }

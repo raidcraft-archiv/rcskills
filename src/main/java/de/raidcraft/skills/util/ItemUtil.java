@@ -118,33 +118,4 @@ public final class ItemUtil {
                 moveItem(hero, i, contents[i]);
             }
     }
-
-    public static void armorCheck(Hero hero) {
-
-        PlayerInventory inventory = hero.getPlayer().getInventory();
-        if (inventory.getHelmet() != null && inventory.getHelmet().getTypeId() != 0) {
-            if (!hero.isAllowedItem(inventory.getHelmet().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getHelmet());
-                inventory.setHelmet(null);
-            }
-        }
-        if (inventory.getChestplate() != null && inventory.getChestplate().getTypeId() != 0) {
-            if (!hero.isAllowedItem(inventory.getChestplate().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getChestplate());
-                inventory.setChestplate(null);
-            }
-        }
-        if (inventory.getLeggings() != null && inventory.getLeggings().getTypeId() != 0) {
-            if (!hero.isAllowedItem(inventory.getLeggings().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getLeggings());
-                inventory.setLeggings(null);
-            }
-        }
-        if (inventory.getBoots() != null && inventory.getBoots().getTypeId() != 0) {
-            if (!hero.isAllowedItem(inventory.getBoots().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getLeggings());
-                inventory.setBoots(null);
-            }
-        }
-    }
 }
