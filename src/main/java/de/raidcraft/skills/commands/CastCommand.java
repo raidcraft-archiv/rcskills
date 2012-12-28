@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.util.SkillUtil;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -58,7 +59,11 @@ public class CastCommand {
         try {
             new CastCommandAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
         } catch (CombatException e) {
-            throw new CommandException(e.getMessage());
+            String msg = e.getMessage();
+            if (e.getType() == CombatException.Type.ON_COOLDOWN) {
+                msg = e.getMessage() + " - " + TimeUtil.millisToSeconds(skill.getRemainingCooldown()) + "s";
+            }
+            throw new CommandException(msg);
         }
     }
 }

@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
@@ -57,23 +58,12 @@ public class RegisteredTrigger {
             return;
         }
 
-        if (!ignoreChecks) {
-            try {
-                // check the skill usage
-                skill.checkUsage();
-            } catch (CombatException e) {
-                hero.sendMessage(ChatColor.RED + e.getMessage());
-                // lets check if we need to cancel a bukkit event
-                if (cancelEventOnFail && trigger instanceof BukkitEventTrigger) {
-                    if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {
-                        ((Cancellable) ((BukkitEventTrigger) trigger).getEvent()).setCancelled(true);
-                    }
-                }
-                return;
-            }
-        }
-
         try {
+            if (!ignoreChecks) {
+                    // check the skill usage
+                    skill.checkUsage();
+            }
+
             // add a combat effect when a skill is beeing casted
             if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
 
@@ -85,7 +75,18 @@ public class RegisteredTrigger {
             // and lets pass on the trigger
             executor.execute(listener, trigger);
         } catch (CombatException e) {
-            hero.sendMessage(ChatColor.RED + e.getMessage());
+            String msg = e.getMessage();
+            if (e.getType() == CombatException.Type.ON_COOLDOWN) {
+                msg = e.getMessage() + " - " + TimeUtil.millisToSeconds(skill.getRemainingCooldown()) + "s";
+            }
+            // send the combat warning
+            hero.sendMessage(ChatColor.RED + msg);
+            // lets check if we need to cancel a bukkit event
+            if (cancelEventOnFail && trigger instanceof BukkitEventTrigger) {
+                if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {
+                    ((Cancellable) ((BukkitEventTrigger) trigger).getEvent()).setCancelled(true);
+                }
+            }
         }
     }
 }
