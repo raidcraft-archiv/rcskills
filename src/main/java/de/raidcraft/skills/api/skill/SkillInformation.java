@@ -19,9 +19,9 @@ public @interface SkillInformation {
 
     public String desc();
 
-    public EffectType[] types();
+    public EffectType[] types() default {EffectType.UNBINDABLE};
 
     public EffectElement[] elements() default {};
 
-    public boolean triggerCombat();
+    public boolean triggerCombat() default false;
 }
