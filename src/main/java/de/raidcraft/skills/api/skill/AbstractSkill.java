@@ -2,9 +2,9 @@ package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.Disarm;
 import de.raidcraft.skills.api.effect.common.Silence;
@@ -148,10 +148,10 @@ public abstract class AbstractSkill implements Skill {
         TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
         if (data == null) {
             data = new TSkillData();
-            data.setKey(key);
+            data.setDataKey(key);
             data.setSkill(database);
         }
-        data.setValue(value);
+        data.setDataValue(value.toString());
         Database.save(data);
     }
 
@@ -163,34 +163,29 @@ public abstract class AbstractSkill implements Skill {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected <V> V getData(String key, V def) {
+    protected String getData(String key) {
 
-        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
-        if (data == null) {
-            return def;
-        }
-        return (V) data.getValue();
+        return Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
     }
 
     protected int getDataInt(String key) {
 
-        return getData(key, 0);
+        return Integer.parseInt(getData(key));
     }
 
     protected double getDataDouble(String key) {
 
-        return getData(key, 0.0);
+        return Double.parseDouble(getData(key));
     }
 
     protected String getDataString(String key) {
 
-        return getData(key, null);
+        return getData(key);
     }
 
     protected boolean getDataBool(String key) {
 
-        return getData(key, false);
+        return Boolean.parseBoolean(getData(key));
     }
 
     @Override

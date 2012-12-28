@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.database.Bean;
 
 import javax.persistence.Entity;
@@ -17,14 +16,10 @@ public class TSkillData implements Bean {
 
     @Id
     private int id;
-    @NotNull
     @ManyToOne
     private THeroSkill skill;
-    @NotNull
-    private String key;
-    @NotNull
-    private Object value;
-
+    private String dataKey;
+    private String dataValue;
 
     public int getId() {
 
@@ -36,24 +31,24 @@ public class TSkillData implements Bean {
         this.id = id;
     }
 
-    public String getKey() {
+    public String getDataKey() {
 
-        return key;
+        return dataKey;
     }
 
-    public void setKey(String key) {
+    public void setDataKey(String dataKey) {
 
-        this.key = key;
+        this.dataKey = dataKey;
     }
 
-    public Object getValue() {
+    public String getDataValue() {
 
-        return value;
+        return dataValue;
     }
 
-    public void setValue(Object value) {
+    public void setDataValue(String dataValue) {
 
-        this.value = value;
+        this.dataValue = dataValue;
     }
 
     public THeroSkill getSkill() {
