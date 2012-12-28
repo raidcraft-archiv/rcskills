@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.event.EventException;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -43,6 +45,13 @@ public class TriggerManager {
 
         for (Map.Entry<Class<? extends Trigger>, Set<RegisteredTrigger>> entry : createRegisteredTriggers(listener).entrySet()) {
             getTriggerListeners(getRegistrationClass(entry.getKey())).registerAll(entry.getValue());
+        }
+    }
+
+    public static void unregisterListeners(Triggered listener) {
+
+        for (HandlerList handlerList : HandlerList.getHandlerLists()) {
+            handlerList.unregister(listener);
         }
     }
 
@@ -113,7 +122,11 @@ public class TriggerManager {
                     }
                 }
             };
-            eventSet.add(new RegisteredTrigger(listener, executor, annotation.ignoreChecks(), annotation.cancelEventOnFail()));
+            if (Skill.class.isAssignableFrom(listener.getClass())) {
+                eventSet.add(new RegisteredSkillTrigger(listener, executor, annotation.ignoreChecks(), annotation.cancelEventOnFail()));
+            } else if (Effect.class.isAssignableFrom(listener.getClass())) {
+                eventSet.add(new RegisteredEffectTrigger(listener, executor));
+            }
         }
         return ret;
     }

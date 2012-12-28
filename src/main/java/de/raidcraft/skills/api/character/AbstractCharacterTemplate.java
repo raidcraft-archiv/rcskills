@@ -8,6 +8,8 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
@@ -159,6 +161,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         // lets silently remove the effect from the list of applied effects
         // we asume the remove() method of the effect has already been called at this point
         effects.remove(effect.getClass());
+        // lets remove the effect as a listener
+        if (effect instanceof Triggered) {
+            TriggerManager.unregisterListeners((Triggered) effect);
+        }
     }
 
     @Override
@@ -182,6 +188,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 }
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E extends Effect> E getEffect(Class<E> eClass) {
+
+        return (E) effects.get(eClass);
     }
 
     @Override

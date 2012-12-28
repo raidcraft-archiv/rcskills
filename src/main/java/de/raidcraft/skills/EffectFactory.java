@@ -6,6 +6,8 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.EffectConfig;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -45,7 +47,11 @@ public final class EffectFactory<E extends Effect> {
                     if (constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
                             && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
                             && constructor.getParameterTypes()[2].isAssignableFrom(EffectConfig.class)) {
-                        return (E) constructor.newInstance(source, target, config);
+                        E effect = (E) constructor.newInstance(source, target, config);
+                        if (effect instanceof Triggered) {
+                            TriggerManager.registerListeners((Triggered) effect);
+                        }
+                        return effect;
                     }
                 }
             }

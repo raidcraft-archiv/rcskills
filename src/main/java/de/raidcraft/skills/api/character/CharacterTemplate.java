@@ -42,6 +42,8 @@ public interface CharacterTemplate {
 
     public boolean hasEffect(Class<? extends Effect> eClass);
 
+    public <E extends Effect> E getEffect(Class<E> eClass);
+
     public boolean hasEffectType(EffectType type);
 
     public void clearEffects();
