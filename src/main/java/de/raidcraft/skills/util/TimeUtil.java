@@ -7,14 +7,14 @@ public final class TimeUtil {
 
     private TimeUtil() {}
 
-    public static double ticksToSeconds(double ticks) {
+    public static double ticksToSeconds(long ticks) {
 
         return ((int)((ticks / 20.0) * 100.0)) / 100.0;
     }
 
     public static double millisToSeconds(long millis) {
 
-        return ticksToSeconds((millis / 1000.0) * 20.0);
+        return ((int)((millis / 1000.0) * 100.0)) / 100.0;
     }
 
 }
