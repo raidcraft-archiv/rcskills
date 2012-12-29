@@ -22,8 +22,6 @@ public interface CharacterTemplate {
 
     public int getMaxHealth();
 
-    public void damage(int damage);
-
     public void damage(Attack attack);
 
     public void heal(int amount);
@@ -36,7 +34,7 @@ public interface CharacterTemplate {
 
     public <E extends Effect> E addEffect(Object source, Class<E> eClass) throws CombatException;
 
-    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException;
+    public void removeEffect(Class<? extends Effect> eClass) throws CombatException;
 
     public void removeEffect(Effect effect) throws CombatException;
 

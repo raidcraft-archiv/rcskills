@@ -10,13 +10,13 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 /**
  * @author Silthus
  */
-public class CastCommandAction extends AbstractAction<Hero> {
+public class CastAction extends AbstractAction<Hero> {
 
     private final Skill skill;
     private final CommandContext args;
     private boolean delayed = false;
 
-    public CastCommandAction(Skill skill, CommandContext args) {
+    public CastAction(Skill skill, CommandContext args) {
 
         super(skill.getHero());
         this.skill = skill;

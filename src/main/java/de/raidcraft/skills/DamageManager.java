@@ -132,13 +132,14 @@ public final class DamageManager implements Listener {
                 if (attacker == null) {
                     return;
                 }
-                PhysicalAttack attack = new PhysicalAttack(event);
+                PhysicalAttack attack = new PhysicalAttack(event, event.getDamage());
                 // lets set the event damage to 0 and handle it in our attack
                 event.setDamage(0);
                 attack.run();
             } else {
                 if (environmentalDamage.containsKey(event.getCause())) {
-                    EnvironmentAttack attack = new EnvironmentAttack(event, environmentalDamage.get(event.getCause()));
+                    EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
+                    event.setDamage(0);
                     attack.run();
                 } else {
                     // TODO: process other damage sources based on the config loaded above

@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
@@ -100,16 +101,21 @@ public final class CombatManager implements Listener {
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
+        boolean callback = false;
         // lets enter combat for that player
         enterCombat(event);
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+            CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             // and go thru all registered callbacks
             for (SourcedRangeCallback sourcedCallback : new ArrayList<>(callbacks.values())) {
-                if (sourcedCallback.getProjectile().equals(event.getDamager())) {
+                if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
+                    // lets set the damage of the event to 0 because it is handled by us
+                    event.setDamage(0);
                     try {
                         // the shooter is our source so lets call back and remove
-                        sourcedCallback.getCallback().run(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()));
+                        sourcedCallback.getCallback().run(target);
                         callbacks.remove(sourcedCallback.getTaskId());
                         if (sourcedCallback.getSource() instanceof Hero) {
                             ((Hero) sourcedCallback.getSource()).debug("Called Range Callback - " + sourcedCallback.getTaskId());
@@ -119,7 +125,16 @@ public final class CombatManager implements Listener {
                             ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
                         }
                     }
+                    callback = true;
                 }
+            }
+            if (!callback) {
+                // lets issue a new physical attack for the event
+                try {
+                    new PhysicalAttack(source, target, event.getDamage()).run();
+                } catch (CombatException ignored) {
+                }
+                event.setDamage(0);
             }
         }
     }

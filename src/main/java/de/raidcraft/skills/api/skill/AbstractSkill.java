@@ -5,6 +5,7 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.Disarm;
 import de.raidcraft.skills.api.effect.common.Silence;
@@ -88,7 +89,10 @@ public abstract class AbstractSkill implements Skill {
         // substract the mana, health and stamina cost
         if (getTotalManaCost() > 0) hero.setMana(hero.getMana() - getTotalManaCost());
         if (getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - getTotalStaminaCost());
-        if (getTotalHealthCost() > 0) hero.damage(getTotalHealthCost());
+        try {
+            if (getTotalHealthCost() > 0) new MagicalAttack(getHero(), getHero(), getTotalHealthCost()).run();
+        } catch (CombatException ignored) {
+        }
         // keep this last or items will be removed before casting
         // TODO: replace with working util method
         hero.getPlayer().getInventory().removeItem(getProperties().getReagents());

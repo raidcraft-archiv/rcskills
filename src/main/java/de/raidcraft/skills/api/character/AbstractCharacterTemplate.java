@@ -53,8 +53,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         return entity;
     }
 
-    @Override
-    public void damage(int damage) {
+    private void damage(int damage) {
 
         int newHealth = getHealth() - damage;
         if (newHealth <= 0) {
@@ -71,10 +70,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void damage(Attack attack) {
 
-        damage(attack.getDamage());
-        if (attack.getSource() instanceof Hero) {
-            ((Hero) attack.getSource()).debug(
-                    "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
+        if (!attack.isCancelled()) {
+            damage(attack.getDamage());
+            if (attack.getSource() instanceof Hero) {
+                ((Hero) attack.getSource()).debug(
+                        "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
+            }
         }
     }
 
@@ -168,7 +169,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void removeEffect(Class<? extends Effect<?>> eClass) throws CombatException {
+    public void removeEffect(Class<? extends Effect> eClass) throws CombatException {
 
         Effect<?> effect = effects.remove(eClass);
         if (effect != null) {

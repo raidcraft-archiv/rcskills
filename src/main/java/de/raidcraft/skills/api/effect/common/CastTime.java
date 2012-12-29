@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.action.CastCommandAction;
+import de.raidcraft.skills.api.combat.action.CastAction;
 import de.raidcraft.skills.api.effect.DelayedEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -17,11 +17,11 @@ import org.bukkit.ChatColor;
         description = "Keeps track of the casttime for a char template",
         priority = -1.0
 )
-public class CastTime extends DelayedEffect<CastCommandAction> {
+public class CastTime extends DelayedEffect<CastAction> {
 
     private boolean casted = false;
 
-    public CastTime(CastCommandAction source, CharacterTemplate target, EffectData data) {
+    public CastTime(CastAction source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         setPriority(-1.0);
