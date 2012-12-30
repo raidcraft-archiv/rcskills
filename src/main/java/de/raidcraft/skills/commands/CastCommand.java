@@ -3,6 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.action.CastAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -34,6 +35,7 @@ public class CastCommand {
             desc = "Casts the given skill",
             min = 1
     )
+    @CommandPermissions("rcskills.player.cast")
     public void cast(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {

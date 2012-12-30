@@ -65,6 +65,7 @@ public class AdminCommands {
             usage = "<player> <skill>",
             min = 2
     )
+    @CommandPermissions("rcskills.admin.skill.add")
     public void addSkill(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
@@ -85,6 +86,7 @@ public class AdminCommands {
             usage = "<player> <skill>",
             min = 2
     )
+    @CommandPermissions("rcskills.admin.skill.remove")
     public void removeSkill(CommandContext args, CommandSender sender) throws CommandException {
 
         try {

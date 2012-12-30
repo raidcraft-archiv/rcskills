@@ -43,11 +43,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private static final String MD_MANA = "rcs_mana";
     private static final String MD_HEALTH = "rcs_health";
     private static final String MD_STAMINA = "rcs_stamina";
+    private static final String MD_DEBUGGING = "rcs_debugging";
+    private static final String MD_COMBAT_LOG = "rcs_combatlog";
 
     private final int id;
     private final RCPlayer player;
     private Level<Hero> level;
     private boolean debugging = false;
+    private boolean combatLoggging = false;
     private int health;
     private int mana;
     private int stamina;
@@ -70,6 +73,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         setHealth(loadHealth());
         setMana(loadMana());
         setStamina(loadStamina());
+        setDebugging(loadDebugging());
+        setCombatLogging(loadCombatLogging());
         this.maxLevel = data.getMaxLevel();
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
@@ -148,6 +153,16 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private int loadStamina() {
 
         return HeroUtil.getEntityMetaData(getEntity(), MD_STAMINA, 20);
+    }
+
+    private boolean loadDebugging() {
+
+        return HeroUtil.getEntityMetaData(getEntity(), MD_DEBUGGING, false);
+    }
+
+    private boolean loadCombatLogging() {
+
+        return HeroUtil.getEntityMetaData(getEntity(), MD_COMBAT_LOG, false);
     }
 
     @Override
@@ -229,6 +244,18 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public boolean isCombatLogging() {
+
+        return combatLoggging;
+    }
+
+    @Override
+    public void setCombatLogging(boolean logging) {
+
+        this.combatLoggging = logging;
+    }
+
+    @Override
     public final Level<Hero> getLevel() {
 
         return level;
@@ -245,6 +272,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         if (isDebugging() && message != null && !message.equals("")) {
             player.sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
+        }
+    }
+
+    @Override
+    public void combatLog(String message) {
+
+        if (isCombatLogging() && message != null && !message.equals("")) {
+            player.sendMessage(ChatColor.GRAY + "[Combat]" + ChatColor.ITALIC + message);
         }
     }
 
@@ -375,6 +410,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         HeroUtil.setEntityMetaData(getEntity(), MD_HEALTH, getHealth());
         HeroUtil.setEntityMetaData(getEntity(), MD_MANA, getMana());
         HeroUtil.setEntityMetaData(getEntity(), MD_STAMINA, getStamina());
+        HeroUtil.setEntityMetaData(getEntity(), MD_DEBUGGING, isDebugging());
+        HeroUtil.setEntityMetaData(getEntity(), MD_COMBAT_LOG, isCombatLogging());
         saveProfessions();
         saveLevelProgress(getLevel());
         saveSkills();

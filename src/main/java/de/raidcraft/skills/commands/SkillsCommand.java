@@ -1,8 +1,6 @@
 package de.raidcraft.skills.commands;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -36,6 +34,8 @@ public class SkillsCommand {
             usage = "[profession] -p #",
             flags = "p:as"
     )
+    @CommandAlias("rcs skills")
+    @CommandPermissions("rcskills.player.skill.list")
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
         final Hero hero;

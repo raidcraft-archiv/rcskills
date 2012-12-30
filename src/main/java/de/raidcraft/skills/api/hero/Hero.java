@@ -31,6 +31,12 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void debug(String message);
 
+    public boolean isCombatLogging();
+
+    public void setCombatLogging(boolean logging);
+
+    public void combatLog(String message);
+
     public void reset();
 
     public int getMana();

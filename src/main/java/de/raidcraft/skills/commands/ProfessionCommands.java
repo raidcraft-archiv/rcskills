@@ -3,6 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
@@ -34,6 +35,7 @@ public class ProfessionCommands {
             desc = "Lists professions",
             flags = "p:ac"
     )
+    @CommandPermissions("rcskills.player.profession.list")
     public void list(final CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {
@@ -78,6 +80,7 @@ public class ProfessionCommands {
             min = 1,
             flags = "f"
     )
+    @CommandPermissions("rcskills.player.profession.choose")
     public void choose(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) throw new CommandException("...");
@@ -132,6 +135,7 @@ public class ProfessionCommands {
             aliases = {"info"},
             desc = "Shows information about a profession"
     )
+    @CommandPermissions("rcskills.player.profession.info")
     public void info(CommandContext args, CommandSender sender) {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);

@@ -3,6 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -28,6 +29,7 @@ public class SkillCommands {
             usage = "<skill>",
             min = 1
     )
+    @CommandPermissions("rcskills.player.skill.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
