@@ -59,10 +59,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         this.aliasesConfig = configure(new AliasesConfig(this));
         // the skill manager takes care of all skills currently loaded
-        this.effectManager = new EffectManager(this);
         this.skillManager = new SkillManager(this);
-        this.effectManager.loadFactories();
+        this.effectManager = new EffectManager(this);
         this.skillManager.loadFactories();
+        this.effectManager.loadFactories();
         // register our inhouse skills
         registerSkills();
         // these managers can only be loaded after the skill manager

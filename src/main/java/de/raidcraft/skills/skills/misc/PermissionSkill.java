@@ -28,7 +28,7 @@ public class PermissionSkill extends AbstractSkill {
     private Collection<String> permissions;
     private Collection<String> worlds;
 
-    protected PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
