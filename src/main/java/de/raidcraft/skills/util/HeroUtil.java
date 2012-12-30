@@ -1,7 +1,10 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -48,5 +51,24 @@ public final class HeroUtil {
     public static <V> void setEntityMetaData(LivingEntity entity, String key, V value) {
 
         entity.setMetadata(key, new FixedMetadataValue(RaidCraft.getComponent(SkillsPlugin.class), value));
+    }
+
+    public static Hero getHeroFromEntity(LivingEntity entity) throws UnknownPlayerException {
+
+        CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(entity);
+        return getHeroFromCharacter(character);
+    }
+
+    public static Hero getHeroFromCharacter(CharacterTemplate character) throws UnknownPlayerException {
+
+        if (character instanceof Hero) {
+            return (Hero) character;
+        }
+        throw new UnknownPlayerException(character.getName() + " ist kein Spieler!");
+    }
+
+    public static Hero getHeroFromName(String name) throws UnknownPlayerException {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(name);
     }
 }
