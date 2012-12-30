@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.event.EventException;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -114,16 +115,14 @@ public class TriggerManager {
             }
 
             TriggerExecutor executor = new TriggerExecutor() {
-                public void execute(Triggered listener, Trigger event) throws EventException {
+                public void execute(Triggered listener, Trigger event) throws EventException, CombatException {
                     try {
                         if (!eventClass.isAssignableFrom(event.getClass())) {
                             return;
                         }
                         method.invoke(listener, event);
-                    } catch (InvocationTargetException ex) {
+                    } catch (InvocationTargetException | IllegalAccessException ex) {
                         throw new EventException(ex.getCause());
-                    } catch (Throwable t) {
-                        throw new EventException(t);
                     }
                 }
             };

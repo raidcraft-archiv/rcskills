@@ -70,7 +70,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void damage(Attack attack) {
 
-        if (!attack.isCancelled()) {
+        if (!attack.isCancelled() && attack.getDamage() > 0) {
             damage(attack.getDamage());
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(

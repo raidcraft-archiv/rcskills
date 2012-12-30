@@ -34,7 +34,6 @@ public class SkillsCommand {
             usage = "[profession] -p #",
             flags = "p:as"
     )
-    @CommandAlias("rcs skills")
     @CommandPermissions("rcskills.player.skill.list")
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
