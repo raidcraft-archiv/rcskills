@@ -51,7 +51,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void checkUsage() throws CombatException {
+    public final void checkUsage() throws CombatException {
 
         if (this instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
@@ -86,7 +86,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean canUseSkill() {
+    public final boolean canUseSkill() {
 
         try {
             checkUsage();
@@ -97,7 +97,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void substractUsageCost() {
+    public final void substractUsageCost() {
 
         // substract the mana, health and stamina cost
         if (getTotalManaCost() > 0) hero.setMana(hero.getMana() - getTotalManaCost());
@@ -175,24 +175,24 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public long getRemainingCooldown() {
+    public final long getRemainingCooldown() {
 
         return (long) ((lastCast + (getTotalCooldown() * 1000)) - System.currentTimeMillis());
     }
 
     @Override
-    public boolean isOnCooldown() {
+    public final boolean isOnCooldown() {
 
         return getRemainingCooldown() > 0;
     }
 
     @Override
-    public void setLastCast(long time) {
+    public final void setLastCast(long time) {
 
         this.lastCast = time;
     }
 
-    protected <V> void setData(String key, V value) {
+    protected final <V> void setData(String key, V value) {
 
         TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
         if (data == null) {
@@ -204,7 +204,7 @@ public abstract class AbstractSkill implements Skill {
         Database.save(data);
     }
 
-    protected void removeData(String key) {
+    protected final void removeData(String key) {
 
         TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
         if (data != null) {
@@ -212,27 +212,27 @@ public abstract class AbstractSkill implements Skill {
         }
     }
 
-    protected String getData(String key) {
+    protected final String getData(String key) {
 
         return Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
     }
 
-    protected int getDataInt(String key) {
+    protected final int getDataInt(String key) {
 
         return Integer.parseInt(getData(key));
     }
 
-    protected double getDataDouble(String key) {
+    protected final double getDataDouble(String key) {
 
         return Double.parseDouble(getData(key));
     }
 
-    protected String getDataString(String key) {
+    protected final String getDataString(String key) {
 
         return getData(key);
     }
 
-    protected boolean getDataBool(String key) {
+    protected final boolean getDataBool(String key) {
 
         return Boolean.parseBoolean(getData(key));
     }
@@ -265,7 +265,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final String getDescription() {
+    public String getDescription() {
 
         return description
                 .replace("%player%", hero.getName())
@@ -276,7 +276,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final String[] getUsage() {
+    public String[] getUsage() {
 
         return getProperties().getUsage();
     }
@@ -288,7 +288,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isOfType(EffectType type) {
+    public final boolean isOfType(EffectType type) {
 
         for (EffectType t : getTypes()) {
             if (t == type) {
@@ -305,7 +305,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isOfElement(EffectElement element) {
+    public final boolean isOfElement(EffectElement element) {
 
         for (EffectElement el : getElements()) {
             if (el == element) {

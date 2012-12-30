@@ -107,7 +107,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public void save() {
+    public final void save() {
 
         super.save();
         level.saveLevelProgress();
