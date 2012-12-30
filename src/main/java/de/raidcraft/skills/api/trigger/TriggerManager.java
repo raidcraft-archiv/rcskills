@@ -116,13 +116,21 @@ public class TriggerManager {
 
             TriggerExecutor executor = new TriggerExecutor() {
                 public void execute(Triggered listener, Trigger event) throws EventException, CombatException {
+
                     try {
                         if (!eventClass.isAssignableFrom(event.getClass())) {
                             return;
                         }
                         method.invoke(listener, event);
-                    } catch (InvocationTargetException | IllegalAccessException ex) {
-                        throw new EventException(ex.getCause());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        try {
+                            throw new EventException(e.getCause(), e.getMessage());
+                        } catch (EventException e1) {
+                            if (e1.getCause() instanceof CombatException) {
+                                throw (CombatException) e1.getCause();
+                            }
+                            throw e1;
+                        }
                     }
                 }
             };
