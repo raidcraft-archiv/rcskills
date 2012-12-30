@@ -5,11 +5,11 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.EffectConfig;
+import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.util.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -26,7 +26,7 @@ public final class EffectFactory<E extends Effect> {
     private final Class<E> eClass;
     private final EffectInformation information;
     private final String effectName;
-    private final Map<String, EffectConfig> effectConfigs = new HashMap<>();
+    private final Map<Skill, EffectConfig> effectConfigs = new HashMap<>();
     private final EffectConfig defaultConfig;
 
     protected EffectFactory(SkillsPlugin plugin, Class<E> eClass) {
@@ -81,18 +81,17 @@ public final class EffectFactory<E extends Effect> {
         }
 
         EffectConfig config;
-        if (!effectConfigs.containsKey(skill.getProfession().getName())) {
+        if (!effectConfigs.containsKey(skill)) {
+            // we need to create a new effect config instance for each skill to merge overrides
             config = plugin.configure(new EffectConfig(this));
-            // lets get all the possible override configs and merge them
-            // at this point the skill config should already be merged with the respective profession config
-            // so we only need to merge the override config of the skill into our override config
-            SkillFactory skillFactory = plugin.getSkillManager().getFactory(skill);
-            // and now merge the result with this effet config
-            config.getOverrideConfig().merge(skillFactory.getConfig(skill.getProfession()).getOverrideSection("effects." + effectName));
 
-            effectConfigs.put(skill.getProfession().getName(), config);
+            // lets now merge the effect with the merged skill profession config
+            SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());
+            config.getOverrideConfig().merge(skillConfig.getOverrideSection("effects." + effectName));
+
+            effectConfigs.put(skill, config);
         } else {
-            config = effectConfigs.get(skill.getProfession().getName());
+            config = effectConfigs.get(skill);
         }
 
         return create(source, target, config);
@@ -116,15 +115,5 @@ public final class EffectFactory<E extends Effect> {
     public String getEffectName() {
 
         return effectName;
-    }
-
-    public EffectConfig getConfig(Profession profession) {
-
-        return effectConfigs.get(profession.getName());
-    }
-
-    public EffectConfig getDefaultConfig() {
-
-        return defaultConfig;
     }
 }

@@ -26,7 +26,7 @@ public final class SkillFactory {
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     // every profession needs its own config instance
-    private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
+    private final Map<Profession, SkillConfig> skillConfigs = new HashMap<>();
     private final String skillName;
     private final AliasesConfig aliasConfig;
 
@@ -78,22 +78,21 @@ public final class SkillFactory {
 
     protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
 
-        ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
         SkillConfig config;
-        if (!skillConfigs.containsKey(factory.getProfessionName())) {
+        if (!skillConfigs.containsKey(profession)) {
             config = plugin.configure(new SkillConfig(this));
-            skillConfigs.put(factory.getProfessionName(), config);
+            // we need to set all the overrides to null because they are used multiple times
+            if (useAlias()) {
+                config.merge(aliasConfig);
+            }
+            ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
+            // set the config that overrides the default skill parameters with the profession config
+            config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
+
+            skillConfigs.put(profession, config);
         } else {
-            config = skillConfigs.get(factory.getProfessionName());
+            config = skillConfigs.get(profession);
         }
-
-        // we need to set all the overrides to null because they are used multiple times
-        if (useAlias()) {
-            config.merge(aliasConfig);
-        }
-        // set the config that overrides the default skill parameters with the profession config
-        config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
-
 
         // also save the profession to generate a db entry if none exists
         profession.save();
@@ -160,6 +159,6 @@ public final class SkillFactory {
 
     public SkillConfig getConfig(Profession profession) {
 
-        return skillConfigs.get(profession.getName());
+        return skillConfigs.get(profession);
     }
 }

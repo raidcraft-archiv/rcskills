@@ -118,14 +118,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         return skill;
     }
 
-    public SkillFactory getFactory(String name) throws UnknownSkillException {
-
-        if (skillFactories.containsKey(name)) {
-            return skillFactories.get(name);
-        }
-        throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + name);
-    }
-
     public SkillFactory getFactory(Skill skill) {
 
         return skillFactories.get(skill.getName());
