@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.StringUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,12 +19,14 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public final class EffectManager extends GenericJarFileManager<Effect> {
 
+    private final SkillsPlugin plugin;
     private final Map<String, EffectFactory> effectFactories = new HashMap<>();
     private final Map<Class<? extends Effect>, EffectFactory<? extends Effect>> effectFactoryClasses = new HashMap<>();
 
     protected EffectManager(SkillsPlugin plugin) {
 
-        super(Effect.class, plugin);
+        super(Effect.class, new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_jar_path));
+        this.plugin = plugin;
     }
 
     public void reload() {
@@ -39,13 +42,13 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         for (Class<? extends Effect> clazz : loadClasses()) {
             try {
                 registerClass(clazz);
-            } catch (InvalidEffectException e) {
+            } catch (InvalidEffectException | UnknownEffectException e) {
                 plugin.getLogger().warning(e.getMessage());
             }
         }
     }
 
-    public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException {
+    public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException, UnknownEffectException {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
@@ -58,12 +61,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         }
     }
 
-    public Effect getEffect(Object source, CharacterTemplate target, String effect) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, String effect) {
 
         return getEffect(source, target, effect, null);
     }
 
-    public Effect getEffect(Object source, CharacterTemplate target, String effect, Skill skill) {
+    public <S> Effect getEffect(S source, CharacterTemplate target, String effect, Skill skill) {
 
         try {
             effect = effect.toLowerCase();
@@ -77,12 +80,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return null;
     }
 
-    public <E extends Effect> E getEffect(Object source, CharacterTemplate target, Class<E> eClass) {
+    public <E extends Effect, S> E getEffect(S source, CharacterTemplate target, Class<E> eClass) {
 
         return getEffect(source, target, eClass, null);
     }
 
-    public <E extends Effect> E getEffect(Object source, CharacterTemplate target, Class<E> eClass, Skill skill) {
+    public <E extends Effect, S> E getEffect(S source, CharacterTemplate target, Class<E> eClass, Skill skill) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {

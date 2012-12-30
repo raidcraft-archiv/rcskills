@@ -102,10 +102,10 @@ public abstract class AbstractSkill implements Skill {
 
     protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
-        return target.addEffect(this, getHero(), eClass);
+        return target.addEffect(this, this, eClass);
     }
 
-    protected final <E extends Effect> E addEffect(Object source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+    protected final <E extends Effect, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, source, eClass);
     }

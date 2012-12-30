@@ -44,6 +44,11 @@
             <version>1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>de.raidcraft</groupId>
+            <artifactId>guestunlock</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
             <version>1.2.20</version>

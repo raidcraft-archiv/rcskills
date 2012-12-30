@@ -4,14 +4,15 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Passive;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.api.skill.Passive;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.PlayerSkill;
 import de.raidcraft.skills.util.StringUtils;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -19,6 +20,7 @@ import java.util.*;
  */
 public final class SkillManager extends GenericJarFileManager<Skill> {
 
+    private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Set<PlayerSkill>> playerSkills = new HashMap<>();
@@ -27,7 +29,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     protected SkillManager(SkillsPlugin plugin) {
 
-        super(Skill.class, plugin);
+        super(Skill.class, new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_jar_path));
+        this.plugin = plugin;
     }
 
     public void reload() {
@@ -52,14 +55,14 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
      *
      * @param skillClass of the skill
      */
-    public void registerClass(Class<? extends Skill> skillClass) {
+    public SkillFactory registerClass(Class<? extends Skill> skillClass) {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
             String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
             // check for duplicate skills
             if (skillFactories.containsKey(skillName)) {
                 plugin.getLogger().warning("Found duplicate Skill: " + skillName);
-                return;
+                return skillFactories.get(skillName);
             }
             // load the skill factory for the non alias
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
@@ -72,19 +75,21 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 String alias = plugin.getAliasesConfig().getSkillAliasFor(skillName);
                 if (alias.equalsIgnoreCase(skillName)) {
                     plugin.getLogger().warning("There is already a skill for the alias: " + skillName);
-                    return;
+                    return skillFactories.get(skillName);
                 }
                 if (skillFactories.containsKey(alias)) {
                     plugin.getLogger().warning("Found duplicate alias: " + alias);
-                    return;
+                    return skillFactories.get(alias);
                 }
                 factory = new SkillFactory(plugin, skillClass, skillName, alias);
                 skillFactories.put(alias, factory);
                 plugin.getLogger().info("Loaded Skill Alias: " + factory.getAlias());
             }
+            return factory;
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
+        return null;
     }
 
     public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {

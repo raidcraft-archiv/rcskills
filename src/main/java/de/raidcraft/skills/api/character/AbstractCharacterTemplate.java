@@ -141,7 +141,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final <E extends Effect> E addEffect(Skill skill, Object source, Class<E> eClass) throws CombatException {
+    public final <E extends Effect, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException {
 
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, skill);
         addEffect(eClass, effect);
@@ -149,7 +149,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final <E extends Effect> E addEffect(Object source, Class<E> eClass) throws CombatException {
+    public final <E extends Effect, S> E addEffect(S source, Class<E> eClass) throws CombatException {
 
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
@@ -169,7 +169,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void removeEffect(Class<? extends Effect> eClass) throws CombatException {
+    public <E> void removeEffect(Class<E> eClass) throws CombatException {
 
         Effect<?> effect = effects.remove(eClass);
         if (effect != null) {
@@ -199,7 +199,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final boolean hasEffect(Class<? extends Effect> eClass) {
+    public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
         return effects.containsKey(eClass);
     }

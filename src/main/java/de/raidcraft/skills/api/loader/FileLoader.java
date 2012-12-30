@@ -1,16 +1,14 @@
 package de.raidcraft.skills.api.loader;
 
-import java.util.logging.Logger;
-
 /**
  * A parent class for skill loaders that load components from the raw filesystem.
  */
 public abstract class FileLoader<T> extends AbstractLoader<T> {
 
 
-    protected FileLoader(Class<T> tClass, Logger logger) {
+    protected FileLoader(Class<T> tClass) {
 
-        super(tClass, logger);
+        super(tClass);
     }
 
     public String formatPath(String path) {

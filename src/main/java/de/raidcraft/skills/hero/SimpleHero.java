@@ -1,6 +1,5 @@
 package de.raidcraft.skills.hero;
 
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.hero.AbstractHero;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
@@ -14,7 +13,7 @@ public class SimpleHero extends AbstractHero {
 
     private final UserInterface userInterface;
 
-    public SimpleHero(HeroData data) throws UnknownPlayerException {
+    public SimpleHero(HeroData data) {
 
         super(data);
         attachLevel(new HeroLevel(this, data.getLevelData()));

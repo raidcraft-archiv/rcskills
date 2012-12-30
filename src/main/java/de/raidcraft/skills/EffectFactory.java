@@ -54,7 +54,7 @@ public final class EffectFactory<E extends Effect> {
     }
 
     @SuppressWarnings("unchecked")
-    private E create(Object source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
+    private <S> E create(S source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
 
         // its reflection time yay!
         try {
@@ -78,7 +78,12 @@ public final class EffectFactory<E extends Effect> {
         throw new UnknownEffectException("Error when loading effect for class: " + eClass.getCanonicalName());
     }
 
-    public E create(Object source, CharacterTemplate target, Skill skill) throws UnknownEffectException {
+    public <S> E create(S source, CharacterTemplate target) throws UnknownEffectException {
+
+        return create(source, target, defaultConfig);
+    }
+
+    public <S> E create(S source, CharacterTemplate target, Skill skill) throws UnknownEffectException {
 
         if (skill == null) {
             return create(source, target, defaultConfig);

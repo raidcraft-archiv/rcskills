@@ -30,15 +30,15 @@ public interface CharacterTemplate {
 
     public void kill();
 
-    public <E extends Effect> E addEffect(Skill skill, Object source, Class<E> eClass) throws CombatException;
+    public <E extends Effect, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException;
 
-    public <E extends Effect> E addEffect(Object source, Class<E> eClass) throws CombatException;
+    public <E extends Effect, S> E addEffect(S source, Class<E> eClass) throws CombatException;
 
-    public void removeEffect(Class<? extends Effect> eClass) throws CombatException;
+    public <E> void removeEffect(Class<E> eClass) throws CombatException;
 
     public void removeEffect(Effect effect) throws CombatException;
 
-    public boolean hasEffect(Class<? extends Effect> eClass);
+    public <E extends Effect> boolean hasEffect(Class<E> eClass);
 
     public <E extends Effect> E getEffect(Class<E> eClass);
 

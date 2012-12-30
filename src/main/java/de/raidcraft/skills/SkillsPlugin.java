@@ -59,10 +59,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         this.aliasesConfig = configure(new AliasesConfig(this));
         // the skill manager takes care of all skills currently loaded
-        this.skillManager = new SkillManager(this);
         this.effectManager = new EffectManager(this);
-        this.skillManager.loadFactories();
+        this.skillManager = new SkillManager(this);
         this.effectManager.loadFactories();
+        this.skillManager.loadFactories();
         // register our inhouse skills
         registerSkills();
         // these managers can only be loaded after the skill manager
@@ -187,8 +187,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int hero_stamina_regain_amount = 1;
         @Setting("paths.skill-configs")
         public String skill_config_path = "skill-configs/";
+        @Setting("paths.skill-jars")
+        public String skill_jar_path = "skills/";
         @Setting("paths.effect-configs")
         public String effect_config_path = "effect-configs/";
+        @Setting("paths.effect-jars")
+        public String effect_jar_path = "effects/";
         @Setting("paths.profession-configs")
         public String profession_config_path = "professions/";
 

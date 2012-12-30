@@ -25,7 +25,6 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * A component loader that loads components from a directory of classes.
@@ -34,9 +33,9 @@ public abstract class ClassLoaderSkillLoader<T> extends FileLoader<T> {
     private final URLClassLoader loader;
     private final File classDir;
 
-    public ClassLoaderSkillLoader(Class<T> tClass, final Logger logger, final File classDir) {
+    public ClassLoaderSkillLoader(Class<T> tClass, final File classDir) {
 
-        super(tClass, logger);
+        super(tClass);
         this.classDir = classDir;
         this.loader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
             public URLClassLoader run() {

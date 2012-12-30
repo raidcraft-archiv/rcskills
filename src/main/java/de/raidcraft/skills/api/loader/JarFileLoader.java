@@ -13,7 +13,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 /**
  * A skill loader that loads components from all the jar files in a given folder
@@ -22,9 +21,9 @@ public abstract class JarFileLoader<T> extends FileLoader<T> {
 
     private final File jarDir;
 
-    public JarFileLoader(Class<T> tClass, Logger logger, File jarDir) {
+    public JarFileLoader(Class<T> tClass, File jarDir) {
 
-        super(tClass, logger);
+        super(tClass);
         this.jarDir = jarDir;
         if (!jarDir.exists()) {
             jarDir.mkdirs();

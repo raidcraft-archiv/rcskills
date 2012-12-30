@@ -18,19 +18,15 @@
 
 package de.raidcraft.skills.api.loader;
 
-import java.util.logging.Logger;
-
 /**
  * A parent class that contains several useful component loader helper methods
  */
 public abstract class AbstractLoader<T> implements Loader<T> {
 
-    private final Logger logger;
     private final Class<T> tClass;
     
-    protected AbstractLoader(Class<T> tClass, Logger logger) {
+    protected AbstractLoader(Class<T> tClass) {
 
-        this.logger = logger;
         this.tClass = tClass;
     }
 
@@ -44,9 +40,5 @@ public abstract class AbstractLoader<T> implements Loader<T> {
     public boolean isClass(Class<?> clazz) {
 
         return clazz != null && getRequiredClass().isAssignableFrom(clazz);
-    }
-
-    protected Logger getLogger() {
-        return logger;
     }
 }
