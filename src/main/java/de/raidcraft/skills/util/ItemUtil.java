@@ -135,13 +135,15 @@ public final class ItemUtil {
         int empty = firstEmpty(inv.getContents());
         if (empty == -1) {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
-            if (slot != -1)
+            if (slot != -1) {
                 inv.clear(slot);
+            }
             return false;
         }
         inv.setItem(empty, item);
-        if (slot != -1)
+        if (slot != -1) {
             inv.clear(slot);
+        }
         return true;
     }
 
