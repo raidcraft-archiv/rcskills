@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -63,7 +64,8 @@ public abstract class AbstractSkill implements Skill {
             throw new CombatException(CombatException.Type.DISARMED);
         }
         if (this.getRemainingCooldown() > 0) {
-            throw new CombatException(CombatException.Type.ON_COOLDOWN);
+            throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
+                    " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         // lets check the resources of the skill and if the hero has it
         if (this.getTotalManaCost() > getHero().getMana()) {

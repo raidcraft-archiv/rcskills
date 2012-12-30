@@ -31,6 +31,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         super(Skill.class, new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_jar_path));
         this.plugin = plugin;
+        // create the config path
+        new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
     }
 
     public void reload() {

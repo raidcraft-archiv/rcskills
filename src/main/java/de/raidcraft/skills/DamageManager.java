@@ -116,7 +116,7 @@ public final class DamageManager implements Listener {
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
-        if (event.getDamager() instanceof Projectile && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+        if (event.getDamager() instanceof Projectile || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             // the projectile callbacks are handled in the CombatManager
             return;
         }

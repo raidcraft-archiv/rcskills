@@ -27,6 +27,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
         super(Effect.class, new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_jar_path));
         this.plugin = plugin;
+        new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_config_path).mkdirs();
     }
 
     public void reload() {

@@ -80,7 +80,9 @@ public final class CombatManager implements Listener {
             if (event.getDamager() instanceof LivingEntity) {
                 attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
             } else if (event.getDamager() instanceof Projectile) {
-                attacker = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+                LivingEntity shooter = ((Projectile) event.getDamager()).getShooter();
+                if (shooter == null) return;
+                attacker = plugin.getCharacterManager().getCharacter(shooter);
             } else {
                 // no combat event
                 return;

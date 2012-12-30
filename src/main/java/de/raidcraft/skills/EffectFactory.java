@@ -42,15 +42,6 @@ public final class EffectFactory<E extends Effect> {
 
         EffectData data = defaultConfig;
         data.getEffectPriority();
-        data.getEffectDelay();
-        data.getEffectDelayLevelModifier();
-        data.getEffectDelayProfLevelModifier();
-        data.getEffectDuration();
-        data.getEffectDurationLevelModifier();
-        data.getEffectDurationProfLevelModifier();
-        data.getEffectInterval();
-        data.getEffectIntervalLevelModifier();
-        data.getEffectIntervalProfLevelModifier();
     }
 
     @SuppressWarnings("unchecked")
