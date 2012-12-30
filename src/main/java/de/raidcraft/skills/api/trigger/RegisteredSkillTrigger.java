@@ -15,15 +15,13 @@ import org.bukkit.event.EventException;
 public class RegisteredSkillTrigger extends RegisteredTrigger {
 
     private final Skill skill;
-    private final boolean ignoreChecks;
-    private final boolean cancelEventOnFail;
+    private final TriggerHandler info;
 
-    public RegisteredSkillTrigger(final Triggered listener, final TriggerExecutor executor, boolean ignoreChecks, boolean cancelEventOnFail) {
+    public RegisteredSkillTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
         super(listener, executor);
         this.skill = (listener instanceof Skill ? (Skill) listener : null);
-        this.ignoreChecks = ignoreChecks;
-        this.cancelEventOnFail = cancelEventOnFail;
+        this.info = info;
     }
 
     /**
@@ -46,7 +44,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
         }
 
         try {
-            if (!ignoreChecks) {
+            if (info.checkUsage()) {
                     // check the skill usage
                     skill.checkUsage();
             }
@@ -55,7 +53,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
 
             // substrat the cost of the skill before it is triggered because a failed trigger costs too
-            if (!ignoreChecks) {
+            if (info.substractUsageCosts()) {
                 skill.substractUsageCost();
             }
 
@@ -69,7 +67,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             // send the combat warning
             hero.sendMessage(ChatColor.RED + msg);
             // lets check if we need to cancel a bukkit event
-            if (cancelEventOnFail && trigger instanceof BukkitEventTrigger) {
+            if (info.cancelEventOnFail() && trigger instanceof BukkitEventTrigger) {
                 if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {
                     ((Cancellable) ((BukkitEventTrigger) trigger).getEvent()).setCancelled(true);
                 }

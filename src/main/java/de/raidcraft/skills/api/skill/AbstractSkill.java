@@ -84,6 +84,17 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public boolean canUseSkill() {
+
+        try {
+            checkUsage();
+            return true;
+        } catch (CombatException ignored) {
+        }
+        return false;
+    }
+
+    @Override
     public void substractUsageCost() {
 
         // substract the mana, health and stamina cost
@@ -165,6 +176,12 @@ public abstract class AbstractSkill implements Skill {
     public long getRemainingCooldown() {
 
         return (long) ((lastCast + (getTotalCooldown() * 1000)) - System.currentTimeMillis());
+    }
+
+    @Override
+    public boolean isOnCooldown() {
+
+        return getRemainingCooldown() > 0;
     }
 
     @Override

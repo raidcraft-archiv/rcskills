@@ -29,6 +29,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
 
     public void checkUsage() throws CombatException;
 
+    public boolean canUseSkill();
+
     public void substractUsageCost();
 
     public EffectType[] getTypes();
@@ -62,6 +64,8 @@ public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
     public double getTotalCooldown();
 
     public long getRemainingCooldown();
+
+    public boolean isOnCooldown();
 
     public void setLastCast(long time);
 
