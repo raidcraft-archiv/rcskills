@@ -89,7 +89,7 @@ public final class SkillFactory {
 
         // we need to set all the overrides to null because they are used multiple times
         if (useAlias()) {
-            config.getOverrideConfig().merge(aliasConfig.createDataMap());
+            config.merge(aliasConfig);
         }
         // set the config that overrides the default skill parameters with the profession config
         config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
