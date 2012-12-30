@@ -51,7 +51,6 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
     @Override
     public void run() throws CombatException {
 
-        // TODO: add fancy resitence checks and so on
         projectile = projectileType.spawn(getSource());
         projectile.setBounce(false);
         projectile.setFireTicks(0);

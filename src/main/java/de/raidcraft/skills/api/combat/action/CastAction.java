@@ -42,7 +42,6 @@ public class CastAction extends AbstractAction<Hero> {
         // lets cancel other casts first
         getSource().removeEffect(CastTime.class);
 
-        // TODO: do some fancy checks for the resistence and stuff
         if (delayed) {
             getSource().addEffect(skill, this, CastTime.class);
             this.delayed = false;

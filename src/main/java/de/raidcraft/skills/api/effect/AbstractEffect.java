@@ -98,7 +98,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     @Override
     public void apply() throws CombatException {
 
-        // TODO: check restistance and that fancy stuff
         apply(getTarget());
         debug("applied effect");
     }

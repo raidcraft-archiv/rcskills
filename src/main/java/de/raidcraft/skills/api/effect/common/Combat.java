@@ -28,7 +28,6 @@ public class Combat<S> extends ExpirableEffect<S> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        // TODO: do more stuff like moving items into the inventory
         target.setInCombat(true);
         info("Du hast den Kampf betreten.");
     }
@@ -36,7 +35,6 @@ public class Combat<S> extends ExpirableEffect<S> {
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        // TODO: do more stuff like moving items into the inventory
         target.setInCombat(false);
         info("Du hast den Kampf verlassen.");
     }

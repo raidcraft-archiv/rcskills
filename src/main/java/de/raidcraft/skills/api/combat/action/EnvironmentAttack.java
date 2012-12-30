@@ -40,7 +40,6 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
             setCancelled(true);
             throw new CombatException(CombatException.Type.CANCELLED);
         }
-        // TODO: check resistance and the fancy stuff
         getTarget().damage(this);
     }
 }

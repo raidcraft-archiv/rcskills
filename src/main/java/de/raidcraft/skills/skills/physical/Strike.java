@@ -43,11 +43,11 @@ public class Strike extends AbstractLevelableSkill {
 
     @Override
     public void apply() {
-        //TODO: implement
+
     }
 
     @Override
     public void remove() {
-        //TODO: implement
+
     }
 }

@@ -69,7 +69,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);
             }
-            // TODO: add fancy resitence checks and so on
             getTarget().damage(this);
             // if no exceptions was thrown to this point issue the callback
             if (callback != null && !(callback instanceof RangedCallback)) {
