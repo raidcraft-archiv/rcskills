@@ -42,6 +42,9 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     @Override
     public void setDamage(int damage) {
 
+        if (damage < 0) {
+            this.damage = 0;
+        }
         this.damage = damage;
     }
 

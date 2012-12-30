@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
-import de.raidcraft.skills.skills.PlayerSkill;
 import de.raidcraft.skills.util.StringUtils;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
     // holds skills that were already loaded for that player
-    private final Map<String, Set<PlayerSkill>> playerSkills = new HashMap<>();
+    private final Map<String, Set<Skill>> playerSkills = new HashMap<>();
     // holds all skills that are triggered every few ticks
     private final List<Skill> passiveSkills = new ArrayList<>();
 
@@ -98,16 +97,16 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
         if (!playerSkills.containsKey(hero.getName())) {
-            playerSkills.put(hero.getName(), new LinkedHashSet<PlayerSkill>());
+            playerSkills.put(hero.getName(), new HashSet<Skill>());
         }
-        for (PlayerSkill playerSkill : playerSkills.get(hero.getName())) {
+        for (Skill playerSkill : playerSkills.get(hero.getName())) {
             if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
-                return playerSkill.getSkill();
+                return playerSkill;
             }
         }
         // lets create a new skill for this name
         skill = skillFactories.get(skillName).create(hero, profession);
-        playerSkills.get(hero.getName()).add(new PlayerSkill(skill));
+        playerSkills.get(hero.getName()).add(skill);
         // add skill to our passive list if it is a passive skill
         if (skill instanceof Passive) {
             passiveSkills.add(skill);
