@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.loader;
 
+import de.raidcraft.RaidCraft;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -63,9 +65,11 @@ public abstract class JarFileLoader<T> extends FileLoader<T> {
                 if (!next.getName().endsWith(".class")) continue;
 
                 Class<?> clazz = null;
+                String className = formatPath(next.getName());
                 try {
-                    clazz = Class.forName(formatPath(next.getName()), true, loader);
-                } catch (ClassNotFoundException e) {
+                    clazz = Class.forName(className, true, loader);
+                } catch (Throwable e) {
+                    RaidCraft.LOGGER.severe("ERROR when loading class: " + className);
                     e.printStackTrace();
                 }
 
