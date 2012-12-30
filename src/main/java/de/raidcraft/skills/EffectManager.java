@@ -7,7 +7,6 @@ import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.util.StringUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.Map;
 public final class EffectManager extends GenericJarFileManager<Effect> {
 
     private final SkillsPlugin plugin;
-    private final Map<String, EffectFactory> effectFactories = new HashMap<>();
     private final Map<Class<? extends Effect>, EffectFactory<? extends Effect>> effectFactoryClasses = new HashMap<>();
 
     protected EffectManager(SkillsPlugin plugin) {
@@ -32,7 +30,6 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public void reload() {
 
-        effectFactories.clear();
         effectFactoryClasses.clear();
         loadFactories();
     }
@@ -53,32 +50,12 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
-            effectFactories.put(factory.getEffectName(), factory);
-            effectFactoryClasses.put(effectClass, factory);
+            effectFactoryClasses.put(factory.getEffectClass(), factory);
             factory.createDefaults();
             plugin.getLogger().info("Loaded Effect: " + factory.getEffectName());
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());
         }
-    }
-
-    public <S> Effect getEffect(S source, CharacterTemplate target, String effect) {
-
-        return getEffect(source, target, effect, null);
-    }
-
-    public <S> Effect getEffect(S source, CharacterTemplate target, String effect, Skill skill) {
-
-        try {
-            effect = effect.toLowerCase();
-            if (effectFactories.containsKey(effect)) {
-                return effectFactories.get(effect).create(source, target, skill);
-            }
-        } catch (UnknownEffectException e) {
-            e.printStackTrace();
-            plugin.getLogger().warning(e.getMessage());
-        }
-        return null;
     }
 
     public <E extends Effect, S> E getEffect(S source, CharacterTemplate target, Class<E> eClass) {
@@ -100,19 +77,5 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
             plugin.getLogger().warning(e.getMessage());
         }
         return null;
-    }
-
-    public Class<? extends Effect> getEffectForName(String name) throws UnknownEffectException {
-
-        if (effectFactories.containsKey(name)) {
-            return effectFactories.get(name).getEffectClass();
-        }
-        throw new UnknownEffectException("Es gibt keinen Effekt mit dem Namen: " + name);
-    }
-
-    public boolean hasEffect(String effect) {
-
-        effect = StringUtils.formatName(effect);
-        return effectFactories.containsKey(effect);
     }
 }

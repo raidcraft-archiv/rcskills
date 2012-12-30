@@ -9,6 +9,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.skills.magic.Fireball;
@@ -94,10 +95,13 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         // and reload all of our managers
         this.configuration.reload();
         this.aliasesConfig.reload();
+        // before reloading the managers we need to unregister all listeners
+        TriggerManager.unregisterAll();
 
         this.skillManager.reload();
         registerSkills();
         this.effectManager.reload();
+
         this.professionManager.reload();
         this.characterManager.reload();
         this.combatManager.reload();

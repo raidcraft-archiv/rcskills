@@ -55,6 +55,11 @@ public class TriggerManager {
         }
     }
 
+    public static void unregisterAll() {
+
+        HandlerList.unregisterAll();
+    }
+
     private static HandlerList getTriggerListeners(Class<? extends Trigger> type) {
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");

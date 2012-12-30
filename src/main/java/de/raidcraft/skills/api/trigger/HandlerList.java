@@ -48,6 +48,7 @@ public class HandlerList {
 
         synchronized (allLists) {
             for (HandlerList handlerList : allLists) {
+                handlerList.handlerslots.clear();
                 handlerList.handlers = null;
             }
         }

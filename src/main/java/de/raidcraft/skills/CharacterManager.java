@@ -43,7 +43,13 @@ public final class CharacterManager implements Listener {
 
     public void reload() {
 
+        for (Hero hero : heroes.values()) {
+            hero.clearEffects();
+        }
         heroes.clear();
+        for (CharacterTemplate character : characters.values()) {
+            character.clearEffects();
+        }
         characters.clear();
     }
 
