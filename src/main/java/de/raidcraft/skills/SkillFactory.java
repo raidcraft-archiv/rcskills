@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -27,19 +28,19 @@ public final class SkillFactory {
     // every profession needs its own config instance
     private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
     private final String skillName;
-    private final String alias;
+    private final AliasesConfig aliasConfig;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName) {
 
         this(plugin, sClass, skillName, null);
     }
 
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, String alias) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, AliasesConfig aliasConfig) {
 
         this.plugin = plugin;
         this.sClass = sClass;
         this.skillName = skillName;
-        this.alias = alias;
+        this.aliasConfig = aliasConfig;
     }
 
     protected void createDefaults() {
@@ -81,18 +82,18 @@ public final class SkillFactory {
         SkillConfig config;
         if (!skillConfigs.containsKey(factory.getProfessionName())) {
             config = plugin.configure(new SkillConfig(this));
-
-            // we need to set all the overrides to null because they are used multiple times
-            if (useAlias()) {
-                config.getOverrideConfig().merge(plugin.getAliasesConfig().getSkillConfig(alias));
-            }
-            // set the config that overrides the default skill parameters with the profession config
-            config.merge(factory.getConfig(), "skills." + (useAlias() ? alias : skillName));
-
             skillConfigs.put(factory.getProfessionName(), config);
         } else {
             config = skillConfigs.get(factory.getProfessionName());
         }
+
+        // we need to set all the overrides to null because they are used multiple times
+        if (useAlias()) {
+            config.getOverrideConfig().merge(aliasConfig.createDataMap());
+        }
+        // set the config that overrides the default skill parameters with the profession config
+        config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
+
 
         // also save the profession to generate a db entry if none exists
         profession.save();
@@ -117,12 +118,12 @@ public final class SkillFactory {
 
         THeroSkill database = Ebean.find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
-                .eq("name", skillName)
+                .eq("name", (useAlias() ? getAlias() : getSkillName()))
                 .eq("profession_id", profession.getId()).findUnique();
 
         if (database == null) {
             database = new THeroSkill();
-            database.setName(getSkillName());
+            database.setName((useAlias() ? getAlias() : getSkillName()));
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(0);
@@ -149,12 +150,12 @@ public final class SkillFactory {
 
     public String getAlias() {
 
-        return alias;
+        return aliasConfig.getName();
     }
 
     public boolean useAlias() {
 
-        return alias != null && plugin.getAliasesConfig().hasSkill(alias, skillName);
+        return aliasConfig != null;
     }
 
     public SkillConfig getConfig(Profession profession) {

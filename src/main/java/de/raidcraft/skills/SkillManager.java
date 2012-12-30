@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.skills.PlayerSkill;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -22,6 +23,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
+    private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Set<PlayerSkill>> playerSkills = new HashMap<>();
     // holds all skills that are triggered every few ticks
@@ -69,29 +71,23 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             // load the skill factory for the non alias
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
             skillFactories.put(skillName, factory);
+            skillClasses.put(skillName, skillClass);
             // lets create the skill once to make a default config
             factory.createDefaults();
             plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
-            // lets put a duplicate of the factory into the map as alias
-            if (plugin.getAliasesConfig().hasSkillAliasFor(skillName)) {
-                String alias = plugin.getAliasesConfig().getSkillAliasFor(skillName);
-                if (alias.equalsIgnoreCase(skillName)) {
-                    plugin.getLogger().warning("There is already a skill for the alias: " + skillName);
-                    return skillFactories.get(skillName);
-                }
-                if (skillFactories.containsKey(alias)) {
-                    plugin.getLogger().warning("Found duplicate alias: " + alias);
-                    return skillFactories.get(alias);
-                }
-                factory = new SkillFactory(plugin, skillClass, skillName, alias);
-                skillFactories.put(alias, factory);
-                plugin.getLogger().info("Loaded Skill Alias: " + factory.getAlias());
-            }
             return factory;
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
         return null;
+    }
+
+    protected void createAliasFactory(String alias, String skill, AliasesConfig config) {
+
+        SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
+        skillFactories.put(alias, factory);
+        factory.createDefaults();
+        plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
     }
 
     public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {

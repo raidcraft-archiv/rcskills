@@ -11,7 +11,6 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
-import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.skills.magic.Fireball;
 import de.raidcraft.skills.skills.misc.PermissionSkill;
 import de.raidcraft.skills.skills.physical.Strike;
@@ -33,12 +32,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
     private EffectManager effectManager;
+    private AliasManager aliasManager;
     private ProfessionManager professionManager;
     private CharacterManager characterManager;
     private CombatManager combatManager;
     private DamageManager damageManager;
     private BukkitEnvironmentManager bukkitEnvironmentManager;
-    private AliasesConfig aliasesConfig;
     private LocalConfiguration configuration;
 
     @Override
@@ -58,7 +57,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private void loadEngine() {
 
-        this.aliasesConfig = configure(new AliasesConfig(this));
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.effectManager = new EffectManager(this);
@@ -66,6 +64,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.effectManager.loadFactories();
         // register our inhouse skills
         registerSkills();
+        // init the alias manager directly after the skills
+        this.aliasManager = new AliasManager(this);
         // these managers can only be loaded after the skill manager
         this.professionManager = new ProfessionManager(this);
         this.characterManager = new CharacterManager(this);
@@ -94,13 +94,13 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         Bukkit.getScheduler().cancelTasks(this);
         // and reload all of our managers
         this.configuration.reload();
-        this.aliasesConfig.reload();
         // before reloading the managers we need to unregister all listeners
         TriggerManager.unregisterAll();
 
         this.skillManager.reload();
         registerSkills();
         this.effectManager.reload();
+        this.aliasManager.reload();
 
         this.professionManager.reload();
         this.characterManager.reload();
@@ -135,6 +135,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return professionManager;
     }
 
+    public AliasManager getAliasManager() {
+
+        return aliasManager;
+    }
+
     public CharacterManager getCharacterManager() {
 
         return characterManager;
@@ -153,11 +158,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public BukkitEnvironmentManager getBukkitEnvironmentManager() {
 
         return bukkitEnvironmentManager;
-    }
-
-    public AliasesConfig getAliasesConfig() {
-
-        return aliasesConfig;
     }
 
     public LocalConfiguration getCommonConfig() {
@@ -191,6 +191,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int hero_stamina_regain_amount = 1;
         @Setting("paths.skill-configs")
         public String skill_config_path = "skill-configs/";
+        @Setting("paths.alias-configs")
+        public String alias_config_path = "alias-configs/";
         @Setting("paths.skill-jars")
         public String skill_jar_path = "skills/";
         @Setting("paths.effect-configs")

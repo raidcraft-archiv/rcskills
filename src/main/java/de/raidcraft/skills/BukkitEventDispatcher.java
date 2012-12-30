@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -50,7 +51,7 @@ public class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
         TriggerManager.callTrigger(
@@ -58,11 +59,19 @@ public class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemHeld(PlayerItemHeldEvent event) {
 
         TriggerManager.callTrigger(
                 new ItemHeldTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInventoryClick(InventoryClickEvent event) {
+
+        TriggerManager.callTrigger(
+                new InventoryClickTrigger(plugin.getCharacterManager().getHero((Player) event.getWhoClicked()), event)
         );
     }
 }
