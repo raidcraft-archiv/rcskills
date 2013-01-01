@@ -1,6 +1,6 @@
 main: de.raidcraft.skills.SkillsPlugin
 name: Skills
-version: PROJECT_VERSION
+version: ${project.version}#${build.number}
 description: API for creating and using custom skills.
 author: Silthus
 website: http://www.raid-craft.de
