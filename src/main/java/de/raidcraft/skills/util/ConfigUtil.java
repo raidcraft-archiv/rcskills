@@ -85,16 +85,13 @@ public final class ConfigUtil {
                                 (unlockable instanceof Skill ?
                                         ((Skill) unlockable).getProfession().getName() :
                                         unlockable.getHero().getVirtualProfession().getName())));
-                int level = section.getInt("level", 0);
                 Skill reqSkill = config.getPlugin().getSkillManager().getSkill(unlockable.getHero(), profession, key);
-                if (level == 0) {
-                    unlockable.addRequirement(new SkillRequirement(reqSkill));
+
+                if (reqSkill instanceof LevelableSkill) {
+                    int level = section.getInt("level", ((LevelableSkill) reqSkill).getMaxLevel());
+                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
                 } else {
-                    if (reqSkill instanceof LevelableSkill) {
-                        unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
-                    } else {
-                        throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
-                    }
+                    throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
@@ -107,7 +104,7 @@ public final class ConfigUtil {
         for (String key : professions.getKeys(false)) {
             try {
                 Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(), key);
-                int level = config.getOverride("requirements.professions." + key, 1);
+                int level = config.getOverride("requirements.professions." + key, profession.getMaxLevel());
                 unlockable.addRequirement(new ProfessionLevelRequirement(profession.getLevel(), level));
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
