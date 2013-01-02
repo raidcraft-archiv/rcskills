@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTemplate> {
 
     private Callback callback;
+    private EntityDamageEvent.DamageCause cause = null;
 
     public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, AttackType... types) {
 
@@ -48,6 +49,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 damage,
                 AttackType.fromEvent(event.getCause()));
+        cause = event.getCause();
     }
 
     @Override
@@ -61,10 +63,10 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             if (getSource() instanceof Hero) {
-                TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this));
+                TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this, cause));
             }
             if (getTarget() instanceof Hero) {
-                TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this));
+                TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, cause));
             }
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);

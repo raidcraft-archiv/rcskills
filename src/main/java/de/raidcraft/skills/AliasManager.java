@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class AliasManager {
+public final class AliasManager {
 
     private final SkillsPlugin plugin;
     private final File configPath;
