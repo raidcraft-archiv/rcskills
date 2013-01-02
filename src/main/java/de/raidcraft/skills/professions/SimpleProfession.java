@@ -44,12 +44,7 @@ public class SimpleProfession extends AbstractProfession {
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
-        // check all skills and if we need to unlock any
-        for (Skill skill : getSkills()) {
-            if (!skill.isUnlocked() && skill.getProperties().getRequiredLevel() <= getLevel().getLevel()) {
-                skill.unlock();
-            }
-        }
+        checkSkillsForUnlock();
     }
 
     @Override
@@ -58,9 +53,21 @@ public class SimpleProfession extends AbstractProfession {
         getHero().sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+        checkSkillsForUnlock();
+    }
+
+    @Override
+    public void checkSkillsForUnlock() {
+
+        // check all skills and if we need to unlock any
+        for (Skill skill : getSkills()) {
+            if (!skill.isUnlocked() && skill.isUnlockable()) {
+                skill.unlock();
+            }
+        }
         // check if we need to lock any skills
         for (Skill skill : getSkills()) {
-            if (skill.isUnlocked() && skill.getProperties().getRequiredLevel() > getLevel().getLevel()) {
+            if (skill.isUnlocked() && !skill.isUnlockable()) {
                 skill.lock();
             }
         }

@@ -108,13 +108,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
             if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
                 continue;
             }
+            profession.checkSkillsForUnlock();
             for (Skill skill : profession.getSkills()) {
-                // unlock skills if needed
-                if (!skill.isUnlocked() && !(skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel())) {
-                    skill.unlock();
-                } else if (skill.isUnlocked() && skill.getProperties().getRequiredLevel() > skill.getProfession().getLevel().getLevel()) {
-                    skill.lock();
-                }
                 // only add active skills
                 if (skill.isActive()) {
                     skills.put(skill.getName(), skill);

@@ -36,4 +36,6 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
     public void removeSkill(Skill skill);
 
     public void save();
+
+    public void checkSkillsForUnlock();
 }
