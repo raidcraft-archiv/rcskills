@@ -209,7 +209,7 @@ public final class CharacterManager implements Listener {
         clearCacheOf(hero);
     }
 
-    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         getHero(event.getPlayer()).reset();
