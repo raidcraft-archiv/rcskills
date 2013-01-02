@@ -98,11 +98,11 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public void onLevelGain() {
 
-        // lets check the skills of the profession if we need to unlock any
-        getProfession().checkSkillsForUnlock();
         getHero().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+        // lets check the skills of the profession if we need to unlock any
+        getProfession().checkSkillsForUnlock();
     }
 
     @Override
@@ -111,6 +111,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
         getHero().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+        getProfession().checkSkillsForUnlock();
     }
 
     @Override
