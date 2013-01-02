@@ -88,6 +88,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public boolean isHidden() {
+
+        return getOverride("hidden", false);
+    }
+
+    @Override
     public void loadRequirements(Skill skill) {
 
         ConfigUtil.loadRequirements(this, skill);

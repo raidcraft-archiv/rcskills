@@ -32,7 +32,7 @@ public class SkillsCommand {
             aliases = "skills",
             desc = "Shows all skills for the selected profession.",
             usage = "[profession] -p #",
-            flags = "p:as"
+            flags = "p:ash"
     )
     @CommandPermissions("rcskills.player.skill.list")
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
@@ -55,6 +55,14 @@ public class SkillsCommand {
         } else {
             // lets get the skills the sender wants to have displayed
             skills.addAll(hero.getSkills());
+        }
+        // lets remove hidden skills from the list
+        if (!args.hasFlag('h')) {
+            for (Skill skill : new ArrayList<>(skills)) {
+                if (skill.isHidden()) {
+                    skills.remove(skill);
+                }
+            }
         }
         // lets sort them by their required level
         Collections.sort(skills);

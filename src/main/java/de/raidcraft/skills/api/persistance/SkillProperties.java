@@ -22,6 +22,8 @@ public interface SkillProperties {
 
     public ItemStack[] getReagents();
 
+    public boolean isHidden();
+
     public ConfigurationSection getData();
 
     public SkillInformation getInformation();

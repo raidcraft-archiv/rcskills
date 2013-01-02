@@ -195,6 +195,12 @@ public abstract class AbstractSkill implements Skill {
         this.lastCast = time;
     }
 
+    @Override
+    public boolean isHidden() {
+
+        return getProperties().isHidden();
+    }
+
     protected final <V> void setData(String key, V value) {
 
         TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();

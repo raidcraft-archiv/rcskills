@@ -129,7 +129,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
         if (data.getSelectedProfession() != null && !data.getSelectedProfession().equals("")) {
             try {
                 return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(this, data.getSelectedProfession());
-            } catch (UnknownSkillException | UnknownProfessionException e) {
+            } catch (UnknownSkillException | UnknownProfessionException ignored) {
                 // do nothing and return the getter
             }
         }
