@@ -107,6 +107,7 @@ public final class SkillFactory {
             constructor.setAccessible(true);
             Skill skill = constructor.newInstance(hero, config, profession, database);
             skill.load(config.getData());
+            return skill;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
