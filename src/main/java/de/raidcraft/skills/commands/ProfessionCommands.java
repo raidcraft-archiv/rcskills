@@ -51,13 +51,11 @@ public class ProfessionCommands {
         }
 
         for (int i = 0; i < professions.size(); i++) {
-            try {
-                if (!args.hasFlag('a') && !professions.get(i).isActive()) {
-                    professions.remove(i);
-                } else if (args.hasFlag('c') && !hero.canChooseProfession(professions.get(i))) {
-                    professions.remove(i);
-                }
-            } catch (InvalidChoiceException ignored) {}
+            if (!args.hasFlag('a') && !professions.get(i).isActive()) {
+                professions.remove(i);
+            } else if (args.hasFlag('c') && !professions.get(i).isUnlockable()) {
+                professions.remove(i);
+            }
         }
         Collections.sort(professions);
 
@@ -98,12 +96,10 @@ public class ProfessionCommands {
             if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
                 throw new CommandException("Du hast diesen Beruf aktuell ausgewählt.");
             }
-            try {
-                if (!hero.canChooseProfession(profession)) {
-                    throw new CommandException("Du kannst " + (primary ? "diese Klasse" : "diesen Beruf") + " nicht auswählen.");
-                }
-            } catch (InvalidChoiceException e) {
-                throw new CommandException(e.getMessage());
+            if (!profession.isUnlockable()) {
+                throw new CommandException("Du kannst " +
+                        (primary ? "diese Klasse" : "diesen Beruf")
+                        + " nicht auswählen. \n" + profession.getUnlockReason());
             }
 
             if (force) {
@@ -146,7 +142,7 @@ public class ProfessionCommands {
 
     private void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
 
-        if (!hero.canChooseProfession(profession)) {
+        if (!profession.isUnlockable()) {
             return;
         }
 
@@ -154,10 +150,10 @@ public class ProfessionCommands {
                 (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
         boolean primary = profession.getProperties().isPrimary();
         hero.changeProfession(profession);
-        hero.sendMessage(ChatColor.YELLOW  + "Du hast " +
+        hero.sendMessage(ChatColor.YELLOW + "Du hast " +
                 (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.YELLOW +
-        " erfolgreich zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
+                " erfolgreich zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
         hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
-        + ChatColor.RED + " vom Konto abgezogen.");
+                + ChatColor.RED + " vom Konto abgezogen.");
     }
 }

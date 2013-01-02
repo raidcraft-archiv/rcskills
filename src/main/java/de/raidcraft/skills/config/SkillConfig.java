@@ -4,7 +4,9 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -83,6 +85,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
             reagents[i] = new ItemStack(material, section.getInt(key));
         }
         return reagents;
+    }
+
+    @Override
+    public void loadRequirements(Skill skill) {
+
+        ConfigUtil.loadRequirements(this, skill);
     }
 
     @Override

@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.TimeUtil;
@@ -20,8 +21,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -32,10 +33,9 @@ public abstract class AbstractSkill implements Skill {
     private final SkillProperties properties;
     private final Profession profession;
     private final SkillInformation information;
+    private final List<Requirement> requirements = new ArrayList<>();
     protected final THeroSkill database;
     private String description;
-    private final Collection<Skill> strongParents = new HashSet<>();
-    private final Collection<Skill> weakParents = new HashSet<>();
     private long lastCast;
 
     protected AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -46,6 +46,7 @@ public abstract class AbstractSkill implements Skill {
         this.description = data.getDescription();
         this.profession = profession;
         this.information = data.getInformation();
+        data.loadRequirements(this);
 
         load(data.getData());
     }
@@ -374,45 +375,43 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final Collection<Skill> getStrongParents() {
+    public List<Requirement> getRequirements() {
 
-        return strongParents;
+        return requirements;
     }
 
     @Override
-    public final Collection<Skill> getWeakParents() {
+    public void addRequirement(Requirement requirement) {
 
-        return weakParents;
+        requirements.add(requirement);
     }
 
     @Override
-    public final void addStrongParent(Skill skill) {
+    public boolean isUnlockable() {
 
-        strongParents.add(skill);
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet(getHero())) {
+                return false;
+            }
+        }
+        return getProperties().getRequiredLevel() <= getProfession().getLevel().getLevel();
     }
 
     @Override
-    public final void addWeakParent(Skill skill) {
+    public String getUnlockReason() {
 
-        weakParents.add(skill);
-    }
-
-    @Override
-    public final void removeStrongParent(Skill skill) {
-
-        strongParents.remove(skill);
-    }
-
-    @Override
-    public final void removeWeakParent(Skill skill) {
-
-        weakParents.remove(skill);
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet(getHero())) {
+                return requirement.getReason(getHero());
+            }
+        }
+        return "Skill kann freigeschaltet werden.";
     }
 
     @Override
     public final String toString() {
 
-        return "[S" + getId() + ":" + getProfession() + ":" + getName() + "]";
+        return getFriendlyName();
     }
 
     @Override

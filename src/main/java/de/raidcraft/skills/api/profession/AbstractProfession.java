@@ -4,12 +4,12 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
+import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -18,11 +18,10 @@ public abstract class AbstractProfession implements Profession {
 
     private final ProfessionProperties properties;
     private final Hero hero;
+    // list of requirements to unlock this profession
+    private final List<Requirement> requirements = new ArrayList<>();
     protected final THeroProfession database;
-    protected List<Skill> skills = new ArrayList<>();
-    // parent child collections
-    private Set<Profession> strongParents = null;
-    private Set<Profession> weakParents = null;
+    protected final List<Skill> skills = new ArrayList<>();
     private Level<Profession> level;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
@@ -30,6 +29,7 @@ public abstract class AbstractProfession implements Profession {
         this.properties = data;
         this.hero = hero;
         this.database = database;
+        data.loadRequirements(this);
     }
 
     public THeroProfession getDatabase() {
@@ -100,8 +100,8 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public List<Skill> getSkills() {
 
-        if (skills == null || skills.size() < 1) {
-            this.skills = properties.loadSkills(getHero(), this);
+        if (skills.size() < 1) {
+            this.skills.addAll(properties.loadSkills(this));
         }
         return skills;
     }
@@ -131,6 +131,40 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public List<Requirement> getRequirements() {
+
+        return requirements;
+    }
+
+    @Override
+    public void addRequirement(Requirement requirement) {
+
+        requirements.add(requirement);
+    }
+
+    @Override
+    public boolean isUnlockable() {
+
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet(getHero())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String getUnlockReason() {
+
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet(getHero())) {
+                return requirement.getReason(getHero());
+            }
+        }
+        return "Beruf/Klasse kann freigeschaltet werden.";
+    }
+
+    @Override
     public void save() {
 
         saveLevelProgress(getLevel());
@@ -147,56 +181,10 @@ public abstract class AbstractProfession implements Profession {
         Database.save(database);
     }
 
-    /*//////////////////////////////////////////////////////
-    // Parent/Child Relationship Methods beyond this line
-    /////////////////////////////////////////////////////*/
-
-    @Override
-    public Set<Profession> getStrongParents() {
-
-        if (strongParents == null) {
-            this.strongParents = getProperties().loadStrongParents(getHero(), this);
-        }
-        return this.strongParents;
-    }
-
-    @Override
-    public Set<Profession> getWeakParents() {
-
-        if (weakParents == null) {
-            this.weakParents = getProperties().loadWeakParents(getHero(), this);
-        }
-        return this.weakParents;
-    }
-
-    @Override
-    public void addStrongParent(Profession profession) {
-
-        strongParents.add(profession);
-    }
-
-    @Override
-    public void addWeakParent(Profession profession) {
-
-        weakParents.add(profession);
-    }
-
-    @Override
-    public void removeStrongParent(Profession profession) {
-
-        strongParents.remove(profession);
-    }
-
-    @Override
-    public void removeWeakParent(Profession profession) {
-
-        weakParents.remove(profession);
-    }
-
     @Override
     public String toString() {
 
-        return "[P" + getId() + ":" + getProperties().getName() + "]";
+        return getProperties().getFriendlyName();
     }
 
     @Override

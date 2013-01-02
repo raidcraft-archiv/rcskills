@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -8,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
  * @author Silthus
  */
 public interface SkillProperties {
+
+    public void loadRequirements(Skill skill);
 
     public String getName();
 

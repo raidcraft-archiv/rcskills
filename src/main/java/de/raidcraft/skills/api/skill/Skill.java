@@ -1,19 +1,18 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.inheritance.Child;
-import de.raidcraft.api.inheritance.Parent;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.requirement.Unlockable;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
-public interface Skill extends Parent, Child<Skill>, Comparable<Skill> {
+public interface Skill extends Comparable<Skill>, Unlockable {
 
     public void load(ConfigurationSection data);
 

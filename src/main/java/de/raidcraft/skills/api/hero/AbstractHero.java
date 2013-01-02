@@ -9,7 +9,6 @@ import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Level;
@@ -258,35 +257,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     public Profession getSecundaryProfession() {
 
         return secundaryProfession;
-    }
-
-    @Override
-    public boolean canChooseProfession(Profession profession) throws InvalidChoiceException {
-
-        if (profession.getStrongParents().size() > 0) {
-            for (Profession strongParent : profession.getStrongParents()) {
-                if (!strongParent.isMastered()) {
-                    throw new InvalidChoiceException("Du musst erst alle " +
-                            (profession.getProperties().isPrimary() ? "Klassen die diese Klasse" : "Berufe die dieser Beruf")
-                            + " benötigt meistern.");
-                }
-            }
-        }
-        if (profession.getWeakParents().size() > 0) {
-            boolean oneMastered = false;
-            for (Profession weakParent : profession.getWeakParents()) {
-                if (weakParent.isMastered()) {
-                    oneMastered = true;
-                    break;
-                }
-            }
-            if (!oneMastered) {
-                throw new InvalidChoiceException("Du musst erst mindestens " +
-                        (profession.getProperties().isPrimary() ? "eine Klasse die diese Klasse" : "einen Beruf der diesen Beruf")
-                        + " benötigt meistern.");
-            }
-        }
-        return true;
     }
 
     @Override

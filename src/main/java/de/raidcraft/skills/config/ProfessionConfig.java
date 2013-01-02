@@ -3,17 +3,15 @@ package de.raidcraft.skills.config;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +32,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Skill> loadSkills(Hero hero, Profession profession) {
+    public List<Skill> loadSkills(Profession profession) {
 
         List<Skill> skills = new ArrayList<>();
         ConfigurationSection section = getSafeConfigSection("skills");
@@ -43,7 +41,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
-                Skill profSkill = getPlugin().getSkillManager().getSkill(hero, profession, skill);
+                Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.add(profSkill);
             } catch (UnknownSkillException e) {
                 getPlugin().getLogger().warning(e.getMessage());
@@ -54,33 +52,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public Set<Profession> loadStrongParents(Hero hero, Profession profession) {
+    public void loadRequirements(Profession profession) {
 
-        Set<Profession> parents = new LinkedHashSet<>();
-        for (String name : getStringList("parents.strong")) {
-            try {
-                parents.add(getPlugin().getProfessionManager().getProfession(hero, name));
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                getPlugin().getLogger().warning(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return parents;
-    }
-
-    @Override
-    public Set<Profession> loadWeakParents(Hero hero, Profession profession) {
-
-        Set<Profession> parents = new LinkedHashSet<>();
-        for (String name : getStringList("parents.weak")) {
-            try {
-                parents.add(getPlugin().getProfessionManager().getProfession(hero, name));
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                getPlugin().getLogger().warning(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return parents;
+        ConfigUtil.loadRequirements(this, profession);
     }
 
     @Override

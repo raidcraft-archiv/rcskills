@@ -1,14 +1,13 @@
 package de.raidcraft.skills;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandPermissions;
-import com.sk89q.minecraft.util.commands.NestedCommand;
+import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.skills.magic.Fireball;
@@ -20,6 +19,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -236,6 +236,30 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(SkillCommands.class)
         public void skill(CommandContext args, CommandSender sender) {
 
+        }
+
+        @Command(
+                aliases = "heal",
+                desc = "Heals the hero to full life.",
+                flags = "a"
+        )
+        public void heal(CommandContext args, CommandSender sender) throws CommandException {
+
+            Hero hero;
+            if (args.argsLength() > 0) {
+                try {
+                    hero = getCharacterManager().getHero(args.getString(0));
+                } catch (UnknownPlayerException e) {
+                    throw new CommandException(e.getMessage());
+                }
+            } else {
+                hero = getCharacterManager().getHero((Player) sender);
+            }
+            if (args.hasFlag('a')) {
+                hero.reset();
+            } else {
+                hero.heal(hero.getMaxHealth());
+            }
         }
     }
 }

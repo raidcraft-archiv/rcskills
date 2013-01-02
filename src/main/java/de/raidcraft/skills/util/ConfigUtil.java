@@ -1,12 +1,18 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.requirement.*;
+import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -65,5 +71,48 @@ public final class ConfigUtil {
             }
         }
         return map;
+    }
+
+    public static void loadRequirements(ConfigurationBase<SkillsPlugin> config, Unlockable unlockable) {
+
+        ConfigurationSection skills = config.getOverrideSection("requirements.skills");
+        // lets load some skill requirements first
+        for (String key : skills.getKeys(false)) {
+            try {
+                ConfigurationSection section = config.getOverrideSection("requirements.skills." + key);
+                Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(),
+                        section.getString("profession",
+                                (unlockable instanceof Skill ?
+                                        ((Skill) unlockable).getProfession().getName() :
+                                        unlockable.getHero().getVirtualProfession().getName())));
+                int level = section.getInt("level", 0);
+                Skill reqSkill = config.getPlugin().getSkillManager().getSkill(unlockable.getHero(), profession, key);
+                if (level == 0) {
+                    unlockable.addRequirement(new SkillRequirement(reqSkill));
+                } else {
+                    if (reqSkill instanceof LevelableSkill) {
+                        unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
+                    } else {
+                        throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
+                    }
+                }
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        ConfigurationSection professions = config.getOverrideSection("requirements.professions");
+        // lets get on some hot action with the profession requirements
+        for (String key : professions.getKeys(false)) {
+            try {
+                Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(), key);
+                int level = config.getOverride("requirements.professions." + key, 1);
+                unlockable.addRequirement(new ProfessionLevelRequirement(profession.getLevel(), level));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }
