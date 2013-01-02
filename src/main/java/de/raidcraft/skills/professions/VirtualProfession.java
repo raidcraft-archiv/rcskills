@@ -33,7 +33,7 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public List<Skill> getSkills() {
 
-        if (skills == null || skills.size() < 1) {
+        if (skills.size() < 1) {
             // at this point we normally load the skills from the config
             // but virtual skills can only be given manually
 
@@ -68,6 +68,11 @@ public final class VirtualProfession extends AbstractProfession {
         this.skills.remove(skill);
         skill.lock();
         skill.save();
+    }
+
+    @Override
+    public void checkSkillsForUnlock() {
+        // do nothing
     }
 
     @Override
