@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
+public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> implements Hero {
 
     private static final String MD_SEL_PROF = "rcs_selected_prof";
     private static final String MD_MANA = "rcs_mana";
@@ -48,7 +48,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     private final int id;
     private final RCPlayer player;
-    private Level<Hero> level;
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
@@ -253,18 +252,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setCombatLogging(boolean logging) {
 
         this.combatLoggging = logging;
-    }
-
-    @Override
-    public final Level<Hero> getLevel() {
-
-        return level;
-    }
-
-    @Override
-    public final void attachLevel(Level<Hero> level) {
-
-        this.level = level;
     }
 
     @Override

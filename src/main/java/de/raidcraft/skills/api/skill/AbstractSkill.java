@@ -113,14 +113,16 @@ public abstract class AbstractSkill implements Skill {
         setLastCast(System.currentTimeMillis());
     }
 
+    @SuppressWarnings("unchecked")
     protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
-        return target.addEffect(this, this, eClass);
+        return (E) target.addEffect(this, this, eClass);
     }
 
+    @SuppressWarnings("unchecked")
     protected final <E extends Effect, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
 
-        return target.addEffect(this, source, eClass);
+        return (E) target.addEffect(this, source, eClass);
     }
 
 

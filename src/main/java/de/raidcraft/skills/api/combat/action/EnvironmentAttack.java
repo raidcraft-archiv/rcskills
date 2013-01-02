@@ -16,7 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
  */
 public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.DamageCause, CharacterTemplate> {
 
-    private final EntityDamageByEntityEvent event;
+    private final EntityDamageByEntityEvent.DamageCause cause;
 
     public EnvironmentAttack(EntityDamageByEntityEvent event, int damage) {
 
@@ -24,7 +24,7 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 damage,
                 AttackType.fromEvent(event.getCause()));
-        this.event = event;
+        this.cause = event.getCause();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
 
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         if (getTarget() instanceof Hero) {
-            TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this));
+            TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, cause));
         }
         if (isCancelled()) {
             setCancelled(true);

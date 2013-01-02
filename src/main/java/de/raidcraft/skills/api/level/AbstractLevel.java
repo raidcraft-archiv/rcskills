@@ -15,7 +15,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     protected int exp = 0;
     protected int maxExp;
 
-    protected AbstractLevel(T levelObject, LevelData data) {
+    public AbstractLevel(T levelObject, LevelData data) {
 
         this.levelObject = levelObject;
         // abort in case there are no entries yet
@@ -27,6 +27,11 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         this.exp = data.getExp();
         this.maxLevel = levelObject.getMaxLevel();
         calculateMaxExp();
+    }
+
+    public AbstractLevel(T levelObject) {
+
+        this(levelObject, null);
     }
 
     @Override

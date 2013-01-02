@@ -5,6 +5,8 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.util.MetaDataKey;
 import net.minecraft.server.v1_4_6.EntityLiving;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
@@ -16,7 +18,7 @@ import java.lang.reflect.Field;
 /**
  * @author Silthus
  */
-public class Creature extends AbstractCharacterTemplate {
+public class Creature extends AbstractCharacterTemplate<Creature> {
 
     private Field nmsHealth = null;
 
@@ -27,7 +29,8 @@ public class Creature extends AbstractCharacterTemplate {
             // make the health field in NMS accessible
             this.nmsHealth = EntityLiving.class.getDeclaredField("health");
             this.nmsHealth.setAccessible(true);
-        } catch (NoSuchFieldException ignored) { }
+        } catch (NoSuchFieldException ignored) {}
+        attachLevel(new CreatureLevel(this, 60));
     }
 
     @Override
@@ -78,5 +81,29 @@ public class Creature extends AbstractCharacterTemplate {
     public int getMaxHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return 63;
+    }
+
+    @Override
+    public void onExpGain(int exp) {}
+
+    @Override
+    public void onExpLoss(int exp) {}
+
+    @Override
+    public void onLevelGain(int level) {}
+
+    @Override
+    public void onLevelLoss(int level) {}
+
+    @Override
+    public void saveLevelProgress(Level<Creature> level) {
+
+        RaidCraft.setMetaData(getEntity(), MetaDataKey.LEVEL, level.getLevel());
     }
 }

@@ -73,8 +73,13 @@ public final class ItemUtil {
                 Material.CHAINMAIL_BOOTS,
                 Material.GOLD_BOOTS,
                 Material.DIAMOND_BOOTS
-        )
-        ;
+        ),
+        SHIELD(-1,
+                Material.TRAP_DOOR,
+                Material.IRON_DOOR,
+                Material.WOOD_DOOR,
+                Material.WOODEN_DOOR
+        );
 
         private final int slotId;
         private final Material[] armor;
