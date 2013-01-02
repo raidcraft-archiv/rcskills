@@ -179,7 +179,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         setExp(getExp() - getMaxExp());
         calculateMaxExp();
         saveLevelProgress();
-        getLevelObject().onLevelGain(1);
+        getLevelObject().onLevelGain();
     }
 
     @SuppressWarnings("unchecked")
@@ -188,7 +188,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         this.level--;
         calculateMaxExp();
         saveLevelProgress();
-        levelObject.onLevelLoss(1);
+        levelObject.onLevelLoss();
     }
 
     @Override

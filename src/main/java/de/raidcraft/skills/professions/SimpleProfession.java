@@ -37,7 +37,7 @@ public class SimpleProfession extends AbstractProfession {
     }
 
     @Override
-    public void onLevelGain(int level) {
+    public void onLevelGain() {
 
         // lets reset all stats to max
         getHero().reset();
@@ -53,7 +53,7 @@ public class SimpleProfession extends AbstractProfession {
     }
 
     @Override
-    public void onLevelLoss(int level) {
+    public void onLevelLoss() {
 
         getHero().sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +

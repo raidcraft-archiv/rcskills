@@ -15,9 +15,9 @@ public interface Levelable<T extends Levelable> {
 
     public void onExpLoss(int exp);
 
-    public void onLevelGain(int level);
+    public void onLevelGain();
 
-    public void onLevelLoss(int level);
+    public void onLevelLoss();
 
     public void saveLevelProgress(Level<T> level);
 }

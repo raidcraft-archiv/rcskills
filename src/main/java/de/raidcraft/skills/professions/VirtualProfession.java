@@ -94,8 +94,8 @@ public final class VirtualProfession extends AbstractProfession {
     public void onExpLoss(int exp) {}
 
     @Override
-    public void onLevelGain(int level) {}
+    public void onLevelGain() {}
 
     @Override
-    public void onLevelLoss(int level) {}
+    public void onLevelLoss() {}
 }

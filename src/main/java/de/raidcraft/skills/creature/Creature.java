@@ -96,10 +96,10 @@ public class Creature extends AbstractCharacterTemplate<Creature> {
     public void onExpLoss(int exp) {}
 
     @Override
-    public void onLevelGain(int level) {}
+    public void onLevelGain() {}
 
     @Override
-    public void onLevelLoss(int level) {}
+    public void onLevelLoss() {}
 
     @Override
     public void saveLevelProgress(Level<Creature> level) {

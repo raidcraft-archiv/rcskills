@@ -33,14 +33,14 @@ public class SimpleHero extends AbstractHero {
     public void onExpLoss(int exp) {}
 
     @Override
-    public void onLevelGain(int level) {
+    public void onLevelGain() {
 
         sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 
     @Override
-    public void onLevelLoss(int level) {
+    public void onLevelLoss() {
 
         sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
