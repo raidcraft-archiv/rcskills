@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
@@ -97,13 +98,17 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public void onLevelGain(int level) {
 
-        // override if needed
+        getHero().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
+                ChatColor.AQUA + getProperties().getFriendlyName() +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 
     @Override
     public void onLevelLoss(int level) {
 
-        // override if needed
+        getHero().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
+                ChatColor.AQUA + getProperties().getFriendlyName() +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 
     @Override
