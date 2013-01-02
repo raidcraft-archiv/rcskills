@@ -11,6 +11,18 @@ public interface HeroData {
 
     public String getName();
 
+    public String getSelectedProfession();
+
+    public int getHealth();
+
+    public int getMana();
+
+    public int getStamina();
+
+    public boolean isDebugging();
+
+    public boolean isCombatLogging();
+
     public int getMaxLevel();
 
     public List<String> getProfessionNames();

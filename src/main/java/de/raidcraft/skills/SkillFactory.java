@@ -125,7 +125,7 @@ public final class SkillFactory {
             database.setName((useAlias() ? getAlias() : getSkillName()));
             database.setUnlocked(false);
             database.setExp(0);
-            database.setLevel(0);
+            database.setLevel(1);
             database.setHero(Ebean.find(THero.class, hero.getId()));
             database.setProfession((((AbstractProfession) profession).getDatabase()));
         }

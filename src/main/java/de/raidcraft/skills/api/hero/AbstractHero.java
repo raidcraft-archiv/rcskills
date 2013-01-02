@@ -18,7 +18,6 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,8 +25,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,13 +35,6 @@ import java.util.Map;
  * @author Silthus
  */
 public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> implements Hero {
-
-    private static final String MD_SEL_PROF = "rcs_selected_prof";
-    private static final String MD_MANA = "rcs_mana";
-    private static final String MD_HEALTH = "rcs_health";
-    private static final String MD_STAMINA = "rcs_stamina";
-    private static final String MD_DEBUGGING = "rcs_debugging";
-    private static final String MD_COMBAT_LOG = "rcs_combatlog";
 
     private final int id;
     private final RCPlayer player;
@@ -69,12 +59,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
-        setHealth(loadHealth());
-        setMana(loadMana());
-        setStamina(loadStamina());
-        setDebugging(loadDebugging());
-        setCombatLogging(loadCombatLogging());
+        this.health = data.getHealth();
+        this.mana = data.getMana();
+        this.stamina = data.getStamina();
+        this.debugging = data.isDebugging();
+        this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
+        this.selectedProfession = loadSelectedProfession(data);
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
         loadSkills();
@@ -139,29 +130,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
         }
     }
 
-    private int loadHealth() {
+    private Profession loadSelectedProfession(HeroData data) {
 
-        return HeroUtil.getEntityMetaData(getEntity(), MD_HEALTH, 20);
-    }
-
-    private int loadMana() {
-
-        return HeroUtil.getEntityMetaData(getEntity(), MD_MANA, 100);
-    }
-
-    private int loadStamina() {
-
-        return HeroUtil.getEntityMetaData(getEntity(), MD_STAMINA, 20);
-    }
-
-    private boolean loadDebugging() {
-
-        return HeroUtil.getEntityMetaData(getEntity(), MD_DEBUGGING, false);
-    }
-
-    private boolean loadCombatLogging() {
-
-        return HeroUtil.getEntityMetaData(getEntity(), MD_COMBAT_LOG, false);
+        try {
+            return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(this, data.getSelectedProfession());
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            // do nothing and return the getter
+        }
+        return getSelectedProfession();
     }
 
     @Override
@@ -394,11 +370,15 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     @Override
     public void save() {
 
-        HeroUtil.setEntityMetaData(getEntity(), MD_HEALTH, getHealth());
-        HeroUtil.setEntityMetaData(getEntity(), MD_MANA, getMana());
-        HeroUtil.setEntityMetaData(getEntity(), MD_STAMINA, getStamina());
-        HeroUtil.setEntityMetaData(getEntity(), MD_DEBUGGING, isDebugging());
-        HeroUtil.setEntityMetaData(getEntity(), MD_COMBAT_LOG, isCombatLogging());
+        THero tHero = Ebean.find(THero.class, getId());
+        tHero.setHealth(getHealth());
+        tHero.setMana(getMana());
+        tHero.setStamina(getStamina());
+        tHero.setDebugging(isDebugging());
+        tHero.setCombatLogging(isCombatLogging());
+        tHero.setSelectedProfession(getSelectedProfession().getName());
+        Database.save(tHero);
+
         saveProfessions();
         saveLevelProgress(getLevel());
         saveSkills();
@@ -471,30 +451,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     public Profession getSelectedProfession() {
 
         if (selectedProfession == null) {
-            SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
-
-            // lets get the selected prof via the metadata values
-            if (professions.size() > 0) {
-                for (MetadataValue value : getEntity().getMetadata(MD_SEL_PROF)) {
-                    if (value.getOwningPlugin().equals(plugin)) {
-                        try {
-                            this.selectedProfession = plugin.getProfessionManager().getProfession(this, value.asString());
-                        } catch (UnknownSkillException | UnknownProfessionException e) {
-                            e.printStackTrace();
-                            plugin.getLogger().warning(e.getMessage());
-                        }
-                    }
-                }
-            }
             // if the metadata returned null choose the primary or secondary prof
-            if (this.selectedProfession == null) {
-                if (getPrimaryProfession() != null) {
-                    setSelectedProfession(getPrimaryProfession());
-                } else if (getSecundaryProfession() != null) {
-                    setSelectedProfession(getSecundaryProfession());
-                } else {
-                    setSelectedProfession(getVirtualProfession());
-                }
+            if (getPrimaryProfession() != null) {
+                setSelectedProfession(getPrimaryProfession());
+            } else if (getSecundaryProfession() != null) {
+                setSelectedProfession(getSecundaryProfession());
+            } else {
+                setSelectedProfession(getVirtualProfession());
             }
         }
         return selectedProfession;
@@ -504,9 +467,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     public void setSelectedProfession(Profession profession) {
 
         this.selectedProfession = profession;
-        // lets set the metadata
-        SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
-        getEntity().setMetadata(MD_SEL_PROF, new FixedMetadataValue(plugin, profession.getName()));
         if (getUserInterface() != null) {
             getUserInterface().refresh();
         }
