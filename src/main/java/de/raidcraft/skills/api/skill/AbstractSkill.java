@@ -47,8 +47,6 @@ public abstract class AbstractSkill implements Skill {
         this.profession = profession;
         this.information = data.getInformation();
         data.loadRequirements(this);
-
-        load(data.getData());
     }
 
     @Override

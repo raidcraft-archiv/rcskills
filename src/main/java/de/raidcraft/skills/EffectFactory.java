@@ -58,6 +58,7 @@ public final class EffectFactory<E extends Effect> {
                         if (effect instanceof Triggered) {
                             TriggerManager.registerListeners((Triggered) effect);
                         }
+                        effect.load(config.getDataMap());
                         return effect;
                     }
                 }

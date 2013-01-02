@@ -105,7 +105,8 @@ public final class SkillFactory {
             Constructor<? extends Skill> constructor =
                     sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(hero, config, profession, database);
+            Skill skill = constructor.newInstance(hero, config, profession, database);
+            skill.load(config.getData());
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
