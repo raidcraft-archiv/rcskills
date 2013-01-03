@@ -31,9 +31,9 @@ public interface CharacterTemplate<T extends Levelable<T>> extends Levelable<T> 
 
     public void kill();
 
-    public <E extends Effect, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException;
+    public <E extends Effect<S>, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException;
 
-    public <E extends Effect, S> E addEffect(S source, Class<E> eClass) throws CombatException;
+    public <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException;
 
     public <E> void removeEffect(Class<E> eClass) throws CombatException;
 

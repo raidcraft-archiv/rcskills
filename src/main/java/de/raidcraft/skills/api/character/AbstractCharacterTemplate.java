@@ -156,7 +156,7 @@ public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implemen
     }
 
     @Override
-    public final <E extends Effect, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException {
 
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, skill);
         addEffect(eClass, effect);
@@ -164,7 +164,7 @@ public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implemen
     }
 
     @Override
-    public final <E extends Effect, S> E addEffect(S source, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException {
 
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);

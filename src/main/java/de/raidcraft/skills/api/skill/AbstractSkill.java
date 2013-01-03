@@ -120,13 +120,13 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @SuppressWarnings("unchecked")
-    protected final <E extends Effect> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+    protected final <E extends Effect<Skill>> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return (E) target.addEffect(this, this, eClass);
     }
 
     @SuppressWarnings("unchecked")
-    protected final <E extends Effect, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+    protected final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return (E) target.addEffect(this, source, eClass);
     }
