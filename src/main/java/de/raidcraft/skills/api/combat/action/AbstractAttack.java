@@ -18,7 +18,7 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     private final Set<AttackType> attackTypes = new HashSet<>();
     private final AttackSource source;
 
-    protected AbstractAttack(S attacker, T target, int damage, AttackType... types) {
+    public AbstractAttack(S attacker, T target, int damage, AttackType... types) {
 
         super(attacker);
         this.target = target;

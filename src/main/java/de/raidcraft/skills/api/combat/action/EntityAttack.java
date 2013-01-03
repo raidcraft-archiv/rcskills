@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackType;
@@ -74,11 +73,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             getTarget().damage(this);
             // if no exceptions was thrown to this point issue the callback
             if (callback != null && !(callback instanceof RangedCallback)) {
-                try {
-                    callback.run(getTarget());
-                } catch (InvalidTargetException e) {
-                    throw new CombatException(e.getMessage());
-                }
+                callback.run(getTarget());
             }
         } else {
             setCancelled(true);
