@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -8,6 +10,11 @@ import de.raidcraft.skills.api.persistance.EffectData;
 /**
  * @author Silthus
  */
+@EffectInformation(
+        name = "Silence",
+        description = "Lässt den Gegener verstummen.",
+        types = {EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MAGICAL}
+)
 public class Silence<S> extends ExpirableEffect<S> {
 
     public Silence(S source, CharacterTemplate target, EffectData data) {

@@ -1,13 +1,20 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.AbstractEffect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 
 /**
  * @author Silthus
  */
+@EffectInformation(
+        name = "Interrupt",
+        description = "Unterbricht den aktuellen Zauber des Gegners.",
+        types = {EffectType.HARMFUL}
+)
 public class Interrupt<S> extends AbstractEffect<S> {
 
     public Interrupt(S source, CharacterTemplate target, EffectData data) {
