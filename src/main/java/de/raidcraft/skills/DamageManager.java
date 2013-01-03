@@ -176,6 +176,9 @@ public final class DamageManager implements Listener {
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
+        if (event instanceof EntityDamageByEntityEvent) {
+            return;
+        }
 
         CharacterTemplate character = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
 

@@ -199,7 +199,9 @@ public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implemen
 
         for (Effect effect : new ArrayList<>(effects.values())) {
             try {
-                effect.remove();
+                if (effect != null) {
+                    effect.remove();
+                }
             } catch (CombatException e) {
                 if (effect.getTarget() instanceof Hero) {
                     ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());

@@ -22,7 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTemplate> {
 
-    private Callback callback;
+    private Callback<CharacterTemplate> callback;
     private EntityDamageEvent.DamageCause cause = null;
 
     public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, AttackType... types) {
@@ -30,13 +30,13 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         super(source, target, damage, types);
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback callback, AttackType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<CharacterTemplate> callback, AttackType... types) {
 
         this(attacker, target, 0, types);
         this.callback = callback;
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback callback, AttackType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<CharacterTemplate> callback, AttackType... types) {
 
         this(attacker, target, damage, types);
         this.callback = callback;
