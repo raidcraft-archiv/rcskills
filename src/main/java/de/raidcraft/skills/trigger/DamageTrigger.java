@@ -1,5 +1,6 @@
 package de.raidcraft.skills.trigger;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.HandlerList;
@@ -11,17 +12,17 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class DamageTrigger extends Trigger {
 
-    private final Attack attack;
+    private final Attack<?, CharacterTemplate> attack;
     private final EntityDamageEvent.DamageCause cause;
 
-    public DamageTrigger(Hero hero, Attack attack, EntityDamageEvent.DamageCause cause) {
+    public DamageTrigger(Hero hero, Attack<?, CharacterTemplate> attack, EntityDamageEvent.DamageCause cause) {
 
         super(hero);
         this.attack = attack;
         this.cause = cause;
     }
 
-    public Attack getAttack() {
+    public Attack<?, CharacterTemplate> getAttack() {
 
         return attack;
     }

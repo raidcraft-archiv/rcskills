@@ -39,7 +39,9 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
         trigger.getAttack().setDamage(getSource().getTotalDamage());
-        callback.run(trigger);
+        if (callback != null) {
+            callback.run(trigger);
+        }
         remove();
     }
 

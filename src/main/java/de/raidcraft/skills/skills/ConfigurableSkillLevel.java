@@ -15,8 +15,8 @@ public class ConfigurableSkillLevel extends AbstractLevel<LevelableSkill> {
 
     public ConfigurableSkillLevel(LevelableSkill levelObject, LevelData data, ConfigurationSection config) {
         super(levelObject, data);
-        expBaseCount = config.getInt("level_expBaseCount", 100);
-        expIncreasePerLevel = config.getInt("level_expIncreasePerLevel", 50);
+        expBaseCount = config.getInt("level.exp-base", 100);
+        expIncreasePerLevel = config.getInt("level.exp-per-level", 50);
     }
 
     @Override
