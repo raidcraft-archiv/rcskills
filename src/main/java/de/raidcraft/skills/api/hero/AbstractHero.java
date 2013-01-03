@@ -41,7 +41,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     private boolean combatLoggging = false;
     private int health;
     private int mana;
+    private boolean manaRegenEnabled = true;
     private int stamina;
+    private boolean staminaRegenEnabled = true;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -224,6 +226,30 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     public void setCombatLogging(boolean logging) {
 
         this.combatLoggging = logging;
+    }
+
+    @Override
+    public boolean isManaRegenEnabled() {
+
+        return manaRegenEnabled;
+    }
+
+    @Override
+    public void setManaRegenEnabled(boolean enabled) {
+
+        this.manaRegenEnabled = enabled;
+    }
+
+    @Override
+    public boolean isStaminaRegenEnabled() {
+
+        return staminaRegenEnabled;
+    }
+
+    @Override
+    public void setStaminaRegenEnabled(boolean enabled) {
+
+        this.staminaRegenEnabled = enabled;
     }
 
     @Override

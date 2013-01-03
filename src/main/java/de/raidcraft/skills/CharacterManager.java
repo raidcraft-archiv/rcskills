@@ -81,7 +81,7 @@ public final class CharacterManager implements Listener {
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Hero hero = getHero(player);
-                    if (hero.getMana() < hero.getMaxMana()) {
+                    if (hero.isManaRegenEnabled() && hero.getMana() < hero.getMaxMana()) {
                         // refresh the mana
                         int mana = hero.getMana() + plugin.getCommonConfig().hero_mana_regain_amount;
                         if (mana > hero.getMaxMana()) mana = hero.getMaxMana();
@@ -100,7 +100,7 @@ public final class CharacterManager implements Listener {
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Hero hero = getHero(player);
-                    if (hero.getStamina() < hero.getMaxStamina()) {
+                    if (hero.isStaminaRegenEnabled() && hero.getStamina() < hero.getMaxStamina()) {
                         // refresh the mana
                         int stamina = hero.getStamina() + plugin.getCommonConfig().hero_stamina_regain_amount;
                         if (stamina > hero.getMaxStamina()) stamina = hero.getMaxStamina();

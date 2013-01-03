@@ -42,11 +42,19 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate<Hero> {
 
     public void setMana(int mana);
 
+    public boolean isManaRegenEnabled();
+
+    public void setManaRegenEnabled(boolean enabled);
+
     public int getMaxMana();
 
     public int getStamina();
 
     public void setStamina(int stamina);
+
+    public boolean isStaminaRegenEnabled();
+
+    public void setStaminaRegenEnabled(boolean enabled);
 
     public int getMaxStamina();
 

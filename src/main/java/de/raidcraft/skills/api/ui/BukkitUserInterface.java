@@ -18,7 +18,7 @@ public class BukkitUserInterface implements UserInterface {
     private final Player player;
     private long lastUpdate = 0L;
     private boolean enabled = true;
-    private boolean maxedMana = false;
+    private boolean maxedMana = true;
 
     public BukkitUserInterface(Hero hero) {
 
