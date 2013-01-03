@@ -10,9 +10,7 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
-import de.raidcraft.skills.skills.magic.Fireball;
-import de.raidcraft.skills.skills.misc.PermissionSkill;
-import de.raidcraft.skills.skills.physical.Strike;
+import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -76,9 +74,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private void registerSkills() {
 
-        getSkillManager().registerClass(Fireball.class);
         getSkillManager().registerClass(PermissionSkill.class);
-        getSkillManager().registerClass(Strike.class);
     }
 
     @Override
