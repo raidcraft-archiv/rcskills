@@ -51,13 +51,13 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             // add a combat effect when a skill is beeing casted
             if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
 
-            // substrat the cost of the skill before it is triggered because a failed trigger costs too
+            // and lets pass on the trigger
+            executor.execute(listener, trigger);
+
+            // only substract usage cost if the skill does not fail when executing
             if (info.substractUsageCosts()) {
                 skill.substractUsageCost();
             }
-
-            // and lets pass on the trigger
-            executor.execute(listener, trigger);
         } catch (CombatException e) {
             hero.sendMessage(ChatColor.RED + e.getMessage());
             // lets check if we need to cancel a bukkit event
