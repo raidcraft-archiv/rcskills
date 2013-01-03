@@ -2,7 +2,9 @@ package de.raidcraft.skills.effects.damaging;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EffectDamage;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -12,6 +14,11 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * @author Silthus
  */
+@EffectInformation(
+        name = "bleed",
+        description = "Lässt das Ziel bluten.",
+        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF}
+)
 public class Bleed extends PeriodicExpirableEffect<Skill> {
 
     private int damagePerTick = 0;

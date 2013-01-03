@@ -3,6 +3,7 @@ package de.raidcraft.skills.effects.disabling;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.common.Interrupt;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Location;
@@ -43,6 +44,8 @@ public class KnockBack extends AbstractEffect<Location> {
         // power is the velocity applied to the target
         // a power of 0.4 is a player jumping
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
+        // also interrupt the target
+        target.addEffect(this, Interrupt.class);
     }
 
     @Override
