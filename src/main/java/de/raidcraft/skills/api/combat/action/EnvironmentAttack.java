@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
  * @author Silthus
@@ -18,7 +19,7 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
 
     private final EntityDamageByEntityEvent.DamageCause cause;
 
-    public EnvironmentAttack(EntityDamageByEntityEvent event, int damage) {
+    public EnvironmentAttack(EntityDamageEvent event, int damage) {
 
         super(event.getCause(),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
@@ -37,7 +38,6 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
             TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, cause));
         }
         if (isCancelled()) {
-            setCancelled(true);
             throw new CombatException(CombatException.Type.CANCELLED);
         }
         getTarget().damage(this);

@@ -77,6 +77,8 @@ public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implemen
             setHealth(newHealth);
         }
         getEntity().playEffect(EntityEffect.HURT);
+        getEntity().getWorld().playSound(
+                getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
         if (this instanceof Hero) {
             ((Hero)this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
         }

@@ -132,17 +132,26 @@ public final class DamageManager implements Listener {
                 if (attacker == null) {
                     return;
                 }
-                PhysicalAttack attack = new PhysicalAttack(event, event.getDamage());
+                int damage = event.getDamage();
+                if (creatureDamage.containsKey(attacker.getEntity().getType())) {
+                    damage = creatureDamage.get(attacker.getEntity().getType());
+                }
+                PhysicalAttack attack = new PhysicalAttack(event, damage);
                 // lets set the event damage to 0 and handle it in our attack
                 event.setDamage(0);
                 attack.run();
             } else {
                 if (environmentalDamage.containsKey(event.getCause())) {
-                    EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
+                    int damage = event.getDamage();
+                    damage += damage * environmentalDamage.get(event.getCause());
+                    EnvironmentAttack attack = new EnvironmentAttack(event, damage);
                     event.setDamage(0);
                     attack.run();
                 } else {
-                    // TODO: process other damage sources based on the config loaded above
+                    // simply issue an environment attack with no modified damage
+                    EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
+                    event.setDamage(0);
+                    attack.run();
                 }
             }
         } catch (CombatException e) {
@@ -151,6 +160,41 @@ public final class DamageManager implements Listener {
             }
             if (target instanceof Hero) {
                 ((Hero) target).debug((attacker != null ? attacker.getName() : event.getCause().name()) + "->You: " + e.getMessage());
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onEntityDamage(EntityDamageEvent event) {
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
+            return;
+        }
+        if (event.getDamage() == 0) {
+            return;
+        }
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+
+        CharacterTemplate character = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+
+        try {
+            if (environmentalDamage.containsKey(event.getCause())) {
+                int damage = event.getDamage();
+                damage += damage * environmentalDamage.get(event.getCause());
+                EnvironmentAttack attack = new EnvironmentAttack(event, damage);
+                event.setDamage(0);
+                attack.run();
+            } else {
+                // simply issue an environment attack with no modified damage
+                EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
+                event.setDamage(0);
+                attack.run();
+            }
+        } catch (CombatException e) {
+            if (character instanceof Hero) {
+                ((Hero) character).sendMessage(ChatColor.RED + e.getMessage());
             }
         }
     }

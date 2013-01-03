@@ -48,7 +48,7 @@ creature-damage:
 item-damage:
     Air: 2
 environmental-damage:
-    CONTACT: 1
+    CONTACT: 1.0
     # at range 0
     BLOCK_EXPLOSION: 1.2
     # Per block above 3
@@ -56,9 +56,9 @@ environmental-damage:
     LAVA: .2
     FIRE: .2
     # flat amount per tick
-    FIRE_TICK: 1
+    FIRE_TICK: 1.0
     # flat amount per tick
-    POISON: 1
+    POISON: 1.0
     SUFFOCATION: .05
     DROWNING: .1
     STARVATION: .05
