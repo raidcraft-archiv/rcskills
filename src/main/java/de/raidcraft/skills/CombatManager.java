@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
@@ -122,7 +121,7 @@ public final class CombatManager implements Listener {
                         if (sourcedCallback.getSource() instanceof Hero) {
                             ((Hero) sourcedCallback.getSource()).debug("Called Range Callback - " + sourcedCallback.getTaskId());
                         }
-                    } catch (CombatException | InvalidTargetException e) {
+                    } catch (CombatException e) {
                         if (sourcedCallback.getSource() instanceof Hero) {
                             ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
                         }
