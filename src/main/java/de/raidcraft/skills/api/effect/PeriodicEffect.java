@@ -6,6 +6,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Bukkit;
 
 /**
@@ -24,20 +26,25 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        // load the delay
-        this.delay = data.getEffectDelay();
+        delay = data.getEffectDelay();
+        interval = data.getEffectDuration();
         if (getSource() instanceof Hero) {
             Hero hero = (Hero) getSource();
-            this.delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
-        }
+            delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel());
 
-        // load the interval
-        this.interval = data.getEffectInterval();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            this.interval += (data.getEffectIntervalLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectIntervalProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+            interval += (data.getEffectIntervalLevelModifier() * hero.getLevel().getLevel());
+        }
+        if (getSource() instanceof Skill) {
+            delay += data.getEffectDelayLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            delay += data.getEffectDelayProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+
+            interval += data.getEffectIntervalLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            interval += data.getEffectIntervalProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+        }
+        if (getSource() instanceof LevelableSkill) {
+            delay += data.getEffectDelaySkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+
+            interval += data.getEffectIntervalSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
         }
     }
 

@@ -20,15 +20,29 @@ public interface EffectData {
 
     public int getEffectInterval();
 
+    public int getEffectDamage();
+
+    public double getEffectDamageLevelModifier();
+
+    public double getEffectDamageProfLevelModifier();
+
+    public double getEffectDamageSkillLevelModifier();
+
     public double getEffectDurationLevelModifier();
 
     public double getEffectDurationProfLevelModifier();
+
+    public double getEffectDurationSkillLevelModifier();
 
     public double getEffectDelayLevelModifier();
 
     public double getEffectDelayProfLevelModifier();
 
+    public double getEffectDelaySkillLevelModifier();
+
     public double getEffectIntervalLevelModifier();
 
     public double getEffectIntervalProfLevelModifier();
+
+    public double getEffectIntervalSkillLevelModifier();
 }

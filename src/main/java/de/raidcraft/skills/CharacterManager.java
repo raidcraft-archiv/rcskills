@@ -219,7 +219,8 @@ public final class CharacterManager implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // init once to set the health from the db and so on
-        plugin.getCharacterManager().getHero(event.getPlayer()).getUserInterface().refresh();
+        Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
+        hero.getUserInterface().refresh();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)

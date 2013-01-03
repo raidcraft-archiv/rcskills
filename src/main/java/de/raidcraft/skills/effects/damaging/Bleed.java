@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -21,23 +20,15 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Bleed extends PeriodicExpirableEffect<Skill> {
 
-    private int damagePerTick = 0;
-
     public Bleed(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        damagePerTick = data.getInt("damage", 0);
-    }
-
-    @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        new EffectDamage(this, damagePerTick, AttackType.PHYSICAL).run();
+        new EffectDamage(this, getDamage(), AttackType.PHYSICAL).run();
     }
 
     @Override

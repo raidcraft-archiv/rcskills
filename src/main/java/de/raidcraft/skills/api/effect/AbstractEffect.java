@@ -6,6 +6,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -18,6 +20,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private final String name;
     private final S source;
     private final CharacterTemplate target;
+    private int damage = 0;
     private double priority;
 
     public AbstractEffect(S source, CharacterTemplate target, EffectData data) {
@@ -27,6 +30,23 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
+
+        load(data);
+    }
+
+    private void load(EffectData data) {
+
+        damage = data.getEffectDamage();
+        if (getSource() instanceof Hero) {
+            damage += data.getEffectDamageLevelModifier() * ((Hero) getSource()).getLevel().getLevel();
+        }
+        if (getSource() instanceof Skill) {
+            damage += data.getEffectDamageLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            damage += data.getEffectDamageProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+        }
+        if (getSource() instanceof LevelableSkill) {
+            damage += data.getEffectDamageSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+        }
     }
 
     @Override
@@ -56,6 +76,12 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     public EffectElement[] getElements() {
 
         return info.elements();
+    }
+
+    @Override
+    public int getDamage() {
+
+        return damage;
     }
 
     @Override

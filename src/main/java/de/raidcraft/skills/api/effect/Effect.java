@@ -22,6 +22,8 @@ public interface Effect<S> {
 
     public EffectElement[] getElements();
 
+    public int getDamage();
+
     public boolean isOfType(EffectType type);
 
     public double getPriority();

@@ -1,14 +1,11 @@
 package de.raidcraft.skills.effects.damaging;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.trigger.TriggerHandler;
-import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -20,7 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF},
         elements = {EffectElement.FIRE}
 )
-public class Burn<S> extends PeriodicExpirableEffect<S> implements Triggered {
+public class Burn<S> extends PeriodicExpirableEffect<S> {
 
     private int fireTicks;
 
@@ -57,11 +54,5 @@ public class Burn<S> extends PeriodicExpirableEffect<S> implements Triggered {
     protected void tick(CharacterTemplate target) {
 
         target.getEntity().setFireTicks(fireTicks);
-    }
-
-    @TriggerHandler
-    public void onBreak(BlockBreakTrigger trigger) {
-
-        trigger.getHero().sendMessage("YAY!");
     }
 }

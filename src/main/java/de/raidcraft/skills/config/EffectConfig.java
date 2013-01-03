@@ -101,4 +101,46 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
 
         return getOverride("interval.prof-level-modifier", 0.0);
     }
+
+    @Override
+    public int getEffectDamage() {
+
+        return getOverride("damage.base", 0);
+    }
+
+    @Override
+    public double getEffectDamageLevelModifier() {
+
+        return getOverride("damage.level-modifier", 0.0);
+    }
+
+    @Override
+    public double getEffectDamageProfLevelModifier() {
+
+        return getOverride("damage.prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getEffectDamageSkillLevelModifier() {
+
+        return getOverride("damage.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getEffectDurationSkillLevelModifier() {
+
+        return getOverride("duration.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getEffectDelaySkillLevelModifier() {
+
+        return getOverride("delay.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getEffectIntervalSkillLevelModifier() {
+
+        return getOverride("interval.skill-level-modifier", 0.0);
+    }
 }

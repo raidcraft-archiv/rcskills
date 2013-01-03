@@ -6,6 +6,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -26,19 +28,25 @@ public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        // load the delay
-        this.delay = data.getEffectDelay();
+        delay = data.getEffectDelay();
+        duration = data.getEffectDuration();
         if (getSource() instanceof Hero) {
             Hero hero = (Hero) getSource();
-            this.delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDelayProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
-        }
+            delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel());
 
-        this.duration = data.getEffectDuration();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            this.duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDurationProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+            duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel());
+        }
+        if (getSource() instanceof Skill) {
+            delay += data.getEffectDelayLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            delay += data.getEffectDelayProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+
+            duration += data.getEffectDurationLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            duration += data.getEffectDurationProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+        }
+        if (getSource() instanceof LevelableSkill) {
+            delay += data.getEffectDelaySkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+
+            duration += data.getEffectDurationSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
         }
     }
 

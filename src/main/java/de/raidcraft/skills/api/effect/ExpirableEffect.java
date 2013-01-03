@@ -6,6 +6,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.LevelableSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Bukkit;
 
 /**
@@ -23,11 +25,17 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        this.duration = data.getEffectDuration();
+        duration = data.getEffectDuration();
         if (getSource() instanceof Hero) {
             Hero hero = (Hero) getSource();
-            this.duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel())
-                    + (data.getEffectDurationProfLevelModifier() * hero.getSelectedProfession().getLevel().getLevel());
+            duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel());
+        }
+        if (getSource() instanceof Skill) {
+            duration += data.getEffectDurationLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
+            duration += data.getEffectDurationProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
+        }
+        if (getSource() instanceof LevelableSkill) {
+            duration += data.getEffectDurationSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
         }
     }
 
