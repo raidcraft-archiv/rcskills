@@ -72,6 +72,12 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public int getTotalRange() {
+
+        return (int) (super.getTotalRange() + (getProperties().getRangeSkillLevelModifier() * getLevel().getLevel()));
+    }
+
+    @Override
     public final double getTotalCooldown() {
 
         return (super.getTotalCooldown() + (getProperties().getCooldownSkillLevelModifier() * getLevel().getLevel()));

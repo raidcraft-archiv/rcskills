@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.hero;
 
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -8,7 +7,6 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -91,10 +89,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate<Hero> {
     public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
 
     public void sendMessage(String... messages);
-
-    public CharacterTemplate getTarget() throws InvalidTargetException;
-
-    public Location getBlockTarget();
 
     public void addSkill(Skill skill);
 

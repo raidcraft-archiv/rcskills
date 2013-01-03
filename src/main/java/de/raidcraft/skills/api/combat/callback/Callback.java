@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.combat.callback;
 
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
@@ -9,5 +8,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Callback {
 
-    public void run(CharacterTemplate target) throws CombatException, InvalidTargetException;
+    public void run(CharacterTemplate target) throws CombatException;
 }

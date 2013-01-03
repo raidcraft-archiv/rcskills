@@ -52,6 +52,14 @@ public interface SkillProperties {
 
     public double getCastTimeLevelModifier();
 
+    public int getRange();
+
+    public double getRangeLevelModifier();
+
+    public double getRangeProfLevelModifier();
+
+    public double getRangeSkillLevelModifier();
+
     public double getCooldown();
 
     public double getCooldownLevelModifier();

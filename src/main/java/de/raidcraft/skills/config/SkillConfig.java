@@ -261,4 +261,28 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
 
         return getOverride("cooldown.prof-level-modifier", 0.0);
     }
+
+    @Override
+    public int getRange() {
+
+        return getOverride("range.base", 30);
+    }
+
+    @Override
+    public double getRangeLevelModifier() {
+
+        return getOverride("range.level-modifier", 0.0);
+    }
+
+    @Override
+    public double getRangeProfLevelModifier() {
+
+        return getOverride("range.prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getRangeSkillLevelModifier() {
+
+        return getOverride("range.skill-level-modifier", 0.0);
+    }
 }

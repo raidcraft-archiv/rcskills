@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.InvalidTargetException;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.ProfessionManager;
@@ -17,12 +16,9 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.util.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -512,23 +508,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
 
         super.kill(attacker);
         debug(attacker.getName() + " killed YOU");
-    }
-
-    @Override
-    public CharacterTemplate getTarget() throws InvalidTargetException {
-
-        LivingEntity target = BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class);
-        if (target == null) {
-            throw new InvalidTargetException("Du hast kein Ziel anvisiert!");
-        }
-        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager()
-                .getCharacter(target);
-    }
-
-    @Override
-    public Location getBlockTarget() {
-
-        return getEntity().getTargetBlock(null, 100).getLocation();
     }
 
     @Override

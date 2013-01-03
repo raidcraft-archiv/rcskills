@@ -1,7 +1,9 @@
 package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -17,8 +19,13 @@ import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -126,6 +133,30 @@ public abstract class AbstractSkill implements Skill {
 
 
     @Override
+    public CharacterTemplate getTarget() throws CombatException {
+
+        LivingEntity target = BukkitUtil.getTargetEntity(getHero().getEntity(), LivingEntity.class);
+        if (target == null) {
+            throw new CombatException("Du hast kein Ziel anvisiert!");
+        }
+        if (LocationUtil.getBlockDistance(target.getLocation(), getHero().getEntity().getLocation()) > getTotalRange()) {
+            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + getTotalRange() + "m");
+        }
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
+    }
+
+    @Override
+    public Location getBlockTarget() throws CombatException {
+
+        Block block = getHero().getEntity().getTargetBlock(null, getTotalRange());
+        if (block == null
+                || LocationUtil.getBlockDistance(block.getLocation(), getHero().getEntity().getLocation()) > getTotalRange()) {
+            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + getTotalRange() + "m");
+        }
+        return block.getLocation();
+    }
+
+    @Override
     public int getTotalDamage() {
 
         return (int) (properties.getDamage()
@@ -165,6 +196,14 @@ public abstract class AbstractSkill implements Skill {
         return (int) (properties.getCastTime()
                                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
                                 + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel()));
+    }
+
+    @Override
+    public int getTotalRange() {
+
+        return (int) (properties.getRange()
+                + (properties.getRangeLevelModifier() * hero.getLevel().getLevel())
+                + (properties.getRangeProfLevelModifier() * getProfession().getLevel().getLevel()));
     }
 
     @Override
