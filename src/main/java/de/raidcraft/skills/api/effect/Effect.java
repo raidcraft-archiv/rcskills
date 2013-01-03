@@ -22,6 +22,10 @@ public interface Effect<S> {
 
     public EffectElement[] getElements();
 
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
+
     public int getDamage();
 
     public boolean isOfType(EffectType type);

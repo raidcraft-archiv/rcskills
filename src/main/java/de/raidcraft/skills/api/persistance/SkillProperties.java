@@ -24,6 +24,10 @@ public interface SkillProperties {
 
     public boolean isHidden();
 
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
+
     public ConfigurationSection getData();
 
     public SkillInformation getInformation();

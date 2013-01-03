@@ -20,6 +20,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private final String name;
     private final S source;
     private final CharacterTemplate target;
+    private boolean enabled;
     private int damage = 0;
     private double priority;
 
@@ -30,6 +31,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
+        this.enabled = data.isEnabled();
 
         load(data);
     }
@@ -76,6 +78,18 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     public EffectElement[] getElements() {
 
         return info.elements();
+    }
+
+    @Override
+    public boolean isEnabled() {
+
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        this.enabled = enabled;
     }
 
     @Override

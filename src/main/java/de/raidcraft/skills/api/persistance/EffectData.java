@@ -10,6 +10,8 @@ public interface EffectData {
 
     public EffectInformation getInformation();
 
+    public boolean isEnabled();
+
     public ConfigurationSection getDataMap();
 
     public double getEffectPriority();

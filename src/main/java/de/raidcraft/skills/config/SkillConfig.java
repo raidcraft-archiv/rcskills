@@ -66,6 +66,19 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public boolean isEnabled() {
+
+        return getBoolean("enabled", true);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        set("enabled", enabled);
+        save();
+    }
+
+    @Override
     public ItemStack[] getReagents() {
 
         ConfigurationSection section = getOverrideSection("reagents");

@@ -55,6 +55,9 @@ public final class EffectFactory<E extends Effect> {
                             && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
                             && constructor.getParameterTypes()[2].isAssignableFrom(EffectConfig.class)) {
                         E effect = (E) constructor.newInstance(source, target, config);
+                        if (!effect.isEnabled()) {
+                            throw new UnknownEffectException("The effect " + effectName + " is disabled!");
+                        }
                         if (effect instanceof Triggered) {
                             TriggerManager.registerListeners((Triggered) effect);
                         }

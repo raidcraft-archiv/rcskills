@@ -43,6 +43,12 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     }
 
     @Override
+    public boolean isEnabled() {
+
+        return getBoolean("enabled", true);
+    }
+
+    @Override
     public double getEffectPriority() {
 
         return getOverride("priority", getPlugin().getCommonConfig().default_effect_priority);

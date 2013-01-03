@@ -328,6 +328,18 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public boolean isEnabled() {
+
+        return properties.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        properties.setEnabled(enabled);
+    }
+
+    @Override
     public final EffectType[] getTypes() {
 
         return information.types();
