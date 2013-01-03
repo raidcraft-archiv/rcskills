@@ -8,6 +8,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -72,6 +74,22 @@ public class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callTrigger(
                 new InventoryClickTrigger(plugin.getCharacterManager().getHero((Player) event.getWhoClicked()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onCraft(CraftItemEvent event) {
+
+        TriggerManager.callTrigger(
+                new CraftTrigger(plugin.getCharacterManager().getHero((Player) event.getWhoClicked()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onEnchant(EnchantItemEvent event) {
+
+        TriggerManager.callTrigger(
+                new EnchantTrigger(plugin.getCharacterManager().getHero(event.getEnchanter()), event)
         );
     }
 }
