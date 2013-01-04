@@ -86,7 +86,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final boolean isMastered() {
 
-        return getLevel().getMaxLevel() == getLevel().getLevel();
+        return getLevel().hasReachedMaxLevel();
     }
 
     @Override

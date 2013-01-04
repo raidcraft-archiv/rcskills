@@ -1,15 +1,16 @@
 package de.raidcraft.skills.creature;
 
 import de.raidcraft.skills.api.level.AbstractLevel;
+import de.raidcraft.skills.api.level.Levelable;
 
 /**
  * @author Silthus
  */
-public class CreatureLevel extends AbstractLevel<Creature> {
+public class CreatureLevel<T extends Levelable<T>> extends AbstractLevel<T> {
 
     private int level;
 
-    public CreatureLevel(Creature levelObject, int level) {
+    public CreatureLevel(T levelObject, int level) {
 
         super(levelObject);
         this.level = level;

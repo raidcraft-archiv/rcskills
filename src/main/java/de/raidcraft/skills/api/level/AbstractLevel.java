@@ -79,6 +79,9 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void addExp(int exp) {
 
+        if (getLevelObject().isMastered()) {
+            return;
+        }
         this.exp += exp;
         getLevelObject().onExpGain(exp);
         checkProgress();

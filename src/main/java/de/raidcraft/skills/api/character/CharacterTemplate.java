@@ -4,14 +4,13 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.entity.LivingEntity;
 
 /**
  * @author Silthus
  */
-public interface CharacterTemplate<T extends Levelable<T>> extends Levelable<T> {
+public interface CharacterTemplate {
 
     public String getName();
 

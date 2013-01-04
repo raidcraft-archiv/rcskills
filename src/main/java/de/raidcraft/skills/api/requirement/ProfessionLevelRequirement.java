@@ -24,7 +24,7 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
     public String getReason(Hero hero) {
 
         return ChatColor.RED + "Du musst erst " +
-                (getLevelObject().getProperties().isPrimary() ? "die Klasse" : "den Beruf") +
+                (getLevelObject().getProperties().isPrimary() ? "die Klasse " : "den Beruf ") +
                 ChatColor.AQUA + getLevelObject() + ChatColor.RED + " auf Level "
                 + ChatColor.AQUA + getRequiredLevel() + ChatColor.AQUA + " bringen.";
     }

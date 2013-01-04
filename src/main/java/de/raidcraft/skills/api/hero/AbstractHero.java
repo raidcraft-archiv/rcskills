@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> implements Hero {
+public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
 
     private final int id;
     private final RCPlayer player;
@@ -43,6 +43,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
+    private Level<Hero> level;
     // primary and secondary professions are the ones defining items and stuff
     private Profession primaryProfession;
     private Profession secundaryProfession;
@@ -225,6 +226,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
     }
 
     @Override
+    public boolean isMastered() {
+
+        return getLevel().hasReachedMaxLevel();
+    }
+
+    @Override
     public boolean isManaRegenEnabled() {
 
         return manaRegenEnabled;
@@ -354,6 +361,38 @@ public abstract class AbstractHero extends AbstractCharacterTemplate<Hero> imple
                 profession.getProperties().getBaseStaminaModifier() * profession.getLevel().getLevel());
         if (stamina > 20) stamina = 20;
         return stamina;
+    }
+
+    @Override
+    public Level<Hero> getLevel() {
+
+        return level;
+    }
+
+    @Override
+    public void attachLevel(Level<Hero> level) {
+
+        this.level = level;
+    }
+
+    @Override
+    public void onExpGain(int exp) {}
+
+    @Override
+    public void onExpLoss(int exp) {}
+
+    @Override
+    public void onLevelGain() {
+
+        sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+    }
+
+    @Override
+    public void onLevelLoss() {
+
+        sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
     }
 
     @Override

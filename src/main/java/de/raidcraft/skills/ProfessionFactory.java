@@ -48,7 +48,6 @@ public final class ProfessionFactory {
             database.setHero(Ebean.find(THero.class, hero.getId()));
             database.setLevel(1);
             database.setExp(0);
-            database.setMastered(false);
             database.setActive(false);
         }
         return database;

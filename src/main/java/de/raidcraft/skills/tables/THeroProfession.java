@@ -26,7 +26,6 @@ public class THeroProfession implements LevelData, Bean {
     private int level;
     private int exp;
     private boolean active;
-    private boolean mastered;
 
     @OneToMany
     @JoinColumn(name = "profession_id")
@@ -90,16 +89,6 @@ public class THeroProfession implements LevelData, Bean {
     public void setActive(boolean active) {
 
         this.active = active;
-    }
-
-    public boolean isMastered() {
-
-        return mastered;
-    }
-
-    public void setMastered(boolean mastered) {
-
-        this.mastered = mastered;
     }
 
     public List<THeroSkill> getSkills() {

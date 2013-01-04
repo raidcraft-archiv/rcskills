@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public interface Hero extends Levelable<Hero>, CharacterTemplate<Hero> {
+public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public int getId();
 

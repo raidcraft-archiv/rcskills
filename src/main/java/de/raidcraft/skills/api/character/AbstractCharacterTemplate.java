@@ -7,8 +7,6 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -28,14 +26,13 @@ import java.util.Random;
 /**
  * @author Silthus
  */
-public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implements CharacterTemplate<T> {
+public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private static final Random RANDOM = new Random();
 
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
-    private Level<T> level;
     private boolean inCombat = false;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
@@ -54,18 +51,6 @@ public abstract class AbstractCharacterTemplate<T extends Levelable<T>> implemen
     public LivingEntity getEntity() {
 
         return entity;
-    }
-
-    @Override
-    public Level<T> getLevel() {
-
-        return level;
-    }
-
-    @Override
-    public void attachLevel(Level<T> level) {
-
-        this.level = level;
     }
 
     private void damage(int damage) {

@@ -19,5 +19,7 @@ public interface Levelable<T extends Levelable> {
 
     public void onLevelLoss();
 
+    public boolean isMastered();
+
     public void saveLevelProgress(Level<T> level);
 }

@@ -88,7 +88,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean isMastered() {
 
-        return database.isMastered();
+        return getLevel().hasReachedMaxLevel();
     }
 
     @Override
@@ -169,7 +169,6 @@ public abstract class AbstractProfession implements Profession {
 
         saveLevelProgress(getLevel());
         database.setActive(isActive());
-        database.setMastered(isMastered());
         Database.save(database);
     }
 
