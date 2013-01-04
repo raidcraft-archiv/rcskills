@@ -253,8 +253,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     @Override
     public double getCooldown() {
 
-        // all cooldowns are in ticks and we need to convert to seconds
-        return getOverride("cooldown.base", 0) / 20.0;
+        return getOverride("cooldown.base", 0.0);
     }
 
     @Override

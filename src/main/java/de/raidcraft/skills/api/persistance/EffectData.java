@@ -16,11 +16,11 @@ public interface EffectData {
 
     public double getEffectPriority();
 
-    public int getEffectDuration();
+    public long getEffectDuration();
 
-    public int getEffectDelay();
+    public long getEffectDelay();
 
-    public int getEffectInterval();
+    public long getEffectInterval();
 
     public int getEffectDamage();
 

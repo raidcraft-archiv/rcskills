@@ -19,4 +19,9 @@ public final class TimeUtil {
         return ((int) ((millis / 1000.0) * 100.0)) / 100.0;
     }
 
+    public static long secondsToTicks(double seconds) {
+
+        return Math.round(seconds * 20);
+    }
+
 }

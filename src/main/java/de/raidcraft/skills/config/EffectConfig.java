@@ -5,6 +5,7 @@ import de.raidcraft.skills.EffectFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -55,21 +56,21 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     }
 
     @Override
-    public int getEffectDuration() {
+    public long getEffectDuration() {
 
-        return getOverride("duration.base", 0);
+        return TimeUtil.secondsToTicks(getOverride("duration.base", 0.0));
     }
 
     @Override
-    public int getEffectDelay() {
+    public long getEffectDelay() {
 
-        return getOverride("delay.base", 0);
+        return TimeUtil.secondsToTicks(getOverride("delay.base", 0.0));
     }
 
     @Override
-    public int getEffectInterval() {
+    public long getEffectInterval() {
 
-        return getOverride("interval.base", 0);
+        return TimeUtil.secondsToTicks(getOverride("interval.base", 0.0));
     }
 
     @Override
