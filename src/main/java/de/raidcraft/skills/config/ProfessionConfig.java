@@ -46,6 +46,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
                 String profName = section.getString(skill + ".profession");
                 if (profName != null && !profName.equals("")) {
                     profession = getPlugin().getProfessionManager().getProfession(profession.getHero(), profName);
+                    profession.setActive(true);
                 }
                 Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.add(profSkill);
