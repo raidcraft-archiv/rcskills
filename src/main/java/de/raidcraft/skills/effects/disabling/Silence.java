@@ -1,9 +1,10 @@
-package de.raidcraft.skills.api.effect.common;
+package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.ExpirableEffect;
+import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 
@@ -11,13 +12,13 @@ import de.raidcraft.skills.api.persistance.EffectData;
  * @author Silthus
  */
 @EffectInformation(
-        name = "Interrupt",
-        description = "Unterbricht den aktuellen Zauber des Gegners.",
-        types = {EffectType.HARMFUL}
+        name = "Silence",
+        description = "Lässt den Gegener verstummen.",
+        types = {EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MAGICAL}
 )
-public class Interrupt<S> extends AbstractEffect<S> {
+public class Silence<S> extends ExpirableEffect<S> {
 
-    public Interrupt(S source, CharacterTemplate target, EffectData data) {
+    public Silence(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -25,15 +26,15 @@ public class Interrupt<S> extends AbstractEffect<S> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        // interrupt all spells that are currently casted
+        warn("Du hast einen Stille Effekt erhalten und kannst keine Zauber wirken!");
+        // also cancel casts
         target.removeEffect(CastTime.class);
-        // and remove ourself directly after
-        remove();
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
+        warn("Der Stille Effekt wurde aufgehoben und du kannst wieder Zauber wirken!");
     }
 
     @Override

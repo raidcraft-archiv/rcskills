@@ -10,19 +10,18 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class ConfigurableSkillLevel extends SkillLevel {
 
-    private final int expBaseCount;
-    private final int expIncreasePerLevel;
+    private double baseMultiplier = 40.4;
 
     public ConfigurableSkillLevel(LevelableSkill levelObject, LevelData data, ConfigurationSection config) {
 
         super(levelObject, data);
-        expBaseCount = config.getInt("level.exp-base", 100);
-        expIncreasePerLevel = config.getInt("level.exp-per-level", 50);
+        baseMultiplier = config.getDouble("exp-base", 40.4);
+        calculateMaxExp();
     }
 
     @Override
     public int getNeededExpForLevel(int level) {
 
-        return expBaseCount + level * expIncreasePerLevel;
+        return (int) (-.6 * Math.pow(level, 3) + baseMultiplier * Math.pow(level, 2));
     }
 }

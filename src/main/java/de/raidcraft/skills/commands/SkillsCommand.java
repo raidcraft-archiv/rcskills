@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
@@ -86,6 +87,10 @@ public class SkillsCommand {
                         .append(ChatColor.YELLOW).append("] ");
                 sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
                         .append(skill.getProperties().getFriendlyName());
+                if (skill instanceof LevelableSkill) {
+                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getLevel().getLevel())
+                            .append(ChatColor.YELLOW).append("] ");
+                }
                 sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
                 return sb.toString();
             }

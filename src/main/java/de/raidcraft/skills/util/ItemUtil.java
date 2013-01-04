@@ -1,6 +1,6 @@
 package de.raidcraft.skills.util;
 
-import de.raidcraft.skills.api.effect.common.Disarm;
+import de.raidcraft.skills.effects.disabling.Disarmed;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -155,7 +155,7 @@ public final class ItemUtil {
 
     public static void disarmCheck(Hero hero) {
 
-        if (!hero.hasEffect(Disarm.class)) {
+        if (!hero.hasEffect(Disarmed.class)) {
             return;
         }
         ItemStack contents[] = hero.getPlayer().getInventory().getContents();

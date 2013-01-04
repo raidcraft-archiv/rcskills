@@ -1,9 +1,10 @@
-package de.raidcraft.skills.api.effect.common;
+package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.ExpirableEffect;
+import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 
@@ -11,14 +12,13 @@ import de.raidcraft.skills.api.persistance.EffectData;
  * @author Silthus
  */
 @EffectInformation(
-        name = "Disarm",
-        description = "Entwaffnet den Gegner",
-        types = {EffectType.DEBUFF, EffectType.PHYSICAL, EffectType.HARMFUL}
+        name = "Interrupt",
+        description = "Unterbricht den aktuellen Zauber des Gegners.",
+        types = {EffectType.HARMFUL}
 )
-public class Disarm<S> extends ExpirableEffect<S> {
+public class Interrupt<S> extends AbstractEffect<S> {
 
-
-    public Disarm(S source, CharacterTemplate target, EffectData data) {
+    public Interrupt(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -26,13 +26,15 @@ public class Disarm<S> extends ExpirableEffect<S> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        warn("Du wurdest entwaffnet und kannst nicht angreifen!");
+        // interrupt all spells that are currently casted
+        target.removeEffect(CastTime.class);
+        // and remove ourself directly after
+        remove();
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        warn("Du bist nicht mehr entwaffnet und kannst wieder angreifen.");
     }
 
     @Override

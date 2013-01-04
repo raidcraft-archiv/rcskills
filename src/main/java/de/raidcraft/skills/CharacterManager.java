@@ -131,8 +131,13 @@ public final class CharacterManager implements Listener {
                 // create a new entry
                 heroTable = new THero();
                 heroTable.setPlayer(name);
+                heroTable.setHealth(20);
+                heroTable.setMana(0);
+                heroTable.setStamina(0);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
+                heroTable.setCombatLogging(false);
+                heroTable.setDebugging(false);
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);

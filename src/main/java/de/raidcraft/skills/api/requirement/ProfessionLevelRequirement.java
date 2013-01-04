@@ -25,7 +25,7 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
 
         return ChatColor.RED + "Du musst erst " +
                 (getLevelObject().getProperties().isPrimary() ? "die Klasse " : "den Beruf ") +
-                ChatColor.AQUA + getLevelObject() + ChatColor.RED + " auf Level "
-                + ChatColor.AQUA + getRequiredLevel() + ChatColor.AQUA + " bringen.";
+                ChatColor.AQUA + getLevelObject() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
+                + getRequiredLevel() + ChatColor.RED + " bringen.";
     }
 }

@@ -12,12 +12,12 @@ public class ProfessionLevel extends AbstractLevel<Profession> {
     protected ProfessionLevel(Profession levelObject, LevelData data) {
 
         super(levelObject, data);
+        calculateMaxExp();
     }
 
     @Override
     public int getNeededExpForLevel(int level) {
 
-        // TODO: add formula to calculate exp
-        return 5;
+        return (int) (-.4 * Math.pow(level, 3) + 40.4 * Math.pow(level, 2));
     }
 }

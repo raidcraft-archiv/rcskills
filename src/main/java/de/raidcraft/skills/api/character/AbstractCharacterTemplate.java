@@ -116,7 +116,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().playEffect(EntityEffect.DEATH);
     }
 
-    private <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
+    public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
 
         if (effects.containsKey(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);

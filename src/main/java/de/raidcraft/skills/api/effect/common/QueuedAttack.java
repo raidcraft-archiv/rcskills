@@ -23,11 +23,12 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
 
     private Callback<AttackTrigger> callback;
+    private boolean attacked = false;
 
     public QueuedAttack(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-        if (duration == 0) duration = 20 * 10;
+        if (duration == 0) duration = 20 * 5;
     }
 
     public void addCallback(Callback<AttackTrigger> callback) {
@@ -42,17 +43,22 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         if (callback != null) {
             callback.run(trigger);
         }
+        attacked = true;
         remove();
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
+        info("Du hebst deine Waffe zum Angriff: " + getSource().getFriendlyName());
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
+        if (!attacked) {
+            info("Du senkst deine Waffe.");
+        }
     }
 
     @Override
