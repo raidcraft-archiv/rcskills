@@ -18,7 +18,6 @@ import org.bukkit.potion.PotionEffectType;
 )
 public class Stun<S> extends PeriodicExpirableEffect<S> {
 
-    private static final int AMPLIFIER = 127;
     private final PotionEffect confusionEffect;
     private final PotionEffect slowEffect;
     private Location location;
@@ -26,11 +25,9 @@ public class Stun<S> extends PeriodicExpirableEffect<S> {
     public Stun(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-        delay = 0;
-        interval = 10;
-        duration = 60;
-        this.confusionEffect = new PotionEffect(PotionEffectType.CONFUSION, (int) getDuration(), AMPLIFIER, false);
-        this.slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), AMPLIFIER, false);
+        this.interval = 2;
+        this.confusionEffect = new PotionEffect(PotionEffectType.CONFUSION, (int) getDuration(), 5, false);
+        this.slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 10, false);
     }
 
     @Override

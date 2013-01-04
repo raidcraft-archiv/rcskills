@@ -45,7 +45,7 @@ public abstract class AbstractSkill implements Skill {
     private String description;
     private long lastCast;
 
-    protected AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         this.hero = hero;
         this.properties = data;

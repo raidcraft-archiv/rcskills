@@ -91,7 +91,7 @@ public final class EffectFactory<E extends Effect> {
 
             // lets now merge the effect with the merged skill profession config
             SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());
-            config.getOverrideConfig().merge(skillConfig.getOverrideSection("effects." + effectName));
+            config.merge(skillConfig, "effects." + effectName);
 
             effectConfigs.put(skill, config);
         } else {

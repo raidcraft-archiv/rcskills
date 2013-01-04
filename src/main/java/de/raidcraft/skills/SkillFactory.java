@@ -51,7 +51,6 @@ public final class SkillFactory {
         config.getFriendlyName();
         config.getDescription();
         config.getUsage();
-        config.getRequiredLevel();
         config.getMaxLevel();
         config.getReagents();
         config.getManaCost();
