@@ -47,8 +47,9 @@ public abstract class JarFileLoader<T> extends FileLoader<T> {
                 jarFile = new JarFile(file);
                 loader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
                     public URLClassLoader run() {
+
                         try {
-                            return new URLClassLoader(new URL[] {file.toURI().toURL()}, getClass().getClassLoader());
+                            return new URLClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader());
                         } catch (MalformedURLException e) {
                             throw new RuntimeException(e);
                         }

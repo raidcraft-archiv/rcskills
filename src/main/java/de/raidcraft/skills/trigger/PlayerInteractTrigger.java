@@ -22,10 +22,12 @@ public class PlayerInteractTrigger extends BukkitEventTrigger<PlayerInteractEven
     private static final HandlerList handlers = new HandlerList();
 
     public HandlerList getHandlers() {
+
         return handlers;
     }
 
     public static HandlerList getHandlerList() {
+
         return handlers;
     }
 }

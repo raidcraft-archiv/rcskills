@@ -28,10 +28,12 @@ public class RCSkillLevelEvent extends RCLevelEvent<LevelableSkill> implements C
     private static final HandlerList handlers = new HandlerList();
 
     public HandlerList getHandlers() {
+
         return handlers;
     }
 
     public static HandlerList getHandlerList() {
+
         return handlers;
     }
 }

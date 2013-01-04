@@ -65,7 +65,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().getWorld().playSound(
                 getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
         if (this instanceof Hero) {
-            ((Hero)this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
+            ((Hero) this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
         }
     }
 
@@ -88,7 +88,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         setHealth(newHealth);
         if (this instanceof Hero) {
-            ((Hero)this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
+            ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
         }
     }
 

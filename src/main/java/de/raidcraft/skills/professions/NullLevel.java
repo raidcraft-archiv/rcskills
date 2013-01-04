@@ -83,16 +83,19 @@ public final class NullLevel extends AbstractLevel<Profession> {
 
     @Override
     public boolean canLevel() {
+
         return false;
     }
 
     @Override
     public boolean hasReachedMaxLevel() {
+
         return true;
     }
 
     @Override
     public int getNeededExpForLevel(int level) {
+
         return 1;
     }
 }

@@ -39,13 +39,15 @@ public class Slowness<S> extends ExpirableEffect<S> {
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)getDuration(), amplifier));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), amplifier));
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        for(PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
-            if(potionEffect.getType() == PotionEffectType.SLOW) {
+
+        for (PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
+            if (potionEffect.getType() == PotionEffectType.SLOW) {
                 target.getEntity().removePotionEffect(PotionEffectType.SLOW);
             }
         }
@@ -53,6 +55,7 @@ public class Slowness<S> extends ExpirableEffect<S> {
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)getDuration(), amplifier));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), amplifier));
     }
 }

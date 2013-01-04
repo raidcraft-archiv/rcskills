@@ -15,7 +15,9 @@ import java.util.List;
  */
 public final class ProfessionUtil {
 
-    private ProfessionUtil() {}
+    private ProfessionUtil() {
+
+    }
 
     public static Profession getProfessionFromArgs(Hero hero, String input) throws CommandException {
 

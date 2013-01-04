@@ -28,10 +28,12 @@ public class RCProfessionLevelEvent extends RCLevelEvent<Profession> implements 
     private static final HandlerList handlers = new HandlerList();
 
     public HandlerList getHandlers() {
+
         return handlers;
     }
 
     public static HandlerList getHandlerList() {
+
         return handlers;
     }
 }

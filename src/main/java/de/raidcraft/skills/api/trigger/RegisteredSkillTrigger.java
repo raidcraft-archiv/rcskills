@@ -44,8 +44,8 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
 
         try {
             if (info.checkUsage()) {
-                    // check the skill usage
-                    skill.checkUsage();
+                // check the skill usage
+                skill.checkUsage();
             }
 
             // add a combat effect when a skill is beeing casted

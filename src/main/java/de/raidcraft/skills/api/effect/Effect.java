@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.configuration.ConfigurationSection;
 

@@ -30,6 +30,7 @@ import java.util.*;
  * A component loader that loads components from a directory of classes.
  */
 public abstract class ClassLoaderSkillLoader<T> extends FileLoader<T> {
+
     private final URLClassLoader loader;
     private final File classDir;
 
@@ -39,6 +40,7 @@ public abstract class ClassLoaderSkillLoader<T> extends FileLoader<T> {
         this.classDir = classDir;
         this.loader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
             public URLClassLoader run() {
+
                 try {
                     return new URLClassLoader(new URL[]{classDir.toURI().toURL()}, getClass().getClassLoader());
                 } catch (MalformedURLException e) {
@@ -67,11 +69,12 @@ public abstract class ClassLoaderSkillLoader<T> extends FileLoader<T> {
         }
         return skills;
     }
-    
+
     public Set<String> getClassNames() {
+
         return recursiveGetClasses(classDir, "");
     }
-    
+
     public Set<String> recursiveGetClasses(File dir, String parentName) {
 
         Set<String> classNames = new HashSet<>();

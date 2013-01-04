@@ -17,12 +17,14 @@ import java.util.List;
  */
 public final class HeroUtil {
 
-    private HeroUtil() {}
+    private HeroUtil() {
+
+    }
 
     public static String createManaBar(double mana, double maxMana) {
 
         StringBuilder manaBar = new StringBuilder(String.valueOf(ChatColor.RED) + "[" + ChatColor.BLUE);
-        int percent = (int)((mana / maxMana) * 100.0);
+        int percent = (int) ((mana / maxMana) * 100.0);
         int progress = percent / 2;
         for (int i = 0; i < progress; i++) {
             manaBar.append('|');

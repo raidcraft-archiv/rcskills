@@ -34,7 +34,7 @@ public class AdminCommands {
 
         plugin.reload();
         sender.sendMessage(ChatColor.GREEN + "Reloaded all " + ChatColor.RED + "Config Files " + ChatColor.GREEN + "and " +
-                 ChatColor.RED + "Managers " + ChatColor.GREEN + "successfully!");
+                ChatColor.RED + "Managers " + ChatColor.GREEN + "successfully!");
     }
 
     @Command(

@@ -31,7 +31,8 @@ public abstract class RegisteredTrigger {
      *
      * @param trigger The event
      *
-     * @throws org.bukkit.event.EventException If an event handler throws an exception.
+     * @throws org.bukkit.event.EventException
+     *          If an event handler throws an exception.
      */
     public abstract void callTrigger(final Trigger trigger) throws EventException;
 }

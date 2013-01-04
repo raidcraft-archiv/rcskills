@@ -66,7 +66,7 @@ public final class EffectFactory<E extends Effect> {
                     }
                 }
             }
-        } catch ( InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }

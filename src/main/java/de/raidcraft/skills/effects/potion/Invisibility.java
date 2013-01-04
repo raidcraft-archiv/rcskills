@@ -30,13 +30,15 @@ public class Invisibility<S> extends ExpirableEffect<S> {
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int)getDuration(), 1));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1));
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        for(PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
-            if(potionEffect.getType() == PotionEffectType.INVISIBILITY) {
+
+        for (PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
+            if (potionEffect.getType() == PotionEffectType.INVISIBILITY) {
                 target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
             }
         }
@@ -44,6 +46,7 @@ public class Invisibility<S> extends ExpirableEffect<S> {
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int)getDuration(), 1));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1));
     }
 }

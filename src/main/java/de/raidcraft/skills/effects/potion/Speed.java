@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Speed<S> extends ExpirableEffect<S> {
 
     private int amplifier;
-    
+
     public Speed(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
@@ -39,13 +39,15 @@ public class Speed<S> extends ExpirableEffect<S> {
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int)getDuration(), amplifier));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), amplifier));
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        for(PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
-            if(potionEffect.getType() == PotionEffectType.INVISIBILITY) {
+
+        for (PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
+            if (potionEffect.getType() == PotionEffectType.INVISIBILITY) {
                 target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
             }
         }
@@ -53,6 +55,7 @@ public class Speed<S> extends ExpirableEffect<S> {
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int)getDuration(), amplifier));
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), amplifier));
     }
 }

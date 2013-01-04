@@ -33,9 +33,11 @@ public class Interrupt<S> extends AbstractEffect<S> {
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
+
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
     }
 }

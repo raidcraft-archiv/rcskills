@@ -24,7 +24,7 @@ package de.raidcraft.skills.api.loader;
 public abstract class AbstractLoader<T> implements Loader<T> {
 
     private final Class<T> tClass;
-    
+
     protected AbstractLoader(Class<T> tClass) {
 
         this.tClass = tClass;

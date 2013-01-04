@@ -52,13 +52,13 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // set the players health bar to a percentage of his actual health
-        int health = (int) Math.ceil(((double)hero.getHealth() / hero.getMaxHealth()) * player.getMaxHealth());
+        int health = (int) Math.ceil(((double) hero.getHealth() / hero.getMaxHealth()) * player.getMaxHealth());
         if (health > 20) health = 20;
         if (health < 0) health = 0;
         player.setHealth(health);
 
         // set the stamina bar to a percentage of the actual stamina
-        int stamina = (int) Math.ceil(((double)hero.getStamina() / hero.getMaxStamina()) * 20);
+        int stamina = (int) Math.ceil(((double) hero.getStamina() / hero.getMaxStamina()) * 20);
         player.setFoodLevel(stamina);
         // see the minecraft wiki for the mechanics: http://www.minecraftwiki.net/wiki/Hunger#Mechanics
         player.setSaturation(20.0F);

@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -168,7 +168,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         }
         if (getTarget() instanceof Hero) {
             ((Hero) getTarget()).debug(
-                    (getSource() instanceof CharacterTemplate? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
+                    (getSource() instanceof CharacterTemplate ? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
                             "->You: " + message + " - " + getName());
         }
     }

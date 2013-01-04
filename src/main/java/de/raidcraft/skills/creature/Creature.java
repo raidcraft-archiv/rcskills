@@ -27,7 +27,8 @@ public class Creature extends AbstractCharacterTemplate {
             // make the health field in NMS accessible
             this.nmsHealth = EntityLiving.class.getDeclaredField("health");
             this.nmsHealth.setAccessible(true);
-        } catch (NoSuchFieldException ignored) {}
+        } catch (NoSuchFieldException ignored) {
+        }
     }
 
     @Override

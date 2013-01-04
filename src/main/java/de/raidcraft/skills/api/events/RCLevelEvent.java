@@ -62,10 +62,12 @@ public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cance
     private static final HandlerList handlers = new HandlerList();
 
     public HandlerList getHandlers() {
+
         return handlers;
     }
 
     public static HandlerList getHandlerList() {
+
         return handlers;
     }
 }

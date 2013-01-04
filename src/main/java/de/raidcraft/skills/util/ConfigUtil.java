@@ -6,13 +6,18 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.requirement.*;
+import de.raidcraft.skills.api.requirement.ProfessionLevelRequirement;
+import de.raidcraft.skills.api.requirement.SkillLevelRequirement;
+import de.raidcraft.skills.api.requirement.Unlockable;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus

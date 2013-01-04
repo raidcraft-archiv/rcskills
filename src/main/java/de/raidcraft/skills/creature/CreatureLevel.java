@@ -47,13 +47,19 @@ public class CreatureLevel<T extends Levelable<T>> extends AbstractLevel<T> {
     }
 
     @Override
-    public void addExp(int exp) {}
+    public void addExp(int exp) {
+
+    }
 
     @Override
-    public void removeExp(int exp) {}
+    public void removeExp(int exp) {
+
+    }
 
     @Override
-    public void setExp(int exp) {}
+    public void setExp(int exp) {
+
+    }
 
     @Override
     public void setLevel(int level) {

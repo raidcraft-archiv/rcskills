@@ -22,7 +22,7 @@ public class TriggerManager {
     /**
      * Call an event.
      *
-     * @param trigger    Trigger to handle
+     * @param trigger Trigger to handle
      */
     public static Trigger callTrigger(Trigger trigger) {
 
@@ -62,6 +62,7 @@ public class TriggerManager {
     }
 
     private static HandlerList getTriggerListeners(Class<? extends Trigger> type) {
+
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
             method.setAccessible(true);
@@ -72,6 +73,7 @@ public class TriggerManager {
     }
 
     private static Class<? extends Trigger> getRegistrationClass(Class<? extends Trigger> clazz) {
+
         try {
             clazz.getDeclaredMethod("getHandlerList");
             return clazz;
@@ -91,10 +93,10 @@ public class TriggerManager {
         Map<Class<? extends Trigger>, Set<RegisteredTrigger>> ret = new HashMap<>();
         Set<Method> methods;
 
-            Method[] publicMethods = listener.getClass().getMethods();
-            methods = new HashSet<>(publicMethods.length, Float.MAX_VALUE);
-            Collections.addAll(methods, publicMethods);
-            Collections.addAll(methods, listener.getClass().getDeclaredMethods());
+        Method[] publicMethods = listener.getClass().getMethods();
+        methods = new HashSet<>(publicMethods.length, Float.MAX_VALUE);
+        Collections.addAll(methods, publicMethods);
+        Collections.addAll(methods, listener.getClass().getDeclaredMethods());
 
         for (final Method method : methods) {
 

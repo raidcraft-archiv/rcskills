@@ -304,7 +304,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public int getMaxHealth() {
 
         Profession profession;
-        if (getPrimaryProfession() != null ) {
+        if (getPrimaryProfession() != null) {
             profession = getPrimaryProfession();
         } else if (getSecundaryProfession() != null) {
             profession = getSecundaryProfession();
@@ -376,10 +376,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void onExpGain(int exp) {}
+    public void onExpGain(int exp) {
+
+    }
 
     @Override
-    public void onExpLoss(int exp) {}
+    public void onExpLoss(int exp) {
+
+    }
 
     @Override
     public void onLevelGain() {

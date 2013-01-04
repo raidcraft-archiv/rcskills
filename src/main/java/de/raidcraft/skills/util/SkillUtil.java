@@ -15,7 +15,9 @@ import java.util.List;
  */
 public final class SkillUtil {
 
-    private SkillUtil() {}
+    private SkillUtil() {
+
+    }
 
     public static Skill getSkillFromArgs(Hero hero, String input) throws CommandException {
 

@@ -101,6 +101,7 @@ public final class ItemUtil {
         }
 
         public static ArmorSlot fromMaterial(Material material) {
+
             for (ArmorSlot slot : ArmorSlot.values()) {
                 for (Material armor : slot.getArmor()) {
                     if (material == armor) {

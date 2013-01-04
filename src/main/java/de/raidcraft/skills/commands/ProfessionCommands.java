@@ -106,7 +106,7 @@ public class ProfessionCommands {
                 chooseProfession(hero, profession);
             } else {
                 int cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                                        (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                        (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.GREEN
                         + " neuwählen willst?");

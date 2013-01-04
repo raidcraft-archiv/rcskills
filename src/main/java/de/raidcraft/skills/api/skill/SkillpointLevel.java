@@ -21,14 +21,17 @@ public class SkillpointLevel extends SkillLevel {
 
     @Override
     public void addExp(int exp) {
+
     }
 
     @Override
     public void removeExp(int exp) {
+
     }
 
     @Override
     public void setExp(int exp) {
+
     }
 
     @Override

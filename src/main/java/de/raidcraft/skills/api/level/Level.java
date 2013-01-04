@@ -37,7 +37,7 @@ public interface Level<T extends Levelable> {
      * Gets the amount of exp needed for the next level.
      *
      * @return exp needed for the next level
-     * minus the one you already have
+     *         minus the one you already have
      */
     public int getExpToNextLevel();
 
