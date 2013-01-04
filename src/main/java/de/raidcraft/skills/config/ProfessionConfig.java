@@ -3,6 +3,7 @@ package de.raidcraft.skills.config;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -41,9 +42,14 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
+                // lets check if the skill has a different profession written on it
+                String profName = section.getString(skill + ".profession");
+                if (profName != null && !profName.equals("")) {
+                    profession = getPlugin().getProfessionManager().getProfession(profession.getHero(), profName);
+                }
                 Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.add(profSkill);
-            } catch (UnknownSkillException e) {
+            } catch (UnknownSkillException | UnknownProfessionException e) {
                 getPlugin().getLogger().warning(e.getMessage());
                 e.printStackTrace();
             }
