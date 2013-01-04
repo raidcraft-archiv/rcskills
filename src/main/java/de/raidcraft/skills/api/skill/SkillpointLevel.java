@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.level.AbstractLevel;
+import de.raidcraft.skills.api.level.SkillLevel;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 /**
@@ -12,9 +12,9 @@ import de.raidcraft.skills.api.persistance.LevelData;
  *
  * @author Silthus
  */
-public class SkillLevel extends AbstractLevel<LevelableSkill> {
+public class SkillpointLevel extends SkillLevel {
 
-    public SkillLevel(LevelableSkill levelObject, LevelData data) {
+    public SkillpointLevel(LevelableSkill levelObject, LevelData data) {
 
         super(levelObject, data);
     }

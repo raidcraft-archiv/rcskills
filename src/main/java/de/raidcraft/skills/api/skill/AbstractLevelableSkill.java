@@ -18,7 +18,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public AbstractLevelableSkill(Hero hero, SkillProperties data, Profession profession,  THeroSkill database) {
 
         super(hero, data, profession, database);
-        this.level = new SkillLevel(this, database);
+        this.level = new SkillpointLevel(this, database);
     }
 
     @Override

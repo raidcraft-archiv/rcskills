@@ -1,6 +1,6 @@
 package de.raidcraft.skills.skills;
 
-import de.raidcraft.skills.api.level.AbstractLevel;
+import de.raidcraft.skills.api.level.SkillLevel;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * @author Philip
  */
-public class ConfigurableSkillLevel extends AbstractLevel<LevelableSkill> {
+public class ConfigurableSkillLevel extends SkillLevel {
 
     private final int expBaseCount;
     private final int expIncreasePerLevel;
