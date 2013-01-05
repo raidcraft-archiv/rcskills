@@ -10,18 +10,19 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
+import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -217,6 +218,60 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             }
         }
         return false;
+    }
+
+    @Override
+    public Set<CharacterTemplate> getNearbyTargets() throws CombatException {
+
+        return getNearbyTargets(30);
+    }
+
+    @Override
+    public Set<CharacterTemplate> getNearbyTargets(int range) throws CombatException {
+
+        Set<CharacterTemplate> targets = new HashSet<>();
+        List<LivingEntity> nearbyEntities = BukkitUtil.getNearbyEntities(getEntity(), range);
+        if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
+        for (LivingEntity target : nearbyEntities) {
+            targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
+        }
+        return targets;
+    }
+
+    @Override
+    public CharacterTemplate getTarget() throws CombatException {
+
+        return getTarget(100);
+    }
+
+    @Override
+    public CharacterTemplate getTarget(int range) throws CombatException {
+
+        LivingEntity target = BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class);
+        if (target == null) {
+            throw new CombatException("Du hast kein Ziel anvisiert!");
+        }
+        if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
+            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
+        }
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
+    }
+
+    @Override
+    public Location getBlockTarget() throws CombatException {
+
+        return getBlockTarget(100);
+    }
+
+    @Override
+    public Location getBlockTarget(int range) throws CombatException {
+
+        Block block = getEntity().getTargetBlock(null, range);
+        if (block == null
+                || LocationUtil.getBlockDistance(block.getLocation(), getEntity().getLocation()) > range) {
+            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
+        }
+        return block.getLocation();
     }
 
     @Override

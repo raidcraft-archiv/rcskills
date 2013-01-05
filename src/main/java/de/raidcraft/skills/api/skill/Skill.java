@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -8,7 +7,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.requirement.Unlockable;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -83,10 +81,6 @@ public interface Skill extends Comparable<Skill>, Unlockable {
     public Profession getProfession();
 
     public void save();
-
-    public CharacterTemplate getTarget() throws CombatException;
-
-    public Location getBlockTarget() throws CombatException;
 
     /**
      * Applies the skill to the {@link Hero}. Is called when the skill is first added to the hero.

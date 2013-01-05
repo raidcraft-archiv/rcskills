@@ -24,13 +24,13 @@ import java.util.Set;
  */
 public final class ConfigUtil {
 
-    public static Map<String, Object> parseSkillDefaults(String[] defaults) {
+    public static Map<String, Object> parseSkillDefaults(String... defaults) {
 
         HashMap<String, Object> map = new HashMap<>();
         return parseDefaults(map, defaults);
     }
 
-    public static Map<String, Object> parseDefaults(Map<String, Object> def, String[] defaults) {
+    public static Map<String, Object> parseDefaults(Map<String, Object> def, String... defaults) {
 
         for (String s : defaults) {
             String[] split = s.split(":");

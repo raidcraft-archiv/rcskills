@@ -5,7 +5,10 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -51,4 +54,16 @@ public interface CharacterTemplate {
     public boolean isInCombat();
 
     public void setInCombat(boolean inCombat);
+
+    CharacterTemplate getTarget(int range) throws CombatException;
+
+    Location getBlockTarget(int range) throws CombatException;
+
+    Location getBlockTarget() throws CombatException;
+
+    CharacterTemplate getTarget() throws CombatException;
+
+    Set<CharacterTemplate> getNearbyTargets() throws CombatException;
+
+    Set<CharacterTemplate> getNearbyTargets(int range) throws CombatException;
 }

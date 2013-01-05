@@ -1,35 +1,33 @@
 package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
+import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.Effect;
-import de.raidcraft.skills.effects.disabling.Disarm;
-import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.requirement.Requirement;
+import de.raidcraft.skills.effects.disabling.Disarm;
+import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.TimeUtil;
-import de.raidcraft.util.BukkitUtil;
-import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -129,28 +127,41 @@ public abstract class AbstractSkill implements Skill {
         return target.addEffect(this, source, eClass);
     }
 
-    @Override
-    public CharacterTemplate getTarget() throws CombatException {
+    protected Set<CharacterTemplate> getNearbyTargets() throws CombatException {
 
-        LivingEntity target = BukkitUtil.getTargetEntity(getHero().getEntity(), LivingEntity.class);
-        if (target == null) {
-            throw new CombatException("Du hast kein Ziel anvisiert!");
-        }
-        if (LocationUtil.getBlockDistance(target.getLocation(), getHero().getEntity().getLocation()) > getTotalRange()) {
-            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + getTotalRange() + "m");
-        }
-        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
+        return getHero().getNearbyTargets(getTotalRange());
     }
 
-    @Override
-    public Location getBlockTarget() throws CombatException {
+    protected CharacterTemplate getTarget() throws CombatException {
 
-        Block block = getHero().getEntity().getTargetBlock(null, getTotalRange());
-        if (block == null
-                || LocationUtil.getBlockDistance(block.getLocation(), getHero().getEntity().getLocation()) > getTotalRange()) {
-            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + getTotalRange() + "m");
-        }
-        return block.getLocation();
+        return getHero().getTarget(getTotalRange());
+    }
+
+    protected Location getBlockTarget() throws CombatException {
+
+        return getHero().getBlockTarget(getTotalRange());
+    }
+
+    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
+
+        return attack(target, damage, null);
+    }
+
+    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
+
+        return attack(target, getTotalDamage(), null);
+    }
+
+    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, Callback<CharacterTemplate> callback) throws CombatException {
+
+        return attack(target, getTotalDamage(), callback);
+    }
+
+    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
+
+        EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes());
+        attack.run();
+        return attack;
     }
 
     @Override
