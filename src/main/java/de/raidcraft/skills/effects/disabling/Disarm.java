@@ -19,14 +19,14 @@ import org.bukkit.inventory.ItemStack;
  * @author Silthus
  */
 @EffectInformation(
-        name = "Disarmed",
+        name = "Disarm",
         description = "Entwaffnet den Gegner",
         types = {EffectType.DEBUFF, EffectType.PHYSICAL, EffectType.HARMFUL}
 )
-public class Disarmed<S> extends ExpirableEffect<S> implements Triggered {
+public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
 
 
-    public Disarmed(S source, CharacterTemplate target, EffectData data) {
+    public Disarm(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }

@@ -9,7 +9,7 @@ import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.effect.Effect;
-import de.raidcraft.skills.effects.disabling.Disarmed;
+import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -66,7 +66,7 @@ public abstract class AbstractSkill implements Skill {
         if (this.isOfType(EffectType.MAGICAL) && getHero().hasEffect(Silence.class)) {
             throw new CombatException(CombatException.Type.SILENCED);
         }
-        if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarmed.class)) {
+        if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
         }
         if (isOnCooldown()) {
