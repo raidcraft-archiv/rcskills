@@ -43,8 +43,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private boolean combatLoggging = false;
     private int health;
     private int mana;
+    private double manaRegen;
     private boolean manaRegenEnabled = true;
     private int stamina;
+    private double staminaRegen;
     private boolean staminaRegenEnabled = true;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
@@ -299,6 +301,46 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setStaminaRegenEnabled(boolean enabled) {
 
         this.staminaRegenEnabled = enabled;
+    }
+
+    @Override
+    public void setManaRegen(double manaRegen) {
+
+        this.manaRegen = manaRegen;
+    }
+
+    @Override
+    public double getManaRegen() {
+
+        return manaRegen;
+    }
+
+    @Override
+    public void regenMana() {
+
+        int mana = (int) (getMana() + getMaxMana() * getManaRegen());
+        if (mana > getMaxMana()) mana = getMaxMana();
+        setMana(mana);
+    }
+
+    @Override
+    public void setStaminaRegen(double staminaRegen) {
+
+        this.staminaRegen = staminaRegen;
+    }
+
+    @Override
+    public double getStaminaRegen() {
+
+        return staminaRegen;
+    }
+
+    @Override
+    public void regenStamina() {
+
+        int stamina = (int) (getStamina() + getMaxStamina() * getStaminaRegen());
+        if (stamina > getMaxStamina()) stamina = getMaxStamina();
+        setStamina(stamina);
     }
 
     @Override

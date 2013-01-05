@@ -82,10 +82,11 @@ public final class CharacterManager implements Listener {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Hero hero = getHero(player);
                     if (hero.isManaRegenEnabled() && hero.getMana() < hero.getMaxMana()) {
+                        if (hero.getManaRegen() == 0.0) {
+                            hero.setManaRegen(plugin.getCommonConfig().hero_mana_regain_default_amount);
+                        }
                         // refresh the mana
-                        int mana = hero.getMana() + plugin.getCommonConfig().hero_mana_regain_amount;
-                        if (mana > hero.getMaxMana()) mana = hero.getMaxMana();
-                        hero.setMana(mana);
+                        hero.regenMana();
                     }
                 }
             }
@@ -101,10 +102,11 @@ public final class CharacterManager implements Listener {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Hero hero = getHero(player);
                     if (hero.isStaminaRegenEnabled() && hero.getStamina() < hero.getMaxStamina()) {
-                        // refresh the mana
-                        int stamina = hero.getStamina() + plugin.getCommonConfig().hero_stamina_regain_amount;
-                        if (stamina > hero.getMaxStamina()) stamina = hero.getMaxStamina();
-                        hero.setStamina(stamina);
+                        if (hero.getStaminaRegen() == 0.0) {
+                            hero.setStaminaRegen(plugin.getCommonConfig().hero_stamina_regain_default_amount);
+                        }
+                        // refresh the stamina
+                        hero.regenStamina();
                     }
                 }
             }

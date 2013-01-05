@@ -180,11 +180,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @Setting("hero.mana-regain-interval")
         public long hero_mana_regain_interval = 50;
         @Setting("hero.mana-regain-amount")
-        public int hero_mana_regain_amount = 5;
+        public int hero_mana_regain_default_amount = 5;
         @Setting("hero.stamina-regain-interval")
         public long hero_stamina_regain_interval = 25;
         @Setting("hero.stamina-regain-amount")
-        public int hero_stamina_regain_amount = 1;
+        public int hero_stamina_regain_default_amount = 1;
         @Setting("paths.skill-configs")
         public String skill_config_path = "skill-configs/";
         @Setting("paths.alias-configs")
