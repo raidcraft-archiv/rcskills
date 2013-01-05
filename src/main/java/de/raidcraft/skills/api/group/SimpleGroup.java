@@ -10,13 +10,26 @@ import java.util.Set;
  */
 public class SimpleGroup implements Group {
 
+    private Hero owner;
     private final Set<Hero> members = new HashSet<>();
 
-    public SimpleGroup(Hero... members) {
+    public SimpleGroup(Hero owner) {
 
-        for (Hero hero : members) {
-            addMember(hero);
-        }
+        this.owner = owner;
+        members.add(owner);
+    }
+
+    @Override
+    public Hero getOwner() {
+
+        return owner;
+    }
+
+    @Override
+    public void setOwner(Hero owner) {
+
+        this.owner = owner;
+        addMember(owner);
     }
 
     @Override

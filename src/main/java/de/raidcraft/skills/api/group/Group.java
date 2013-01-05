@@ -9,6 +9,10 @@ import java.util.Set;
  */
 public interface Group {
 
+    public Hero getOwner();
+
+    public void setOwner(Hero owner);
+
     public void sendMessage(String... msg);
 
     public Set<Hero> getMembers();
