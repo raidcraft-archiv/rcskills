@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -32,6 +33,8 @@ public interface CharacterTemplate {
     public void kill(CharacterTemplate killer);
 
     public void kill();
+
+    public boolean isFriendly(Hero source);
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException;
 

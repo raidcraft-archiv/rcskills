@@ -213,6 +213,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public boolean isFriendly(Hero source) {
+
+        return getGroup().isInGroup(source);
+    }
+
+    @Override
     public Material getItemTypeInHand() {
 
         ItemStack itemInHand = getPlayer().getInventory().getItemInHand();

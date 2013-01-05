@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.hero.Hero;
 import net.minecraft.server.v1_4_6.EntityLiving;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
@@ -79,5 +80,11 @@ public class Creature extends AbstractCharacterTemplate {
     public int getMaxHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
+    }
+
+    @Override
+    public boolean isFriendly(Hero source) {
+
+        return false;
     }
 }
