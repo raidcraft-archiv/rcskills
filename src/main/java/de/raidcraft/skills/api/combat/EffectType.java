@@ -25,6 +25,7 @@ public enum EffectType {
     REDUCING,
     IGNORE_ARMOR,
     AREA,
+    AURA,
     UNKNOWN;
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
