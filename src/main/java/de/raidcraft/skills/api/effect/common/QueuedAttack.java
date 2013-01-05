@@ -44,6 +44,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
             callback.run(trigger);
         }
         attacked = true;
+        info(getSource().getFriendlyName() + " ausgeführt!");
         remove();
     }
 
