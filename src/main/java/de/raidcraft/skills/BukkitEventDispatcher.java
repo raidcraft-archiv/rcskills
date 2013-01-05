@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -122,5 +124,16 @@ public class BukkitEventDispatcher implements Listener {
         if (event.getInventory().getType() == InventoryType.BREWING) {
             brewingPlayers.put(((BlockState) event.getInventory().getHolder()).getBlock(), event.getPlayer().getName());
         }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onEntityTargetEntity(EntityTargetLivingEntityEvent event) {
+
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+        TriggerManager.callTrigger(
+                new EntityTargetTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()), event)
+        );
     }
 }

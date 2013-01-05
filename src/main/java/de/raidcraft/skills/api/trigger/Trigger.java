@@ -3,7 +3,7 @@
  */
 package de.raidcraft.skills.api.trigger;
 
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 
 /**
  * Trigger superclass. should be extended as:
@@ -26,16 +26,16 @@ import de.raidcraft.skills.api.hero.Hero;
  */
 public abstract class Trigger {
 
-    private final Hero hero;
+    private final CharacterTemplate source;
 
-    public Trigger(Hero hero) {
+    public Trigger(CharacterTemplate source) {
 
-        this.hero = hero;
+        this.source = source;
     }
 
-    public Hero getHero() {
+    public CharacterTemplate getSource() {
 
-        return hero;
+        return source;
     }
 
     /**

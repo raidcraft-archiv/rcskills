@@ -30,12 +30,11 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
     public void callTrigger(final Trigger trigger) throws EventException {
 
 
-        Hero hero = trigger.getHero();
         if (effect == null) {
             return;
         }
 
-        if (!(effect.getTarget() instanceof Hero) || !effect.getTarget().equals(hero)) {
+        if (!(effect.getTarget() instanceof Hero) || !effect.getTarget().equals(trigger.getSource())) {
             return;
         }
 

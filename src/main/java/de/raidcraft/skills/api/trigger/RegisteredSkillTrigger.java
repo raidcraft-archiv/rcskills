@@ -33,12 +33,11 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
     public void callTrigger(final Trigger trigger) throws EventException {
 
 
-        Hero hero = trigger.getHero();
         if (skill == null) {
             return;
         }
 
-        if (!skill.isActive() || !skill.isUnlocked() || !hero.equals(skill.getHero())) {
+        if (!skill.isActive() || !skill.isUnlocked() || !trigger.getSource().equals(skill.getHero())) {
             return;
         }
 
@@ -49,7 +48,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             }
 
             // add a combat effect when a skill is beeing casted
-            if (skill.getProperties().getInformation().triggerCombat()) hero.addEffect(skill, Combat.class);
+            if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
 
             // and lets pass on the trigger
             executor.execute(listener, trigger);
@@ -59,7 +58,9 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
                 skill.substractUsageCost();
             }
         } catch (CombatException e) {
-            hero.sendMessage(ChatColor.RED + e.getMessage());
+            if (trigger.getSource() instanceof Hero) {
+                ((Hero) trigger.getSource()).sendMessage(ChatColor.RED + e.getMessage());
+            }
             // lets check if we need to cancel a bukkit event
             if (info.cancelEventOnFail() && trigger instanceof BukkitEventTrigger) {
                 if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {

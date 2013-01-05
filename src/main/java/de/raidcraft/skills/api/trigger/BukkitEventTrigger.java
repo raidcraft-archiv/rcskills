@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.trigger;
 
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import org.bukkit.event.Event;
 
 /**
@@ -10,9 +10,9 @@ public abstract class BukkitEventTrigger<E extends Event> extends Trigger {
 
     private final E event;
 
-    public BukkitEventTrigger(Hero hero, E event) {
+    public BukkitEventTrigger(CharacterTemplate source, E event) {
 
-        super(hero);
+        super(source);
         this.event = event;
     }
 
