@@ -31,6 +31,11 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
         return factory.getEffectName();
     }
 
+    public String getFriendlyName() {
+
+        return getOverride("name", factory.getEffectName());
+    }
+
     @Override
     public ConfigurationSection getDataMap() {
 

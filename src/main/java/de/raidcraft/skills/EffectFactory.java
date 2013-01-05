@@ -41,6 +41,7 @@ public final class EffectFactory<E extends Effect> {
     protected void createDefaults() {
 
         EffectData data = defaultConfig;
+        data.getFriendlyName();
         data.getEffectPriority();
     }
 

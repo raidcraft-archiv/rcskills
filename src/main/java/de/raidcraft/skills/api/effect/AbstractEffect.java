@@ -18,6 +18,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     private final EffectInformation info;
     private final String name;
+    private final String friendlyName;
     private final S source;
     private final CharacterTemplate target;
     private boolean enabled;
@@ -28,6 +29,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
         this.info = data.getInformation();
         this.name = convertName(info.name());
+        this.friendlyName = data.getFriendlyName();
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
@@ -60,6 +62,12 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     public String getName() {
 
         return name;
+    }
+
+    @Override
+    public String getFriendlyName() {
+
+        return friendlyName;
     }
 
     @Override
@@ -215,9 +223,21 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     }
 
     @Override
+    public int hashCode() {
+
+        return name.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
 
         return obj instanceof Effect
                 && ((Effect) obj).getName().equalsIgnoreCase(getName());
+    }
+
+    @Override
+    public String toString() {
+
+        return getFriendlyName();
     }
 }

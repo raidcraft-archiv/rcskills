@@ -221,6 +221,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public final void removeEffectTypes(EffectType type) throws CombatException {
+
+        for (Effect effect : effects.values()) {
+            if (effect.isOfType(type)) {
+                effect.remove();
+            }
+        }
+    }
+
+    @Override
     public Set<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getNearbyTargets(30);

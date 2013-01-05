@@ -49,6 +49,8 @@ public interface CharacterTemplate {
 
     public boolean hasEffectType(EffectType type);
 
+    public void removeEffectTypes(EffectType type) throws CombatException;
+
     public void clearEffects();
 
     public boolean isInCombat();

@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public interface EffectData {
 
+    public String getFriendlyName();
+
     public EffectInformation getInformation();
 
     public boolean isEnabled();

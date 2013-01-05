@@ -16,6 +16,8 @@ public interface Effect<S> {
 
     public String getName();
 
+    public String getFriendlyName();
+
     public String getDescription();
 
     public EffectType[] getTypes();
