@@ -6,8 +6,6 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.EffectConfig;
 import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.util.StringUtils;
@@ -58,9 +56,6 @@ public final class EffectFactory<E extends Effect> {
                         E effect = (E) constructor.newInstance(source, target, config);
                         if (!effect.isEnabled()) {
                             throw new UnknownEffectException("The effect " + effectName + " is disabled!");
-                        }
-                        if (effect instanceof Triggered) {
-                            TriggerManager.registerListeners((Triggered) effect);
                         }
                         effect.load(config.getDataMap());
                         return effect;

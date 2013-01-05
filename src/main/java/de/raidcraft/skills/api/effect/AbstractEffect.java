@@ -8,6 +8,8 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -144,6 +146,10 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     @Override
     public void apply() throws CombatException {
 
+        // lets add ourself to the trigger listener
+        if (this instanceof Triggered) {
+            TriggerManager.registerListeners((Triggered) this);
+        }
         apply(getTarget());
         debug("applied effect");
     }
@@ -151,6 +157,10 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     @Override
     public void remove() throws CombatException {
 
+        // lets remove ourself as listener
+        if (this instanceof Triggered) {
+            TriggerManager.unregisterListeners((Triggered) this);
+        }
         remove(getTarget());
         getTarget().removeEffect(this);
         debug("removed effect");
