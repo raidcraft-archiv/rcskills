@@ -125,7 +125,7 @@ public final class ItemUtil {
         return false;
     }
 
-    public static int firstEmpty(ItemStack... inventory[]) {
+    public static int firstEmpty(ItemStack... inventory) {
 
         for (int i = 9; i < inventory.length; i++)
             if (inventory[i] == null)
