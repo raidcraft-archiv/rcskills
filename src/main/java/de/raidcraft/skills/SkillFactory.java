@@ -12,6 +12,7 @@ import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -75,7 +76,7 @@ public final class SkillFactory {
         config.getCastTimeSkillLevelModifier();
     }
 
-    protected Skill create(Hero hero, Profession profession) throws UnknownSkillException {
+    protected Skill create(Hero hero, Profession profession, ConfigurationSection... overrides) throws UnknownSkillException {
 
         SkillConfig config;
         if (!skillConfigs.containsKey(profession)) {
@@ -87,6 +88,11 @@ public final class SkillFactory {
             ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
             // set the config that overrides the default skill parameters with the profession config
             config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
+
+            // also lets merge all aditional override configs
+            for (ConfigurationSection section : overrides) {
+                config.getOverrideConfig().merge(section);
+            }
 
             skillConfigs.put(profession, config);
         } else {

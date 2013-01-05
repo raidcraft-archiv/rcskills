@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.*;
@@ -89,7 +90,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
     }
 
-    public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
+    public Skill getSkill(Hero hero, Profession profession, String skillName, ConfigurationSection... overrides) throws UnknownSkillException {
 
         Skill skill;
         skillName = StringUtils.formatName(skillName);
@@ -99,13 +100,16 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         if (!playerSkills.containsKey(hero.getName())) {
             playerSkills.put(hero.getName(), new HashSet<Skill>());
         }
-        for (Skill playerSkill : playerSkills.get(hero.getName())) {
-            if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
-                return playerSkill;
+        // always create a new skill instance if there are additional configs
+        if (overrides.length < 1) {
+            for (Skill playerSkill : playerSkills.get(hero.getName())) {
+                if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
+                    return playerSkill;
+                }
             }
         }
         // lets create a new skill for this name
-        skill = skillFactories.get(skillName).create(hero, profession);
+        skill = skillFactories.get(skillName).create(hero, profession, overrides);
         playerSkills.get(hero.getName()).add(skill);
         // add skill to our passive list if it is a passive skill
         if (skill instanceof Passive) {
