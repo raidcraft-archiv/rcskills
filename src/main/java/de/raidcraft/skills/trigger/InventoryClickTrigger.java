@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 /**
  * @author Silthus
  */
-public class InventoryClickTrigger extends BukkitEventTrigger<InventoryClickEvent> {
+public class InventoryClickTrigger extends BukkitEventTrigger<Hero, InventoryClickEvent> {
 
     public InventoryClickTrigger(Hero hero, InventoryClickEvent event) {
 

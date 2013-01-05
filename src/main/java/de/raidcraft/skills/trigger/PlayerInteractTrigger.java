@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 /**
  * @author Silthus
  */
-public class PlayerInteractTrigger extends BukkitEventTrigger<PlayerInteractEvent> {
+public class PlayerInteractTrigger extends BukkitEventTrigger<Hero, PlayerInteractEvent> {
 
     public PlayerInteractTrigger(Hero hero, PlayerInteractEvent event) {
 

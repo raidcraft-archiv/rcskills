@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 /**
  * @author Silthus
  */
-public class InventoryCloseTrigger extends BukkitEventTrigger<InventoryCloseEvent> {
+public class InventoryCloseTrigger extends BukkitEventTrigger<Hero, InventoryCloseEvent> {
 
 
     public InventoryCloseTrigger(Hero hero, InventoryCloseEvent event) {

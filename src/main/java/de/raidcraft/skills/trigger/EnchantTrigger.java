@@ -8,7 +8,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 /**
  * @author Silthus
  */
-public class EnchantTrigger extends BukkitEventTrigger<EnchantItemEvent> {
+public class EnchantTrigger extends BukkitEventTrigger<Hero, EnchantItemEvent> {
 
     public EnchantTrigger(Hero hero, EnchantItemEvent event) {
 

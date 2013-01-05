@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 /**
  * @author Silthus
  */
-public class ItemHeldTrigger extends BukkitEventTrigger<PlayerItemHeldEvent> {
+public class ItemHeldTrigger extends BukkitEventTrigger<Hero, PlayerItemHeldEvent> {
 
 
     public ItemHeldTrigger(Hero hero, PlayerItemHeldEvent event) {

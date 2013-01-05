@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 /**
  * @author Silthus
  */
-public class CraftTrigger extends BukkitEventTrigger<CraftItemEvent> {
+public class CraftTrigger extends BukkitEventTrigger<Hero, CraftItemEvent> {
 
     public CraftTrigger(Hero hero, CraftItemEvent event) {
 

@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 /**
  * @author Silthus
  */
-public class InventoryOpenTrigger extends BukkitEventTrigger<InventoryOpenEvent> {
+public class InventoryOpenTrigger extends BukkitEventTrigger<Hero, InventoryOpenEvent> {
 
     public InventoryOpenTrigger(Hero hero, InventoryOpenEvent event) {
 

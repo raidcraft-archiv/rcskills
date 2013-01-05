@@ -24,16 +24,16 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
  *
  * @author lahwran
  */
-public abstract class Trigger {
+public abstract class Trigger<T extends CharacterTemplate> {
 
-    private final CharacterTemplate source;
+    private final T source;
 
-    public Trigger(CharacterTemplate source) {
+    public Trigger(T source) {
 
         this.source = source;
     }
 
-    public CharacterTemplate getSource() {
+    public T getSource() {
 
         return source;
     }
