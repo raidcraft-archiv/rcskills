@@ -8,7 +8,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 /**
  * @author Silthus
  */
-public class BlockPlaceTrigger extends BukkitEventTrigger<Hero, BlockPlaceEvent> {
+public class BlockPlaceTrigger extends BukkitEventTrigger<BlockPlaceEvent> {
 
 
     public BlockPlaceTrigger(Hero hero, BlockPlaceEvent event) {

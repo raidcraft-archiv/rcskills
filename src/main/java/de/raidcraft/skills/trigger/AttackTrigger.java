@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * @author Silthus
  */
-public class AttackTrigger extends Trigger<CharacterTemplate> {
+public class AttackTrigger extends Trigger {
 
     private final Attack<?, CharacterTemplate> attack;
     private final EntityDamageEvent.DamageCause cause;

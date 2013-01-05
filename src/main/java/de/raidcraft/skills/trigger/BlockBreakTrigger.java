@@ -8,7 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 /**
  * @author Silthus
  */
-public class BlockBreakTrigger extends BukkitEventTrigger<Hero, BlockBreakEvent> {
+public class BlockBreakTrigger extends BukkitEventTrigger<BlockBreakEvent> {
 
     public BlockBreakTrigger(Hero hero, BlockBreakEvent event) {
 

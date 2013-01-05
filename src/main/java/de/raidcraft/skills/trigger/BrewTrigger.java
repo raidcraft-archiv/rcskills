@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.BrewEvent;
 /**
  * @author Silthus
  */
-public class BrewTrigger extends BukkitEventTrigger<Hero, BrewEvent> {
+public class BrewTrigger extends BukkitEventTrigger<BrewEvent> {
 
     public BrewTrigger(Hero hero, BrewEvent event) {
 

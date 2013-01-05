@@ -6,11 +6,11 @@ import org.bukkit.event.Event;
 /**
  * @author Silthus
  */
-public abstract class BukkitEventTrigger<T extends CharacterTemplate,E extends Event> extends Trigger<T> {
+public abstract class BukkitEventTrigger<E extends Event> extends Trigger {
 
     private final E event;
 
-    public BukkitEventTrigger(T source, E event) {
+    public BukkitEventTrigger(CharacterTemplate source, E event) {
 
         super(source);
         this.event = event;

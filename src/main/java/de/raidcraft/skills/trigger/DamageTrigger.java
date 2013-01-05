@@ -9,12 +9,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * @author Silthus
  */
-public class DamageTrigger<T extends CharacterTemplate> extends Trigger<T> {
+public class DamageTrigger extends Trigger {
 
     private final Attack<?, CharacterTemplate> attack;
     private final EntityDamageEvent.DamageCause cause;
 
-    public DamageTrigger(T source, Attack<?, CharacterTemplate> attack, EntityDamageEvent.DamageCause cause) {
+    public DamageTrigger(CharacterTemplate source, Attack<?, CharacterTemplate> attack, EntityDamageEvent.DamageCause cause) {
 
         super(source);
         this.attack = attack;

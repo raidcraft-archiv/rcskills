@@ -8,9 +8,9 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 /**
  * @author Silthus
  */
-public class EntityTargetTrigger<T extends CharacterTemplate> extends BukkitEventTrigger<T, EntityTargetLivingEntityEvent> {
+public class EntityTargetTrigger extends BukkitEventTrigger<EntityTargetLivingEntityEvent> {
 
-    public EntityTargetTrigger(T source, EntityTargetLivingEntityEvent event) {
+    public EntityTargetTrigger(CharacterTemplate source, EntityTargetLivingEntityEvent event) {
 
         super(source, event);
     }
