@@ -10,6 +10,8 @@ import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.group.Group;
+import de.raidcraft.skills.api.group.SimpleGroup;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -35,6 +37,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     private final int id;
     private final RCPlayer player;
+    // every player is member of his own group by default
+    private Group group = new SimpleGroup(this);
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
@@ -174,6 +178,36 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         getVirtualProfession().removeSkill(skill);
         // we need to reload the skills in order for normal profession skills to load
         loadSkills();
+    }
+
+    @Override
+    public Group getGroup() {
+
+        return group;
+    }
+
+    @Override
+    public boolean isInGroup(Group group) {
+
+        return group.isInGroup(this);
+    }
+
+    @Override
+    public void joinGroup(Group group) {
+
+        if (!this.group.equals(group)) {
+            this.group = group;
+            group.addMember(this);
+        }
+    }
+
+    @Override
+    public void leaveGroup(Group group) {
+
+        if (this.group.equals(group)) {
+            this.group = new SimpleGroup(this);
+            group.removeMember(this);
+        }
     }
 
     @Override
