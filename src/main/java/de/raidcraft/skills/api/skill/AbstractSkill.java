@@ -472,15 +472,27 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final String toString() {
-
-        return getFriendlyName();
-    }
-
-    @Override
     public void save() {
 
         Database.save(database);
+    }
+
+    @Override
+    public void apply() {
+
+        // override if needed
+    }
+
+    @Override
+    public void remove() {
+
+        // override if needed
+    }
+
+    @Override
+    public final String toString() {
+
+        return getFriendlyName();
     }
 
     @Override
