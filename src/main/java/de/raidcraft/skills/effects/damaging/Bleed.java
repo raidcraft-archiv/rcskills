@@ -1,7 +1,6 @@
 package de.raidcraft.skills.effects.damaging;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EffectDamage;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -28,7 +27,7 @@ public class Bleed extends PeriodicExpirableEffect<Skill> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        new EffectDamage(this, getDamage(), AttackType.PHYSICAL).run();
+        new EffectDamage(this, getDamage()).run();
     }
 
     @Override

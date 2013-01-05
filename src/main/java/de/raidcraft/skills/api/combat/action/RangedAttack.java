@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.combat.action;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
@@ -23,7 +23,7 @@ public class RangedAttack extends AbstractAttack<CharacterTemplate, Location> {
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
 
         super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), 0,
-                (projectileType == ProjectileType.FIREBALL ? AttackType.MAGICAL : AttackType.PHYSICAL));
+                (projectileType == ProjectileType.FIREBALL ? EffectType.MAGICAL : EffectType.PHYSICAL));
         this.projectileType = projectileType;
     }
 

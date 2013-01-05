@@ -1,7 +1,6 @@
 package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
@@ -52,7 +51,7 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        if (trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
+        if (trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
             checkItem();
             throw new CombatException("Du wurdest entwaffnet und kannst nicht angreifen!");
         }

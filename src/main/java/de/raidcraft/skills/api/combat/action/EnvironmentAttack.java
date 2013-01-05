@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.combat.action;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -24,7 +24,7 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
         super(event.getCause(),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 damage,
-                AttackType.fromEvent(event.getCause()));
+                EffectType.fromEvent(event.getCause()));
         this.cause = event.getCause();
     }
 

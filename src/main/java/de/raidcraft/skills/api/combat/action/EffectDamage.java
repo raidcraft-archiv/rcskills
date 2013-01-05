@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -17,9 +16,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplate> {
 
-    public EffectDamage(Effect<Skill> skillEffect, int damage, AttackType... types) {
+    public EffectDamage(Effect<Skill> skillEffect, int damage) {
 
-        super(skillEffect, skillEffect.getTarget(), damage, types);
+        super(skillEffect, skillEffect.getTarget(), damage, skillEffect.getTypes());
     }
 
     @Override

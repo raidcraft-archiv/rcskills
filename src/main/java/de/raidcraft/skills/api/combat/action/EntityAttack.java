@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.combat.action;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -25,18 +25,18 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     private Callback<CharacterTemplate> callback;
     private EntityDamageEvent.DamageCause cause = null;
 
-    public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, AttackType... types) {
+    public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
 
         super(source, target, damage, types);
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<CharacterTemplate> callback, AttackType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<CharacterTemplate> callback, EffectType... types) {
 
         this(attacker, target, 0, types);
         this.callback = callback;
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<CharacterTemplate> callback, AttackType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<CharacterTemplate> callback, EffectType... types) {
 
         this(attacker, target, damage, types);
         this.callback = callback;
@@ -47,7 +47,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         this(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getDamager()),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 damage,
-                AttackType.fromEvent(event.getCause()));
+                EffectType.fromEvent(event.getCause()));
         cause = event.getCause();
     }
 

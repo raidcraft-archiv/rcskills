@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.combat.AttackSource;
-import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import org.bukkit.event.Cancellable;
 
 import java.util.Set;
@@ -17,11 +17,11 @@ public interface Attack<S, T> extends Action<S>, Cancellable {
 
     public void setDamage(int damage);
 
-    public Set<AttackType> getAttackTypes();
+    public Set<EffectType> getAttackTypes();
 
-    public void addAttackTypes(AttackType... type);
+    public void addAttackTypes(EffectType... type);
 
-    public boolean isOfAttackType(AttackType type);
+    public boolean isOfAttackType(EffectType type);
 
     public AttackSource getAttackSource();
 

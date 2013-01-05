@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.combat.AttackSource;
-import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,10 +15,10 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     private final T target;
     private int damage;
     private boolean cancelled = false;
-    private final Set<AttackType> attackTypes = new HashSet<>();
+    private final Set<EffectType> attackTypes = new HashSet<>();
     private final AttackSource source;
 
-    public AbstractAttack(S attacker, T target, int damage, AttackType... types) {
+    public AbstractAttack(S attacker, T target, int damage, EffectType... types) {
 
         super(attacker);
         this.target = target;
@@ -49,19 +49,19 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     }
 
     @Override
-    public Set<AttackType> getAttackTypes() {
+    public Set<EffectType> getAttackTypes() {
 
         return attackTypes;
     }
 
     @Override
-    public void addAttackTypes(AttackType... types) {
+    public void addAttackTypes(EffectType... types) {
 
         attackTypes.addAll(Arrays.asList(types));
     }
 
     @Override
-    public boolean isOfAttackType(AttackType type) {
+    public boolean isOfAttackType(EffectType type) {
 
         return attackTypes.contains(type);
     }
