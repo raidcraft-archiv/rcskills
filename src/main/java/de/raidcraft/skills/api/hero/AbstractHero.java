@@ -38,7 +38,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final int id;
     private final RCPlayer player;
     // every player is member of his own group by default
-    private Group group = new SimpleGroup(this);
+    private Group group;
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
@@ -78,6 +78,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         this.virtualProfession = getVirtualProfession();
         this.selectedProfession = getSelectedProfession();
+        this.group = new SimpleGroup(this);
     }
 
     private void loadProfessions(List<String> professionNames) {
