@@ -117,4 +117,18 @@ public final class ConfigUtil {
             }
         }
     }
+
+    public static double getTotalValue(Skill skill, ConfigurationSection section) {
+
+        if (section == null) {
+            return 0;
+        }
+        double value = section.getDouble("base", 0);
+        value += section.getDouble("level-modifier", 0.0) * skill.getHero().getLevel().getLevel();
+        value += section.getDouble("prof-level-modifier", 0.0) * skill.getProfession().getLevel().getLevel();
+        if (skill instanceof LevelableSkill) {
+            value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getLevel().getLevel();
+        }
+        return value;
+    }
 }

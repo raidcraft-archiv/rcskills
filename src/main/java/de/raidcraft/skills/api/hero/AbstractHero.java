@@ -19,7 +19,9 @@ import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,6 +174,16 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         getVirtualProfession().removeSkill(skill);
         // we need to reload the skills in order for normal profession skills to load
         loadSkills();
+    }
+
+    @Override
+    public Material getItemTypeInHand() {
+
+        ItemStack itemInHand = getPlayer().getInventory().getItemInHand();
+        if (itemInHand == null || itemInHand.getTypeId() == 0) {
+            return Material.AIR;
+        }
+        return itemInHand.getType();
     }
 
     @Override

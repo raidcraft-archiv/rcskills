@@ -21,6 +21,8 @@ public class CombatException extends RaidCraftException {
         ON_GLOBAL_COOLDOWN("Globaler Cooldown."),
         ON_COOLDOWN("Abklingzeit nicht vorbei."),
         IMMUNE("Ziel ist immun."),
+        EVADED("Deinem Angriff wurde ausgewichen."),
+        PARRIED("Dein Angriff wurde parriert."),
         PASSIVE("Passive Skills können nicht gezaubert werden."),
         UNKNOWN("Unbekannter Fehlschlag."),
         SILENCED("Ein Stille Effekt ist aktiv! Du kannst keine Zauber wirken."),

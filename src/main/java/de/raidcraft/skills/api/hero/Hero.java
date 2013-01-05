@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -93,4 +94,6 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public void addSkill(Skill skill);
 
     public void removeSkill(Skill skill);
+
+    public Material getItemTypeInHand();
 }
