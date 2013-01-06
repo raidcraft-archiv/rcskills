@@ -515,6 +515,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         saveProfessions();
         saveLevelProgress(getLevel());
+        getExpPool().saveLevelProgress();
         saveSkills();
     }
 

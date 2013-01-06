@@ -197,7 +197,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final void saveLevelProgress() {
+    public void saveLevelProgress() {
 
         levelObject.saveLevelProgress(this);
     }

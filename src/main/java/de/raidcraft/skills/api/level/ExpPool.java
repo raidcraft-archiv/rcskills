@@ -1,7 +1,10 @@
 package de.raidcraft.skills.api.level;
 
+import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
+import de.raidcraft.skills.tables.THeroExpPool;
 
 /**
  * @author Silthus
@@ -73,5 +76,13 @@ public class ExpPool extends AbstractLevel<Hero> {
     public int getNeededExpForLevel(int level) {
 
         return 1;
+    }
+
+    @Override
+    public void saveLevelProgress() {
+
+        THeroExpPool db = Ebean.find(THeroExpPool.class).where().eq("player", getLevelObject().getName()).findUnique();
+        db.setExp(getExp());
+        Database.save(db);
     }
 }
