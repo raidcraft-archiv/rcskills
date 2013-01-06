@@ -32,6 +32,8 @@ public class THero implements LevelData, HeroData, Bean {
     private int stamina;
     private boolean debugging;
     private boolean combatLogging;
+    @OneToOne
+    private THeroExpPool expPool;
 
     @OneToMany
     @JoinColumn(name = "hero_id")
@@ -189,5 +191,15 @@ public class THero implements LevelData, HeroData, Bean {
     public void setCombatLogging(boolean combatLogging) {
 
         this.combatLogging = combatLogging;
+    }
+
+    public THeroExpPool getExpPool() {
+
+        return expPool;
+    }
+
+    public void setExpPool(THeroExpPool expPool) {
+
+        this.expPool = expPool;
     }
 }

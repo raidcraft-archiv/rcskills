@@ -28,4 +28,6 @@ public interface HeroData {
     public List<String> getProfessionNames();
 
     public LevelData getLevelData();
+
+    public LevelData getExpPool();
 }

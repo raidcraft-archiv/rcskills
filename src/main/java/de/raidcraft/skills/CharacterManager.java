@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroExpPool;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -119,6 +120,16 @@ public final class CharacterManager implements Listener {
                 heroTable.setLevel(0);
                 heroTable.setCombatLogging(false);
                 heroTable.setDebugging(false);
+                Database.save(heroTable);
+                // also create a new exp pool for the hero
+                THeroExpPool pool = Ebean.find(THeroExpPool.class).where().eq("player", name).findUnique();
+                if (pool == null) {
+                    pool = new THeroExpPool();
+                    pool.setPlayer(name);
+                    pool.setHeroId(heroTable.getId());
+                    Database.save(pool);
+                }
+                heroTable.setExpPool(pool);
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);

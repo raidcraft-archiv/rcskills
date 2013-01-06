@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.group.Group;
+import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -21,6 +22,8 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public int getId();
 
     public Player getPlayer();
+
+    public Level<Hero> getExpPool();
 
     public UserInterface getUserInterface();
 

@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.group.SimpleGroup;
+import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -37,6 +38,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     private final int id;
     private final RCPlayer player;
+    private final Level<Hero> expPool;
     // every player is member of his own group by default
     private Group group;
     private boolean debugging = false;
@@ -63,6 +65,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
+        this.expPool = new ExpPool(this, data.getExpPool());
         this.health = data.getHealth();
         this.stamina = data.getStamina();
         this.debugging = data.isDebugging();
@@ -270,6 +273,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Player getPlayer() {
 
         return (Player) getEntity();
+    }
+
+    @Override
+    public Level<Hero> getExpPool() {
+
+        return expPool;
     }
 
     @Override

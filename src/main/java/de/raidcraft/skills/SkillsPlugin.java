@@ -11,10 +11,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroProfession;
-import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.tables.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -110,6 +107,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         List<Class<?>> classes = new ArrayList<>();
         classes.add(THero.class);
+        classes.add(THeroExpPool.class);
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);
         classes.add(TSkillData.class);
