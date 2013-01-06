@@ -27,7 +27,7 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
     private void load(EffectData data) {
 
         delay = data.getEffectDelay();
-        interval = data.getEffectDuration();
+        interval = data.getEffectInterval();
         if (getSource() instanceof Hero) {
             Hero hero = (Hero) getSource();
             delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel());
