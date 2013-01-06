@@ -42,9 +42,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
-    private int mana;
-    private double manaRegen;
-    private boolean manaRegenEnabled = true;
+    private ResourceBar resourceBar;
     private int stamina;
     private double staminaRegen;
     private boolean staminaRegenEnabled = true;
@@ -66,7 +64,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
         this.health = data.getHealth();
-        this.mana = data.getMana();
         this.stamina = data.getStamina();
         this.debugging = data.isDebugging();
         this.combatLoggging = data.isCombatLogging();
@@ -79,6 +76,22 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.virtualProfession = getVirtualProfession();
         this.selectedProfession = getSelectedProfession();
         this.group = new SimpleGroup(this);
+
+        createResourceBar(data.getResource());
+    }
+
+    private void createResourceBar(int current) {
+
+        // lets set the resource bar to the primary prof
+        ResourceType type;
+        if (getPrimaryProfession() != null) {
+            type = ResourceType.fromName(getPrimaryProfession().getProperties().getResourceName());
+            this.resourceBar = type.create(this, getPrimaryProfession().getProperties().getResourceConfig());
+            this.resourceBar.setCurrent(current);
+        } else {
+            type = ResourceType.UNKNOWN;
+            this.resourceBar = type.create(this, null);
+        }
     }
 
     private void loadProfessions(List<String> professionNames) {
@@ -153,6 +166,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (profession.getProperties().isPrimary()) {
             if (primaryProfession != null) primaryProfession.setActive(false);
             primaryProfession = profession;
+            // also update the resource bar
+            resourceBar.destroy();
+            createResourceBar(getResource());
         } else {
             if (secundaryProfession != null) secundaryProfession.setActive(false);
             secundaryProfession = profession;
@@ -237,7 +253,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         }
         setHealth(getMaxHealth());
         setStamina(getMaxStamina());
-        setMana(getMaxMana());
+        setResource(getResourceBar().getMax());
         clearEffects();
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
@@ -287,15 +303,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public boolean isManaRegenEnabled() {
+    public ResourceBar getResourceBar() {
 
-        return manaRegenEnabled;
-    }
-
-    @Override
-    public void setManaRegenEnabled(boolean enabled) {
-
-        this.manaRegenEnabled = enabled;
+        return resourceBar;
     }
 
     @Override
@@ -308,26 +318,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setStaminaRegenEnabled(boolean enabled) {
 
         this.staminaRegenEnabled = enabled;
-    }
-
-    @Override
-    public void setManaRegen(double manaRegen) {
-
-        this.manaRegen = manaRegen;
-    }
-
-    @Override
-    public double getManaRegen() {
-
-        return manaRegen;
-    }
-
-    @Override
-    public void regenMana() {
-
-        int mana = (int) (getMana() + getMaxMana() * getManaRegen());
-        if (mana > getMaxMana()) mana = getMaxMana();
-        setMana(mana);
     }
 
     @Override
@@ -411,26 +401,16 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public int getMana() {
+    public int getResource() {
 
-        return mana;
+        return getResourceBar().getCurrent();
     }
 
     @Override
-    public void setMana(int mana) {
+    public void setResource(int value) {
 
-        if (mana > getMaxMana()) mana = getMaxMana();
-        this.mana = mana;
-        debug("set mana to " + mana);
-    }
-
-    @Override
-    public int getMaxMana() {
-
-        Profession profession = getPrimaryProfession();
-        if (profession == null) return 100;
-        return (int) (profession.getProperties().getBaseMana()
-                + profession.getProperties().getBaseManaModifier() * profession.getLevel().getLevel());
+        getResourceBar().setCurrent(value);
+        debug("set mana to " + getResource());
     }
 
     @Override
@@ -499,7 +479,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         THero tHero = Ebean.find(THero.class, getId());
         tHero.setHealth(getHealth());
-        tHero.setMana(getMana());
+        tHero.setResource(getResource());
         tHero.setStamina(getStamina());
         tHero.setDebugging(isDebugging());
         tHero.setCombatLogging(isCombatLogging());

@@ -72,7 +72,7 @@ public abstract class AbstractSkill implements Skill {
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         // lets check the resources of the skill and if the hero has it
-        if (this.getTotalManaCost() > getHero().getMana()) {
+        if (this.getTotalManaCost() > getHero().getResource()) {
             throw new CombatException(CombatException.Type.LOW_MANA);
         }
         if (this.getTotalStaminaCost() > getHero().getStamina()) {
@@ -104,7 +104,7 @@ public abstract class AbstractSkill implements Skill {
     public final void substractUsageCost() {
 
         // substract the mana, health and stamina cost
-        if (getTotalManaCost() > 0) hero.setMana(hero.getMana() - getTotalManaCost());
+        if (getTotalManaCost() > 0) hero.setResource(hero.getResource() - getTotalManaCost());
         if (getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - getTotalStaminaCost());
         try {
             if (getTotalHealthCost() > 0) new MagicalAttack(getHero(), getHero(), getTotalHealthCost()).run();

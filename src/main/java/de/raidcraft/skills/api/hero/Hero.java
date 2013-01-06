@@ -46,21 +46,11 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void reset();
 
-    public int getMana();
+    public int getResource();
 
-    public void setMana(int mana);
+    public void setResource(int value);
 
-    public boolean isManaRegenEnabled();
-
-    public void setManaRegenEnabled(boolean enabled);
-
-    public void setManaRegen(double manaRegen);
-
-    public double getManaRegen();
-
-    public void regenMana();
-
-    public int getMaxMana();
+    public ResourceBar getResourceBar();
 
     public int getStamina();
 

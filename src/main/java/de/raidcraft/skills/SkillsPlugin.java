@@ -173,14 +173,14 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double profession_change_level_modifier = 1.0;
         @Setting("interface.updateinterval")
         public long interface_update_interval = 20;
-        @Setting("interface.mana-bar-interval")
-        public long interface_mana_bar_update = 5 * 1000;
+        @Setting("interface.resource-bar-interval")
+        public long interface_resource_bar_update = 5 * 1000;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
-        @Setting("hero.mana-regain-interval")
-        public long hero_mana_regain_interval = 50;
-        @Setting("hero.mana-regain-amount")
-        public int hero_mana_regain_default_amount = 5;
+        @Setting("hero.resource-regain-interval")
+        public long hero_resource_regain_interval = 20;
+        @Setting("hero.resource-regain-amount")
+        public double hero_resource_regain_default_amount = 0.03;
         @Setting("hero.stamina-regain-interval")
         public long hero_stamina_regain_interval = 25;
         @Setting("hero.stamina-regain-amount")

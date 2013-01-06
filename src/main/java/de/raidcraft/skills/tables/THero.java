@@ -151,12 +151,12 @@ public class THero implements LevelData, HeroData, Bean {
         this.health = health;
     }
 
-    public int getMana() {
+    public int getResource() {
 
         return mana;
     }
 
-    public void setMana(int mana) {
+    public void setResource(int mana) {
 
         this.mana = mana;
     }

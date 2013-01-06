@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ public interface ProfessionProperties {
 
     public double getBaseHealthModifier();
 
-    public int getBaseMana();
+    public String getResourceName();
 
-    public double getBaseManaModifier();
+    public ConfigurationSection getResourceConfig();
 
     public int getBaseStamina();
 

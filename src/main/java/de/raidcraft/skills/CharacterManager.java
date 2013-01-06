@@ -56,7 +56,6 @@ public final class CharacterManager implements Listener {
     public void startTasks() {
 
         startUserInterfaceRefreshTask();
-        startHeroManaRegainTask();
         startHeroStaminaRegainTask();
     }
 
@@ -71,26 +70,6 @@ public final class CharacterManager implements Listener {
                 }
             }
         }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
-    }
-
-    private void startHeroManaRegainTask() {
-
-        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Hero hero = getHero(player);
-                    if (hero.isManaRegenEnabled() && hero.getMana() < hero.getMaxMana()) {
-                        if (hero.getManaRegen() == 0.0) {
-                            hero.setManaRegen(plugin.getCommonConfig().hero_mana_regain_default_amount);
-                        }
-                        // refresh the mana
-                        hero.regenMana();
-                    }
-                }
-            }
-        }, plugin.getCommonConfig().hero_mana_regain_interval, plugin.getCommonConfig().hero_mana_regain_interval);
     }
 
     private void startHeroStaminaRegainTask() {
@@ -134,7 +113,7 @@ public final class CharacterManager implements Listener {
                 heroTable = new THero();
                 heroTable.setPlayer(name);
                 heroTable.setHealth(20);
-                heroTable.setMana(0);
+                heroTable.setResource(0);
                 heroTable.setStamina(0);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);

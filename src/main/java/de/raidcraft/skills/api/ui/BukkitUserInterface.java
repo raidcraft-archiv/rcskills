@@ -3,9 +3,8 @@ package de.raidcraft.skills.api.ui;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.ResourceBar;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.util.HeroUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -18,7 +17,7 @@ public class BukkitUserInterface implements UserInterface {
     private final Player player;
     private long lastUpdate = 0L;
     private boolean enabled = true;
-    private boolean maxedMana = true;
+    private boolean maxedResource = true;
 
     public BukkitUserInterface(Hero hero) {
 
@@ -77,14 +76,15 @@ public class BukkitUserInterface implements UserInterface {
             player.setLevel(0);
         }
 
-        if (hero.getMana() < hero.getMaxMana()) maxedMana = false;
+        ResourceBar bar = hero.getResourceBar();
+        if (bar.getCurrent() != bar.getDefault()) maxedResource = false;
         // set the manabar if it changed
         long time = System.currentTimeMillis();
-        if (time - RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_mana_bar_update > lastUpdate) {
-            if (hero.getMana() < hero.getMaxMana() || !maxedMana) {
-                hero.sendMessage(ChatColor.BLUE + "Mana: " + HeroUtil.createManaBar(hero.getMana(), hero.getMaxMana()));
+        if (time - RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_resource_bar_update > lastUpdate) {
+            if (!bar.isMax() || !maxedResource) {
+                hero.sendMessage(bar.draw());
                 this.lastUpdate = time;
-                if (hero.getMana() == hero.getMaxMana()) maxedMana = true;
+                if (bar.isMax()) maxedResource = true;
             }
         }
     }

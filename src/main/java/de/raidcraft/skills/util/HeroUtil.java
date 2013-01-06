@@ -21,20 +21,25 @@ public final class HeroUtil {
 
     }
 
-    public static String createManaBar(double mana, double maxMana) {
+    public static String createResourceBar(double current, double max, ChatColor color) {
 
-        StringBuilder manaBar = new StringBuilder(String.valueOf(ChatColor.RED) + "[" + ChatColor.BLUE);
-        int percent = (int) ((mana / maxMana) * 100.0);
+        StringBuilder resourceBar = new StringBuilder(String.valueOf(ChatColor.RED) + "[" + color);
+        int percent = (int) ((current / max) * 100.0);
         int progress = percent / 2;
         for (int i = 0; i < progress; i++) {
-            manaBar.append('|');
+            resourceBar.append('|');
         }
-        manaBar.append(ChatColor.DARK_RED);
+        resourceBar.append(ChatColor.DARK_RED);
         for (int i = 0; i < 50 - progress; i++) {
-            manaBar.append('|');
+            resourceBar.append('|');
         }
-        manaBar.append(ChatColor.RED).append(']');
-        return String.valueOf(manaBar) + " - " + ChatColor.BLUE + percent + "%";
+        resourceBar.append(ChatColor.RED).append(']');
+        return String.valueOf(resourceBar) + " - " + color + percent + "%";
+    }
+
+    public static String createResourceBar(double current, double max) {
+
+        return createResourceBar(current, max, ChatColor.BLUE);
     }
 
     @SuppressWarnings("unchecked")

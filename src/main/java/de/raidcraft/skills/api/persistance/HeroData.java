@@ -15,7 +15,7 @@ public interface HeroData {
 
     public int getHealth();
 
-    public int getMana();
+    public int getResource();
 
     public int getStamina();
 
