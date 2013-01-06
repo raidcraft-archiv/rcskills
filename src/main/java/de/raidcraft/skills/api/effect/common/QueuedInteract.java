@@ -31,6 +31,11 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
         if (duration == 0) duration = 20 * 5;
     }
 
+    public void sendInfo(String msg) {
+
+        info(msg);
+    }
+
     public void addCallback(Callback<PlayerInteractTrigger> callback, Action action) {
 
         this.callback = callback;
@@ -52,15 +57,12 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
         if (callback != null) {
             callback.run(trigger);
         }
-        info(getSource().getFriendlyName() + " ausgeführt!");
         triggered = true;
         remove();
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-
-        info("Du hebst deine Arme für " + getSource().getFriendlyName());
     }
 
     @Override
