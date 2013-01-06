@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -169,6 +170,16 @@ public abstract class AbstractSkill implements Skill {
         EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes());
         attack.run();
         return attack;
+    }
+
+    protected void addPermission(String node) {
+
+        RaidCraft.getPermissions().playerAdd(getHero().getPlayer(), node);
+    }
+
+    protected void removePermission(String node) {
+
+        RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), node);
     }
 
     @Override
