@@ -35,7 +35,7 @@ public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplat
                 TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this, EntityDamageEvent.DamageCause.CUSTOM));
             }
             if (getTarget() instanceof Hero) {
-                TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, EntityDamageEvent.DamageCause.CUSTOM));
+                TriggerManager.callTrigger(new DamageTrigger(getTarget(), this, EntityDamageEvent.DamageCause.CUSTOM));
             }
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);

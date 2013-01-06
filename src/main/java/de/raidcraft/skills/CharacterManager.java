@@ -202,6 +202,7 @@ public final class CharacterManager implements Listener {
         // save the hero first
         hero.save();
         hero.clearEffects();
+        hero.getResourceBar().destroy();
         // lets clear the cache for the hero
         clearCacheOf(hero);
     }

@@ -6,13 +6,13 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ProfessionUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,7 +53,7 @@ public class PlayerComands {
             }
             Level level = null;
             if (args.hasFlag('p')) {
-                Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'));
                 level = profession.getLevel();
             } else if (args.hasFlag('s')) {
                 Skill skill = hero.getSkill(args.getFlag('s'));
@@ -76,7 +76,7 @@ public class PlayerComands {
                         getClass().getDeclaredMethod("addExp", Level.class, Level.class, int.class),
                         expPool, level, exp);
             }
-        } catch (UnknownSkillException | UnknownProfessionException | InvalidChoiceException e) {
+        } catch (UnknownSkillException | InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
         } catch (NoSuchMethodException e) {
             plugin.getLogger().warning(e.getMessage());
