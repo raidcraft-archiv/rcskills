@@ -27,7 +27,7 @@ public class CustomConfig extends ConfigurationBase<SkillsPlugin> {
         if (!customConfigs.containsKey(name)) {
             File dir = new File(PLUGIN.getDataFolder(), "custom-configs");
             dir.mkdirs();
-            config = new CustomConfig(PLUGIN, new File(dir, name));
+            config = PLUGIN.configure(new CustomConfig(PLUGIN, new File(dir, name)));
             customConfigs.put(name, config);
         } else {
             config = customConfigs.get(name);
