@@ -115,7 +115,7 @@ public abstract class AbstractResourceBar implements ResourceBar {
     @Override
     public int getMax() {
 
-        int max = config.getInt("base", getDefault());
+        int max = config.getInt("base", 100);
         max += config.getDouble("level-modifier", 0.0) * getHero().getLevel().getLevel();
         if (getHero().getPrimaryProfession() != null) {
             max += config.getDouble("prof-level-modifier", 0.0) * getHero().getPrimaryProfession().getLevel().getLevel();
