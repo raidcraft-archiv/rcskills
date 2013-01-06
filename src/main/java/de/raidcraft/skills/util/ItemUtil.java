@@ -62,6 +62,12 @@ public final class ItemUtil {
         return false;
     }
 
+    public static boolean isShield(Material material) {
+
+        ArmorSlot slot = ArmorSlot.fromMaterial(material);
+        return slot == ArmorSlot.SHIELD;
+    }
+
     public enum ArmorSlot {
 
         HEAD(103,

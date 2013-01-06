@@ -46,6 +46,7 @@ public final class ProfessionManager {
             }
             ProfessionFactory factory = new ProfessionFactory(plugin, file.replace(".yml", ""));
             professionFactories.put(factory.getProfessionName(), factory);
+            plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
         }
         // lets create the factory for the virtual profession
         professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, VIRTUAL_PROFESSION));
