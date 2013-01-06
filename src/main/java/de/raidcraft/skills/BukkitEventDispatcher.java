@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.*;
 import org.bukkit.block.Block;
@@ -134,6 +135,14 @@ public class BukkitEventDispatcher implements Listener {
         }
         TriggerManager.callTrigger(
                 new EntityTargetTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onCombat(RCCombatEvent event) {
+
+        TriggerManager.callTrigger(
+                new CombatTrigger(event.getHero(), event)
         );
     }
 }

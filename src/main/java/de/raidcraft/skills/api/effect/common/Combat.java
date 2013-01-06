@@ -1,9 +1,12 @@
 package de.raidcraft.skills.api.effect.common;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
+import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 
 /**
@@ -29,6 +32,9 @@ public class Combat<S> extends ExpirableEffect<S> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         target.setInCombat(true);
+        if (target instanceof Hero) {
+            RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.ENTER));
+        }
         info("Du hast den Kampf betreten.");
     }
 
@@ -36,6 +42,9 @@ public class Combat<S> extends ExpirableEffect<S> {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.setInCombat(false);
+        if (target instanceof Hero) {
+            RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.LEAVE));
+        }
         info("Du hast den Kampf verlassen.");
     }
 
