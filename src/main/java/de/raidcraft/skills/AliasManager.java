@@ -28,7 +28,20 @@ public final class AliasManager {
 
     private void loadAliases() {
 
-        for (File file : configPath.listFiles()) {
+        loadAliasConfig(configPath);
+        // now lets create factories for every alias based on their skill
+        for (Map.Entry<String, String> entry : aliasSkillMapping.entrySet()) {
+            plugin.getSkillManager().createAliasFactory(entry.getKey(), entry.getValue(), aliasConfigs.get(entry.getKey()));
+        }
+    }
+
+    private void loadAliasConfig(File dir) {
+
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                // recursive loading of all sub directories
+                loadAliasConfig(file);
+            }
             if (file.getName().endsWith(".yml")) {
                 String alias = StringUtils.formatName(file.getName().replace(".yml", ""));
                 AliasesConfig config = plugin.configure(new AliasesConfig(plugin, file, alias));
@@ -43,10 +56,6 @@ public final class AliasManager {
                     aliasConfigs.put(alias, config);
                 }
             }
-        }
-        // now lets create factories for every alias based on their skill
-        for (Map.Entry<String, String> entry : aliasSkillMapping.entrySet()) {
-            plugin.getSkillManager().createAliasFactory(entry.getKey(), entry.getValue(), aliasConfigs.get(entry.getKey()));
         }
     }
 
