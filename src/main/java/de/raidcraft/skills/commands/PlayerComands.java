@@ -3,7 +3,6 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
@@ -22,18 +21,6 @@ import org.bukkit.entity.Player;
  * @author Silthus
  */
 public class PlayerComands {
-
-    public static class Base {
-
-        @Command(
-                aliases = "rcs",
-                desc = "Base Command for the Players"
-        )
-        @NestedCommand(PlayerComands.class)
-        public static void baseCommand(CommandContext args, CommandSender sender) {
-
-        }
-    }
 
     private final SkillsPlugin plugin;
 

@@ -224,6 +224,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         }
 
         @Command(
+                aliases = {"rcs"},
+                desc = "Base Command for Players"
+        )
+        @NestedCommand(PlayerComands.class)
+        public void player(CommandContext args, CommandSender sender) {
+
+        }
+
+        @Command(
                 aliases = "skill",
                 desc = "Base Command for the Skill"
         )
