@@ -85,6 +85,8 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public List<Skill> getSkills();
 
+    public Skill getSkill(String name) throws UnknownSkillException;
+
     public List<Profession> getProfessions();
 
     public void saveProfessions();

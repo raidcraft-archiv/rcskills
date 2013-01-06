@@ -203,6 +203,24 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public Skill getSkill(String name) throws UnknownSkillException {
+
+        List<Skill> foundSkills = new ArrayList<>();
+        for (Skill skill : getSkills()) {
+            if (skill.matches(name)) {
+                foundSkills.add(skill);
+            }
+        }
+        if (foundSkills.size() < 1) {
+            throw new UnknownSkillException("Der Spieler hat keinen Skill mit dem Namen: " + name);
+        }
+        if (foundSkills.size() > 1) {
+            throw new UnknownSkillException("Es gibt mehrere Skills mit dem Namen: " + name);
+        }
+        return foundSkills.get(0);
+    }
+
+    @Override
     public Group getGroup() {
 
         return group;

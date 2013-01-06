@@ -117,6 +117,13 @@ public abstract class AbstractSkill implements Skill {
         setLastCast(System.currentTimeMillis());
     }
 
+    @Override
+    public final boolean matches(String name) {
+
+        name = name.toLowerCase();
+        return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
+    }
+
     protected final <E extends Effect<S>, S extends Skill> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, (S) this, eClass);

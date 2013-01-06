@@ -80,6 +80,8 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public Profession getProfession();
 
+    public boolean matches(String name);
+
     public void save();
 
     /**

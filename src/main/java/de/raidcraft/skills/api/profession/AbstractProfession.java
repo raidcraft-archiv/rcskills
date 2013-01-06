@@ -62,6 +62,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public String getFriendlyName() {
+
+        return getProperties().getFriendlyName();
+    }
+
+    @Override
     public ProfessionProperties getProperties() {
 
         return properties;
