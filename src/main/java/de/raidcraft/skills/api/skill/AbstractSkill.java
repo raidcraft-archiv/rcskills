@@ -135,49 +135,49 @@ public abstract class AbstractSkill implements Skill {
         return target.addEffect(this, source, eClass);
     }
 
-    protected Set<CharacterTemplate> getNearbyTargets() throws CombatException {
+    protected final Set<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getHero().getNearbyTargets(getTotalRange());
     }
 
-    protected CharacterTemplate getTarget() throws CombatException {
+    protected final CharacterTemplate getTarget() throws CombatException {
 
         return getHero().getTarget(getTotalRange());
     }
 
-    protected Location getBlockTarget() throws CombatException {
+    protected final Location getBlockTarget() throws CombatException {
 
         return getHero().getBlockTarget(getTotalRange());
     }
 
-    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
 
         return attack(target, damage, null);
     }
 
-    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
 
         return attack(target, getTotalDamage(), null);
     }
 
-    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, Callback<CharacterTemplate> callback) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, Callback<CharacterTemplate> callback) throws CombatException {
 
         return attack(target, getTotalDamage(), callback);
     }
 
-    protected Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes());
         attack.run();
         return attack;
     }
 
-    protected void addPermission(String node) {
+    protected final void addPermission(String node) {
 
         RaidCraft.getPermissions().playerAdd(getHero().getPlayer(), node);
     }
 
-    protected void removePermission(String node) {
+    protected final void removePermission(String node) {
 
         RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), node);
     }
@@ -259,7 +259,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isHidden() {
+    public final boolean isHidden() {
 
         return getProperties().isHidden();
     }
@@ -354,13 +354,13 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean isEnabled() {
+    public final boolean isEnabled() {
 
         return properties.isEnabled();
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public final void setEnabled(boolean enabled) {
 
         properties.setEnabled(enabled);
     }
@@ -456,19 +456,19 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public List<Requirement> getRequirements() {
+    public final List<Requirement> getRequirements() {
 
         return requirements;
     }
 
     @Override
-    public void addRequirement(Requirement requirement) {
+    public final void addRequirement(Requirement requirement) {
 
         requirements.add(requirement);
     }
 
     @Override
-    public boolean isUnlockable() {
+    public final boolean isUnlockable() {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet(getHero())) {
@@ -479,7 +479,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public String getUnlockReason() {
+    public final String getUnlockReason() {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet(getHero())) {
