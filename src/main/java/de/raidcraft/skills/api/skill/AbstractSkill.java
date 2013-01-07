@@ -73,7 +73,7 @@ public abstract class AbstractSkill implements Skill {
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         // lets check the resources of the skill and if the hero has it
-        if (this.getTotalManaCost() > getHero().getResource()) {
+        if (this.getTotalResourceCost() > getHero().getResource()) {
             throw new CombatException(CombatException.Type.LOW_MANA);
         }
         if (this.getTotalStaminaCost() > getHero().getStamina()) {
@@ -105,7 +105,7 @@ public abstract class AbstractSkill implements Skill {
     public final void substractUsageCost() {
 
         // substract the mana, health and stamina cost
-        if (getTotalManaCost() > 0) hero.setResource(hero.getResource() - getTotalManaCost());
+        if (getTotalResourceCost() > 0) hero.setResource(hero.getResource() - getTotalResourceCost());
         if (getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - getTotalStaminaCost());
         try {
             if (getTotalHealthCost() > 0) new MagicalAttack(getHero(), getHero(), getTotalHealthCost()).run();
@@ -191,7 +191,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int getTotalManaCost() {
+    public int getTotalResourceCost() {
 
         return (int) (properties.getManaCost()
                 + (properties.getManaCostLevelModifier() * hero.getLevel().getLevel())
@@ -342,7 +342,7 @@ public abstract class AbstractSkill implements Skill {
         return description
                 .replace("%player%", hero.getName())
                 .replace("%damage%", getTotalDamage() + "")
-                .replace("%mana-cost%", getTotalManaCost() + "")
+                .replace("%mana-cost%", getTotalResourceCost() + "")
                 .replace("%health-cost%", getTotalHealthCost() + "")
                 .replace("%stamina-cost%", getTotalStaminaCost() + "");
     }
@@ -483,7 +483,7 @@ public abstract class AbstractSkill implements Skill {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet(getHero())) {
-                return requirement.getReason(getHero());
+                return requirement.getLongReason(getHero());
             }
         }
         return "Skill kann freigeschaltet werden.";

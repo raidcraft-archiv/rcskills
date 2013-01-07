@@ -21,10 +21,16 @@ public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
     }
 
     @Override
-    public String getReason(Hero hero) {
+    public String getLongReason(Hero hero) {
 
         return ChatColor.RED +
                 "Du musst erst deinen Skill " + ChatColor.AQUA + getLevelObject() +
                 ChatColor.RED + " auf Level " + ChatColor.AQUA + getRequiredLevel() + ChatColor.RED + " bringen.";
+    }
+
+    @Override
+    public String getShortReason(Hero hero) {
+
+        return "Skill " + getLevelObject() + " auf Level " + getRequiredLevel();
     }
 }

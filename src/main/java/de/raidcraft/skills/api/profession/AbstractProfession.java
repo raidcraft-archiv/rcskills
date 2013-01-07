@@ -164,7 +164,7 @@ public abstract class AbstractProfession implements Profession {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet(getHero())) {
-                return requirement.getReason(getHero());
+                return requirement.getLongReason(getHero());
             }
         }
         return "Beruf/Klasse kann freigeschaltet werden.";

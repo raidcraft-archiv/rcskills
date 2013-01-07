@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 
@@ -52,35 +53,60 @@ public final class SkillUtil {
         return sb.toString();
     }
 
-    public static String[] formatBody(Skill skill) {
+    public static List<String> formatBody(Skill skill) {
 
-        String[] body = new String[3];
+        List<String> body = new ArrayList<>();
+
         StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.YELLOW).append(skill.getProfession().getProperties().isPrimary() ? "Klassen Level: " : "Beruf Level: ");
-        sb.append(ChatColor.AQUA).append(skill.getProfession().getLevel().getLevel());
+        sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(skill.getDescription());
+        body.add(sb.toString());
+
         if (skill instanceof Levelable) {
-            sb.append(ChatColor.YELLOW).append("  |   Skill Level: ").append(ChatColor.AQUA).append(((Levelable) skill).getLevel().getLevel());
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(((Levelable) skill).getLevel().getLevel())
+                    .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(((Levelable) skill).getLevel().getMaxLevel());
+            sb.append(ChatColor.YELLOW).append("  |   EXP: ").append(ChatColor.AQUA).append(((Levelable) skill).getLevel().getExp())
+                    .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(((Levelable) skill).getLevel().getMaxExp());
+            body.add(sb.toString());
         }
-        body[0] = sb.toString();
 
-        sb = new StringBuilder();
-        sb.append(ChatColor.YELLOW).append(skill.getProfession().getProperties().isPrimary() ? "Klassen Min. Level: " : "Beruf Min. Level: ");
-        sb.append(ChatColor.AQUA).append(skill.getProperties().getRequiredLevel());
-        body[1] = sb.toString();
-
-        sb = new StringBuilder();
-        if (skill.getTotalManaCost() > 0) {
-            sb.append(ChatColor.YELLOW).append("MP: ").append(ChatColor.AQUA).append(skill.getTotalManaCost());
+        if (skill.getTotalResourceCost() > 0) {
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append(skill.getHero().getResourceBar().getName()).append(": ")
+                    .append(ChatColor.AQUA).append(skill.getTotalResourceCost());
+            body.add(sb.toString());
         }
         if (skill.getTotalStaminaCost() > 0) {
-            sb.append(ChatColor.YELLOW).append("  |   SP: ").append(ChatColor.AQUA).append(skill.getTotalStaminaCost());
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Ausdauer: ").append(ChatColor.AQUA).append(skill.getTotalStaminaCost());
+            body.add(sb.toString());
         }
         if (skill.getTotalHealthCost() > 0) {
-            sb.append(ChatColor.YELLOW).append("  |   HP: ").append(ChatColor.AQUA).append(skill.getTotalHealthCost());
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Leben: ").append(ChatColor.AQUA).append(skill.getTotalHealthCost());
+            body.add(sb.toString());
         }
-        body[2] = sb.toString();
 
-        sb = new StringBuilder();
+        if (skill.getRequirements().size() > 0) {
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
+            for (Requirement requirement : skill.getRequirements()) {
+                sb.append(ChatColor.YELLOW).append("  - ");
+                sb.append((requirement.isMet(skill.getHero()) ? ChatColor.GREEN : ChatColor.RED));
+                sb.append(requirement.getShortReason(skill.getHero()));
+                sb.append("\n");
+            }
+            body.add(sb.toString());
+        }
+
+        if (skill.getUsage().length > 0) {
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Zusatzinformationen: \n");
+            for (String str : skill.getUsage()) {
+                sb.append(ChatColor.YELLOW).append("  - ").append(str).append("\n");
+            }
+            body.add(sb.toString());
+        }
 
         return body;
     }

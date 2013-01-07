@@ -58,7 +58,7 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public int getTotalDamage();
 
-    public int getTotalManaCost();
+    public int getTotalResourceCost();
 
     public int getTotalStaminaCost();
 

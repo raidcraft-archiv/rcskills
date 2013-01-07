@@ -11,5 +11,7 @@ public interface Requirement<T> {
 
     public boolean isMet(Hero hero);
 
-    public String getReason(Hero hero);
+    public String getLongReason(Hero hero);
+
+    public String getShortReason(Hero hero);
 }

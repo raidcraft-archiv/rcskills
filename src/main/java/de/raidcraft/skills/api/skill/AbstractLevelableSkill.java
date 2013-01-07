@@ -46,9 +46,9 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final int getTotalManaCost() {
+    public final int getTotalResourceCost() {
 
-        return (int) (super.getTotalManaCost() + (getProperties().getManaCostSkillLevelModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalResourceCost() + (getProperties().getManaCostSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override
