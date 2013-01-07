@@ -7,6 +7,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.commands.*;
@@ -71,7 +72,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private void registerSkills() {
 
-        getSkillManager().registerClass(PermissionSkill.class);
+        try {
+            getSkillManager().registerClass(PermissionSkill.class);
+        } catch (UnknownSkillException e) {
+            getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
