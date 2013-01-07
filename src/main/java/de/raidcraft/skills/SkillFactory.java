@@ -30,18 +30,26 @@ public final class SkillFactory {
     private final Map<Profession, SkillConfig> skillConfigs = new HashMap<>();
     private final String skillName;
     private final AliasesConfig aliasConfig;
+    private Constructor<? extends Skill> constructor;
 
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName) throws UnknownSkillException {
 
         this(plugin, sClass, skillName, null);
     }
 
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, AliasesConfig aliasConfig) {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, AliasesConfig aliasConfig) throws UnknownSkillException {
 
         this.plugin = plugin;
         this.sClass = sClass;
         this.skillName = skillName;
         this.aliasConfig = aliasConfig;
+        // lets cache the constructor for faster skill generation
+        try {
+            this.constructor = sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
+            constructor.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new UnknownSkillException("Found no matching constructor for the skill: " + skillName);
+        }
     }
 
     protected void createDefaults() {
@@ -107,16 +115,13 @@ public final class SkillFactory {
 
         // its reflection time yay!
         try {
-            Constructor<? extends Skill> constructor =
-                    sClass.getConstructor(Hero.class, SkillProperties.class, Profession.class, THeroSkill.class);
-            constructor.setAccessible(true);
             Skill skill = constructor.newInstance(hero, config, profession, database);
             if (!skill.isEnabled()) {
                 throw new UnknownSkillException("The Skill " + skillName + " is disabled!");
             }
             skill.load(config.getData());
             return skill;
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }

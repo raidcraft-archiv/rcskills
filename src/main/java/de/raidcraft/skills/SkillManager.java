@@ -49,7 +49,12 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public void loadFactories() {
 
         for (Class<? extends Skill> clazz : loadClasses()) {
-            registerClass(clazz);
+            try {
+                registerClass(clazz);
+            } catch (UnknownSkillException e) {
+                plugin.getLogger().warning(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -59,7 +64,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
      *
      * @param skillClass of the skill
      */
-    public SkillFactory registerClass(Class<? extends Skill> skillClass) {
+    public SkillFactory registerClass(Class<? extends Skill> skillClass) throws UnknownSkillException {
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
             String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
@@ -84,10 +89,15 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     protected void createAliasFactory(String alias, String skill, AliasesConfig config) {
 
-        SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
-        skillFactories.put(alias, factory);
-        factory.createDefaults();
-        plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
+        try {
+            SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
+            skillFactories.put(alias, factory);
+            factory.createDefaults();
+            plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
+        } catch (UnknownSkillException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public Skill getSkill(Hero hero, Profession profession, String skillName, ConfigurationSection... overrides) throws UnknownSkillException {

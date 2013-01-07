@@ -26,14 +26,29 @@ public final class EffectFactory<E extends Effect> {
     private final String effectName;
     private final Map<Skill, EffectConfig> effectConfigs = new HashMap<>();
     private final EffectConfig defaultConfig;
+    private Constructor<?> constructor = null;
 
-    protected EffectFactory(SkillsPlugin plugin, Class<E> eClass) {
+    protected EffectFactory(SkillsPlugin plugin, Class<E> eClass) throws UnknownEffectException {
 
         this.plugin = plugin;
         this.eClass = eClass;
         this.information = eClass.getAnnotation(EffectInformation.class);
         this.effectName = StringUtils.formatName(information.name());
         this.defaultConfig = plugin.configure(new EffectConfig(this));
+
+        // lets load the constructor for faster effect creations
+        for (Constructor<?> constructor : eClass.getDeclaredConstructors()) {
+            if (constructor.getParameterTypes().length == 3) {
+                if (constructor.getParameterTypes()[1].isAssignableFrom(CharacterTemplate.class)
+                        && constructor.getParameterTypes()[2].isAssignableFrom(EffectData.class)) {
+                    this.constructor = constructor;
+                    break;
+                }
+            }
+        }
+        if (constructor == null) {
+            throw new UnknownEffectException("Found no matching constructor for the effect: " + effectName);
+        }
     }
 
     protected void createDefaults() {
@@ -48,20 +63,12 @@ public final class EffectFactory<E extends Effect> {
 
         // its reflection time yay!
         try {
-            for (Constructor<?> constructor : eClass.getDeclaredConstructors()) {
-                if (constructor.getParameterTypes().length == 3) {
-                    if (constructor.getParameterTypes()[0].isAssignableFrom(source.getClass())
-                            && constructor.getParameterTypes()[1].isAssignableFrom(target.getClass())
-                            && constructor.getParameterTypes()[2].isAssignableFrom(EffectConfig.class)) {
-                        E effect = (E) constructor.newInstance(source, target, config);
-                        if (!effect.isEnabled()) {
-                            throw new UnknownEffectException("The effect " + effectName + " is disabled!");
-                        }
-                        effect.load(config.getDataMap());
-                        return effect;
-                    }
-                }
+            E effect = (E) constructor.newInstance(source, target, config);
+            if (!effect.isEnabled()) {
+                throw new UnknownEffectException("The effect " + effectName + " is disabled!");
             }
+            effect.load(config.getDataMap());
+            return effect;
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
