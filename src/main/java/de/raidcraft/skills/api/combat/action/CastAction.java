@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.effect.common.CastTime;
+import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -36,6 +37,10 @@ public class CastAction extends AbstractAction<Hero> {
             throw new CombatException("Du kannst diesen Skill nicht via Command ausführen.");
         }
 
+        if (getSource().hasEffect(GlobalCooldown.class)) {
+            throw new CombatException(CombatException.Type.ON_GLOBAL_COOLDOWN);
+        }
+
         // check if we meet all requirements to use the skill
         getSkill().checkUsage();
 
@@ -53,5 +58,8 @@ public class CastAction extends AbstractAction<Hero> {
 
         // and call the trigger
         ((CommandTriggered) skill).runCommand(args);
+
+        // lets start the global cooldown
+        getSource().addEffect(skill, GlobalCooldown.class);
     }
 }

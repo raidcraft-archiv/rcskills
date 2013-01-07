@@ -171,6 +171,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
+        @Setting("defaults.global-cooldown")
+        public double global_cooldown = 1.5;
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
@@ -181,10 +183,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long interface_resource_bar_update = 5 * 1000;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
-        @Setting("hero.resource-regain-interval")
-        public long hero_resource_regain_interval = 20;
-        @Setting("hero.resource-regain-amount")
-        public double hero_resource_regain_default_amount = 0.03;
         @Setting("hero.stamina-regain-interval")
         public long hero_stamina_regain_interval = 25;
         @Setting("hero.stamina-regain-amount")
