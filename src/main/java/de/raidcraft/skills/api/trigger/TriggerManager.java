@@ -24,7 +24,7 @@ public class TriggerManager {
      *
      * @param trigger Trigger to handle
      */
-    public static Trigger callTrigger(Trigger trigger) {
+    public static <T extends Trigger> T callTrigger(T trigger) {
 
         HandlerList handlerlist = trigger.getHandlers();
         handlerlist.bake();

@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
@@ -85,11 +86,22 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void heal(int amount) {
 
+        HealTrigger trigger = TriggerManager.callTrigger(
+                new HealTrigger(this, amount)
+        );
+
+        if (trigger.isCancelled()) {
+            return;
+        }
+
+        amount = trigger.getAmount();
+
         int newHealth = getHealth() + amount;
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         setHealth(newHealth);
         if (this instanceof Hero) {
             ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
+            ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
         }
     }
 
