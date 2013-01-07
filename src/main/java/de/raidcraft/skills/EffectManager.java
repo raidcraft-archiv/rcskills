@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -48,6 +49,9 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException, UnknownEffectException {
 
+        if (effectClass.isAnnotationPresent(IgnoredEffect.class)) {
+            return;
+        }
         if (effectClass.isAnnotationPresent(EffectInformation.class)) {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
             effectFactoryClasses.put(factory.getEffectClass(), factory);

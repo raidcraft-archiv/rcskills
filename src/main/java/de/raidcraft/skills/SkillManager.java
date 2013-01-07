@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.IgnoredSkill;
 import de.raidcraft.skills.api.skill.Passive;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -64,14 +65,17 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
      *
      * @param skillClass of the skill
      */
-    public SkillFactory registerClass(Class<? extends Skill> skillClass) throws UnknownSkillException {
+    public void registerClass(Class<? extends Skill> skillClass) throws UnknownSkillException {
+
+        if (skillClass.isAnnotationPresent(IgnoredSkill.class)) {
+            return;
+        }
 
         if (skillClass.isAnnotationPresent(SkillInformation.class)) {
             String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
             // check for duplicate skills
             if (skillFactories.containsKey(skillName)) {
                 plugin.getLogger().warning("Found duplicate Skill: " + skillName);
-                return skillFactories.get(skillName);
             }
             // load the skill factory for the non alias
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
@@ -80,11 +84,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             // lets create the skill once to make a default config
             factory.createDefaults();
             plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
-            return factory;
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
-        return null;
     }
 
     protected void createAliasFactory(String alias, String skill, AliasesConfig config) {

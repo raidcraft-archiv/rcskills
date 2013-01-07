@@ -26,6 +26,7 @@ public enum EffectType {
     IGNORE_ARMOR,
     AREA,
     AURA,
+    AVATAR,
     UNKNOWN;
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
