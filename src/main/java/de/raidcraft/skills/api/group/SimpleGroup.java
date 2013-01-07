@@ -65,4 +65,12 @@ public class SimpleGroup implements Group {
 
         return members.contains(hero);
     }
+
+    @Override
+    public void heal(int amount) {
+
+        for (Hero hero : getMembers()) {
+            hero.heal(amount);
+        }
+    }
 }

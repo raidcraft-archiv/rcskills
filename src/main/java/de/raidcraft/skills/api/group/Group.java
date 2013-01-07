@@ -22,4 +22,6 @@ public interface Group {
     public void removeMember(Hero hero);
 
     public boolean isInGroup(Hero hero);
+
+    public void heal(int amount);
 }
