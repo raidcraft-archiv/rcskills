@@ -77,7 +77,7 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public int getMaxHealth() {
+    public int getDefaultHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
     }

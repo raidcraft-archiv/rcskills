@@ -35,12 +35,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    private int maxHealth;
     private boolean inCombat = false;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
         this.entity = entity;
         this.name = (entity instanceof Player) ? ((Player) entity).getName() : entity.getType().getName();
+        this.maxHealth = getDefaultHealth();
     }
 
     @Override
@@ -306,6 +308,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
+    }
+
+    @Override
+    public int getMaxHealth() {
+
+        return maxHealth;
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth) {
+
+        this.maxHealth = maxHealth;
     }
 
     protected float getSoundStrength(LivingEntity target) {

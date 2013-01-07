@@ -44,6 +44,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
+    private int maxHealth = 20;
     private ResourceBar resourceBar;
     private int stamina;
     private double staminaRegen;
@@ -413,7 +414,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public int getMaxHealth() {
+    public int getDefaultHealth() {
 
         Profession profession;
         if (getPrimaryProfession() != null) {

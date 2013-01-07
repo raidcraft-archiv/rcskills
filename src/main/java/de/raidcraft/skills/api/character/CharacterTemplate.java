@@ -26,6 +26,10 @@ public interface CharacterTemplate {
 
     public int getMaxHealth();
 
+    public void setMaxHealth(int maxHealth);
+
+    public int getDefaultHealth();
+
     public void damage(Attack attack);
 
     public void heal(int amount);
