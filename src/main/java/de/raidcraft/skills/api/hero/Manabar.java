@@ -9,9 +9,9 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Manabar extends AbstractResourceBar {
 
 
-    public Manabar(Hero hero, String name, ConfigurationSection config) {
+    public Manabar(Hero hero, ResourceType type, ConfigurationSection config) {
 
-        super(hero, name, config);
+        super(hero, type, config);
     }
 
     @Override

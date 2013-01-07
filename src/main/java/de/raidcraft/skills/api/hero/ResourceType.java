@@ -11,7 +11,7 @@ public enum ResourceType {
         @Override
         public ResourceBar create(Hero hero, ConfigurationSection config) {
 
-            return new Manabar(hero, getName(), config);
+            return new Manabar(hero, this, config);
         }
     },
 
@@ -19,7 +19,7 @@ public enum ResourceType {
         @Override
         public ResourceBar create(Hero hero, ConfigurationSection config) {
 
-            return new Ragebar(hero, getName(), config);
+            return new Ragebar(hero, this, config);
         }
     },
 
@@ -27,7 +27,7 @@ public enum ResourceType {
         @Override
         public ResourceBar create(Hero hero, ConfigurationSection config) {
 
-            return new Energybar(hero, getName(), config);
+            return new Energybar(hero, this, config);
         }
     },
 
@@ -35,7 +35,7 @@ public enum ResourceType {
         @Override
         public ResourceBar create(Hero hero, ConfigurationSection config) {
 
-            return new Nullbar(hero, getName(), config);
+            return new Nullbar(hero, this, config);
         }
     };
 
@@ -48,7 +48,7 @@ public enum ResourceType {
 
     public String getName() {
 
-        return name();
+        return name;
     }
 
     public abstract ResourceBar create(Hero hero, ConfigurationSection config);

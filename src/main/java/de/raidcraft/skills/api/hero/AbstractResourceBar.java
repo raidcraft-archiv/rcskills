@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 public abstract class AbstractResourceBar implements ResourceBar {
 
     private final Hero hero;
-    private final String name;
+    private final ResourceType type;
     private final ConfigurationSection config;
     private BukkitTask task;
     private long regenInterval = 20;
@@ -21,10 +21,10 @@ public abstract class AbstractResourceBar implements ResourceBar {
     private int current;
     private boolean enabled = true;
 
-    public AbstractResourceBar(Hero hero, String name, ConfigurationSection config) {
+    public AbstractResourceBar(Hero hero, ResourceType type, ConfigurationSection config) {
 
         this.hero = hero;
-        this.name = name;
+        this.type = type;
         this.config = config;
         // lets start the task
         startTask();
@@ -54,9 +54,15 @@ public abstract class AbstractResourceBar implements ResourceBar {
     }
 
     @Override
+    public ResourceType getType() {
+
+        return type;
+    }
+
+    @Override
     public String getName() {
 
-        return name;
+        return type.getName();
     }
 
     @Override

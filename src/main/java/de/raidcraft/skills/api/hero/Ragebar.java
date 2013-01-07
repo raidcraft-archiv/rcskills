@@ -9,9 +9,9 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Ragebar extends AbstractResourceBar {
 
 
-    public Ragebar(Hero hero, String name, ConfigurationSection config) {
+    public Ragebar(Hero hero, ResourceType type, ConfigurationSection config) {
 
-        super(hero, name, config);
+        super(hero, type, config);
     }
 
     @Override

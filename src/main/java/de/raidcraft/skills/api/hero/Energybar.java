@@ -9,9 +9,9 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Energybar extends AbstractResourceBar {
 
 
-    public Energybar(Hero hero, String name, ConfigurationSection config) {
+    public Energybar(Hero hero, ResourceType type, ConfigurationSection config) {
 
-        super(hero, name, config);
+        super(hero, type, config);
     }
 
     @Override

@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
  */
 public interface ResourceBar {
 
+    public ResourceType getType();
+
     public Hero getHero();
 
     public String getName();

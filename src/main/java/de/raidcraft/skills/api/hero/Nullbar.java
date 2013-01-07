@@ -8,9 +8,9 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class Nullbar extends AbstractResourceBar {
 
-    public Nullbar(Hero hero, String name, ConfigurationSection config) {
+    public Nullbar(Hero hero, ResourceType type, ConfigurationSection config) {
 
-        super(hero, name, config);
+        super(hero, type, config);
     }
 
     @Override
