@@ -16,18 +16,17 @@ public final class ItemUtil {
 
     public static boolean isWeapon(Material material) {
 
-        return WeaponType.fromMaterial(material) != null;
+        return material != null && WeaponType.fromMaterial(material) != null;
     }
 
     public static boolean isShield(Material material) {
 
-        ArmorType slot = ArmorType.fromMaterial(material);
-        return slot == ArmorType.SHIELD;
+        return material != null && ArmorType.fromMaterial(material) == ArmorType.SHIELD;
     }
 
     public static boolean isArmor(Material material) {
 
-        return ArmorType.fromMaterial(material) != null;
+        return material != null && ArmorType.fromMaterial(material) != null;
     }
 
     public static int firstEmpty(ItemStack... inventory) {
