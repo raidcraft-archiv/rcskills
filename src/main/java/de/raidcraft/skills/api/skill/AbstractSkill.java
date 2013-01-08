@@ -20,9 +20,11 @@ import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -180,6 +182,11 @@ public abstract class AbstractSkill implements Skill {
     protected final void removePermission(String node) {
 
         RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), node);
+    }
+
+    protected BlockFace getFacing() {
+
+        return HeroUtil.yawToFace(getHero().getPlayer().getLocation().getYaw());
     }
 
     @Override
