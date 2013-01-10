@@ -9,7 +9,11 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class doesn't actually need to exist, but it feels wrong to have this

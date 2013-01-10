@@ -1,7 +1,12 @@
 package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 
 /**
  * @author Silthus
