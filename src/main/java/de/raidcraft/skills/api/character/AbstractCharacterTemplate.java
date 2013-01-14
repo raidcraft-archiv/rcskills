@@ -139,7 +139,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
 
-        if (effects.containsKey(eClass)) {
+        if (hasEffect(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);
             // lets check priorities
             if (existingEffect.getPriority() < 0) {
