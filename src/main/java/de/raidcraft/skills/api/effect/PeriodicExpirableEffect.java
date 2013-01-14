@@ -56,6 +56,11 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
         return remainingTicks;
     }
 
+    public int getTickCount() {
+
+        return (int) (getDuration() / getInterval());
+    }
+
     @Override
     public void startTask() {
 
