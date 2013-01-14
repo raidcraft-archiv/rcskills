@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -11,18 +12,23 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 /**
  * @author Silthus
  */
-public class CastAction extends AbstractAction<Hero> {
+public class SkillAction extends AbstractAction<Hero> {
 
     private final Skill skill;
     private final CommandContext args;
     private boolean delayed = false;
 
-    public CastAction(Skill skill, CommandContext args) {
+    public SkillAction(Skill skill, CommandContext args) {
 
         super(skill.getHero());
         this.skill = skill;
         this.args = args;
         this.delayed = skill.getTotalCastTime() > 0;
+    }
+
+    public SkillAction(Skill skill) throws CommandException {
+
+        this(skill, new CommandContext(""));
     }
 
     public Skill getSkill() {

@@ -5,7 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.combat.action.CastAction;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -59,7 +59,7 @@ public class CastCommand {
         }
 
         try {
-            new CastAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
+            new SkillAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
         } catch (CombatException e) {
             String msg = e.getMessage();
             if (e.getType() == CombatException.Type.ON_COOLDOWN) {
