@@ -9,12 +9,14 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
@@ -27,7 +29,8 @@ import java.util.Map;
 public final class CombatManager implements Listener {
 
     private final SkillsPlugin plugin;
-    private final Map<Integer, SourcedRangeCallback> callbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback<CharacterTemplate>> entityHitCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback<Location>> locationCallbacks = new HashMap<>();
 
     protected CombatManager(SkillsPlugin plugin) {
 
@@ -40,19 +43,35 @@ public final class CombatManager implements Listener {
         // dont clear the callbacks let them run out quietly to not interrupt combat
     }
 
-    public void queueCallback(final SourcedRangeCallback sourcedCallback) {
+    public void queueEntityCallback(final SourcedRangeCallback<CharacterTemplate> sourcedCallback) {
 
         // remove the callback from the queue after the configured time
         sourcedCallback.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
 
-                callbacks.remove(sourcedCallback.getTaskId());
+                entityHitCallbacks.remove(sourcedCallback.getTaskId());
             }
         }, plugin.getCommonConfig().callback_purge_time));
-        callbacks.put(sourcedCallback.getTaskId(), sourcedCallback);
+        entityHitCallbacks.put(sourcedCallback.getTaskId(), sourcedCallback);
         if (sourcedCallback.getSource() instanceof Hero) {
-            ((Hero) sourcedCallback.getSource()).debug("Queued Range Callback - " + sourcedCallback.getTaskId());
+            ((Hero) sourcedCallback.getSource()).debug("Queued Range Entity Callback - " + sourcedCallback.getTaskId());
+        }
+    }
+
+    public void queueLocationCallback(final SourcedRangeCallback<Location> sourcedCallback) {
+
+        // remove the callback from the queue after the configured time
+        sourcedCallback.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                entityHitCallbacks.remove(sourcedCallback.getTaskId());
+            }
+        }, plugin.getCommonConfig().callback_purge_time));
+        locationCallbacks.put(sourcedCallback.getTaskId(), sourcedCallback);
+        if (sourcedCallback.getSource() instanceof Hero) {
+            ((Hero) sourcedCallback.getSource()).debug("Queued Range Location Callback - " + sourcedCallback.getTaskId());
         }
     }
 
@@ -97,6 +116,28 @@ public final class CombatManager implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void projectileHitEvent(ProjectileHitEvent event) {
+
+        CharacterTemplate source = plugin.getCharacterManager().getCharacter(event.getEntity().getShooter());
+        for (SourcedRangeCallback<Location> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
+            if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
+                try {
+                    // the shooter is our source so lets call back and remove
+                    sourcedCallback.getCallback().run(event.getEntity().getLocation());
+                    locationCallbacks.remove(sourcedCallback.getTaskId());
+                    if (sourcedCallback.getSource() instanceof Hero) {
+                        ((Hero) sourcedCallback.getSource()).debug("Called Range Location Callback - " + sourcedCallback.getTaskId());
+                    }
+                } catch (CombatException e) {
+                    if (sourcedCallback.getSource() instanceof Hero) {
+                        ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
@@ -110,16 +151,16 @@ public final class CombatManager implements Listener {
             CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
             CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             // and go thru all registered callbacks
-            for (SourcedRangeCallback sourcedCallback : new ArrayList<>(callbacks.values())) {
+            for (SourcedRangeCallback<CharacterTemplate> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
                 if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
                     // lets set the damage of the event to 0 because it is handled by us
                     event.setDamage(0);
                     try {
                         // the shooter is our source so lets call back and remove
                         sourcedCallback.getCallback().run(target);
-                        callbacks.remove(sourcedCallback.getTaskId());
+                        entityHitCallbacks.remove(sourcedCallback.getTaskId());
                         if (sourcedCallback.getSource() instanceof Hero) {
-                            ((Hero) sourcedCallback.getSource()).debug("Called Range Callback - " + sourcedCallback.getTaskId());
+                            ((Hero) sourcedCallback.getSource()).debug("Called Range Entity Callback - " + sourcedCallback.getTaskId());
                         }
                     } catch (CombatException e) {
                         if (sourcedCallback.getSource() instanceof Hero) {

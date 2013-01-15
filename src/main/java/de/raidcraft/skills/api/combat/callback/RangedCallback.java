@@ -5,6 +5,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 /**
  * @author Silthus
  */
-public interface RangedCallback extends Callback<CharacterTemplate> {
+public interface RangedCallback extends ProjectileCallback<CharacterTemplate> {
 
 }

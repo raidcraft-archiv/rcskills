@@ -62,10 +62,10 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             if (getSource() instanceof Hero) {
-                TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this, cause));
+                TriggerManager.callTrigger(new AttackTrigger(getSource(), this, cause));
             }
             if (getTarget() instanceof Hero) {
-                TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, cause));
+                TriggerManager.callTrigger(new DamageTrigger(getTarget(), this, cause));
             }
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);

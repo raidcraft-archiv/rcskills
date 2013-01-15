@@ -6,14 +6,14 @@ import org.bukkit.entity.Projectile;
 /**
  * @author Silthus
  */
-public class SourcedRangeCallback {
+public class SourcedRangeCallback<T> {
 
     private final CharacterTemplate source;
     private final Projectile projectile;
-    private final RangedCallback callback;
+    private final ProjectileCallback<T> callback;
     private int taskId = -1;
 
-    public SourcedRangeCallback(CharacterTemplate source, Projectile projectile, RangedCallback callback) {
+    public SourcedRangeCallback(CharacterTemplate source, Projectile projectile, ProjectileCallback<T> callback) {
 
         this.source = source;
         this.projectile = projectile;
@@ -40,7 +40,7 @@ public class SourcedRangeCallback {
         return projectile;
     }
 
-    public RangedCallback getCallback() {
+    public ProjectileCallback<T> getCallback() {
 
         return callback;
     }
