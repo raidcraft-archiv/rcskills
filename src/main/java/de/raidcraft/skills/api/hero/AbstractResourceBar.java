@@ -26,6 +26,9 @@ public abstract class AbstractResourceBar implements ResourceBar {
         this.hero = hero;
         this.type = type;
         this.config = config;
+        if (config == null) {
+            return;
+        }
         // lets get some default values from the config
         regenPercent = config.getDouble("regen-base", 0.03);
         regenInterval = config.getInt("regen-interval", 20);
@@ -52,7 +55,9 @@ public abstract class AbstractResourceBar implements ResourceBar {
     @Override
     public void destroy() {
 
-        task.cancel();
+        if (task != null) {
+            task.cancel();
+        }
     }
 
     @Override

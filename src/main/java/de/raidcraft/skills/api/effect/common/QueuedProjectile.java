@@ -26,6 +26,7 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
     public QueuedProjectile(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
+        if (duration == 0) duration = 20 * 10;
     }
 
     public void addCallback(LocationCallback callback) {
@@ -38,7 +39,9 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
 
         if (callback != null) {
             callback.run(trigger.getEvent().getEntity().getLocation());
+            info("Fernkampf Angriff \"" + getSource() + "\" wurde ausgeführt.");
         }
+        trigger.getEvent().getEntity().remove();
         attacked = true;
         remove();
     }
