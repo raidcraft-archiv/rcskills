@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -13,6 +14,10 @@ import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 /**
  * @author Silthus
  */
+@EffectInformation(
+        name = "QueuedProjectile",
+        description = "Löst den Effekt aus wenn das Projektil den Boden trifft."
+)
 public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggered {
 
     private LocationCallback callback;
