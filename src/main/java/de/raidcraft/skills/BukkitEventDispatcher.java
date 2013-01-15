@@ -15,6 +15,7 @@ import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.InventoryOpenTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
@@ -26,6 +27,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -159,6 +161,14 @@ public class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callTrigger(
                 new CombatTrigger(event.getHero(), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onProjectileHit(ProjectileHitEvent event) {
+
+        TriggerManager.callTrigger(
+                new ProjectileHitTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
     }
 }
