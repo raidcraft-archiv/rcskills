@@ -46,7 +46,6 @@ public final class VirtualProfession extends AbstractProfession {
                         this.skills.add(skillManager.getSkill(getHero(), this, tHeroSkill.getName()));
                     } catch (UnknownSkillException e) {
                         getHero().sendMessage(ChatColor.RED + e.getMessage());
-                        e.printStackTrace();
                     }
                 }
             }

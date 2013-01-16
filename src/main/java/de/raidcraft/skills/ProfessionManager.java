@@ -57,7 +57,6 @@ public final class ProfessionManager {
         try {
             return getProfession(hero, VIRTUAL_PROFESSION);
         } catch (UnknownSkillException | UnknownProfessionException e) {
-            e.printStackTrace();
             plugin.getLogger().warning(e.getMessage());
         }
         return null;
@@ -88,7 +87,6 @@ public final class ProfessionManager {
                     professions.add(getProfession(hero, prof));
                 } catch (UnknownSkillException | UnknownProfessionException e) {
                     plugin.getLogger().warning(e.getMessage());
-                    e.printStackTrace();
                 }
             }
         }

@@ -89,7 +89,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             getSkillManager().registerClass(PermissionSkill.class);
         } catch (UnknownSkillException e) {
             getLogger().warning(e.getMessage());
-            e.printStackTrace();
         }
     }
 

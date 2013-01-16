@@ -56,7 +56,6 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
                 skills.add(profSkill);
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 getPlugin().getLogger().warning(e.getMessage());
-                e.printStackTrace();
             }
         }
         return skills;

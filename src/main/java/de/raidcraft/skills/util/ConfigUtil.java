@@ -100,7 +100,6 @@ public final class ConfigUtil {
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
-                e.printStackTrace();
             }
         }
 
@@ -113,7 +112,6 @@ public final class ConfigUtil {
                 unlockable.addRequirement(new ProfessionLevelRequirement(profession.getLevel(), level));
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
-                e.printStackTrace();
             }
         }
     }

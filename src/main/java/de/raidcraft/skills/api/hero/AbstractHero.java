@@ -119,7 +119,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
-                e.printStackTrace();
             }
         }
     }

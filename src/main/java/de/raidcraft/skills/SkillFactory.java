@@ -15,7 +15,6 @@ import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,6 +106,10 @@ public final class SkillFactory {
             config = skillConfigs.get(profession);
         }
 
+        if (!config.isEnabled()) {
+            throw new UnknownSkillException("The skill " + skillName + " is not enabled!");
+        }
+
         // also save the profession to generate a db entry if none exists
         profession.save();
 
@@ -121,9 +124,11 @@ public final class SkillFactory {
             }
             skill.load(config.getData());
             return skill;
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (Throwable e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
+            // lets disable the skill so the console wont be spammed
+            config.setEnabled(false);
         }
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }

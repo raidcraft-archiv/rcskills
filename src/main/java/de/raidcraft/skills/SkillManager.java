@@ -60,7 +60,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
                 registerClass(clazz);
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
-                e.printStackTrace();
             }
         }
     }
@@ -104,7 +103,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
         } catch (UnknownSkillException e) {
             plugin.getLogger().warning(e.getMessage());
-            e.printStackTrace();
         }
     }
 
