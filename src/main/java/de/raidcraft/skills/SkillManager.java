@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -148,6 +149,16 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         List<Skill> skills = new ArrayList<>();
         for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
             skills.addAll(profession.getSkills());
+        }
+        // also add a virtual skill of all
+        for (String skillName : skillFactories.keySet()) {
+            try {
+                Skill skill = getSkill(hero, plugin.getProfessionManager().getVirtualProfession(hero), skillName);
+                skills.add(skill);
+            } catch (UnknownSkillException e) {
+                hero.sendMessage(ChatColor.RED + e.getMessage());
+                plugin.getLogger().warning(e.getMessage());
+            }
         }
         return skills;
     }
