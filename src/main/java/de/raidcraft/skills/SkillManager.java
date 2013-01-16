@@ -150,6 +150,12 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
             skills.addAll(profession.getSkills());
         }
+        return skills;
+    }
+
+    public Collection<? extends Skill> getAllVirtualSkills(Hero hero) {
+
+        List<Skill> skills = new ArrayList<>();
         // also add a virtual skill of all
         for (String skillName : skillFactories.keySet()) {
             try {
