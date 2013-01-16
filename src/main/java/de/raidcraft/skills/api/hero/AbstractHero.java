@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Bukkit;
@@ -73,6 +74,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
         this.selectedProfession = loadSelectedProfession(data);
+        // level needs to be attached fast to avoid npes when loading the skills
+        attachLevel(new HeroLevel(this, data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
         loadSkills();

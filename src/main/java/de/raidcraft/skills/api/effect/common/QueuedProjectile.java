@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
@@ -21,6 +22,7 @@ import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggered {
 
     private LocationCallback callback;
+    private ProjectileType type;
     private boolean attacked = false;
 
     public QueuedProjectile(Skill source, CharacterTemplate target, EffectData data) {
@@ -34,9 +36,18 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
         this.callback = callback;
     }
 
+    public void addCallback(LocationCallback callback, ProjectileType type) {
+
+        addCallback(callback);
+        this.type = type;
+    }
+
     @TriggerHandler
     public void onProjectileHit(ProjectileHitTrigger trigger) throws CombatException {
 
+        if (type != null && type != ProjectileType.valueOf(trigger.getEvent().getEntity())) {
+            return;
+        }
         if (callback != null) {
             callback.run(trigger.getEvent().getEntity().getLocation());
             info("Fernkampf Angriff \"" + getSource() + "\" wurde ausgeführt.");

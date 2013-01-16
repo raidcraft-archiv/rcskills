@@ -15,7 +15,6 @@ public class SimpleHero extends AbstractHero {
     public SimpleHero(HeroData data) {
 
         super(data);
-        attachLevel(new HeroLevel(this, data.getLevelData()));
         this.userInterface = new BukkitUserInterface(this);
     }
 

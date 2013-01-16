@@ -128,7 +128,7 @@ public final class SkillFactory {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
             // lets disable the skill so the console wont be spammed
-            config.setEnabled(false);
+            if (plugin.getCommonConfig().disable_error_skills) config.setEnabled(false);
         }
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }

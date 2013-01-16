@@ -179,6 +179,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
 
+        @Setting("disable-error-skills")
+        public boolean disable_error_skills = false;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
         @Setting("defaults.effect-priority")
