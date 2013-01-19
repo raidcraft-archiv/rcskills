@@ -6,10 +6,13 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
+import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -170,6 +173,30 @@ public abstract class AbstractSkill implements Skill {
     protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes());
+        attack.run();
+        return attack;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final RangedAttack rangedAttack(ProjectileType type) throws CombatException {
+
+        return rangedAttack(type, getTotalDamage(), null);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final RangedAttack rangedAttack(ProjectileType type, int damage) throws CombatException {
+
+        return rangedAttack(type, damage, null);
+    }
+
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, ProjectileCallback<T> callback) throws CombatException {
+
+        return rangedAttack(type, getTotalDamage(), callback);
+    }
+
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, ProjectileCallback<T> callback) throws CombatException {
+
+        RangedAttack<T> attack = new RangedAttack<>(getHero(), type, damage, callback);
         attack.run();
         return attack;
     }

@@ -39,6 +39,11 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
     public void addCallback(LocationCallback callback, ProjectileType type) {
 
         addCallback(callback);
+        setType(type);
+    }
+
+    public void setType(ProjectileType type) {
+
         this.type = type;
     }
 

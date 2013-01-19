@@ -37,7 +37,7 @@ public enum ProjectileType {
         return projectile;
     }
 
-    public static ProjectileType matchProjectile(String name) {
+    public static ProjectileType fromName(String name) {
 
         for (ProjectileType type : values()) {
             if (type.name().equalsIgnoreCase(name) || type.getClazz().getSimpleName().equalsIgnoreCase(name)) {

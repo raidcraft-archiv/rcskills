@@ -22,16 +22,26 @@ public class RangedAttack<T> extends AbstractAttack<CharacterTemplate, Location>
     private ProjectileCallback<T> callback;
     private Projectile projectile;
 
-    public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage) {
 
-        super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), 0,
+        super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), damage,
                 (projectileType == ProjectileType.FIREBALL ? EffectType.MAGICAL : EffectType.PHYSICAL));
         this.projectileType = projectileType;
     }
 
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
+
+        this(source, projectileType, 0);
+    }
+
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, ProjectileCallback<T> callback) {
 
-        this(source, projectileType);
+        this(source, projectileType, 0, callback);
+    }
+
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage, ProjectileCallback<T> callback) {
+
+        this(source, projectileType, damage);
         this.callback = callback;
     }
 
@@ -50,23 +60,25 @@ public class RangedAttack<T> extends AbstractAttack<CharacterTemplate, Location>
         return projectile;
     }
 
+    public ProjectileCallback<T> getCallback() {
+
+        return callback;
+    }
+
     @Override
+    @SuppressWarnings("unchecked")
     public void run() throws CombatException {
 
         projectile = projectileType.spawn(getSource());
         projectile.setBounce(false);
         projectile.setFireTicks(0);
         // queue the ranged callback to be called if the projectile hits
-        if (callback != null) {
-            if (callback instanceof RangedCallback) {
-                SourcedRangeCallback<CharacterTemplate> callback =
-                        new SourcedRangeCallback<>(getSource(), projectile, (RangedCallback) this.callback);
-                RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().queueEntityCallback(callback);
-            } else if (callback instanceof LocationCallback) {
-                SourcedRangeCallback<Location> callback =
-                        new SourcedRangeCallback<>(getSource(), projectile, (LocationCallback) this.callback);
-                RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().queueLocationCallback(callback);
-            }
+        if (callback instanceof RangedCallback) {
+            SourcedRangeCallback<CharacterTemplate> callback = (SourcedRangeCallback<CharacterTemplate>) new SourcedRangeCallback<>(this);
+            RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().queueEntityCallback(callback);
+        } else if (callback instanceof LocationCallback) {
+            SourcedRangeCallback<Location> callback = (SourcedRangeCallback<Location>) new SourcedRangeCallback<>(this);
+            RaidCraft.getComponent(SkillsPlugin.class).getCombatManager().queueLocationCallback(callback);
         }
     }
 }

@@ -61,6 +61,9 @@ public final class CombatManager implements Listener {
 
     public void queueLocationCallback(final SourcedRangeCallback<Location> sourcedCallback) {
 
+        if (sourcedCallback.getCallback() == null) {
+            return;
+        }
         // remove the callback from the queue after the configured time
         sourcedCallback.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
@@ -119,20 +122,21 @@ public final class CombatManager implements Listener {
     public void projectileHitEvent(ProjectileHitEvent event) {
 
         CharacterTemplate source = plugin.getCharacterManager().getCharacter(event.getEntity().getShooter());
-        for (SourcedRangeCallback<Location> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
-            if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
-                try {
-                    // the shooter is our source so lets call back and remove
-                    sourcedCallback.getCallback().run(event.getEntity().getLocation());
+        try {
+            // lets add a combat effect first
+            source.addEffect(source, Combat.class);
+            // iterate over our queued callbacks
+            for (SourcedRangeCallback<Location> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
+                if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
                     locationCallbacks.remove(sourcedCallback.getTaskId());
                     if (sourcedCallback.getSource() instanceof Hero) {
                         ((Hero) sourcedCallback.getSource()).debug("Called Range Location Callback - " + sourcedCallback.getTaskId());
                     }
-                } catch (CombatException e) {
-                    if (sourcedCallback.getSource() instanceof Hero) {
-                        ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
-                    }
                 }
+            }
+        } catch (CombatException e) {
+            if (source instanceof Hero) {
+                ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
             }
         }
     }
@@ -156,8 +160,12 @@ public final class CombatManager implements Listener {
                     // lets set the damage of the event to 0 because it is handled by us
                     event.setDamage(0);
                     try {
-                        // the shooter is our source so lets call back and remove
-                        sourcedCallback.getCallback().run(target);
+                        // lets damage the target with the ranged attack
+                        target.damage(sourcedCallback.getAttack());
+                        if (sourcedCallback.getCallback() != null) {
+                            // the shooter is our source so lets call back and remove
+                            sourcedCallback.getCallback().run(target);
+                        }
                         entityHitCallbacks.remove(sourcedCallback.getTaskId());
                         if (sourcedCallback.getSource() instanceof Hero) {
                             ((Hero) sourcedCallback.getSource()).debug("Called Range Entity Callback - " + sourcedCallback.getTaskId());

@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.callback;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.RangedAttack;
 import org.bukkit.entity.Projectile;
 
 /**
@@ -8,16 +9,12 @@ import org.bukkit.entity.Projectile;
  */
 public class SourcedRangeCallback<T> {
 
-    private final CharacterTemplate source;
-    private final Projectile projectile;
-    private final ProjectileCallback<T> callback;
+    private final RangedAttack<T> attack;
     private int taskId = -1;
 
-    public SourcedRangeCallback(CharacterTemplate source, Projectile projectile, ProjectileCallback<T> callback) {
+    public SourcedRangeCallback(RangedAttack<T> attack) {
 
-        this.source = source;
-        this.projectile = projectile;
-        this.callback = callback;
+        this.attack = attack;
     }
 
     public int getTaskId() {
@@ -32,16 +29,26 @@ public class SourcedRangeCallback<T> {
 
     public CharacterTemplate getSource() {
 
-        return source;
+        return attack.getSource();
     }
 
     public Projectile getProjectile() {
 
-        return projectile;
+        return attack.getProjectile();
     }
 
     public ProjectileCallback<T> getCallback() {
 
-        return callback;
+        return attack.getCallback();
+    }
+
+    public RangedAttack<T> getAttack() {
+
+        return attack;
+    }
+
+    public int getDamage() {
+
+        return attack.getDamage();
     }
 }
