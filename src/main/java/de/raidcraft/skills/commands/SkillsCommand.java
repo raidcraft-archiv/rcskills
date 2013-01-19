@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -56,12 +57,17 @@ public class SkillsCommand {
             skills.addAll(hero.getSelectedProfession().getSkills());
         } else if (args.hasFlag('a')) {
             skills.addAll(plugin.getSkillManager().getAllSkills(hero));
+            if (args.hasFlag('v')) skills.addAll(plugin.getSkillManager().getAllVirtualSkills(hero));
+        } else if (args.hasFlag('v')) {
+            // only add virtual skills we have
+            for (Skill skill : hero.getSkills()) {
+                if (skill.getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)) {
+                    skills.add(skill);
+                }
+            }
         } else {
             // lets get the skills the sender wants to have displayed
             skills.addAll(hero.getSkills());
-        }
-        if (args.hasFlag('v')) {
-            skills.addAll(plugin.getSkillManager().getAllVirtualSkills(hero));
         }
         // lets remove hidden skills from the list
         if (!args.hasFlag('h')) {
