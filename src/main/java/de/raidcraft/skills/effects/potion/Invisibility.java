@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,7 +46,7 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
         removeOnDamage = data.getBoolean("remove-on-damage", true);
     }
 
-    @TriggerHandler
+    @TriggerHandler(priority = TriggerPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (removeOnDamage) {

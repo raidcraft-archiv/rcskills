@@ -32,10 +32,14 @@ public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplat
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             if (getSource() instanceof Hero) {
-                TriggerManager.callTrigger(new AttackTrigger((Hero) getSource(), this, EntityDamageEvent.DamageCause.CUSTOM));
+                AttackTrigger trigger = new AttackTrigger((Hero) getSource(), this, EntityDamageEvent.DamageCause.CUSTOM);
+                TriggerManager.callTrigger(trigger);
+                if (trigger.isCancelled()) setCancelled(true);
             }
             if (getTarget() instanceof Hero) {
-                TriggerManager.callTrigger(new DamageTrigger(getTarget(), this, EntityDamageEvent.DamageCause.CUSTOM));
+                DamageTrigger trigger = new DamageTrigger(getTarget(), this, EntityDamageEvent.DamageCause.CUSTOM);
+                TriggerManager.callTrigger(trigger);
+                if (trigger.isCancelled()) setCancelled(true);
             }
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);

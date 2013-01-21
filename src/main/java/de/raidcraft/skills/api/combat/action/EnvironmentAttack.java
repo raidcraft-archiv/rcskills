@@ -35,7 +35,9 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
 
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         if (getTarget() instanceof Hero) {
-            TriggerManager.callTrigger(new DamageTrigger((Hero) getTarget(), this, cause));
+            DamageTrigger trigger = new DamageTrigger(getTarget(), this, cause);
+            TriggerManager.callTrigger(trigger);
+            if (trigger.isCancelled()) setCancelled(true);
         }
         if (isCancelled()) {
             throw new CombatException(CombatException.Type.CANCELLED);
