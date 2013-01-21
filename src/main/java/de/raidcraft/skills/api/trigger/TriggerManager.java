@@ -143,7 +143,7 @@ public class TriggerManager {
             if (Skill.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredSkillTrigger(listener, executor, annotation));
             } else if (Effect.class.isAssignableFrom(listener.getClass())) {
-                eventSet.add(new RegisteredEffectTrigger(listener, executor));
+                eventSet.add(new RegisteredEffectTrigger(listener, executor, annotation));
             }
         }
         return ret;

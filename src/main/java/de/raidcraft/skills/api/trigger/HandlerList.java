@@ -2,8 +2,10 @@ package de.raidcraft.skills.api.trigger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map.Entry;
 
 /**
  * A list of event handlers, stored per-event. Based on lahwran's fevents.
@@ -20,7 +22,7 @@ public class HandlerList {
      * unregister() and are automatically baked to the handlers array any
      * time they have changed.
      */
-    private final ArrayList<RegisteredTrigger> handlerslots;
+    private final EnumMap<TriggerPriority, ArrayList<RegisteredTrigger>> handlerslots;
 
     /**
      * List of all HandlerLists which have been created, for use in bakeAll()
@@ -47,9 +49,11 @@ public class HandlerList {
     public static void unregisterAll() {
 
         synchronized (allLists) {
-            for (HandlerList handlerList : allLists) {
-                handlerList.handlerslots.clear();
-                handlerList.handlers = null;
+            for (HandlerList h : allLists) {
+                for (List<RegisteredTrigger> list : h.handlerslots.values()) {
+                    list.clear();
+                }
+                h.handlers = null;
             }
         }
     }
@@ -62,8 +66,8 @@ public class HandlerList {
     public static void unregisterAll(Triggered listener) {
 
         synchronized (allLists) {
-            for (HandlerList handlerList : allLists) {
-                handlerList.unregister(listener);
+            for (HandlerList h : allLists) {
+                h.unregister(listener);
             }
         }
     }
@@ -74,7 +78,10 @@ public class HandlerList {
      */
     public HandlerList() {
 
-        handlerslots = new ArrayList<>();
+        handlerslots = new EnumMap<>(TriggerPriority.class);
+        for (TriggerPriority o : TriggerPriority.values()) {
+            handlerslots.put(o, new ArrayList<RegisteredTrigger>());
+        }
         synchronized (allLists) {
             allLists.add(this);
         }
@@ -87,8 +94,10 @@ public class HandlerList {
      */
     public synchronized void register(RegisteredTrigger listener) {
 
+        if (handlerslots.get(listener.getPriority()).contains(listener))
+            throw new IllegalStateException("This listener is already registered to priority " + listener.getPriority().toString());
         handlers = null;
-        handlerslots.add(listener);
+        handlerslots.get(listener.getPriority()).add(listener);
     }
 
     /**
@@ -110,8 +119,9 @@ public class HandlerList {
      */
     public synchronized void unregister(RegisteredTrigger listener) {
 
-        handlerslots.remove(listener);
-        handlers = null;
+        if (handlerslots.get(listener.getPriority()).remove(listener)) {
+            handlers = null;
+        }
     }
 
     /**
@@ -122,10 +132,12 @@ public class HandlerList {
     public synchronized void unregister(Triggered listener) {
 
         boolean changed = false;
-        for (ListIterator<RegisteredTrigger> i = handlerslots.listIterator(); i.hasNext(); ) {
-            if (i.next().getListener().equals(listener)) {
-                i.remove();
-                changed = true;
+        for (List<RegisteredTrigger> list : handlerslots.values()) {
+            for (ListIterator<RegisteredTrigger> i = list.listIterator(); i.hasNext(); ) {
+                if (i.next().getListener().equals(listener)) {
+                    i.remove();
+                    changed = true;
+                }
             }
         }
         if (changed) handlers = null;
@@ -138,7 +150,9 @@ public class HandlerList {
 
         if (handlers != null) return; // don't re-bake when still valid
         List<RegisteredTrigger> entries = new ArrayList<>();
-        entries.addAll(handlerslots);
+        for (Entry<TriggerPriority, ArrayList<RegisteredTrigger>> entry : handlerslots.entrySet()) {
+            entries.addAll(entry.getValue());
+        }
         handlers = entries.toArray(new RegisteredTrigger[entries.size()]);
     }
 

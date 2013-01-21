@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TriggerHandler {
 
+    public TriggerPriority priority() default TriggerPriority.NORMAL;
+
     public boolean checkUsage() default false;
 
     public boolean substractUsageCosts() default false;

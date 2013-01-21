@@ -9,11 +9,13 @@ public abstract class RegisteredTrigger {
 
     protected final Triggered listener;
     protected final TriggerExecutor executor;
+    protected final TriggerHandler info;
 
-    public RegisteredTrigger(final Triggered listener, final TriggerExecutor executor) {
+    public RegisteredTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
         this.listener = listener;
         this.executor = executor;
+        this.info = info;
     }
 
     /**
@@ -24,6 +26,11 @@ public abstract class RegisteredTrigger {
     public Triggered getListener() {
 
         return listener;
+    }
+
+    public TriggerPriority getPriority() {
+
+        return info.priority();
     }
 
     /**

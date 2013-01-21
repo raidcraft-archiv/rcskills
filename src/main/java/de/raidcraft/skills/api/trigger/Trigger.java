@@ -27,6 +27,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 public abstract class Trigger {
 
     private final CharacterTemplate source;
+    private String name;
 
     public Trigger(CharacterTemplate source) {
 
@@ -36,6 +37,17 @@ public abstract class Trigger {
     public CharacterTemplate getSource() {
 
         return source;
+    }
+
+    /**
+     * @return Name of this trigger
+     */
+    public String getTriggerName() {
+
+        if (name == null) {
+            name = getClass().getSimpleName();
+        }
+        return name;
     }
 
     /**

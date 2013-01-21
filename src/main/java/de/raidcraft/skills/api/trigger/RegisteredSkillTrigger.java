@@ -18,7 +18,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
 
     public RegisteredSkillTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
-        super(listener, executor);
+        super(listener, executor, info);
         this.skill = (listener instanceof Skill ? (Skill) listener : null);
         this.info = info;
     }

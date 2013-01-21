@@ -13,9 +13,9 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
 
     private final Effect effect;
 
-    public RegisteredEffectTrigger(final Triggered listener, final TriggerExecutor executor) {
+    public RegisteredEffectTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
-        super(listener, executor);
+        super(listener, executor, info);
         this.effect = (listener instanceof Effect ? (Effect) listener : null);
     }
 
