@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
@@ -28,6 +29,7 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
 
     private boolean slow = false;
     private boolean removeOnDamage = true;
+    private boolean removeOnAttack = true;
     private final PotionEffect invisibility;
     private final PotionEffect slowEffect;
 
@@ -44,12 +46,21 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
 
         slow = data.getBoolean("slow", false);
         removeOnDamage = data.getBoolean("remove-on-damage", true);
+        removeOnAttack = data.getBoolean("remove-on-attack", true);
     }
 
-    @TriggerHandler(priority = TriggerPriority.MONITOR, ignoreCancelled = true)
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (removeOnDamage) {
+            remove();
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        if (removeOnAttack) {
             remove();
         }
     }
