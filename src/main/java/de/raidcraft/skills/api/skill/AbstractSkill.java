@@ -66,6 +66,12 @@ public abstract class AbstractSkill implements Skill {
         if (this instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
         }
+        if (getHero().isInCombat() && !canUseInCombat()) {
+            throw new CombatException(CombatException.Type.NO_COMBAT);
+        }
+        if (!getHero().isInCombat() && !canUseOutOfCombat()) {
+            throw new CombatException(CombatException.Type.COMBAT_ONLY);
+        }
         // check common effects here
         if (this.isOfType(EffectType.MAGICAL) && getHero().hasEffect(Silence.class)) {
             throw new CombatException(CombatException.Type.SILENCED);
@@ -397,6 +403,18 @@ public abstract class AbstractSkill implements Skill {
     public final void setEnabled(boolean enabled) {
 
         properties.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean canUseInCombat() {
+
+        return properties.canUseInCombat();
+    }
+
+    @Override
+    public boolean canUseOutOfCombat() {
+
+        return properties.canUseOutOfCombat();
     }
 
     @Override

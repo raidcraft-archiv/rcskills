@@ -79,6 +79,18 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public boolean canUseInCombat() {
+
+        return getOverrideBool("use-in-combat", true);
+    }
+
+    @Override
+    public boolean canUseOutOfCombat() {
+
+        return getOverrideBool("use-out-of-combat", true);
+    }
+
+    @Override
     public ItemStack[] getReagents() {
 
         ConfigurationSection section = getOverrideSection("reagents");

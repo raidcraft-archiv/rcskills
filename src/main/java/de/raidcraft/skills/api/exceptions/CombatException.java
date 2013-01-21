@@ -18,6 +18,7 @@ public class CombatException extends RaidCraftException {
         LOW_STAMINA("Zu wenig Ausdauer."),
         MISSING_REAGENT("Fehlendes Reagenz."),
         NO_COMBAT("Kann nicht im Kampf verwendet werden."),
+        COMBAT_ONLY("Kann nur im Kampf verwendet werden."),
         ON_GLOBAL_COOLDOWN("Globaler Cooldown."),
         ON_COOLDOWN("Abklingzeit nicht vorbei."),
         IMMUNE("Ziel ist immun."),

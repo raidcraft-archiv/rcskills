@@ -28,6 +28,10 @@ public interface SkillProperties {
 
     public void setEnabled(boolean enabled);
 
+    public boolean canUseInCombat();
+
+    public boolean canUseOutOfCombat();
+
     public ConfigurationSection getData();
 
     public SkillInformation getInformation();

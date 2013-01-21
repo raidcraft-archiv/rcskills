@@ -305,6 +305,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public boolean isBehind(CharacterTemplate target) {
+
+        // we asume that if the target cannot see us we are behind it
+        return target.getEntity().hasLineOfSight(getEntity());
+    }
+
+    @Override
     public boolean isInCombat() {
 
         return inCombat;

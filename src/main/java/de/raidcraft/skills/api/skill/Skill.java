@@ -32,6 +32,10 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public void setEnabled(boolean enabled);
 
+    public boolean canUseInCombat();
+
+    public boolean canUseOutOfCombat();
+
     public void checkUsage() throws CombatException;
 
     public boolean canUseSkill();

@@ -40,6 +40,8 @@ public interface CharacterTemplate {
 
     public boolean isFriendly(Hero source);
 
+    public boolean isBehind(CharacterTemplate target);
+
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException;
 
     public <E extends Effect<S>, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException;
