@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.BlockPlaceTrigger;
+import de.raidcraft.skills.trigger.BowFireTrigger;
 import de.raidcraft.skills.trigger.BrewTrigger;
 import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skills.trigger.CraftTrigger;
@@ -27,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -179,6 +181,14 @@ public class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callTrigger(
                 new ProjectileLaunchTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onShootBow(EntityShootBowEvent event) {
+
+        TriggerManager.callTrigger(
+                new BowFireTrigger(plugin.getCharacterManager().getCharacter(event.getEntity()), event)
         );
     }
 }
