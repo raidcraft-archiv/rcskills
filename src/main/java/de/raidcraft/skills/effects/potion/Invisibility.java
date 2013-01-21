@@ -1,12 +1,15 @@
 package de.raidcraft.skills.effects.potion;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.DamageTrigger;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,35 +21,58 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Invisibility",
         description = "Lässt das Ziel unsichtbar werden",
-        types = {EffectType.BUFF},
-        elements = {EffectElement.LIGHT}
+        types = {EffectType.BUFF}
 )
-public class Invisibility<S> extends ExpirableEffect<S> {
+public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
+
+    private boolean slow = false;
+    private boolean removeOnDamage = true;
+    private final PotionEffect invisibility;
+    private final PotionEffect slowEffect;
 
     public Invisibility(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
+        invisibility = new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1);
+        // slows by 15% for each strength point
+        slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 3);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        slow = data.getBoolean("slow", false);
+        removeOnDamage = data.getBoolean("remove-on-damage", true);
+    }
+
+    @TriggerHandler
+    public void onDamage(DamageTrigger trigger) throws CombatException {
+
+        if (removeOnDamage) {
+            remove();
+        }
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1));
+        info("Du bist nun unsichtbar.");
+        target.getEntity().addPotionEffect(invisibility);
+        if (slow) target.getEntity().addPotionEffect(slowEffect);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        for (PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
-            if (potionEffect.getType() == PotionEffectType.INVISIBILITY) {
-                target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-            }
-        }
+        info("Unsichtbarkeit wurde aufgehoben.");
+        target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1));
+        target.getEntity().addPotionEffect(invisibility);
+        if (slow) target.getEntity().addPotionEffect(slowEffect);
     }
 }
