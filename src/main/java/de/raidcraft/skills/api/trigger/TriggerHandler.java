@@ -14,6 +14,8 @@ public @interface TriggerHandler {
 
     public TriggerPriority priority() default TriggerPriority.NORMAL;
 
+    public boolean ignoreCancelled() default false;
+
     public boolean checkUsage() default false;
 
     public boolean substractUsageCosts() default false;

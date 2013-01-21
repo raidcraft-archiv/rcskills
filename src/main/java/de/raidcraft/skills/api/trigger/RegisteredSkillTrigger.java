@@ -14,13 +14,11 @@ import org.bukkit.event.EventException;
 public class RegisteredSkillTrigger extends RegisteredTrigger {
 
     private final Skill skill;
-    private final TriggerHandler info;
 
     public RegisteredSkillTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
         super(listener, executor, info);
         this.skill = (listener instanceof Skill ? (Skill) listener : null);
-        this.info = info;
     }
 
     /**
@@ -30,7 +28,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
      *
      * @throws EventException If an event handler throws an exception.
      */
-    public void callTrigger(final Trigger trigger) throws EventException {
+    protected void call(final Trigger trigger) throws EventException {
 
 
         if (skill == null) {

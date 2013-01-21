@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.trigger;
 
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
 
 /**
@@ -33,13 +34,23 @@ public abstract class RegisteredTrigger {
         return info.priority();
     }
 
+    public boolean isIgnoringCancelled() {
+
+        return info.ignoreCancelled();
+    }
+
     /**
      * Calls the event executor
      *
      * @param trigger The event
-     *
-     * @throws org.bukkit.event.EventException
-     *          If an event handler throws an exception.
      */
-    public abstract void callTrigger(final Trigger trigger) throws EventException;
+    public void callTrigger(final Trigger trigger) throws EventException {
+
+        if (trigger instanceof Cancellable && !isIgnoringCancelled()) {
+            return;
+        }
+        call(trigger);
+    }
+
+    protected abstract void call(final Trigger trigger) throws EventException;
 }
