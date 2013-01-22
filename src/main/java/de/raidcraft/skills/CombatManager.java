@@ -2,6 +2,8 @@ package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
+import de.raidcraft.skills.api.combat.callback.LocationCallback;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
@@ -9,7 +11,6 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -29,8 +30,8 @@ import java.util.Map;
 public final class CombatManager implements Listener {
 
     private final SkillsPlugin plugin;
-    private final Map<Integer, SourcedRangeCallback<CharacterTemplate>> entityHitCallbacks = new HashMap<>();
-    private final Map<Integer, SourcedRangeCallback<Location>> locationCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
 
     protected CombatManager(SkillsPlugin plugin) {
 
@@ -43,7 +44,7 @@ public final class CombatManager implements Listener {
         // dont clear the callbacks let them run out quietly to not interrupt combat
     }
 
-    public void queueEntityCallback(final SourcedRangeCallback<CharacterTemplate> sourcedCallback) {
+    public void queueEntityCallback(final SourcedRangeCallback<RangedCallback> sourcedCallback) {
 
         // remove the callback from the queue after the configured time
         sourcedCallback.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -59,7 +60,7 @@ public final class CombatManager implements Listener {
         }
     }
 
-    public void queueLocationCallback(final SourcedRangeCallback<Location> sourcedCallback) {
+    public void queueLocationCallback(final SourcedRangeCallback<LocationCallback> sourcedCallback) {
 
         if (sourcedCallback.getCallback() == null) {
             return;
@@ -126,7 +127,7 @@ public final class CombatManager implements Listener {
             // lets add a combat effect first
             source.addEffect(source, Combat.class);
             // iterate over our queued callbacks
-            for (SourcedRangeCallback<Location> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
+            for (SourcedRangeCallback<LocationCallback> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
                 if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
                     locationCallbacks.remove(sourcedCallback.getTaskId());
                     if (sourcedCallback.getSource() instanceof Hero) {
@@ -155,7 +156,7 @@ public final class CombatManager implements Listener {
             CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
             CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             // and go thru all registered callbacks
-            for (SourcedRangeCallback<CharacterTemplate> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
+            for (SourcedRangeCallback<RangedCallback> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
                 if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
                     // lets set the damage of the event to 0 because it is handled by us
                     event.setDamage(0);

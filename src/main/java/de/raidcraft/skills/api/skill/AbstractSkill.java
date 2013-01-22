@@ -195,12 +195,12 @@ public abstract class AbstractSkill implements Skill {
         return rangedAttack(type, damage, null);
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, ProjectileCallback<T> callback) throws CombatException {
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, T callback) throws CombatException {
 
         return rangedAttack(type, getTotalDamage(), callback);
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, ProjectileCallback<T> callback) throws CombatException {
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
 
         RangedAttack<T> attack = new RangedAttack<>(getHero(), type, damage, callback);
         attack.run();
