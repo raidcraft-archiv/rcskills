@@ -16,14 +16,14 @@ import org.bukkit.potion.PotionEffectType;
  * Description:
  */
 @EffectInformation(
-        name = "Blindness",
+        name = "Blind",
         description = "Lässt das Ziel erblinden",
         types = {EffectType.DEBUFF},
         elements = {EffectElement.DARK}
 )
-public class Blindness<S> extends ExpirableEffect<S> {
+public class Blind<S> extends ExpirableEffect<S> {
 
-    public Blindness(S source, CharacterTemplate target, EffectData data) {
+    public Blind(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
