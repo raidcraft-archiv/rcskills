@@ -26,6 +26,7 @@ import org.bukkit.entity.Projectile;
 public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableEffect<Skill> implements Triggered {
 
     private T callback;
+    private boolean fired = false;
 
     public QueuedRangedAttack(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -47,21 +48,26 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
         attack.setProjectile((Projectile) trigger.getEvent().getProjectile());
         // since we dont "run" the attack we need to queue for callbacks
         new SourcedRangeCallback<>(attack).queueCallback();
+        fired = true;
         remove();
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+        info("Du belegst deinen Bogen mit einem Zauber.");
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+        if (!fired) {
+            info("Der Zauber auf deinem Bogen ist verblasst.");
+        }
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
     }
 }

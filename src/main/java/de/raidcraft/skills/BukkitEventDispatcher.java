@@ -16,6 +16,7 @@ import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.InventoryOpenTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 import de.raidcraft.skills.trigger.ProjectileLaunchTrigger;
 import org.bukkit.block.Block;
@@ -30,6 +31,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.BrewEvent;
@@ -189,6 +191,14 @@ public class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callTrigger(
                 new BowFireTrigger(plugin.getCharacterManager().getCharacter(event.getEntity()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPotionSplash(PotionSplashEvent event) {
+
+        TriggerManager.callTrigger(
+                new PotionSplashTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
     }
 }
