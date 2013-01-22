@@ -2,6 +2,7 @@ package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
@@ -11,6 +12,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,6 +23,16 @@ public final class HeroUtil {
 
     private HeroUtil() {
 
+    }
+
+    public static Collection<CharacterTemplate> toCharacters(Collection<LivingEntity> entities) {
+
+        List<CharacterTemplate> characters = new ArrayList<>();
+        CharacterManager manager = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
+        for (LivingEntity entity : entities) {
+            characters.add(manager.getCharacter(entity));
+        }
+        return characters;
     }
 
     public static String createResourceBar(double current, double max, ChatColor color) {
