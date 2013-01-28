@@ -72,9 +72,7 @@ public class PlayerComands {
             } else {
                 hero.sendMessage(ChatColor.RED + "Bist du sicher, dass du " + ChatColor.AQUA
                         + level.getLevelObject() + " " + exp + "exp " + ChatColor.RED + "zuteilen willst?");
-                new QueuedCaptchaCommand(sender, this,
-                        getClass().getDeclaredMethod("addExp", Level.class, Level.class, int.class),
-                        expPool, level, exp);
+                new QueuedCaptchaCommand(sender, this, "addExp", expPool, level, exp);
             }
         } catch (UnknownSkillException | InvalidChoiceException e) {
             throw new CommandException(e.getMessage());

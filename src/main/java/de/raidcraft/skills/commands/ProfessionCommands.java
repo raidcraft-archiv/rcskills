@@ -115,9 +115,7 @@ public class ProfessionCommands {
                         (primary ? "deiner " + ChatColor.AQUA + "Klasse" : "deines " + ChatColor.AQUA + "Berufs") + ChatColor.RED +
                         " zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
                         " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
-                new QueuedCaptchaCommand(sender, this,
-                        getClass().getDeclaredMethod("chooseProfession", Hero.class, Profession.class),
-                        hero, profession);
+                new QueuedCaptchaCommand(sender, this, "chooseProfession", hero, profession);
             }
         } catch (InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
