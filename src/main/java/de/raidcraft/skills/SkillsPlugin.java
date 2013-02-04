@@ -49,6 +49,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private BukkitEnvironmentManager bukkitEnvironmentManager;
     private LocalConfiguration configuration;
 
+
     @Override
     public void enable() {
 
