@@ -40,7 +40,7 @@ public abstract class AbstractResource implements Resource {
         setCurrent((data.getValue() == 0 ? getDefault() : data.getValue()));
         // lets get some default values from the config
         regenPercent = config.getDouble("regen.base", 0.03);
-        regenInterval = config.getInt("regen.interval", 20);
+        regenInterval = config.getInt("regen.interval", 1) * 20;
         // lets start the task
         startTask();
     }
@@ -181,7 +181,7 @@ public abstract class AbstractResource implements Resource {
     @Override
     public ChatColor getFilledColor() {
 
-        String string = config.getString("filled-color", "BLUE");
+        String string = config.getString("color.filled", "BLUE");
         ChatColor color = ChatColor.valueOf(string);
         if (color == null) color = ChatColor.getByChar(string);
         if (color == null) color = ChatColor.BLUE;
@@ -191,7 +191,7 @@ public abstract class AbstractResource implements Resource {
     @Override
     public ChatColor getUnfilledColor() {
 
-        String string = config.getString("unfilled-color", "DARK_RED");
+        String string = config.getString("color.unfilled", "DARK_RED");
         ChatColor color = ChatColor.valueOf(string);
         if (color == null) color = ChatColor.getByChar(string);
         if (color == null) color = ChatColor.DARK_RED;
