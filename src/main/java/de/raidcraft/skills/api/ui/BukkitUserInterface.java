@@ -1,9 +1,6 @@
 package de.raidcraft.skills.api.ui;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.hero.ResourceBar;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -56,13 +53,6 @@ public class BukkitUserInterface implements UserInterface {
         if (health < 0) health = 0;
         player.setHealth(health);
 
-        // set the stamina bar to a percentage of the actual stamina
-        int stamina = (int) Math.ceil(((double) hero.getStamina() / hero.getMaxStamina()) * 20);
-        player.setFoodLevel(stamina);
-        // see the minecraft wiki for the mechanics: http://www.minecraftwiki.net/wiki/Hunger#Mechanics
-        player.setSaturation(20.0F);
-        player.setExhaustion(0.0F);
-
         Profession prof = hero.getSelectedProfession();
         if (prof != null) {
             // lets set the experience bar to the level of the player
@@ -74,18 +64,6 @@ public class BukkitUserInterface implements UserInterface {
             // lets set the level to 0
             player.setExp(0F);
             player.setLevel(0);
-        }
-
-        ResourceBar bar = hero.getResourceBar();
-        if (bar.getCurrent() != bar.getDefault()) maxedResource = false;
-        // set the manabar if it changed
-        long time = System.currentTimeMillis();
-        if (time - RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().interface_resource_bar_update > lastUpdate) {
-            if (!bar.isMax() || !maxedResource) {
-                hero.sendMessage(bar.draw());
-                this.lastUpdate = time;
-                if (bar.isMax()) maxedResource = true;
-            }
         }
     }
 }

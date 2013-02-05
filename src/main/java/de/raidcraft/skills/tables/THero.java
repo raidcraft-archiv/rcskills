@@ -34,8 +34,6 @@ public class THero implements LevelData, HeroData, Bean {
     private int exp;
     private int level;
     private int health;
-    private int resource;
-    private int stamina;
     private boolean debugging;
     private boolean combatLogging;
     @OneToOne
@@ -157,26 +155,6 @@ public class THero implements LevelData, HeroData, Bean {
     public void setHealth(int health) {
 
         this.health = health;
-    }
-
-    public int getResource() {
-
-        return resource;
-    }
-
-    public void setResource(int mana) {
-
-        this.resource = mana;
-    }
-
-    public int getStamina() {
-
-        return stamina;
-    }
-
-    public void setStamina(int stamina) {
-
-        this.stamina = stamina;
     }
 
     public boolean isDebugging() {

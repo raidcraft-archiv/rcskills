@@ -110,27 +110,15 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public String getResourceName() {
+    public Set<String> getResources() {
 
-        return getOverride("resource.name", "Mana");
+        return getOverrideSection("resources").getKeys(false);
     }
 
     @Override
-    public ConfigurationSection getResourceConfig() {
+    public ConfigurationSection getResourceConfig(String type) {
 
-        return getOverrideSection("resource");
-    }
-
-    @Override
-    public int getBaseStamina() {
-
-        return getOverride("stamina.base", 20);
-    }
-
-    @Override
-    public double getBaseStaminaModifier() {
-
-        return getOverride("stamina.level-modifier", 0.0);
+        return getOverrideSection("resources." + type);
     }
 
     @Override

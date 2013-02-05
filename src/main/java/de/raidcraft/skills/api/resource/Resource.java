@@ -1,17 +1,23 @@
-package de.raidcraft.skills.api.hero;
+package de.raidcraft.skills.api.resource;
 
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
  */
-public interface ResourceBar {
-
-    public ResourceType getType();
+public interface Resource {
 
     public Hero getHero();
 
+    public Profession getProfession();
+
+    public VisualResourceType getType();
+
     public String getName();
+
+    public String getFriendlyName();
 
     public ChatColor getFilledColor();
 
@@ -43,9 +49,7 @@ public interface ResourceBar {
 
     public void setRegenPercent(double percent);
 
-    public void destroy();
-
     public void regen();
 
-    public String draw();
+    public void save();
 }

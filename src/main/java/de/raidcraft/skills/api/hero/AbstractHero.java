@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
@@ -29,8 +30,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -46,10 +49,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private boolean combatLoggging = false;
     private int health;
     private int maxHealth = 20;
-    private ResourceBar resourceBar;
-    private int stamina;
-    private double staminaRegen;
-    private boolean staminaRegenEnabled = true;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -69,7 +68,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.player = RaidCraft.getPlayer(data.getName());
         this.expPool = new ExpPool(this, data.getExpPool());
         this.health = data.getHealth();
-        this.stamina = data.getStamina();
         this.debugging = data.isDebugging();
         this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
@@ -83,22 +81,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.virtualProfession = getVirtualProfession();
         this.selectedProfession = getSelectedProfession();
         this.group = new SimpleGroup(this);
-
-        createResourceBar(data.getResource());
-    }
-
-    private void createResourceBar(int current) {
-
-        // lets set the resource bar to the primary prof
-        ResourceType type;
-        if (getPrimaryProfession() != null) {
-            type = ResourceType.fromName(getPrimaryProfession().getProperties().getResourceName());
-            this.resourceBar = type.create(this, getPrimaryProfession().getProperties().getResourceConfig());
-            this.resourceBar.setCurrent(current);
-        } else {
-            type = ResourceType.UNKNOWN;
-            this.resourceBar = type.create(this, null);
-        }
     }
 
     private void loadProfessions(List<String> professionNames) {
@@ -172,9 +154,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (profession.getProperties().isPrimary()) {
             if (primaryProfession != null) primaryProfession.setActive(false);
             primaryProfession = profession;
-            // also update the resource bar
-            resourceBar.destroy();
-            createResourceBar(getResource());
         } else {
             if (secundaryProfession != null) secundaryProfession.setActive(false);
             secundaryProfession = profession;
@@ -270,14 +249,35 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public Resource getResource(String type) {
+
+        Resource resource = primaryProfession.getResource(type);
+        if (resource == null) resource = secundaryProfession.getResource(type);
+        return resource;
+    }
+
+    @Override
+    public Set<Resource> getResources() {
+
+        HashSet<Resource> resources = new HashSet<>();
+        resources.addAll(primaryProfession.getResources());
+        resources.addAll(secundaryProfession.getResources());
+        return resources;
+    }
+
+    @Override
+    public Set<Resource> getResources(Profession profession) {
+
+        return profession.getResources();
+    }
+
+    @Override
     public void reset() {
 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
         setHealth(getMaxHealth());
-        setStamina(getMaxStamina());
-        setResource(getResourceBar().getMax());
         clearEffects();
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
@@ -330,44 +330,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public boolean isMastered() {
 
         return getLevel().hasReachedMaxLevel();
-    }
-
-    @Override
-    public ResourceBar getResourceBar() {
-
-        return resourceBar;
-    }
-
-    @Override
-    public boolean isStaminaRegenEnabled() {
-
-        return staminaRegenEnabled;
-    }
-
-    @Override
-    public void setStaminaRegenEnabled(boolean enabled) {
-
-        this.staminaRegenEnabled = enabled;
-    }
-
-    @Override
-    public void setStaminaRegen(double staminaRegen) {
-
-        this.staminaRegen = staminaRegen;
-    }
-
-    @Override
-    public double getStaminaRegen() {
-
-        return staminaRegen;
-    }
-
-    @Override
-    public void regenStamina() {
-
-        int stamina = (int) (getStamina() + getMaxStamina() * getStaminaRegen());
-        if (stamina > getMaxStamina()) stamina = getMaxStamina();
-        setStamina(stamina);
     }
 
     @Override
@@ -431,44 +393,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public int getResource() {
-
-        return getResourceBar().getCurrent();
-    }
-
-    @Override
-    public void setResource(int value) {
-
-        getResourceBar().setCurrent(value);
-        debug("set mana to " + getResource());
-    }
-
-    @Override
-    public int getStamina() {
-
-        return stamina;
-    }
-
-    @Override
-    public void setStamina(int stamina) {
-
-        if (stamina > getMaxStamina()) stamina = getMaxStamina();
-        this.stamina = stamina;
-        debug("set stamina to " + stamina);
-    }
-
-    @Override
-    public int getMaxStamina() {
-
-        Profession profession = getPrimaryProfession();
-        if (profession == null) return 20;
-        int stamina = (int) (profession.getProperties().getBaseStamina() +
-                profession.getProperties().getBaseStaminaModifier() * profession.getLevel().getLevel());
-        if (stamina > 20) stamina = 20;
-        return stamina;
-    }
-
-    @Override
     public Level<Hero> getLevel() {
 
         return level;
@@ -509,8 +433,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         THero tHero = Ebean.find(THero.class, getId());
         tHero.setHealth(getHealth());
-        tHero.setResource(getResource());
-        tHero.setStamina(getStamina());
         tHero.setDebugging(isDebugging());
         tHero.setCombatLogging(isCombatLogging());
         tHero.setSelectedProfession(getSelectedProfession().getName());

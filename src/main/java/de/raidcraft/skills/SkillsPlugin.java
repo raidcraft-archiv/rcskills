@@ -24,6 +24,7 @@ import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import org.bukkit.Bukkit;
@@ -130,6 +131,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);
         classes.add(TSkillData.class);
+        classes.add(THeroResource.class);
         return classes;
     }
 

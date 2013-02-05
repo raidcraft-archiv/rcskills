@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
@@ -19,6 +18,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.requirement.Requirement;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -83,15 +83,10 @@ public abstract class AbstractSkill implements Skill {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
-        // lets check the resources of the skill and if the hero has it
-        if (this.getTotalResourceCost() > getHero().getResource()) {
-            throw new CombatException(CombatException.Type.LOW_MANA);
-        }
-        if (this.getTotalStaminaCost() > getHero().getStamina()) {
-            throw new CombatException(CombatException.Type.LOW_STAMINA);
-        }
-        if (this.getTotalHealthCost() > getHero().getHealth()) {
-            throw new CombatException(CombatException.Type.LOW_HEALTH);
+        for (Resource resource : getProfession().getResources()) {
+            if (this.getTotalResourceCost(resource.getName()) > resource.getCurrent()) {
+                throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
+            }
         }
         // lets check if the player has the required reagents
         for (ItemStack itemStack : getProperties().getReagents()) {
@@ -116,11 +111,10 @@ public abstract class AbstractSkill implements Skill {
     public final void substractUsageCost() {
 
         // substract the mana, health and stamina cost
-        if (getTotalResourceCost() > 0) hero.setResource(hero.getResource() - getTotalResourceCost());
-        if (getTotalStaminaCost() > 0) hero.setStamina(hero.getStamina() - getTotalStaminaCost());
-        try {
-            if (getTotalHealthCost() > 0) new MagicalAttack(getHero(), getHero(), getTotalHealthCost()).run();
-        } catch (CombatException ignored) {
+        for (Resource resource : getProfession().getResources()) {
+            if (getTotalResourceCost(resource.getName()) > 0) {
+                resource.setCurrent(resource.getCurrent() - getTotalResourceCost(resource.getName()));
+            }
         }
         // keep this last or items will be removed before casting
         // TODO: replace with working util method
@@ -231,29 +225,11 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int getTotalResourceCost() {
+    public int getTotalResourceCost(String resource) {
 
-        return (int) (properties.getManaCost()
-                + (properties.getManaCostLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getManaCostProfLevelModifier() * getProfession().getLevel().getLevel()));
-    }
-
-    @Override
-    public int getTotalStaminaCost() {
-
-        int stamina = (int) (properties.getStaminaCost()
-                + (properties.getStaminaCostLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getStaminaCostProfLevelModifier() * getProfession().getLevel().getLevel()));
-        if (stamina > 20) stamina = 20;
-        return stamina;
-    }
-
-    @Override
-    public int getTotalHealthCost() {
-
-        return (int) (properties.getHealthCost()
-                + (properties.getHealthCostLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getHealthCostProfLevelModifier() * getProfession().getLevel().getLevel()));
+        return (int) (properties.getResourceCost(resource)
+                + (properties.getResourceCostLevelModifier(resource) * hero.getLevel().getLevel())
+                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getLevel().getLevel()));
     }
 
     @Override
@@ -381,10 +357,7 @@ public abstract class AbstractSkill implements Skill {
 
         return description
                 .replace("%player%", hero.getName())
-                .replace("%damage%", getTotalDamage() + "")
-                .replace("%mana-cost%", getTotalResourceCost() + "")
-                .replace("%health-cost%", getTotalHealthCost() + "")
-                .replace("%stamina-cost%", getTotalStaminaCost() + "");
+                .replace("%damage%", getTotalDamage() + "");
     }
 
     @Override
@@ -537,6 +510,9 @@ public abstract class AbstractSkill implements Skill {
             if (!requirement.isMet(getHero())) {
                 return requirement.getLongReason(getHero());
             }
+        }
+        if (getProperties().getRequiredLevel() > getProfession().getLevel().getLevel()) {
+            return "Dein " + (getProfession().getProperties().isPrimary() ? "Klassen" : "Beruf") + " Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
     }

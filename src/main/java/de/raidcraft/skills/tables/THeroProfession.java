@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero_professions")
-public class THeroProfession implements LevelData, Bean {
+public class THeroProfession implements Bean, LevelData {
 
     @Id
     private int id;
@@ -36,6 +36,11 @@ public class THeroProfession implements LevelData, Bean {
     @JoinColumn(name = "profession_id")
     private List<THeroSkill> skills;
 
+    @OneToMany
+    @JoinColumn(name = "profession_id")
+    private List<THeroResource> resources;
+
+    @Override
     public int getId() {
 
         return id;
@@ -104,5 +109,15 @@ public class THeroProfession implements LevelData, Bean {
     public void setSkills(List<THeroSkill> skills) {
 
         this.skills = skills;
+    }
+
+    public List<THeroResource> getResources() {
+
+        return resources;
+    }
+
+    public void setResources(List<THeroResource> resources) {
+
+        this.resources = resources;
     }
 }

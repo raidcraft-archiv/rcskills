@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class BukkitEventDispatcher implements Listener {
+public final class BukkitEventDispatcher implements Listener {
 
     private final SkillsPlugin plugin;
     private final Map<Block, String> brewingPlayers = new HashMap<>();
@@ -58,7 +58,6 @@ public class BukkitEventDispatcher implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
-        // TODO: add prios to events
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

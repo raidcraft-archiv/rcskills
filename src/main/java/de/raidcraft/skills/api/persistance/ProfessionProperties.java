@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -25,13 +26,9 @@ public interface ProfessionProperties {
 
     public double getBaseHealthModifier();
 
-    public String getResourceName();
+    public Set<String> getResources();
 
-    public ConfigurationSection getResourceConfig();
-
-    public int getBaseStamina();
-
-    public double getBaseStaminaModifier();
+    public ConfigurationSection getResourceConfig(String type);
 
     public boolean isPrimary();
 

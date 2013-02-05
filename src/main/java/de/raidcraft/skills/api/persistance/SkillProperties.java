@@ -38,17 +38,13 @@ public interface SkillProperties {
 
     public int getMaxLevel();
 
-    public int getManaCost();
+    public int getResourceCost(String resource);
 
-    public double getManaCostLevelModifier();
+    public double getResourceCostLevelModifier(String resource);
 
-    public int getStaminaCost();
+    public double getResourceCostSkillLevelModifier(String resource);
 
-    public double getStaminaCostLevelModifier();
-
-    public int getHealthCost();
-
-    public double getHealthCostLevelModifier();
+    public double getResourceCostProfLevelModifier(String resource);
 
     public int getRequiredLevel();
 
@@ -78,21 +74,9 @@ public interface SkillProperties {
 
     public double getSkillLevelDamageModifier();
 
-    public double getManaCostSkillLevelModifier();
-
-    public double getStaminaCostSkillLevelModifier();
-
-    public double getHealthCostSkillLevelModifier();
-
     public double getCastTimeSkillLevelModifier();
 
     public double getProfLevelDamageModifier();
-
-    public double getManaCostProfLevelModifier();
-
-    public double getStaminaCostProfLevelModifier();
-
-    public double getHealthCostProfLevelModifier();
 
     public double getCastTimeProfLevelModifier();
 }

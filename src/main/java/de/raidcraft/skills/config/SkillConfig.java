@@ -131,42 +131,6 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public int getManaCost() {
-
-        return getOverride("mana.base-cost", 0);
-    }
-
-    @Override
-    public double getManaCostLevelModifier() {
-
-        return getOverride("mana.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getStaminaCost() {
-
-        return getOverride("stamina.base-cost", 0);
-    }
-
-    @Override
-    public double getStaminaCostLevelModifier() {
-
-        return getOverride("stamina.level-modifier", 0.0);
-    }
-
-    @Override
-    public int getHealthCost() {
-
-        return getOverride("health.base-cost", 0);
-    }
-
-    @Override
-    public double getHealthCostLevelModifier() {
-
-        return getOverride("health.level-modifier", 0.0);
-    }
-
-    @Override
     public int getRequiredLevel() {
 
         return getOverride("level", 1);
@@ -209,24 +173,6 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getManaCostSkillLevelModifier() {
-
-        return getOverride("mana.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getStaminaCostSkillLevelModifier() {
-
-        return getOverride("stamina.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getHealthCostSkillLevelModifier() {
-
-        return getOverride("health.skill-level-modifier", 0.0);
-    }
-
-    @Override
     public double getCastTimeSkillLevelModifier() {
 
         return getOverride("casttime.skill-level-modifier", 0.0);
@@ -239,27 +185,33 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getManaCostProfLevelModifier() {
-
-        return getOverride("mana.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getStaminaCostProfLevelModifier() {
-
-        return getOverride("stamina.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getHealthCostProfLevelModifier() {
-
-        return getOverride("health.prof-level-modifier", 0.0);
-    }
-
-    @Override
     public double getCastTimeProfLevelModifier() {
 
         return getOverride("casttime.prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public int getResourceCost(String resource) {
+
+        return getOverrideInt("resources." + resource + ".base", 0);
+    }
+
+    @Override
+    public double getResourceCostLevelModifier(String resource) {
+
+        return getOverrideDouble("resources." + resource + ".level-modifier", 0.0);
+    }
+
+    @Override
+    public double getResourceCostSkillLevelModifier(String resource) {
+
+        return getOverrideDouble("resources." + resource + ".skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getResourceCostProfLevelModifier(String resource) {
+
+        return getOverrideDouble("resources." + resource + ".prof-level-modifier", 0.0);
     }
 
     @Override

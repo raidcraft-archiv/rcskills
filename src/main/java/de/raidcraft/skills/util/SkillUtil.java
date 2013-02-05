@@ -5,6 +5,7 @@ import com.sk89q.util.StringUtil;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.requirement.Requirement;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 
@@ -70,21 +71,15 @@ public final class SkillUtil {
             body.add(sb.toString());
         }
 
-        if (skill.getTotalResourceCost() > 0) {
-            sb = new StringBuilder();
-            sb.append(ChatColor.YELLOW).append(skill.getHero().getResourceBar().getName()).append(": ")
-                    .append(ChatColor.AQUA).append(skill.getTotalResourceCost());
-            body.add(sb.toString());
-        }
-        if (skill.getTotalStaminaCost() > 0) {
-            sb = new StringBuilder();
-            sb.append(ChatColor.YELLOW).append("Ausdauer: ").append(ChatColor.AQUA).append(skill.getTotalStaminaCost());
-            body.add(sb.toString());
-        }
-        if (skill.getTotalHealthCost() > 0) {
-            sb = new StringBuilder();
-            sb.append(ChatColor.YELLOW).append("Leben: ").append(ChatColor.AQUA).append(skill.getTotalHealthCost());
-            body.add(sb.toString());
+        for (Resource resource : skill.getProfession().getResources()) {
+            if (skill.getTotalResourceCost(resource.getName()) > 0) {
+                sb = new StringBuilder();
+                sb.append(ChatColor.YELLOW).append("  - ");
+                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ")
+                        .append(ChatColor.AQUA).append(skill.getTotalResourceCost(resource.getName()));
+                sb.append("\n");
+                body.add(sb.toString());
+            }
         }
 
         if (skill.getRequirements().size() > 0) {

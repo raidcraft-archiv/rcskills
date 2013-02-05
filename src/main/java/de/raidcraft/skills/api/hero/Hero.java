@@ -7,12 +7,14 @@ import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -49,27 +51,11 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void reset();
 
-    public int getResource();
+    public Resource getResource(String type);
 
-    public void setResource(int value);
+    public Set<Resource> getResources();
 
-    public ResourceBar getResourceBar();
-
-    public int getStamina();
-
-    public void setStamina(int stamina);
-
-    public boolean isStaminaRegenEnabled();
-
-    public void setStaminaRegenEnabled(boolean enabled);
-
-    public void setStaminaRegen(double staminaRegen);
-
-    public double getStaminaRegen();
-
-    public void regenStamina();
-
-    public int getMaxStamina();
+    public Set<Resource> getResources(Profession profession);
 
     public Profession getSelectedProfession();
 

@@ -1,15 +1,24 @@
 package de.raidcraft.skills.api.profession;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.requirement.Requirement;
+import de.raidcraft.skills.api.resource.ConfigurableResource;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroResource;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -20,8 +29,10 @@ public abstract class AbstractProfession implements Profession {
     private final Hero hero;
     // list of requirements to unlock this profession
     private final List<Requirement> requirements = new ArrayList<>();
-    protected final THeroProfession database;
+    private final Map<String, Resource> resources = new HashMap<>();
     protected final List<Skill> skills = new ArrayList<>();
+    protected final THeroProfession database;
+
     private Level<Profession> level;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
@@ -30,6 +41,22 @@ public abstract class AbstractProfession implements Profession {
         this.hero = hero;
         this.database = database;
         data.loadRequirements(this);
+        // first we need to get the defined resources out of the config
+        for (String key : data.getResources()) {
+            key = StringUtils.formatName(key);
+            // query the database and check if we already have an entry for the player
+            THeroResource tHeroResource = Ebean.find(THeroResource.class).where()
+                    .eq("name", key)
+                    .eq("profession_id", database.getId()).findUnique();
+            // create a new entry if none exists
+            if (tHeroResource == null) {
+                tHeroResource = new THeroResource();
+                tHeroResource.setName(key);
+                Database.save(tHeroResource);
+            }
+            ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
+            resources.put(key, resource);
+        }
     }
 
     public THeroProfession getDatabase() {
@@ -113,18 +140,6 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public List<Skill> getUnlockedSkills() {
-
-        List<Skill> skills = new ArrayList<>();
-        for (Skill skill : this.skills) {
-            if (skill.isUnlocked()) {
-                skills.add(skill);
-            }
-        }
-        return skills;
-    }
-
-    @Override
     public void addSkill(Skill skill) {
 
         throw new UnsupportedOperationException();
@@ -134,6 +149,18 @@ public abstract class AbstractProfession implements Profession {
     public void removeSkill(Skill skill) {
 
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Set<Resource> getResources() {
+
+        return new HashSet<>(resources.values());
+    }
+
+    @Override
+    public Resource getResource(String type) {
+
+        return resources.get(type);
     }
 
     @Override
@@ -173,6 +200,10 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void save() {
 
+        // save all resources
+        for (Resource resource : getResources()) {
+            resource.save();
+        }
         saveLevelProgress(getLevel());
         database.setActive(isActive());
         Database.save(database);

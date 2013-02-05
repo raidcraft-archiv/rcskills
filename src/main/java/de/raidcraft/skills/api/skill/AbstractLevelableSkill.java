@@ -46,23 +46,10 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final int getTotalResourceCost() {
+    public final int getTotalResourceCost(String resource) {
 
-        return (int) (super.getTotalResourceCost() + (getProperties().getManaCostSkillLevelModifier() * getLevel().getLevel()));
-    }
-
-    @Override
-    public final int getTotalStaminaCost() {
-
-        int stamina = (int) (super.getTotalStaminaCost() + (getProperties().getStaminaCostSkillLevelModifier() * getLevel().getLevel()));
-        if (stamina > 20) stamina = 20;
-        return stamina;
-    }
-
-    @Override
-    public final int getTotalHealthCost() {
-
-        return (int) (super.getTotalHealthCost() + (getProperties().getHealthCostSkillLevelModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalResourceCost(resource) +
+                (getProperties().getResourceCostSkillLevelModifier(resource) * getLevel().getLevel()));
     }
 
     @Override

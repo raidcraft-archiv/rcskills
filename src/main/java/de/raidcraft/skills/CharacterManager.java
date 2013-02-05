@@ -57,7 +57,6 @@ public final class CharacterManager implements Listener {
     public void startTasks() {
 
         startUserInterfaceRefreshTask();
-        startHeroStaminaRegainTask();
     }
 
     private void startUserInterfaceRefreshTask() {
@@ -71,26 +70,6 @@ public final class CharacterManager implements Listener {
                 }
             }
         }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
-    }
-
-    private void startHeroStaminaRegainTask() {
-
-        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Hero hero = getHero(player);
-                    if (hero.isStaminaRegenEnabled() && hero.getStamina() < hero.getMaxStamina()) {
-                        if (hero.getStaminaRegen() == 0.0) {
-                            hero.setStaminaRegen(plugin.getCommonConfig().hero_stamina_regain_default_amount);
-                        }
-                        // refresh the stamina
-                        hero.regenStamina();
-                    }
-                }
-            }
-        }, plugin.getCommonConfig().hero_stamina_regain_interval, plugin.getCommonConfig().hero_stamina_regain_interval);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException {
@@ -114,8 +93,6 @@ public final class CharacterManager implements Listener {
                 heroTable = new THero();
                 heroTable.setPlayer(name);
                 heroTable.setHealth(20);
-                heroTable.setResource(0);
-                heroTable.setStamina(0);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
                 heroTable.setCombatLogging(false);
@@ -202,7 +179,6 @@ public final class CharacterManager implements Listener {
         // save the hero first
         hero.save();
         hero.clearEffects();
-        hero.getResourceBar().destroy();
         // lets clear the cache for the hero
         clearCacheOf(hero);
     }
