@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
@@ -49,6 +50,7 @@ public final class ProfessionFactory {
             database.setLevel(1);
             database.setExp(0);
             database.setActive(false);
+            Database.save(database);
         }
         return database;
     }
