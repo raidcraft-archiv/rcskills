@@ -46,7 +46,7 @@ public abstract class RegisteredTrigger {
      */
     public void callTrigger(final Trigger trigger) throws EventException {
 
-        if (trigger instanceof Cancellable && !isIgnoringCancelled()) {
+        if (trigger instanceof Cancellable && !isIgnoringCancelled() && ((Cancellable) trigger).isCancelled()) {
             return;
         }
         call(trigger);
