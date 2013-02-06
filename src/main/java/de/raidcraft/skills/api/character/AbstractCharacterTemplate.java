@@ -125,7 +125,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill() {
 
-        getEntity().setHealth(0);
+        getEntity().damage(getEntity().getHealth());
         // play the death sound
         getEntity().getWorld().playSound(
                 getEntity().getLocation(),

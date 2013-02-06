@@ -43,7 +43,7 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void refresh() {
 
-        if (player == null || !isEnabled() || player.getGameMode() == GameMode.CREATIVE) {
+        if (player == null || !isEnabled() || player.getGameMode() == GameMode.CREATIVE || player.isDead() || player.getHealth() < 1) {
             return;
         }
 

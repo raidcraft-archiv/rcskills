@@ -361,6 +361,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public int getMaxHealth() {
+
+        return getDefaultHealth();
+    }
+
+    @Override
     public int getHealth() {
 
         return health;
@@ -390,6 +396,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         }
         return (int) (profession.getProperties().getBaseHealth()
                 + profession.getProperties().getBaseHealthModifier() * profession.getLevel().getLevel());
+    }
+
+    @Override
+    public void kill() {
+
+        setHealth(0);
+        super.kill();
     }
 
     @Override
