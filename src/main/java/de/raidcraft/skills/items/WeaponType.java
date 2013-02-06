@@ -1,5 +1,6 @@
 package de.raidcraft.skills.items;
 
+import de.raidcraft.util.EnumUtils;
 import org.bukkit.Material;
 
 import java.util.Arrays;
@@ -70,5 +71,10 @@ public enum WeaponType {
             }
         }
         return null;
+    }
+
+    public static WeaponType fromString(String name) {
+
+        return EnumUtils.getEnumFromString(WeaponType.class, name);
     }
 }

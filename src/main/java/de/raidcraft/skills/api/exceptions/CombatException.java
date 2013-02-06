@@ -11,6 +11,7 @@ public class CombatException extends RaidCraftException {
 
         CANCELLED("Abgebrochen."),
         INVALID_TARGET("Ungültiges Ziel."),
+        INVALID_WEAPON("Du kannst nicht mit dieser Waffe angreifen."),
         FAIL("Fehlgeschlagen."),
         LOW_MANA("Zu wenig Mana."),
         LOW_HEALTH("Zu wenig Leben."),

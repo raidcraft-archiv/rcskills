@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.trigger.AttackTrigger;
 
 /**
@@ -24,11 +25,14 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
 
     private Callback<AttackTrigger> callback;
     private boolean attacked = false;
+    private WeaponType weapon;
 
     public QueuedAttack(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         if (duration == 0) duration = 20 * 5;
+        // lets see if the attack is restricted to a weapon type
+        weapon = WeaponType.fromString(source.getProperties().getData().getString("weapon"));
     }
 
     public void addCallback(Callback<AttackTrigger> callback) {
@@ -39,6 +43,11 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
+        if (weapon != null && weapon.isOfType(getSource().getHero().getItemTypeInHand())) {
+            trigger.setCancelled(true);
+            trigger.getAttack().setCancelled(true);
+            throw new CombatException(CombatException.Type.INVALID_WEAPON);
+        }
         trigger.getAttack().setDamage(getSource().getTotalDamage());
         trigger.getAttack().addAttackTypes(getSource().getTypes());
         trigger.getAttack().addAttackTypes(getTypes());
