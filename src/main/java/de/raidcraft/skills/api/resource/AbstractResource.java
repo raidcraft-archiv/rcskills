@@ -6,6 +6,8 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ResourceData;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.trigger.ResourceChangeTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -102,8 +104,17 @@ public abstract class AbstractResource implements Resource {
 
         if (current < getMin()) current = getMin();
         if (current > getMax()) current = getMax();
+        // lets fire the trigger
+        ResourceChangeTrigger trigger = TriggerManager.callTrigger(new ResourceChangeTrigger(getHero(), this, current));
+        if (trigger.isCancelled()) {
+            return;
+        }
+        // update the value if it changed in the trigger
+        current = trigger.getNewValue();
+
         boolean update = getCurrent() != current;
         this.current = current;
+
         if (update) {
             getType().update(this);
         }
