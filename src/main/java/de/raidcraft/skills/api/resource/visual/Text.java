@@ -15,7 +15,7 @@ public class Text implements VisualResource {
         StringBuilder resourceBar = new StringBuilder(resource.getFilledColor() + resource.getFriendlyName() + ": ");
 
         resourceBar.append(String.valueOf(ChatColor.RED)).append("[").append(resource.getFilledColor());
-        int percent = (int) ((resource.getCurrent() / resource.getMax()) * 100.0);
+        int percent = (int) (((double) resource.getCurrent() / (double) resource.getMax()) * 100);
         int progress = percent / 2;
         for (int i = 0; i < progress; i++) {
             resourceBar.append('|');

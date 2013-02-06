@@ -260,8 +260,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Set<Resource> getResources() {
 
         HashSet<Resource> resources = new HashSet<>();
-        resources.addAll(primaryProfession.getResources());
-        resources.addAll(secundaryProfession.getResources());
+        if (primaryProfession != null) resources.addAll(primaryProfession.getResources());
+        if (secundaryProfession != null) resources.addAll(secundaryProfession.getResources());
         return resources;
     }
 

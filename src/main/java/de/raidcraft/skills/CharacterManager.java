@@ -5,6 +5,7 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
@@ -179,6 +180,10 @@ public final class CharacterManager implements Listener {
         // save the hero first
         hero.save();
         hero.clearEffects();
+        // destroy all resources
+        for (Resource resource : hero.getResources()) {
+            resource.destroy();
+        }
         // lets clear the cache for the hero
         clearCacheOf(hero);
     }

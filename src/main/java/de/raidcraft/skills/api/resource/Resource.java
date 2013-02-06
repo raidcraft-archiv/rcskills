@@ -51,5 +51,7 @@ public interface Resource {
 
     public void regen();
 
+    public void destroy();
+
     public void save();
 }

@@ -52,6 +52,7 @@ public abstract class AbstractProfession implements Profession {
             if (tHeroResource == null) {
                 tHeroResource = new THeroResource();
                 tHeroResource.setName(key);
+                tHeroResource.setProfession(database);
                 Database.save(tHeroResource);
             }
             ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));

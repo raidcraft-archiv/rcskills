@@ -102,10 +102,11 @@ public abstract class AbstractResource implements Resource {
 
         if (current < getMin()) current = getMin();
         if (current > getMax()) current = getMax();
-        if (getCurrent() != current) {
+        boolean update = getCurrent() != current;
+        this.current = current;
+        if (update) {
             getType().update(this);
         }
-        this.current = current;
     }
 
     @Override
@@ -218,6 +219,12 @@ public abstract class AbstractResource implements Resource {
         }
 
         setCurrent((int) (getCurrent() + getMax() * getRegenPercent()));
+    }
+
+    @Override
+    public void destroy() {
+
+        task.cancel();
     }
 
     @Override

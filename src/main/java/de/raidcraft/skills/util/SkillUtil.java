@@ -37,6 +37,12 @@ public final class SkillUtil {
         }
 
         if (foundSkills.size() > 1) {
+            // check if a skills matches exactly
+            for (Skill skill : foundSkills) {
+                if (skill.getName().equalsIgnoreCase(input)) {
+                    return skill;
+                }
+            }
             throw new CommandException(
                     "Es gibt mehrere Skills mit dem Namen: " + input + " - " + StringUtil.joinString(foundSkills, ", ", 0));
         }
@@ -71,7 +77,7 @@ public final class SkillUtil {
             body.add(sb.toString());
         }
 
-        for (Resource resource : skill.getProfession().getResources()) {
+        for (Resource resource : skill.getHero().getResources()) {
             if (skill.getTotalResourceCost(resource.getName()) > 0) {
                 sb = new StringBuilder();
                 sb.append(ChatColor.YELLOW).append("  - ");

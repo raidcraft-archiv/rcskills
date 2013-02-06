@@ -83,7 +83,7 @@ public abstract class AbstractSkill implements Skill {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
-        for (Resource resource : getProfession().getResources()) {
+        for (Resource resource : getHero().getResources()) {
             if (this.getTotalResourceCost(resource.getName()) > resource.getCurrent()) {
                 throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
             }
@@ -111,7 +111,7 @@ public abstract class AbstractSkill implements Skill {
     public final void substractUsageCost() {
 
         // substract the mana, health and stamina cost
-        for (Resource resource : getProfession().getResources()) {
+        for (Resource resource : getHero().getResources()) {
             if (getTotalResourceCost(resource.getName()) > 0) {
                 resource.setCurrent(resource.getCurrent() - getTotalResourceCost(resource.getName()));
             }
