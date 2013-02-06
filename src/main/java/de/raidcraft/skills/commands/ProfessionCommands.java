@@ -4,7 +4,8 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
-import de.raidcraft.api.commands.QueuedCaptchaCommand;
+import de.raidcraft.api.commands.QueuedCommand;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -15,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,7 +117,7 @@ public class ProfessionCommands {
                         (primary ? "deiner " + ChatColor.AQUA + "Klasse" : "deines " + ChatColor.AQUA + "Berufs") + ChatColor.RED +
                         " zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
                         " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
-                new QueuedCaptchaCommand(sender, this, "chooseProfession", hero, profession);
+                new QueuedCommand(sender, this, "chooseProfession", hero, profession);
             }
         } catch (InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
@@ -130,15 +132,31 @@ public class ProfessionCommands {
             desc = "Shows information about a profession"
     )
     @CommandPermissions("rcskills.player.profession.info")
-    public void info(CommandContext args, CommandSender sender) {
+    public void info(CommandContext args, CommandSender sender) throws CommandException {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        Profession profession = hero.getSelectedProfession();
+        if (args.hasFlag('h')) {
+            try {
+                hero = plugin.getCharacterManager().getHero(args.getFlag('h'));
+            } catch (UnknownPlayerException e) {
+                throw new CommandException(e.getMessage());
+            }
+        }
 
-        sender.sendMessage(ChatColor.YELLOW + profession.getProperties().getFriendlyName());
+        Profession profession = hero.getSelectedProfession();
+        if (args.argsLength() > 0) {
+            profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
+        } else if (args.hasFlag('p') && hero.getPrimaryProfession() != null) {
+            profession = hero.getPrimaryProfession();
+        } else if (args.hasFlag('s') && hero.getSecundaryProfession() != null) {
+            profession = hero.getSecundaryProfession();
+        }
+
+        Collection<String> strings = ProfessionUtil.renderProfessionInformation(profession);
+        sender.sendMessage(strings.toArray(new String[strings.size()]));
     }
 
-    private void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
+    public void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
 
         if (!profession.isUnlockable()) {
             return;

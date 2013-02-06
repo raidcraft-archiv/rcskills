@@ -229,9 +229,20 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 aliases = {"profession", "prof"},
                 desc = "Base Command for Profession and Classes"
         )
-        @NestedCommand(ProfessionCommands.class)
-        public void profession(CommandContext args, CommandSender sender) {
+        @NestedCommand(value = ProfessionCommands.class)
+        public void profession(CommandContext args, CommandSender sender) throws CommandException {
 
+                getCommand("profession info").execute(sender, "profession info", args.getSlice(0));
+        }
+
+        @Command(
+                aliases = {"rcs"},
+                desc = "Base Command for Players"
+        )
+        @NestedCommand(value = PlayerComands.class)
+        public void player(CommandContext args, CommandSender sender) {
+
+            getCommand("rcs info").execute(sender, "rcs info", args.getSlice(0));
         }
 
         @Command(
@@ -241,15 +252,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(AdminCommands.class)
         @CommandPermissions("rcskills.admin")
         public void admin(CommandContext args, CommandSender sender) {
-
-        }
-
-        @Command(
-                aliases = {"rcs"},
-                desc = "Base Command for Players"
-        )
-        @NestedCommand(PlayerComands.class)
-        public void player(CommandContext args, CommandSender sender) {
 
         }
 
@@ -284,6 +286,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             } else {
                 hero.heal(hero.getMaxHealth());
             }
+            hero.save();
         }
     }
 }

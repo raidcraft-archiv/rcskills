@@ -6,12 +6,11 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -48,11 +47,7 @@ public class SkillsCommand {
         List<Skill> skills = new ArrayList<>();
         // get the profession
         if (args.argsLength() > 0) {
-            try {
-                skills.addAll(plugin.getProfessionManager().getProfession(hero, args.getString(0)).getSkills());
-            } catch (UnknownProfessionException | UnknownSkillException e) {
-                throw new CommandException(e.getMessage());
-            }
+            skills.addAll(ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0)).getSkills());
         } else if (args.hasFlag('s')) {
             skills.addAll(hero.getSelectedProfession().getSkills());
         } else if (args.hasFlag('a')) {

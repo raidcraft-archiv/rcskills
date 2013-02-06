@@ -6,8 +6,12 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.requirement.Requirement;
+import de.raidcraft.skills.api.resource.Resource;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,5 +43,70 @@ public final class ProfessionUtil {
         }
 
         return professions.get(0);
+    }
+
+    public static Collection<String> renderProfessionInformation(Profession profession) {
+
+        List<String> strings = formatBody(profession);
+        strings.add(0, formatHeader(profession));
+        return strings;
+    }
+
+    public static String formatHeader(Profession profession) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.YELLOW).append("------- [");
+        sb.append(ChatColor.AQUA).append(profession.getLevel().getLevel());
+        sb.append(ChatColor.YELLOW).append("] ").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED);
+        sb.append(profession.getFriendlyName());
+        sb.append(ChatColor.YELLOW).append(" -------");
+        return sb.toString();
+    }
+
+    public static List<String> formatBody(Profession profession) {
+
+        List<String> body = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(profession.getProperties().getDescription());
+        body.add(sb.toString());
+
+        // level information
+        sb = new StringBuilder();
+        sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(profession.getLevel().getLevel())
+                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getLevel().getMaxLevel());
+        sb.append(ChatColor.YELLOW).append("  |   EXP: ").append(ChatColor.AQUA).append(profession.getLevel().getExp())
+                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getLevel().getMaxExp());
+        body.add(sb.toString());
+
+        if (profession.getResources().size() > 0) {
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Resourcen: \n");
+            for (Resource resource : profession.getResources()) {
+                sb.append(ChatColor.YELLOW).append("  - ");
+                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName());
+                sb.append("\n");
+            }
+            body.add(sb.toString());
+        }
+
+        if (profession.getRequirements().size() > 0) {
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
+            for (Requirement requirement : profession.getRequirements()) {
+                sb.append(ChatColor.YELLOW).append("  - ");
+                sb.append((requirement.isMet(profession.getHero()) ? ChatColor.GREEN : ChatColor.RED));
+                sb.append(requirement.getShortReason(profession.getHero()));
+                sb.append("\n");
+            }
+            body.add(sb.toString());
+        }
+
+        sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append(ChatColor.ITALIC);
+        sb.append("Für eine Liste alle Skills gebe /skills ").append(profession.getFriendlyName()).append(" ein.");
+        body.add(sb.toString());
+
+        return body;
     }
 }

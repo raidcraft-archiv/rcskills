@@ -3,7 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import de.raidcraft.api.commands.QueuedCaptchaCommand;
+import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -72,7 +72,7 @@ public class PlayerComands {
             } else {
                 hero.sendMessage(ChatColor.RED + "Bist du sicher, dass du " + ChatColor.AQUA
                         + level.getLevelObject() + " " + exp + "exp " + ChatColor.RED + "zuteilen willst?");
-                new QueuedCaptchaCommand(sender, this, "addExp", expPool, level, exp);
+                new QueuedCommand(sender, this, "addExp", expPool, level, exp);
             }
         } catch (UnknownSkillException | InvalidChoiceException e) {
             throw new CommandException(e.getMessage());

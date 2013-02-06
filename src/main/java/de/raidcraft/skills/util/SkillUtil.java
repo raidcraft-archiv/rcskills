@@ -83,7 +83,6 @@ public final class SkillUtil {
                 sb.append(ChatColor.YELLOW).append("  - ");
                 sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ")
                         .append(ChatColor.AQUA).append(skill.getTotalResourceCost(resource.getName()));
-                sb.append("\n");
                 body.add(sb.toString());
             }
         }
