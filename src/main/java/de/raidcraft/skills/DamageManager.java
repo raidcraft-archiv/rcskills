@@ -4,7 +4,6 @@ import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
-import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -12,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -103,53 +101,6 @@ public final class DamageManager implements Listener {
     /*/////////////////////////////////////////////////////////////////////////
     //    Bukkit Events are called beyond this line - put your buckets on!
     /////////////////////////////////////////////////////////////////////////*/
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
-            return;
-        }
-        if (event.getDamage() == 0) {
-            return;
-        }
-        if (!(event.getEntity() instanceof LivingEntity)) {
-            return;
-        }
-        if (event.getDamager() instanceof Projectile || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-            // the projectile callbacks are handled in the CombatManager
-            return;
-        }
-
-        CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
-        CharacterTemplate attacker = null;
-        if (event.getDamager() instanceof LivingEntity) {
-            attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
-        }
-
-        try {
-            if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                if (attacker == null) {
-                    return;
-                }
-                int damage = event.getDamage();
-                if (creatureDamage.containsKey(attacker.getEntity().getType())) {
-                    damage = creatureDamage.get(attacker.getEntity().getType());
-                }
-                PhysicalAttack attack = new PhysicalAttack(event, damage);
-                // lets set the event damage to 0 and handle it in our attack
-                event.setDamage(0);
-                attack.run();
-            }
-        } catch (CombatException e) {
-            if (attacker instanceof Hero) {
-                ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
-            }
-            if (target instanceof Hero) {
-                ((Hero) target).debug((attacker.getName()) + "->You: " + e.getMessage());
-            }
-        }
-    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent event) {

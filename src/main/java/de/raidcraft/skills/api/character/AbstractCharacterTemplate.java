@@ -43,6 +43,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
     private int maxHealth;
     private boolean inCombat = false;
+    private long lastSwing;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -108,6 +109,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         int newHealth = getHealth() + amount;
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
+        getEntity().setNoDamageTicks(1);
         setHealth(newHealth);
         if (this instanceof Hero) {
             ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
@@ -323,6 +325,25 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
+    }
+
+    @Override
+    public boolean canSwing() {
+
+        return System.currentTimeMillis() > getLastSwing();
+    }
+
+    @Override
+    public long getLastSwing() {
+
+        return lastSwing;
+    }
+
+    @Override
+    public void setLastSwing() {
+
+        this.lastSwing = System.currentTimeMillis()
+                + (long) (RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().swing_delay * 1000);
     }
 
     @Override

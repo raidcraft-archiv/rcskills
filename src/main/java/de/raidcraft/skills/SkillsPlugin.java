@@ -190,6 +190,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double default_effect_priority = 1.0;
         @Setting("defaults.global-cooldown")
         public double global_cooldown = 1.5;
+        @Setting("defaults.swing-delay")
+        public double swing_delay = 1.0;
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
@@ -286,7 +288,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             } else {
                 hero.heal(hero.getMaxHealth());
             }
-            hero.save();
         }
     }
 }

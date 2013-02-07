@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -90,6 +91,60 @@ public final class CombatManager implements Listener {
             plugin.getCharacterManager().getHero(event.getPlayer()).removeEffect(CastTime.class);
         } catch (CombatException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onAttack(EntityDamageByEntityEvent event) {
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
+            return;
+        }
+        if (event.getDamage() == 0) {
+            return;
+        }
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+        if (event.getDamager() instanceof Projectile || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+            // the projectile callbacks are handled in the CombatManager
+            return;
+        }
+
+        CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+        CharacterTemplate attacker = null;
+        if (event.getDamager() instanceof LivingEntity) {
+            attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+        }
+
+        if (attacker == null) {
+            return;
+        }
+
+        try {
+            if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                int damage = event.getDamage();
+                if (attacker instanceof Hero && !attacker.canSwing()) {
+                    event.setCancelled(true);
+                    return;
+                } else {
+                    damage = plugin.getDamageManager().getCreatureDamage(attacker.getEntity().getType());
+                }
+                PhysicalAttack attack = new PhysicalAttack(event, damage);
+                // cancel event because we are handling stuff
+                event.setCancelled(true);
+                attack.run();
+                if (attacker instanceof Hero) {
+                    attacker.setLastSwing();
+                }
+            }
+        } catch (CombatException e) {
+            if (attacker instanceof Hero) {
+                ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
+            }
+            if (target instanceof Hero) {
+                ((Hero) target).debug((attacker.getName()) + "->You: " + e.getMessage());
+            }
         }
     }
 
