@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.DamageCause, CharacterTemplate> {
 
-    private final EntityDamageByEntityEvent.DamageCause cause;
+    private final EntityDamageEvent event;
 
     public EnvironmentAttack(EntityDamageEvent event, int damage) {
 
@@ -25,17 +25,21 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
                 damage,
                 EffectType.fromEvent(event.getCause()));
-        this.cause = event.getCause();
+        this.event = event;
     }
 
     @Override
     public void run() throws CombatException {
 
-        // TODO: set damage based on source and config
+        // respect the no damage ticks
+        if (getTarget().getEntity().getNoDamageTicks() > 0) {
+            return;
+        }
+
 
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         if (getTarget() instanceof Hero) {
-            DamageTrigger trigger = new DamageTrigger(getTarget(), this, cause);
+            DamageTrigger trigger = new DamageTrigger(getTarget(), this, event.getCause());
             TriggerManager.callTrigger(trigger);
             if (trigger.isCancelled()) setCancelled(true);
         }
@@ -43,5 +47,9 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
             throw new CombatException(CombatException.Type.CANCELLED);
         }
         getTarget().damage(this);
+        // set the last damage source
+        getTarget().getEntity().setLastDamageCause(event);
+        // set the no damage ticks
+        getTarget().getEntity().setNoDamageTicks(getTarget().getEntity().getMaximumNoDamageTicks());
     }
 }

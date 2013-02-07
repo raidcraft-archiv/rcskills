@@ -84,6 +84,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             damage(attack.getDamage());
+            // lets set some bukkit properties
+            getEntity().setLastDamage(attack.getDamage());
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(
                         "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");

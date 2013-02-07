@@ -140,26 +140,13 @@ public final class DamageManager implements Listener {
                 // lets set the event damage to 0 and handle it in our attack
                 event.setDamage(0);
                 attack.run();
-            } else {
-                if (environmentalDamage.containsKey(event.getCause())) {
-                    int damage = event.getDamage();
-                    damage += damage * environmentalDamage.get(event.getCause());
-                    EnvironmentAttack attack = new EnvironmentAttack(event, damage);
-                    event.setDamage(0);
-                    attack.run();
-                } else {
-                    // simply issue an environment attack with no modified damage
-                    EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
-                    event.setDamage(0);
-                    attack.run();
-                }
             }
         } catch (CombatException e) {
-            if (attacker != null && attacker instanceof Hero) {
+            if (attacker instanceof Hero) {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
             }
             if (target instanceof Hero) {
-                ((Hero) target).debug((attacker != null ? attacker.getName() : event.getCause().name()) + "->You: " + e.getMessage());
+                ((Hero) target).debug((attacker.getName()) + "->You: " + e.getMessage());
             }
         }
     }
@@ -187,12 +174,12 @@ public final class DamageManager implements Listener {
                 int damage = event.getDamage();
                 damage += damage * environmentalDamage.get(event.getCause());
                 EnvironmentAttack attack = new EnvironmentAttack(event, damage);
-                event.setDamage(0);
+                event.setCancelled(true);
                 attack.run();
             } else {
                 // simply issue an environment attack with no modified damage
                 EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
-                event.setDamage(0);
+                event.setCancelled(true);
                 attack.run();
             }
         } catch (CombatException e) {

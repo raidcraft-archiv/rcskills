@@ -75,6 +75,8 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
                 throw new CombatException(CombatException.Type.CANCELLED);
             }
             getTarget().damage(this);
+            // set the last damage source
+            getTarget().getEntity().setLastDamageCause(event);
             // if no exceptions was thrown to this point issue the callback
             if (callback != null && !(callback instanceof RangedCallback)) {
                 callback.run(getTarget());
