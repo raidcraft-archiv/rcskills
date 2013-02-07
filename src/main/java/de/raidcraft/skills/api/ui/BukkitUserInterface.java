@@ -47,6 +47,11 @@ public class BukkitUserInterface implements UserInterface {
             return;
         }
 
+        // make sure the food level is never at 20 to allow eating
+        if (player.getFoodLevel() > 19) {
+            player.setFoodLevel(19);
+        }
+
         // set the players health bar to a percentage of his actual health
         int health = (int) Math.ceil(((double) hero.getHealth() / hero.getMaxHealth()) * player.getMaxHealth());
         if (health > 20) health = 20;
