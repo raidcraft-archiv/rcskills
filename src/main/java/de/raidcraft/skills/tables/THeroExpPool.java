@@ -1,5 +1,6 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
@@ -64,5 +65,10 @@ public class THeroExpPool implements LevelData, Bean {
     public void setExp(int exp) {
 
         this.exp = exp;
+    }
+
+    public void delete() {
+
+        Ebean.delete(this);
     }
 }

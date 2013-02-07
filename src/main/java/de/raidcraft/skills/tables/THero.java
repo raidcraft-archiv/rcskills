@@ -1,5 +1,6 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Bean;
@@ -7,6 +8,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -39,11 +41,11 @@ public class THero implements LevelData, HeroData, Bean {
     @OneToOne
     private THeroExpPool expPool;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "hero_id")
     private List<THeroProfession> professions;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
 
@@ -185,5 +187,12 @@ public class THero implements LevelData, HeroData, Bean {
     public void setExpPool(THeroExpPool expPool) {
 
         this.expPool = expPool;
+    }
+
+    public void delete() {
+
+        int expPool = getExpPool().getId();
+        Ebean.delete(this);
+        Ebean.find(THeroExpPool.class, expPool).delete();
     }
 }

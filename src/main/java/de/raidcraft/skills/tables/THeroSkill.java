@@ -1,9 +1,11 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -31,7 +33,7 @@ public class THeroSkill implements LevelData, Bean {
     @ManyToOne
     private THero hero;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "skill_id")
     private List<TSkillData> skillData;
 
@@ -117,5 +119,10 @@ public class THeroSkill implements LevelData, Bean {
     public void setSkillData(List<TSkillData> skillData) {
 
         this.skillData = skillData;
+    }
+
+    public void delete() {
+
+        Ebean.delete(this);
     }
 }

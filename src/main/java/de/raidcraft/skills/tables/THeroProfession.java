@@ -1,9 +1,11 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -32,11 +34,11 @@ public class THeroProfession implements Bean, LevelData {
     private int exp;
     private boolean active;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "profession_id")
     private List<THeroSkill> skills;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "profession_id")
     private List<THeroResource> resources;
 
@@ -119,5 +121,10 @@ public class THeroProfession implements Bean, LevelData {
     public void setResources(List<THeroResource> resources) {
 
         this.resources = resources;
+    }
+
+    public void delete() {
+
+        Ebean.delete(this);
     }
 }

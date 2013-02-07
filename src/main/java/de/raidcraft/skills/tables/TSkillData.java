@@ -1,5 +1,6 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Bean;
 
 import javax.persistence.Entity;
@@ -59,5 +60,10 @@ public class TSkillData implements Bean {
     public void setSkill(THeroSkill skill) {
 
         this.skill = skill;
+    }
+
+    public void delete() {
+
+        Ebean.delete(this);
     }
 }

@@ -1,5 +1,6 @@
 package de.raidcraft.skills.tables;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.skills.api.persistance.ResourceData;
 
@@ -63,5 +64,10 @@ public class THeroResource implements ResourceData {
     public void setProfession(THeroProfession profession) {
 
         this.profession = profession;
+    }
+
+    public void delete() {
+
+        Ebean.delete(this);
     }
 }

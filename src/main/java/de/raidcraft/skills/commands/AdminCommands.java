@@ -1,9 +1,11 @@
 package de.raidcraft.skills.commands;
 
+import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -12,6 +14,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.tables.THero;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -320,5 +323,38 @@ public class AdminCommands {
         } catch (UnknownPlayerException | UnknownProfessionException | UnknownSkillException e) {
             throw new CommandException(e.getMessage());
         }
+    }
+
+    @Command(
+            aliases = "purge",
+            desc = "Removes all references from a player from the database.",
+            min = 1,
+            flags = "f"
+    )
+    @CommandPermissions("rcskills.admin.purge")
+    public void purge(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            if (args.hasFlag('f')) {
+                purgeHero(hero);
+            } else {
+                new QueuedCaptchaCommand(sender, this, "purgeHero", hero);
+            }
+        } catch (UnknownPlayerException | NoSuchMethodException e) {
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    private void purgeHero(Hero hero) {
+
+        // kick the player if he is online
+        if (hero.getPlayer() != null) {
+            hero.getPlayer().kickPlayer("Dein RPG Profil wird zurück gesetzt bitte warte kurz.");
+        }
+        // this will delete all references to the object
+        Ebean.find(THero.class, hero.getId()).delete();
+        // remove the player from cache
+        plugin.getCharacterManager().clearCacheOf(hero);
     }
 }

@@ -71,6 +71,12 @@ public final class ProfessionUtil {
         sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(profession.getProperties().getDescription());
         body.add(sb.toString());
 
+        // live information
+        sb = new StringBuilder();
+        sb.append(ChatColor.YELLOW).append("Leben: ").append(ChatColor.AQUA).append(profession.getHero().getHealth());
+        sb.append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getHero().getMaxHealth());
+        body.add(sb.toString());
+
         // level information
         sb = new StringBuilder();
         sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(profession.getLevel().getLevel())
@@ -84,7 +90,9 @@ public final class ProfessionUtil {
             sb.append(ChatColor.YELLOW).append("Resourcen: \n");
             for (Resource resource : profession.getResources()) {
                 sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName());
+                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ");
+                sb.append(ChatColor.AQUA).append(resource.getCurrent()).append(ChatColor.YELLOW).append("/");
+                sb.append(ChatColor.AQUA).append(resource.getMax()).append(ChatColor.YELLOW);
                 sb.append("\n");
             }
             body.add(sb.toString());

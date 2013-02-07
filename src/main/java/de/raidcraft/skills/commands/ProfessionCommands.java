@@ -35,7 +35,7 @@ public class ProfessionCommands {
     @Command(
             aliases = {"list", "l"},
             desc = "Lists professions",
-            flags = "p:ac"
+            flags = "p:a"
     )
     @CommandPermissions("rcskills.player.profession.list")
     public void list(final CommandContext args, CommandSender sender) throws CommandException {
@@ -53,9 +53,7 @@ public class ProfessionCommands {
         }
 
         for (int i = 0; i < professions.size(); i++) {
-            if (!args.hasFlag('a') && !professions.get(i).isActive()) {
-                professions.remove(i);
-            } else if (args.hasFlag('c') && !professions.get(i).isUnlockable()) {
+            if (!args.hasFlag('a') && !professions.get(i).isUnlockable()) {
                 professions.remove(i);
             }
         }
@@ -129,7 +127,8 @@ public class ProfessionCommands {
 
     @Command(
             aliases = {"info"},
-            desc = "Shows information about a profession"
+            desc = "Shows information about a profession",
+            flags = "hps"
     )
     @CommandPermissions("rcskills.player.profession.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
