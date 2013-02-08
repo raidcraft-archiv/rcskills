@@ -78,6 +78,26 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     }
 
     @Override
+    public final int getTotalNeededExpForLevel(int level) {
+
+        int exp = 0;
+        for (int i = 1; i <= level; i++) {
+            exp += getNeededExpForLevel(i);
+        }
+        return exp;
+    }
+
+    private int getLevelAmountForExp(int exp) {
+
+        int level = 0;
+        while (level <= getMaxLevel() && exp >= 0) {
+            exp -= getNeededExpForLevel(getLevel() + level);
+            if (exp >= 0) level++;
+        }
+        return level;
+    }
+
+    @Override
     public void addExp(int exp) {
 
         if (getLevelObject().isMastered()) {
@@ -111,43 +131,33 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void setLevel(int level) {
 
-        if (level < this.level) {
-            do {
-                removeLevel(1);
-            } while (getLevel() > level);
-        } else if (level > this.level) {
-            do {
-                addLevel(1);
-            } while (getLevel() < level);
+        if (hasReachedMaxLevel()) return;
+        if (level > getMaxLevel()) level = getMaxLevel();
+        if (level < 1) level = 1;
+        if (level == this.level) return;
+
+        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RaidCraft.callEvent(event);
+
+        if (!event.isCancelled()) {
+            int oldLevel = this.level;
+            this.level = level;
+
+            if (level > oldLevel) increaseLevel(oldLevel, level);
+            if (level < oldLevel) decreaseLevel();
         }
     }
 
     @Override
     public void addLevel(int level) {
 
-        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
-        RaidCraft.callEvent(event);
-        if (!event.isCancelled()) {
-            for (int i = 0; i < level; i++) {
-                if (!hasReachedMaxLevel()) {
-                    increaseLevel();
-                }
-            }
-        }
+        setLevel(getLevel() + level);
     }
 
     @Override
     public void removeLevel(int level) {
 
-        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
-        RaidCraft.callEvent(event);
-        if (!event.isCancelled()) {
-            for (int i = 0; i < level; i++) {
-                if (1 < getLevel()) {
-                    decreaseLevel();
-                }
-            }
-        }
+        setLevel(getLevel() - level);
     }
 
     @Override
@@ -159,28 +169,27 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public boolean hasReachedMaxLevel() {
 
-        return !(getLevel() < getMaxLevel());
+        return getMaxLevel() <= getLevel();
     }
 
     private void checkProgress() {
 
         if (canLevel()) {
             // increase the level
-            addLevel(1);
+            addLevel(getLevelAmountForExp(getExp()));
         } else if (getExp() < 0 && getLevel() > 0) {
             // decrease the level...
             removeLevel(1);
-            // our exp are negative when we get reduced
-            setExp(getMaxExp() + getExp());
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void increaseLevel() {
+    private void increaseLevel(int oldLevel, int newLevel) {
 
-        this.level++;
+        // lets get the total needed exp from the old level to the new level-1
+        int neededExp = getTotalNeededExpForLevel(newLevel - 1) - getTotalNeededExpForLevel(oldLevel);
         // set the exp
-        setExp(getExp() - getMaxExp());
+        setExp(getExp() - neededExp);
         calculateMaxExp();
         saveLevelProgress();
         getLevelObject().onLevelGain();
@@ -189,10 +198,11 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
-        this.level--;
+        // our exp are negative when we get reduced
+        setExp(getMaxExp() + getExp());
         calculateMaxExp();
         saveLevelProgress();
-        levelObject.onLevelLoss();
+        getLevelObject().onLevelLoss();
     }
 
     @Override

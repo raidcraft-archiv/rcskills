@@ -322,6 +322,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public RCPlayer getRCPlayer() {
+
+        return player;
+    }
+
+    @Override
     public Level<Hero> getExpPool() {
 
         return expPool;

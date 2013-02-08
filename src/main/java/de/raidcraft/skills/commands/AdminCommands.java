@@ -337,16 +337,16 @@ public class AdminCommands {
         try {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             if (args.hasFlag('f')) {
-                purgeHero(hero);
+                purgeHero(sender, hero);
             } else {
-                new QueuedCaptchaCommand(sender, this, "purgeHero", hero);
+                new QueuedCaptchaCommand(sender, this, "purgeHero", sender, hero);
             }
         } catch (UnknownPlayerException | NoSuchMethodException e) {
             throw new CommandException(e.getMessage());
         }
     }
 
-    private void purgeHero(Hero hero) {
+    private void purgeHero(CommandSender sender, Hero hero) {
 
         // kick the player if he is online
         if (hero.getPlayer() != null) {
@@ -356,5 +356,6 @@ public class AdminCommands {
         Ebean.find(THero.class, hero.getId()).delete();
         // remove the player from cache
         plugin.getCharacterManager().clearCacheOf(hero);
+        sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }
 }

@@ -21,12 +21,19 @@ public interface Level<T extends Levelable> {
     public int getMaxExp();
 
     /**
-     * Calculates how much exp is needed for the given level.
-     * Will _not_ set the max exp.
+     * Calculates how much total exp is needed for the given level.
      *
      * @return exp needed for the given level
      */
     public int getNeededExpForLevel(int level);
+
+    /**
+     * Calculates the total amount of exp needed to that level from level 0 and 0 exp.
+     *
+     * @param level to calculate exp for
+     * @return total exp
+     */
+    public int getTotalNeededExpForLevel(int level);
 
     /**
      * Calculates and sets the maxp exp for the current level.
