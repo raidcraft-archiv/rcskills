@@ -175,21 +175,25 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     private void checkProgress() {
 
         if (canLevel()) {
+            int oldLevel = getLevel();
+            int newLevel = getLevel() + getLevelAmountForExp(getExp());
             // increase the level
-            addLevel(getLevelAmountForExp(getExp()));
+            setLevel(newLevel);
+            // lets get the total needed exp from the old level to the new level-1
+            int neededExp = getTotalNeededExpForLevel(newLevel - 1) - getTotalNeededExpForLevel(oldLevel);
+            // set the exp
+            setExp(getExp() - neededExp);
         } else if (getExp() < 0 && getLevel() > 0) {
             // decrease the level...
             removeLevel(1);
+            // our exp are negative when we get reduced
+            setExp(getMaxExp() + getExp());
         }
     }
 
     @SuppressWarnings("unchecked")
     private void increaseLevel(int oldLevel, int newLevel) {
 
-        // lets get the total needed exp from the old level to the new level-1
-        int neededExp = getTotalNeededExpForLevel(newLevel - 1) - getTotalNeededExpForLevel(oldLevel);
-        // set the exp
-        setExp(getExp() - neededExp);
         calculateMaxExp();
         saveLevelProgress();
         getLevelObject().onLevelGain();
@@ -198,8 +202,6 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
-        // our exp are negative when we get reduced
-        setExp(getMaxExp() + getExp());
         calculateMaxExp();
         saveLevelProgress();
         getLevelObject().onLevelLoss();
