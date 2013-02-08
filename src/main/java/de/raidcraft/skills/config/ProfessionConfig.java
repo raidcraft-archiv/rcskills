@@ -143,10 +143,4 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
 
         return getOverrideSection("resources." + type);
     }
-
-    @Override
-    public boolean isPrimary() {
-
-        return getOverride("primary", false);
-    }
 }
