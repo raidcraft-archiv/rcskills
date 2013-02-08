@@ -27,6 +27,12 @@ public class VirtualPath implements Path<Profession> {
     }
 
     @Override
+    public int getPriority() {
+
+        return 0;
+    }
+
+    @Override
     public List<Profession> getParents(Hero hero) {
 
         ArrayList<Profession> professions = new ArrayList<>();

@@ -33,8 +33,6 @@ public interface ProfessionProperties {
 
     public ConfigurationSection getResourceConfig(String type);
 
-    public boolean isPrimary();
-
     public List<Skill> loadSkills(Profession profession);
 
     public void loadRequirements(Profession profession);

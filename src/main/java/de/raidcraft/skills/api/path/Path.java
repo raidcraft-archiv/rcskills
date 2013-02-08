@@ -14,6 +14,8 @@ public interface Path<T extends Parent> {
 
     public String getFriendlyName();
 
+    public int getPriority();
+
     /**
      * Will return a list of the very first parents.
      * The parent/child inheritance will take over from there.

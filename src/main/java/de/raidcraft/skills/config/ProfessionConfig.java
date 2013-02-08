@@ -43,19 +43,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
-                // lets check if the skill has a different profession written on it
-                String profName = section.getString(skill + ".profession");
-                Skill profSkill;
-                if (profName != null && !profName.equals("")) {
-                    profession = getPlugin().getProfessionManager().getProfession(profession.getHero(), profName);
-                    profession.setActive(true);
-                    // lets pass our prof skill config as a final override
-                    profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill, section.getConfigurationSection(skill));
-                } else {
-                    profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
-                }
+                Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.add(profSkill);
-            } catch (UnknownSkillException | UnknownProfessionException e) {
+            } catch (UnknownSkillException e) {
                 getPlugin().getLogger().warning(e.getMessage());
             }
         }

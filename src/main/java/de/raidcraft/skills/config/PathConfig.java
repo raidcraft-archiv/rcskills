@@ -38,4 +38,9 @@ public class PathConfig extends ConfigurationBase<SkillsPlugin> {
 
         return getString(path + ".name");
     }
+
+    public int getPriority(String path) {
+
+        return getInt(path + ".priority");
+    }
 }

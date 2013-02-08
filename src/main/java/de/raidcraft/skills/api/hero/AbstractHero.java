@@ -53,6 +53,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
+    private final Set<Path<Profession>> paths = new HashSet<>();
     private Level<Hero> level;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
@@ -77,10 +78,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadSkills();
 
         this.virtualProfession = getVirtualProfession();
-        this.selectedProfession = getSelectedProfession();
+        setSelectedProfession(professions.get(data.getSelectedProfession()));
         this.group = new SimpleGroup(this);
     }
 
+    @SuppressWarnings("unchecked")
     private void loadProfessions(List<String> professionNames) {
 
         ProfessionManager manager = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager();
@@ -93,6 +95,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                     // only add professions to our list that are currently active
                     if (profession.isActive()) {
                         professions.put(profession.getProperties().getName(), profession);
+                        paths.add(profession.getPath());
+                        // set selected profession
+                        if (getSelectedProfession().getPath().getPriority() < profession.getPath().getPriority()) {
+                            setSelectedProfession(profession);
+                        }
                     }
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
@@ -153,7 +160,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             }
         }
         // lets set the selected profession before we go all wanky in the while loop
-        setSelectedProfession(profession);
+        if (getSelectedProfession().getPath().getPriority() < profession.getPath().getPriority()) {
+            setSelectedProfession(profession);
+        }
 
         // now lets go thru all of the professions parents add them and activate them
         do {
@@ -282,6 +291,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public Set<Path<Profession>> getPaths() {
+
+        return paths;
+    }
+
+    @Override
     public void reset() {
 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
@@ -381,16 +396,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public int getDefaultHealth() {
 
-        Profession profession;
-        if (getPrimaryProfession() != null) {
-            profession = getPrimaryProfession();
-        } else if (getSecundaryProfession() != null) {
-            profession = getSecundaryProfession();
-        } else {
-            return getEntity().getMaxHealth();
-        }
-        return (int) (profession.getProperties().getBaseHealth()
-                + profession.getProperties().getBaseHealthModifier() * profession.getLevel().getLevel());
+        return (int) (getSelectedProfession().getProperties().getBaseHealth()
+                + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getLevel().getLevel());
     }
 
     @Override
@@ -519,14 +526,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Profession getSelectedProfession() {
 
         if (selectedProfession == null) {
-            // if the metadata returned null choose the primary or secondary prof
-            if (getPrimaryProfession() != null) {
-                setSelectedProfession(getPrimaryProfession());
-            } else if (getSecundaryProfession() != null) {
-                setSelectedProfession(getSecundaryProfession());
-            } else {
-                setSelectedProfession(getVirtualProfession());
-            }
+            setSelectedProfession(getVirtualProfession());
         }
         return selectedProfession;
     }

@@ -36,6 +36,12 @@ public class ProfessionPath implements Path<Profession> {
     }
 
     @Override
+    public int getPriority() {
+
+        return config.getPriority(getName());
+    }
+
+    @Override
     public List<Profession> getParents(Hero hero) {
 
         ArrayList<Profession> professions = new ArrayList<>();

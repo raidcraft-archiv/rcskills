@@ -512,7 +512,7 @@ public abstract class AbstractSkill implements Skill {
             }
         }
         if (getProperties().getRequiredLevel() > getProfession().getLevel().getLevel()) {
-            return "Dein " + (getProfession().getProperties().isPrimary() ? "Klassen" : "Beruf") + " Level ist zu niedrig.";
+            return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
     }

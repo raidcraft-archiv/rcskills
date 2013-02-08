@@ -23,8 +23,7 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
     @Override
     public String getLongReason(Hero hero) {
 
-        return ChatColor.RED + "Du musst erst " +
-                (getLevelObject().getProperties().isPrimary() ? "die Klasse " : "den Beruf ") +
+        return ChatColor.RED + "Du musst erst deine " + getLevelObject().getPath().getFriendlyName() + " Spezialisierung " +
                 ChatColor.AQUA + getLevelObject() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
                 + getRequiredLevel() + ChatColor.RED + " bringen.";
     }
@@ -32,7 +31,7 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
     @Override
     public String getShortReason(Hero hero) {
 
-        return (getLevelObject().getProperties().isPrimary() ? "Klasse " : "Beruf ") +
-                getLevelObject() + " auf Level " + getRequiredLevel();
+        return (ChatColor.YELLOW + getLevelObject().getPath().getFriendlyName() + " Spezialisierung " + ChatColor.AQUA +
+                getLevelObject() + ChatColor.YELLOW + " auf Level " + getRequiredLevel());
     }
 }
