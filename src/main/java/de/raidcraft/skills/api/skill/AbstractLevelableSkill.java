@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -110,8 +109,8 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void save() {
 
-        super.save();
         level.saveLevelProgress();
+        super.save();
     }
 
     @Override
@@ -119,7 +118,6 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
         database.setLevel(level.getLevel());
         database.setExp(level.getExp());
-        Database.save(database);
     }
 
     @Override

@@ -59,11 +59,11 @@ public class SkillAction extends AbstractAction<Hero> {
             return;
         }
 
-        // lets remove the costs
-        skill.substractUsageCost();
-
         // and call the trigger
         ((CommandTriggered) skill).runCommand(args);
+
+        // lets remove the costs
+        skill.substractUsageCost();
 
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);

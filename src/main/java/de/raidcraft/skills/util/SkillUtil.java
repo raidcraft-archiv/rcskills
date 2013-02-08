@@ -103,7 +103,7 @@ public final class SkillUtil {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Zusatzinformationen: \n");
             for (String str : skill.getUsage()) {
-                sb.append(ChatColor.YELLOW).append("  - ").append(str).append("\n");
+                sb.append(ChatColor.YELLOW).append(str).append("\n");
             }
             body.add(sb.toString());
         }

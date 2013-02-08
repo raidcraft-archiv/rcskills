@@ -8,6 +8,7 @@ import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.group.Group;
@@ -48,7 +49,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private boolean debugging = false;
     private boolean combatLoggging = false;
     private int health;
-    private int maxHealth = 20;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -166,6 +166,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // reset the current progress and save
         reset();
         save();
+    }
+
+    @Override
+    public void damage(Attack attack) {
+
+        super.damage(attack);
+        getUserInterface().refresh();
     }
 
     @Override
