@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
@@ -27,6 +28,7 @@ public abstract class AbstractProfession implements Profession {
 
     private final ProfessionProperties properties;
     private final Hero hero;
+    private final Path<Profession> path;
     // can be null - if it is this profession has no parents :*(
     private final Profession parent;
     private final List<Profession> children;
@@ -38,10 +40,11 @@ public abstract class AbstractProfession implements Profession {
 
     private Level<Profession> level;
 
-    protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
+    protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, THeroProfession database) {
 
         this.properties = data;
         this.hero = hero;
+        this.path = path;
         this.database = database;
         this.parent = data.getParentProfession(hero);
         this.children = data.loadChildren(hero);
@@ -104,6 +107,12 @@ public abstract class AbstractProfession implements Profession {
     public ProfessionProperties getProperties() {
 
         return properties;
+    }
+
+    @Override
+    public Path getPath() {
+
+        return path;
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.group.SimpleGroup;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
@@ -53,9 +54,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
     private Level<Hero> level;
-    // primary and secondary professions are the ones defining items and stuff
-    private Profession primaryProfession;
-    private Profession secundaryProfession;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
@@ -92,14 +90,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
                     this.virtualProfession = profession;
                 } else {
-                    professions.put(profession.getProperties().getName(), profession);
-                    // set the primary and secundary profession
+                    // only add professions to our list that are currently active
                     if (profession.isActive()) {
-                        if (profession.getProperties().isPrimary()) {
-                            primaryProfession = profession;
-                        } else {
-                            secundaryProfession = profession;
-                        }
+                        professions.put(profession.getProperties().getName(), profession);
                     }
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
@@ -151,20 +144,26 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // lets save once before we change it all to make sure the levels are safed
         save();
         // now lets check what we actually need to change
-        if (profession.getProperties().isPrimary()) {
-            if (primaryProfession != null) primaryProfession.setActive(false);
-            primaryProfession = profession;
-        } else {
-            if (secundaryProfession != null) secundaryProfession.setActive(false);
-            secundaryProfession = profession;
+        // first lets check what path we are changing to and disable all professions on that path
+        Path path = profession.getPath();
+        for (Profession currentProf : getProfessions()) {
+            if (currentProf.getPath().equals(path)) {
+                currentProf.setActive(false);
+                professions.remove(currentProf.getName());
+            }
         }
-        profession.setActive(true);
-        professions.put(profession.getName(), profession);
+        // lets set the selected profession before we go all wanky in the while loop
         setSelectedProfession(profession);
+
+        // now lets go thru all of the professions parents add them and activate them
+        do {
+            profession.setActive(true);
+            professions.put(profession.getName(), profession);
+            if (profession.hasParent()) profession = profession.getParent();
+        } while (profession.hasParent());
+
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
-        // reset the current progress and save
-        reset();
         save();
     }
 
@@ -258,17 +257,21 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public Resource getResource(String type) {
 
-        Resource resource = primaryProfession.getResource(type);
-        if (resource == null) resource = secundaryProfession.getResource(type);
-        return resource;
+        for (Profession profession : professions.values()) {
+            if (profession.getResource(type) != null) {
+                return profession.getResource(type);
+            }
+        }
+        return null;
     }
 
     @Override
     public Set<Resource> getResources() {
 
-        HashSet<Resource> resources = new HashSet<>();
-        if (primaryProfession != null) resources.addAll(primaryProfession.getResources());
-        if (secundaryProfession != null) resources.addAll(secundaryProfession.getResources());
+        Set<Resource> resources = new HashSet<>();
+        for (Profession profession : professions.values()) {
+            resources.addAll(profession.getResources());
+        }
         return resources;
     }
 
@@ -353,18 +356,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (isCombatLogging() && message != null && !message.equals("")) {
             player.sendMessage(ChatColor.GRAY + "[Combat]" + ChatColor.ITALIC + message);
         }
-    }
-
-    @Override
-    public Profession getPrimaryProfession() {
-
-        return primaryProfession;
-    }
-
-    @Override
-    public Profession getSecundaryProfession() {
-
-        return secundaryProfession;
     }
 
     @Override
