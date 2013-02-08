@@ -239,18 +239,18 @@ public class AdminCommands {
             if (args.hasFlag('h')) {
                 hero.getLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
-                        hero.getName() + " " + level + "xp" + ChatColor.GREEN + " hinzugefügt.");
+                        hero.getName() + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
                 hero.sendMessage(ChatColor.GREEN + "Ein Admin hat dir " + ChatColor.AQUA
-                        + " " + level + "level" + ChatColor.GREEN + " hinzugefügt.");
+                        + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('p')) {
                 Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
                 profession.getLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
-                        + level + "xp" + ChatColor.GREEN + " hinzugefügt.");
+                        + level + " level" + ChatColor.GREEN + " hinzugefügt.");
                 hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
-                        + " " + level + "level" + ChatColor.GREEN + " hinzugefügt.");
+                        + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('s')) {
                 Skill skill = hero.getSkill(args.getFlag('s'));
@@ -258,9 +258,9 @@ public class AdminCommands {
                     ((Levelable) skill).getLevel().addLevel(level);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
-                            + level + "xp" + ChatColor.GREEN + " hinzugefügt.");
+                            + level + " level" + ChatColor.GREEN + " hinzugefügt.");
                     hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deinem Skill " + ChatColor.AQUA + skill.getFriendlyName()
-                            + " " + level + "level" + ChatColor.GREEN + " hinzugefügt.");
+                            + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
                 } else {
                     throw new CommandException("Der Skill " + skill.getName() + " ist kein Levelbarer Skill.");
                 }
@@ -337,16 +337,16 @@ public class AdminCommands {
         try {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             if (args.hasFlag('f')) {
-                purgeHero(hero);
+                purgeHero(sender, hero);
             } else {
-                new QueuedCaptchaCommand(sender, this, "purgeHero", hero);
+                new QueuedCaptchaCommand(sender, this, "purgeHero", sender, hero);
             }
         } catch (UnknownPlayerException | NoSuchMethodException e) {
             throw new CommandException(e.getMessage());
         }
     }
 
-    private void purgeHero(Hero hero) {
+    private void purgeHero(CommandSender sender, Hero hero) {
 
         // kick the player if he is online
         if (hero.getPlayer() != null) {
@@ -356,5 +356,6 @@ public class AdminCommands {
         Ebean.find(THero.class, hero.getId()).delete();
         // remove the player from cache
         plugin.getCharacterManager().clearCacheOf(hero);
+        sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }
 }

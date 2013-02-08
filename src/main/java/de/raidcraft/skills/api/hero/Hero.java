@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
+import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -23,6 +24,8 @@ import java.util.Set;
 public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public int getId();
+
+    public RCPlayer getRCPlayer();
 
     public Player getPlayer();
 
