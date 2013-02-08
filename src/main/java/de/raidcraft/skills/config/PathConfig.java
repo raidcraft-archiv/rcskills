@@ -36,11 +36,11 @@ public class PathConfig extends ConfigurationBase<SkillsPlugin> {
 
     public String getFriendlyName(String path) {
 
-        return getString(path + ".name");
+        return getString(path + ".name", getName());
     }
 
     public int getPriority(String path) {
 
-        return getInt(path + ".priority");
+        return getInt(path + ".priority", 1);
     }
 }

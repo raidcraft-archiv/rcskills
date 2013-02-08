@@ -39,5 +39,5 @@ public interface ProfessionProperties {
 
     public void loadRequirements(Profession profession);
 
-    public List<Profession> loadChildren(Hero hero);
+    public List<Profession> loadChildren(Profession profession);
 }

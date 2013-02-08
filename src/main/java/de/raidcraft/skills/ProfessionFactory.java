@@ -30,12 +30,12 @@ public final class ProfessionFactory {
         this.config = plugin.configure(new ProfessionConfig(this));
     }
 
-    protected Profession create(Hero hero) throws UnknownSkillException {
+    protected Profession create(Hero hero, Profession profession) throws UnknownSkillException {
 
         if (professionName.equals(ProfessionManager.VIRTUAL_PROFESSION)) {
-            return new VirtualProfession(hero, config, loadDatabase(hero, professionName));
+            return new VirtualProfession(hero, config, path, loadDatabase(hero, professionName));
         }
-        return new SimpleProfession(hero, config, path, loadDatabase(hero, professionName));
+        return new SimpleProfession(hero, config, path, profession, loadDatabase(hero, professionName));
     }
 
     private THeroProfession loadDatabase(Hero hero, String name) {

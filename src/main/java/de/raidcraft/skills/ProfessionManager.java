@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.path.Path;
+import de.raidcraft.skills.api.path.VirtualPath;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -50,7 +51,7 @@ public final class ProfessionManager {
         }
 
         // lets create the factory for the virtual profession
-        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, null, VIRTUAL_PROFESSION));
+        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, new VirtualPath(), VIRTUAL_PROFESSION));
     }
 
     private void loadProfessionFactory(Path<Profession> path, String profName) {
@@ -81,6 +82,16 @@ public final class ProfessionManager {
 
     public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
 
+        return getProfession(hero, null, profId);
+    }
+
+    public Profession getProfession(Profession profession, String profId) throws UnknownProfessionException, UnknownSkillException {
+
+        return getProfession(profession.getHero(), profession, profId);
+    }
+
+    public Profession getProfession(Hero hero, Profession parent, String profId) throws UnknownProfessionException, UnknownSkillException {
+
         profId = StringUtils.formatName(profId);
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
@@ -89,8 +100,10 @@ public final class ProfessionManager {
             professions.put(hero.getName(), new HashMap<String, Profession>());
         }
         if (!professions.get(hero.getName()).containsKey(profId)) {
-            Profession profession = professionFactories.get(profId).create(hero);
+            Profession profession = professionFactories.get(profId).create(hero, parent);
             professions.get(hero.getName()).put(profId, profession);
+            // lets load all requirements - this needs to happen after the init
+            profession.getProperties().loadRequirements(profession);
         }
         return professions.get(hero.getName()).get(profId);
     }

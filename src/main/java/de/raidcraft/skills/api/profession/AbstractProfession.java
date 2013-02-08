@@ -40,15 +40,14 @@ public abstract class AbstractProfession implements Profession {
 
     private Level<Profession> level;
 
-    protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, THeroProfession database) {
+    protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, Profession parent, THeroProfession database) {
 
         this.properties = data;
         this.hero = hero;
         this.path = path;
         this.database = database;
-        this.parent = data.getParentProfession(hero);
-        this.children = data.loadChildren(hero);
-        data.loadRequirements(this);
+        this.parent = parent;
+        this.children = data.loadChildren(this);
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);

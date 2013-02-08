@@ -75,7 +75,7 @@ public class SkillsCommand {
         // lets sort them by their required level
         Collections.sort(skills);
         // lets list all skills
-        new PaginatedResult<Skill>("[Prof:Level] -   Name    -   Beschreibung") {
+        new PaginatedResult<Skill>("[Prof:Level] -   Name") {
 
             @Override
             public String format(Skill skill) {
@@ -95,7 +95,6 @@ public class SkillsCommand {
                     sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getLevel().getLevel())
                             .append(ChatColor.YELLOW).append("] ");
                 }
-                sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(" - ").append(skill.getDescription());
                 return sb.toString();
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));

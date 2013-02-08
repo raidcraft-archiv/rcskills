@@ -83,6 +83,7 @@ public class ProfessionCommands {
 
         if (!(sender instanceof Player)) throw new CommandException("...");
 
+
         boolean force = args.hasFlag('f');
 
         try {
@@ -106,7 +107,7 @@ public class ProfessionCommands {
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
-                        + ChatColor.GREEN + " Spezialisierung neuwählen willst?");
+                        + ChatColor.GREEN + " Spezialisierung wechseln willst?");
                 if (cost > 0) {
                     sender.sendMessage(ChatColor.RED +
                             "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
@@ -155,12 +156,18 @@ public class ProfessionCommands {
             return;
         }
 
-        int cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+        int cost = 0;
+        if (hero.getProfessions().size() > 0) {
+            cost = (int) (plugin.getCommonConfig().profession_change_cost +
+                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+        }
         hero.changeProfession(profession);
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
                 ChatColor.YELLOW + " Sepzialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
-        hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
-                + ChatColor.RED + " vom Konto abgezogen.");
+
+        if (cost > 0) {
+            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
+                    + ChatColor.RED + " vom Konto abgezogen.");
+        }
     }
 }

@@ -19,9 +19,9 @@ import org.bukkit.ChatColor;
 public class SimpleProfession extends AbstractProfession {
 
 
-    public SimpleProfession(Hero hero, ProfessionProperties properties, Path<Profession> path, THeroProfession database) {
+    public SimpleProfession(Hero hero, ProfessionProperties properties, Path<Profession> path, Profession parent, THeroProfession database) {
 
-        super(hero, properties, path, database);
+        super(hero, properties, path, parent, database);
         attachLevel(new ProfessionLevel(this, database));
     }
 

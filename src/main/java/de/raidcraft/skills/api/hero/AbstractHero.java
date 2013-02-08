@@ -70,7 +70,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.debugging = data.isDebugging();
         this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
-        this.selectedProfession = loadSelectedProfession(data);
         // level needs to be attached fast to avoid npes when loading the skills
         attachLevel(new HeroLevel(this, data.getLevelData()));
         // load the professions first so we have the skills already loaded
@@ -78,7 +77,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadSkills();
 
         this.virtualProfession = getVirtualProfession();
-        setSelectedProfession(professions.get(data.getSelectedProfession()));
+        setSelectedProfession(loadSelectedProfession(data));
         this.group = new SimpleGroup(this);
     }
 
@@ -97,7 +96,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                         professions.put(profession.getProperties().getName(), profession);
                         paths.add(profession.getPath());
                         // set selected profession
-                        if (getSelectedProfession().getPath().getPriority() < profession.getPath().getPriority()) {
+                        if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()) {
                             setSelectedProfession(profession);
                         }
                     }
@@ -125,7 +124,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 }
             }
         }
-        // make sure all virtual skills are added first so they are overriden by gained normal prof skills
+        // make sure all virtual skills are added last and override normal skills
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
                 skills.put(skill.getName(), skill);
@@ -160,7 +159,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             }
         }
         // lets set the selected profession before we go all wanky in the while loop
-        if (getSelectedProfession().getPath().getPriority() < profession.getPath().getPriority()) {
+        if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()) {
             setSelectedProfession(profession);
         }
 
@@ -168,11 +167,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         do {
             profession.setActive(true);
             professions.put(profession.getName(), profession);
-            if (profession.hasParent()) profession = profession.getParent();
-        } while (profession.hasParent());
+            profession = profession.getParent();
+        } while (profession != null && profession.hasParent());
 
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
+        reset();
         save();
     }
 

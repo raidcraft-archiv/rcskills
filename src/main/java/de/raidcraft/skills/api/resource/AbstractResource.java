@@ -166,7 +166,7 @@ public abstract class AbstractResource implements Resource {
         if (getProfession().getLevel() != null) {
             max += config.getDouble("max.level-modifier", 0.0) * getHero().getLevel().getLevel();
         }
-        if (getProfession() != null) {
+        if (getProfession() != null && getProfession().getLevel() != null) {
             max += config.getDouble("max.prof-level-modifier", 0.0) * getProfession().getLevel().getLevel();
         }
         return max;

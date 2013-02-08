@@ -53,14 +53,14 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Profession> loadChildren(Hero hero) {
+    public List<Profession> loadChildren(Profession profession) {
 
         List<Profession> professions = new ArrayList<>();
         List<String> childs = getStringList("childs");
         if (childs == null) return professions;
         for (String prof : childs) {
             try {
-                professions.add(getPlugin().getProfessionManager().getProfession(hero, prof));
+                professions.add(getPlugin().getProfessionManager().getProfession(profession, prof));
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 getPlugin().getLogger().severe(e.getMessage());
             }
@@ -113,7 +113,10 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public Profession getParentProfession(Hero hero) {
 
         try {
-            return getPlugin().getProfessionManager().getProfession(hero, getOverrideString("parent", null));
+            String parent = getOverrideString("parent", null);
+            if (parent != null && !parent.equals("")) {
+                return getPlugin().getProfessionManager().getProfession(hero, parent);
+            }
         } catch (UnknownSkillException | UnknownProfessionException e) {
             getPlugin().getLogger().severe(e.getMessage());
         }
