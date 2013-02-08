@@ -41,11 +41,11 @@ public class THero implements LevelData, HeroData, Bean {
     @OneToOne
     private THeroExpPool expPool;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "hero_id")
     private List<THeroProfession> professions;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
 

@@ -33,7 +33,7 @@ public class THeroSkill implements LevelData, Bean {
     @ManyToOne
     private THero hero;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "skill_id")
     private List<TSkillData> skillData;
 

@@ -34,11 +34,11 @@ public class THeroProfession implements Bean, LevelData {
     private int exp;
     private boolean active;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "profession_id")
     private List<THeroSkill> skills;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "profession_id")
     private List<THeroResource> resources;
 
