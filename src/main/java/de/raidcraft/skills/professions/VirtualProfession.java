@@ -6,7 +6,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.path.Path;
+import de.raidcraft.skills.api.path.VirtualPath;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
@@ -23,9 +23,9 @@ import java.util.List;
 public final class VirtualProfession extends AbstractProfession {
 
 
-    public VirtualProfession(Hero hero, ProfessionProperties data, Path<Profession> path, THeroProfession database) {
+    public VirtualProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
 
-        super(hero, data, path, database);
+        super(hero, data, new VirtualPath(), database);
         attachLevel(new NullLevel(this, database));
         // lets save the virtual profession when its loaded
         save();

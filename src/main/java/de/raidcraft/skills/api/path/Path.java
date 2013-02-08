@@ -22,4 +22,11 @@ public interface Path<T extends Parent> {
      * @return root parents from which more childs fork off
      */
     public List<T> getParents(Hero hero);
+
+    /**
+     * Gets a list of all the parents names.
+     *
+     * @return list of names defined in the config
+     */
+    public List<String> getParents();
 }

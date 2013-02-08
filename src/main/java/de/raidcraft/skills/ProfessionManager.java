@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -39,17 +40,19 @@ public final class ProfessionManager {
 
         File dir = new File(plugin.getDataFolder(), plugin.getCommonConfig().profession_config_path);
         dir.mkdirs();
-        // go thru all files in the directory and register them as professions
-        for (String file : dir.list()) {
-            if (file.contains(VIRTUAL_PROFESSION) || !file.endsWith(".yml")) {
-                continue;
+        // get all registered paths from the path config
+        for (Path<Profession> path : plugin.getPathConfig().getPaths()) {
+            // and now create factories for all the professions defined in this path
+            for (String profName : path.getParents()) {
+                ProfessionFactory factory = new ProfessionFactory(plugin, path, profName);
+                professionFactories.put(factory.getProfessionName(), factory);
+                plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
             }
-            ProfessionFactory factory = new ProfessionFactory(plugin, file.replace(".yml", ""));
-            professionFactories.put(factory.getProfessionName(), factory);
-            plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
+            plugin.getLogger().info("Loaded all Professions for the path: " + path.getName());
         }
+
         // lets create the factory for the virtual profession
-        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, VIRTUAL_PROFESSION));
+        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, null, VIRTUAL_PROFESSION));
     }
 
     public Profession getVirtualProfession(Hero hero) {

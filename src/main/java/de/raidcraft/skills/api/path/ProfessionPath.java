@@ -32,14 +32,14 @@ public class ProfessionPath implements Path<Profession> {
     @Override
     public String getFriendlyName() {
 
-        return config.getString(getName() + ".name");
+        return config.getFriendlyName(getName());
     }
 
     @Override
     public List<Profession> getParents(Hero hero) {
 
         ArrayList<Profession> professions = new ArrayList<>();
-        for (String key : config.getStringList(getName() + ".parents")) {
+        for (String key : config.getParents(getName())) {
             try {
                 professions.add(config.getPlugin().getProfessionManager().getProfession(hero, key));
             } catch (UnknownSkillException | UnknownProfessionException e) {
@@ -47,6 +47,12 @@ public class ProfessionPath implements Path<Profession> {
             }
         }
         return professions;
+    }
+
+    @Override
+    public List<String> getParents() {
+
+        return config.getParents(getName());
     }
 
     @Override

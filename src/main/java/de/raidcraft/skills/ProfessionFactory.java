@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.professions.SimpleProfession;
@@ -17,12 +18,14 @@ import de.raidcraft.skills.tables.THeroProfession;
 public final class ProfessionFactory {
 
     private final SkillsPlugin plugin;
+    private final Path<Profession> path;
     private final String professionName;
     private final ProfessionConfig config;
 
-    protected ProfessionFactory(SkillsPlugin plugin, String professionName) {
+    protected ProfessionFactory(SkillsPlugin plugin, Path<Profession> path, String professionName) {
 
         this.plugin = plugin;
+        this.path = path;
         this.professionName = professionName;
         this.config = plugin.configure(new ProfessionConfig(this));
     }
@@ -32,7 +35,7 @@ public final class ProfessionFactory {
         if (professionName.equals(ProfessionManager.VIRTUAL_PROFESSION)) {
             return new VirtualProfession(hero, config, loadDatabase(hero, professionName));
         }
-        return new SimpleProfession(hero, config, loadDatabase(hero, professionName));
+        return new SimpleProfession(hero, config, path, loadDatabase(hero, professionName));
     }
 
     private THeroProfession loadDatabase(Hero hero, String name) {

@@ -20,6 +20,7 @@ import de.raidcraft.skills.commands.PlayerComands;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
+import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -49,6 +50,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private DamageManager damageManager;
     private BukkitEnvironmentManager bukkitEnvironmentManager;
     private LocalConfiguration configuration;
+    private PathConfig pathConfig;
 
 
     @Override
@@ -56,6 +58,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
+        this.pathConfig = configure(new PathConfig(this));
         loadEngine();
         // and commands gogogo
         registerCommands(SkillsCommand.class);
@@ -178,6 +181,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public LocalConfiguration getCommonConfig() {
 
         return configuration;
+    }
+
+    public PathConfig getPathConfig() {
+
+        return pathConfig;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
