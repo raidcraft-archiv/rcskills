@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.LocationUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -49,6 +50,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         this.entity = entity;
         this.name = (entity instanceof Player) ? ((Player) entity).getName() : entity.getType().getName();
+        this.maxHealth = getDefaultHealth();
+    }
+
+    protected AbstractCharacterTemplate(String name) {
+
+        this.entity = Bukkit.getPlayer(name);
+        this.name = name;
         this.maxHealth = getDefaultHealth();
     }
 

@@ -10,6 +10,7 @@ import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
+import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -176,7 +177,7 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        Hero hero = getHero(event.getPlayer());
+        final Hero hero = getHero(event.getPlayer());
         // save the hero first
         hero.save();
         hero.clearEffects();
@@ -185,7 +186,14 @@ public final class CharacterManager implements Listener {
             resource.destroy();
         }
         // lets clear the cache for the hero
-        clearCacheOf(hero);
+        // we need to delay this for some ticks in order to clear the cache for real
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                HeroUtil.clearCache(hero);
+            }
+        }, 5);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

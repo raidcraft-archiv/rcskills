@@ -22,6 +22,7 @@ public final class ProfessionManager {
     public static final String VIRTUAL_PROFESSION = "virtual";
     private final SkillsPlugin plugin;
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
+    // maps all of the player professions by name to the player
     private final Map<String, Map<String, Profession>> professions = new HashMap<>();
 
     protected ProfessionManager(SkillsPlugin plugin) {
@@ -134,5 +135,10 @@ public final class ProfessionManager {
     public ProfessionFactory getFactory(Profession profession) {
 
         return professionFactories.get(profession.getProperties().getName());
+    }
+
+    public void clearCacheOf(String player) {
+
+        professions.remove(player);
     }
 }

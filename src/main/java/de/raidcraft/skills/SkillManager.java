@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.IgnoredSkill;
-import de.raidcraft.skills.api.skill.Passive;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -34,8 +33,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
     // holds skills that were already loaded for that player
     private final Map<String, Set<Skill>> playerSkills = new HashMap<>();
-    // holds all skills that are triggered every few ticks
-    private final List<Skill> passiveSkills = new ArrayList<>();
 
     protected SkillManager(SkillsPlugin plugin) {
 
@@ -49,7 +46,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         skillFactories.clear();
         playerSkills.clear();
-        passiveSkills.clear();
         loadFactories();
     }
 
@@ -128,10 +124,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         // lets create a new skill for this name
         skill = skillFactories.get(skillName).create(hero, profession, overrides);
         playerSkills.get(hero.getName()).add(skill);
-        // add skill to our passive list if it is a passive skill
-        if (skill instanceof Passive) {
-            passiveSkills.add(skill);
-        }
         // lets add the skill as a trigger handler
         if (skill instanceof Triggered) {
             TriggerManager.registerListeners((Triggered) skill);
@@ -173,5 +165,10 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         skill = StringUtils.formatName(skill);
         return skillFactories.containsKey(skill);
+    }
+
+    public void clearCacheOf(String player) {
+
+        playerSkills.remove(player);
     }
 }

@@ -25,6 +25,14 @@ public final class HeroUtil {
 
     }
 
+    public static void clearCache(Hero hero) {
+
+        SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+        plugin.getCharacterManager().clearCacheOf(hero);
+        plugin.getProfessionManager().clearCacheOf(hero.getName());
+        plugin.getSkillManager().clearCacheOf(hero.getName());
+    }
+
     public static Collection<CharacterTemplate> toCharacters(Collection<LivingEntity> entities) {
 
         List<CharacterTemplate> characters = new ArrayList<>();

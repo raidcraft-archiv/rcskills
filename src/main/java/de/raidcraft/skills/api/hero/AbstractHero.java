@@ -23,7 +23,6 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.hero.HeroLevel;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -61,7 +60,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     protected AbstractHero(HeroData data) {
 
-        super(Bukkit.getPlayer(data.getName()));
+        super(data.getName());
 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
