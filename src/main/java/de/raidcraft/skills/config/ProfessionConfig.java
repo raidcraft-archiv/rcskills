@@ -104,6 +104,12 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
+    public boolean isEnabled() {
+
+        return getOverrideBool("enabled", true);
+    }
+
+    @Override
     public Profession getParentProfession(Hero hero) {
 
         try {

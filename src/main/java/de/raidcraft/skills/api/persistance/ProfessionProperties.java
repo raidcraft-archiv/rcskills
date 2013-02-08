@@ -21,6 +21,8 @@ public interface ProfessionProperties {
 
     public String getDescription();
 
+    public boolean isEnabled();
+
     public Profession getParentProfession(Hero hero);
 
     public int getMaxLevel();

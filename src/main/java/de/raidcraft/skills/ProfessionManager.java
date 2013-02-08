@@ -56,6 +56,11 @@ public final class ProfessionManager {
     private void loadProfessionFactory(Path<Profession> path, String profName) {
 
         ProfessionFactory factory = new ProfessionFactory(plugin, path, profName);
+        // check if the profession is enabled
+        if (!factory.getConfig().isEnabled()) {
+            plugin.getLogger().info("Not loading profession: " + factory.getProfessionName() + " because it is not enabled.");
+            return;
+        }
         professionFactories.put(factory.getProfessionName(), factory);
         plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
         // now we need to load all childs
