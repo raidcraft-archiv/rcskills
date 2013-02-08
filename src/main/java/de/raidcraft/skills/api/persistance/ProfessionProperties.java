@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +21,8 @@ public interface ProfessionProperties {
 
     public String getDescription();
 
+    public Profession getParentProfession(Hero hero);
+
     public int getMaxLevel();
 
     public int getBaseHealth();
@@ -35,4 +38,6 @@ public interface ProfessionProperties {
     public List<Skill> loadSkills(Profession profession);
 
     public void loadRequirements(Profession profession);
+
+    public List<Profession> loadChildren(Hero hero);
 }

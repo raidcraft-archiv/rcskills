@@ -5,6 +5,7 @@ import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -62,6 +63,22 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
+    public List<Profession> loadChildren(Hero hero) {
+
+        List<Profession> professions = new ArrayList<>();
+        List<String> childs = getStringList("childs");
+        if (childs == null) return professions;
+        for (String prof : childs) {
+            try {
+                professions.add(getPlugin().getProfessionManager().getProfession(hero, prof));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                getPlugin().getLogger().severe(e.getMessage());
+            }
+        }
+        return professions;
+    }
+
+    @Override
     public void loadRequirements(Profession profession) {
 
         ConfigUtil.loadRequirements(this, profession);
@@ -89,6 +106,17 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public String getDescription() {
 
         return getOverride("description", "Default description");
+    }
+
+    @Override
+    public Profession getParentProfession(Hero hero) {
+
+        try {
+            return getPlugin().getProfessionManager().getProfession(hero, getOverrideString("parent", null));
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            getPlugin().getLogger().severe(e.getMessage());
+        }
+        return null;
     }
 
     @Override

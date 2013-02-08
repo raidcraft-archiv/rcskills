@@ -27,6 +27,9 @@ public abstract class AbstractProfession implements Profession {
 
     private final ProfessionProperties properties;
     private final Hero hero;
+    // can be null - if it is this profession has no parents :*(
+    private final Profession parent;
+    private final List<Profession> children;
     // list of requirements to unlock this profession
     private final List<Requirement> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
@@ -40,6 +43,8 @@ public abstract class AbstractProfession implements Profession {
         this.properties = data;
         this.hero = hero;
         this.database = database;
+        this.parent = data.getParentProfession(hero);
+        this.children = data.loadChildren(hero);
         data.loadRequirements(this);
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
@@ -196,6 +201,30 @@ public abstract class AbstractProfession implements Profession {
             }
         }
         return "Beruf/Klasse kann freigeschaltet werden.";
+    }
+
+    @Override
+    public boolean hasParent() {
+
+        return getParent() != null;
+    }
+
+    @Override
+    public Profession getParent() {
+
+        return parent;
+    }
+
+    @Override
+    public boolean hasChildren() {
+
+        return children != null && children.size() > 0;
+    }
+
+    @Override
+    public List<Profession> getChildren() {
+
+        return children;
     }
 
     @Override
