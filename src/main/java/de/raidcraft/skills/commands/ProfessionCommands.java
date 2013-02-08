@@ -59,7 +59,7 @@ public class ProfessionCommands {
         }
         Collections.sort(professions);
 
-        new PaginatedResult<Profession>("Tag   -   Beruf/Klasse   -   Spezialisierung   -   Level") {
+        new PaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
 
             @Override
             public String format(Profession profession) {
@@ -74,7 +74,7 @@ public class ProfessionCommands {
 
     @Command(
             aliases = {"choose", "c"},
-            desc = "Wählt die gewünschte Klasse oder Beruf.",
+            desc = "Wählt die gewünschte Spezialisierung.",
             min = 1,
             flags = "f"
     )

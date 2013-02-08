@@ -110,7 +110,7 @@ public final class ProfessionManager {
         if (professionFactories.containsKey(name)) {
             return professionFactories.get(name);
         }
-        throw new UnknownProfessionException("Es gibt keinen Beruf/Klasse mit dem Namen: " + name);
+        throw new UnknownProfessionException("Es gibt keine Spezialisierung mit dem Namen: " + name);
     }
 
     public ProfessionFactory getFactory(Profession profession) {

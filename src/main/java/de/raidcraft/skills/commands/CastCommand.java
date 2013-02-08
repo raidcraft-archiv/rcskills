@@ -49,7 +49,7 @@ public class CastCommand {
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
         if (!skill.isActive()) {
-            throw new CommandException("Der gewählte Skills gehört zu keinem aktiven Beruf oder Klasse.");
+            throw new CommandException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");
         }
         if (!skill.isUnlocked()) {
             throw new CommandException("Du hast diesen Skill noch nicht freigeschaltet.");

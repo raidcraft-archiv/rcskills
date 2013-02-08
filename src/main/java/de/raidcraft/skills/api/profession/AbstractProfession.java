@@ -209,7 +209,7 @@ public abstract class AbstractProfession implements Profession {
                 return requirement.getLongReason(getHero());
             }
         }
-        return "Beruf/Klasse kann freigeschaltet werden.";
+        return "Spezialisierung kann freigeschaltet werden.";
     }
 
     @Override
