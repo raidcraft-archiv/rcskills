@@ -5,6 +5,7 @@ import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -42,23 +43,34 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
             try {
-                // lets check if the skill has a different profession written on it
-                String profName = section.getString(skill + ".profession");
-                Skill profSkill;
-                if (profName != null && !profName.equals("")) {
-                    profession = getPlugin().getProfessionManager().getProfession(profession.getHero(), profName);
-                    profession.setActive(true);
-                    // lets pass our prof skill config as a final override
-                    profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill, section.getConfigurationSection(skill));
-                } else {
-                    profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
-                }
+                Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.add(profSkill);
-            } catch (UnknownSkillException | UnknownProfessionException e) {
+            } catch (UnknownSkillException e) {
                 getPlugin().getLogger().warning(e.getMessage());
             }
         }
         return skills;
+    }
+
+    @Override
+    public List<Profession> loadChildren(Profession profession) {
+
+        List<Profession> professions = new ArrayList<>();
+        List<String> childs = getStringList("childs");
+        if (childs == null) return professions;
+        for (String prof : childs) {
+            try {
+                professions.add(getPlugin().getProfessionManager().getProfession(profession, prof));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                getPlugin().getLogger().severe(e.getMessage());
+            }
+        }
+        return professions;
+    }
+
+    public List<String> getChildren() {
+
+        return getStringList("childs");
     }
 
     @Override
@@ -92,6 +104,26 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
+    public boolean isEnabled() {
+
+        return getOverrideBool("enabled", true);
+    }
+
+    @Override
+    public Profession getParentProfession(Hero hero) {
+
+        try {
+            String parent = getOverrideString("parent", null);
+            if (parent != null && !parent.equals("")) {
+                return getPlugin().getProfessionManager().getProfession(hero, parent);
+            }
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            getPlugin().getLogger().severe(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return getOverride("max-level", 60);
@@ -119,11 +151,5 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public ConfigurationSection getResourceConfig(String type) {
 
         return getOverrideSection("resources." + type);
-    }
-
-    @Override
-    public boolean isPrimary() {
-
-        return getOverride("primary", false);
     }
 }

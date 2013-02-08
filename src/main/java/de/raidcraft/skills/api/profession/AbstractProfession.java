@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
@@ -27,6 +28,10 @@ public abstract class AbstractProfession implements Profession {
 
     private final ProfessionProperties properties;
     private final Hero hero;
+    private final Path<Profession> path;
+    // can be null - if it is this profession has no parents :*(
+    private final Profession parent;
+    private final List<Profession> children;
     // list of requirements to unlock this profession
     private final List<Requirement> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
@@ -35,12 +40,14 @@ public abstract class AbstractProfession implements Profession {
 
     private Level<Profession> level;
 
-    protected AbstractProfession(Hero hero, ProfessionProperties data, THeroProfession database) {
+    protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, Profession parent, THeroProfession database) {
 
         this.properties = data;
         this.hero = hero;
+        this.path = path;
         this.database = database;
-        data.loadRequirements(this);
+        this.parent = parent;
+        this.children = data.loadChildren(this);
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);
@@ -99,6 +106,12 @@ public abstract class AbstractProfession implements Profession {
     public ProfessionProperties getProperties() {
 
         return properties;
+    }
+
+    @Override
+    public Path getPath() {
+
+        return path;
     }
 
     @Override
@@ -195,7 +208,31 @@ public abstract class AbstractProfession implements Profession {
                 return requirement.getLongReason(getHero());
             }
         }
-        return "Beruf/Klasse kann freigeschaltet werden.";
+        return "Spezialisierung kann freigeschaltet werden.";
+    }
+
+    @Override
+    public boolean hasParent() {
+
+        return getParent() != null;
+    }
+
+    @Override
+    public Profession getParent() {
+
+        return parent;
+    }
+
+    @Override
+    public boolean hasChildren() {
+
+        return children != null && children.size() > 0;
+    }
+
+    @Override
+    public List<Profession> getChildren() {
+
+        return children;
     }
 
     @Override

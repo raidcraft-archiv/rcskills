@@ -40,7 +40,7 @@ public class PlayerComands {
 
         try {
             if (!args.hasFlag('p') && !args.hasFlag('s')) {
-                throw new CommandException("Du musst die EXP einer Klasse, Beruf oder Skill geben.");
+                throw new CommandException("Du musst die EXP einem Skill oder Spezialisierung geben.");
             }
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
             Level<Hero> expPool = hero.getExpPool();
@@ -63,7 +63,7 @@ public class PlayerComands {
                 level = ((Levelable) skill).getLevel();
             }
             if (level == null) {
-                throw new CommandException("Bitte gebe einen Beruf, Klasse oder Skill an, dem du EXP geben willst.");
+                throw new CommandException("Bitte gebe einen Skill oder eine Spezialisierung an, dem du EXP geben willst.");
             }
 
             if (args.hasFlag('f')) {

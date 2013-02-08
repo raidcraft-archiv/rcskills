@@ -1,6 +1,7 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
@@ -18,9 +19,9 @@ import org.bukkit.ChatColor;
 public class SimpleProfession extends AbstractProfession {
 
 
-    public SimpleProfession(Hero hero, ProfessionProperties properties, THeroProfession database) {
+    public SimpleProfession(Hero hero, ProfessionProperties properties, Path<Profession> path, Profession parent, THeroProfession database) {
 
-        super(hero, properties, database);
+        super(hero, properties, path, parent, database);
         attachLevel(new ProfessionLevel(this, database));
     }
 

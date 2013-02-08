@@ -34,12 +34,12 @@ public final class ProfessionUtil {
         }
 
         if (professions.size() < 1) {
-            throw new CommandException("Es gibt keinen Beruf/Klasse mit dem Namen: " + input);
+            throw new CommandException("Es gibt keine Spezialisierung mit dem Namen: " + input);
         }
 
         if (professions.size() > 1) {
             throw new CommandException(
-                    "Es gibt mehrere Berufe/Klassen mit dem Namen " + input + ":" + StringUtil.joinString(professions, ", ", 0));
+                    "Es gibt mehrere Spezialisierungen mit dem Namen " + input + ":" + StringUtil.joinString(professions, ", ", 0));
         }
 
         return professions.get(0);

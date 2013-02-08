@@ -1,10 +1,12 @@
 package de.raidcraft.skills.api.profession;
 
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.inheritance.Child;
+import de.raidcraft.skills.api.inheritance.Parent;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.requirement.Unlockable;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 
 import java.util.Collection;
@@ -13,7 +15,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Profession extends Levelable<Profession>, Comparable<Profession>, Unlockable {
+public interface Profession extends Levelable<Profession>, Comparable<Profession>, Unlockable, Parent<Profession>, Child<Profession> {
 
     public int getId();
 

@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
@@ -61,11 +62,9 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void setSelectedProfession(Profession profession);
 
-    public Profession getPrimaryProfession();
-
-    public Profession getSecundaryProfession();
-
     public Profession getVirtualProfession();
+
+    public Set<Path<Profession>> getPaths();
 
     public void changeProfession(Profession profession);
 

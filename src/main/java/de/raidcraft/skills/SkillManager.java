@@ -83,7 +83,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             if (skillFactories.containsKey(skillName)) {
                 plugin.getLogger().warning("Found duplicate Skill: " + skillName);
             }
-            // load the skill factory for the non alias
+            // load the skill factory
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
             skillFactories.put(skillName, factory);
             skillClasses.put(skillName, skillClass);

@@ -59,14 +59,14 @@ public class ProfessionCommands {
         }
         Collections.sort(professions);
 
-        new PaginatedResult<Profession>("Tag   -   Beruf/Klasse   -   Primär/Sekundär   -   Level") {
+        new PaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
 
             @Override
             public String format(Profession profession) {
 
                 return ChatColor.YELLOW + "[" + ChatColor.AQUA + profession.getProperties().getTag() + ChatColor.YELLOW + "]" +
                         (profession.isActive() ? ChatColor.GREEN : ChatColor.RED) + profession.getProperties().getFriendlyName() +
-                        ChatColor.GRAY + ChatColor.ITALIC + " - " + (profession.getProperties().isPrimary() ? "Primär" : "Sekundär") + " - " +
+                        ChatColor.GRAY + ChatColor.ITALIC + " - " + profession.getPath().getFriendlyName() + " - " +
                         ChatColor.RESET + (profession.getLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.RED) + profession.getLevel().getLevel();
             }
         }.display(sender, professions, args.getFlagInteger('p', 1));
@@ -74,7 +74,7 @@ public class ProfessionCommands {
 
     @Command(
             aliases = {"choose", "c"},
-            desc = "Wählt die gewünschte Klasse oder Beruf.",
+            desc = "Wählt die gewünschte Spezialisierung.",
             min = 1,
             flags = "f"
     )
@@ -83,38 +83,37 @@ public class ProfessionCommands {
 
         if (!(sender instanceof Player)) throw new CommandException("...");
 
+
         boolean force = args.hasFlag('f');
 
         try {
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
             Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
-            boolean primary = profession.getProperties().isPrimary();
 
-            if (primary && hero.getPrimaryProfession() != null && hero.getPrimaryProfession().equals(profession)) {
-                throw new CommandException("Du hast diese Klasse aktuell ausgewählt.");
-            }
-            if (hero.getSecundaryProfession() != null && hero.getSecundaryProfession().equals(profession)) {
-                throw new CommandException("Du hast diesen Beruf aktuell ausgewählt.");
+            if (hero.hasProfession(profession)) {
+                throw new CommandException("Du hast diese " + profession.getPath().getFriendlyName() + " Spezialisierung bereits ausgewählt.");
             }
             if (!profession.isUnlockable()) {
-                throw new CommandException("Du kannst " +
-                        (primary ? "diese Klasse" : "diesen Beruf")
-                        + " nicht auswählen. \n" + profession.getUnlockReason());
+                throw new CommandException("Du kannst diese " + profession.getPath().getFriendlyName() + " Spezialisierung nicht auswählen: \n" + profession.getUnlockReason());
             }
 
             if (force) {
                 chooseProfession(hero, profession);
             } else {
-                int cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                        (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                int cost = 0;
+                if (hero.getProfessions().size() > 0) {
+                    cost = (int) (plugin.getCommonConfig().profession_change_cost +
+                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
-                        (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.GREEN
-                        + " neuwählen willst?");
-                sender.sendMessage(ChatColor.RED +
-                        "Das wechseln deiner " +
-                        (primary ? "deiner " + ChatColor.AQUA + "Klasse" : "deines " + ChatColor.AQUA + "Berufs") + ChatColor.RED +
-                        " zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
-                        " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
+                        "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
+                        + ChatColor.GREEN + " Spezialisierung wechseln willst?");
+                if (cost > 0) {
+                    sender.sendMessage(ChatColor.RED +
+                            "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
+                            " Spezialisierung zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
+                                    " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
+                }
                 new QueuedCommand(sender, this, "chooseProfession", hero, profession);
             }
         } catch (InvalidChoiceException e) {
@@ -128,7 +127,7 @@ public class ProfessionCommands {
     @Command(
             aliases = {"info"},
             desc = "Shows information about a profession",
-            flags = "hps"
+            flags = "h"
     )
     @CommandPermissions("rcskills.player.profession.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
@@ -145,10 +144,6 @@ public class ProfessionCommands {
         Profession profession = hero.getSelectedProfession();
         if (args.argsLength() > 0) {
             profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
-        } else if (args.hasFlag('p') && hero.getPrimaryProfession() != null) {
-            profession = hero.getPrimaryProfession();
-        } else if (args.hasFlag('s') && hero.getSecundaryProfession() != null) {
-            profession = hero.getSecundaryProfession();
         }
 
         Collection<String> strings = ProfessionUtil.renderProfessionInformation(profession);
@@ -161,14 +156,18 @@ public class ProfessionCommands {
             return;
         }
 
-        int cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
-        boolean primary = profession.getProperties().isPrimary();
+        int cost = 0;
+        if (hero.getProfessions().size() > 0) {
+            cost = (int) (plugin.getCommonConfig().profession_change_cost +
+                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+        }
         hero.changeProfession(profession);
-        hero.sendMessage(ChatColor.YELLOW + "Du hast " +
-                (primary ? "deine " + ChatColor.AQUA + "Klasse" : "deinen " + ChatColor.AQUA + "Beruf") + ChatColor.YELLOW +
-                " erfolgreich zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
-        hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
-                + ChatColor.RED + " vom Konto abgezogen.");
+        hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
+                ChatColor.YELLOW + " Sepzialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
+
+        if (cost > 0) {
+            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
+                    + ChatColor.RED + " vom Konto abgezogen.");
+        }
     }
 }

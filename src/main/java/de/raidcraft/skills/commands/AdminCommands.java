@@ -135,9 +135,9 @@ public class AdminCommands {
                 Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
                 profession.getLevel().addExp(exp);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
-                        hero.getName() + "'s " + ChatColor.GREEN + "Klasse/Beruf " + ChatColor.AQUA + profession.getName()
+                        hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + exp + "xp" + ChatColor.GREEN + " hinzugefügt.");
-                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deinem Beruf/Klasse " + ChatColor.AQUA + profession.getFriendlyName()
+                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
                         + " " + exp + "exp" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('s')) {
@@ -191,9 +191,9 @@ public class AdminCommands {
                 Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
                 profession.getLevel().removeExp(exp);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
-                        hero.getName() + "'s " + ChatColor.RED + "Klasse/Beruf " + ChatColor.AQUA + profession.getName()
+                        hero.getName() + "'s " + ChatColor.RED + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + exp + "xp" + ChatColor.RED + " entfernt.");
-                hero.sendMessage(ChatColor.RED + "Ein Admin hat deinem Beruf/Klasse " + ChatColor.AQUA + profession.getFriendlyName()
+                hero.sendMessage(ChatColor.RED + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
                         + " " + exp + "exp" + ChatColor.RED + " entfernt.");
             }
             if (args.hasFlag('s')) {
@@ -247,9 +247,9 @@ public class AdminCommands {
                 Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
                 profession.getLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
-                        hero.getName() + "'s " + ChatColor.GREEN + "Klasse/Beruf " + ChatColor.AQUA + profession.getName()
+                        hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + level + "xp" + ChatColor.GREEN + " hinzugefügt.");
-                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deinem Beruf/Klasse " + ChatColor.AQUA + profession.getFriendlyName()
+                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
                         + " " + level + "level" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('s')) {
@@ -298,9 +298,9 @@ public class AdminCommands {
                 Profession profession = plugin.getProfessionManager().getProfession(hero, args.getFlag('p'));
                 profession.getLevel().removeLevel(level);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
-                        hero.getName() + "'s " + ChatColor.RED + "Klasse/Beruf " + ChatColor.AQUA + profession.getName()
+                        hero.getName() + "'s " + ChatColor.RED + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + level + "level" + ChatColor.RED + " entfernt.");
-                hero.sendMessage(ChatColor.RED + "Ein Admin hat deinem Beruf/Klasse " + ChatColor.AQUA + profession.getFriendlyName()
+                hero.sendMessage(ChatColor.RED + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
                         + " " + level + "level" + ChatColor.RED + " entfernt.");
             }
             if (args.hasFlag('s')) {
