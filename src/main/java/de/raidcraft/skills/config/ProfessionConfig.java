@@ -78,6 +78,11 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         return professions;
     }
 
+    public List<String> getChildren() {
+
+        return getStringList("childs");
+    }
+
     @Override
     public void loadRequirements(Profession profession) {
 

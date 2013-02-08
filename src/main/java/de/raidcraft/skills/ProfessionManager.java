@@ -44,15 +44,24 @@ public final class ProfessionManager {
         for (Path<Profession> path : plugin.getPathConfig().getPaths()) {
             // and now create factories for all the professions defined in this path
             for (String profName : path.getParents()) {
-                ProfessionFactory factory = new ProfessionFactory(plugin, path, profName);
-                professionFactories.put(factory.getProfessionName(), factory);
-                plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
+                loadProfessionFactory(path, profName);
             }
             plugin.getLogger().info("Loaded all Professions for the path: " + path.getName());
         }
 
         // lets create the factory for the virtual profession
         professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, null, VIRTUAL_PROFESSION));
+    }
+
+    private void loadProfessionFactory(Path<Profession> path, String profName) {
+
+        ProfessionFactory factory = new ProfessionFactory(plugin, path, profName);
+        professionFactories.put(factory.getProfessionName(), factory);
+        plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
+        // now we need to load all childs
+        for (String child : factory.getConfig().getChildren()) {
+            loadProfessionFactory(path, child);
+        }
     }
 
     public Profession getVirtualProfession(Hero hero) {
