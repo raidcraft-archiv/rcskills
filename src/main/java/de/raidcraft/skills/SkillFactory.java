@@ -54,7 +54,7 @@ public final class SkillFactory {
     protected void createDefaults() {
 
         // simply create new config
-        SkillProperties config = plugin.configure(new SkillConfig(this));
+        SkillProperties config = plugin.configure(new SkillConfig(this), false);
         // calling these methods will create default entries if none exist
         config.getFriendlyName();
         config.getDescription();
@@ -75,7 +75,7 @@ public final class SkillFactory {
 
         SkillConfig config;
         if (!skillConfigs.containsKey(profession)) {
-            config = plugin.configure(new SkillConfig(this));
+            config = plugin.configure(new SkillConfig(this), false);
             // we need to set all the overrides to null because they are used multiple times
             if (useAlias()) {
                 config.merge(aliasConfig);

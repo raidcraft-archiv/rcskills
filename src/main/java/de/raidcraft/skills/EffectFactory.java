@@ -34,7 +34,7 @@ public final class EffectFactory<E extends Effect> {
         this.eClass = eClass;
         this.information = eClass.getAnnotation(EffectInformation.class);
         this.effectName = StringUtils.formatName(information.name());
-        this.defaultConfig = plugin.configure(new EffectConfig(this));
+        this.defaultConfig = plugin.configure(new EffectConfig(this), false);
 
         // lets load the constructor for faster effect creations
         for (Constructor<?> constructor : eClass.getDeclaredConstructors()) {
@@ -90,7 +90,7 @@ public final class EffectFactory<E extends Effect> {
         EffectConfig config;
         if (!effectConfigs.containsKey(skill)) {
             // we need to create a new effect config instance for each skill to merge overrides
-            config = plugin.configure(new EffectConfig(this));
+            config = plugin.configure(new EffectConfig(this), false);
 
             // lets now merge the effect with the merged skill profession config
             SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());

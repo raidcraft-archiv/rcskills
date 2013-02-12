@@ -27,7 +27,7 @@ public final class ProfessionFactory {
         this.plugin = plugin;
         this.path = path;
         this.professionName = professionName;
-        this.config = plugin.configure(new ProfessionConfig(this));
+        this.config = plugin.configure(new ProfessionConfig(this), false);
     }
 
     protected Profession create(Hero hero, Profession profession) throws UnknownSkillException {

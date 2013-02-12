@@ -26,10 +26,9 @@ public class LevelConfig extends ConfigurationBase<SkillsPlugin> {
     public LevelConfig(SkillsPlugin plugin) {
 
         super(plugin, "levels.yml");
-        loadFormulas();
     }
 
-    private void loadFormulas() {
+    public void loadFormulas() {
 
         loadFormulas(getConfigurationSection("skills"), skillFormulas);
         loadFormulas(getConfigurationSection("professions"), professionFormulas);
