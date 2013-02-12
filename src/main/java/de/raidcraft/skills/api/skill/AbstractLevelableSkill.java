@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.ConfigurableLevel;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -18,7 +19,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public AbstractLevelableSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        this.level = new SkillpointLevel(this, database);
+        attachLevel(new ConfigurableLevel<LevelableSkill>(this, data.getLevelFormula(), database));
     }
 
     @Override

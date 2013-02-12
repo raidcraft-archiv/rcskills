@@ -2,6 +2,7 @@ package de.raidcraft.skills.creature;
 
 import de.raidcraft.skills.api.level.AbstractLevel;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.formulas.FormulaType;
 
 /**
  * @author Silthus
@@ -12,14 +13,8 @@ public class CreatureLevel<T extends Levelable<T>> extends AbstractLevel<T> {
 
     public CreatureLevel(T levelObject, int level) {
 
-        super(levelObject);
+        super(levelObject, FormulaType.STATIC.create(null));
         this.level = level;
-    }
-
-    @Override
-    public int getNeededExpForLevel(int level) {
-
-        return 1;
     }
 
     @Override

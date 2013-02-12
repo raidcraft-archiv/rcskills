@@ -13,19 +13,22 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.group.SimpleGroup;
+import de.raidcraft.skills.api.level.ConfigurableLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.hero.HeroLevel;
+import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +73,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
-        attachLevel(new HeroLevel(this, data.getLevelData()));
+        ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
+                .getConfigFor(LevelConfig.Type.HEROES, getName());
+        FormulaType formulaType = FormulaType.fromName(levelConfig.getString("type", "wow"));
+        attachLevel(new ConfigurableLevel<Hero>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data.getProfessionNames());
         loadSkills();

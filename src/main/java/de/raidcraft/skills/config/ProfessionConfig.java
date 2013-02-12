@@ -6,6 +6,8 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -77,6 +79,15 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public void loadRequirements(Profession profession) {
 
         ConfigUtil.loadRequirements(this, profession);
+    }
+
+    @Override
+    public LevelFormula getLevelFormula() {
+
+        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
+                LevelConfig.Type.PROFESSIONS, getOverrideString("formula", "default"));
+        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
+        return formulaType.create(config);
     }
 
     @Override

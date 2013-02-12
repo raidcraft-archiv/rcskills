@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.level;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.events.RCLevelEvent;
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 /**
@@ -10,14 +11,16 @@ import de.raidcraft.skills.api.persistance.LevelData;
 public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
     private final T levelObject;
+    private final LevelFormula formula;
     protected int level = 1;
     protected int maxLevel = 60;
     protected int exp = 0;
     protected int maxExp;
 
-    public AbstractLevel(T levelObject, LevelData data) {
+    public AbstractLevel(T levelObject, LevelFormula formula, LevelData data) {
 
         this.levelObject = levelObject;
+        this.formula = formula;
         // abort in case there are no entries yet
         if (data == null) {
             calculateMaxExp();
@@ -29,15 +32,21 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         calculateMaxExp();
     }
 
-    public AbstractLevel(T levelObject) {
+    public AbstractLevel(T levelObject, LevelFormula formula) {
 
-        this(levelObject, null);
+        this(levelObject, formula, null);
     }
 
     @Override
     public T getLevelObject() {
 
         return levelObject;
+    }
+
+    @Override
+    public LevelFormula getFormula() {
+
+        return formula;
     }
 
     @Override
@@ -67,7 +76,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void calculateMaxExp() {
 
-        maxExp = getNeededExpForLevel(getLevel());
+        maxExp = getFormula().getNeededExpForLevel(getLevel());
         if (maxExp == 0) maxExp = 1;
     }
 
@@ -82,7 +91,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
         int exp = 0;
         for (int i = 1; i <= level; i++) {
-            exp += getNeededExpForLevel(i);
+            exp += getFormula().getNeededExpForLevel(i);
         }
         return exp;
     }
@@ -91,7 +100,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
 
         int level = 0;
         while (level <= getMaxLevel() && exp >= 0) {
-            exp -= getNeededExpForLevel(getLevel() + level);
+            exp -= getFormula().getNeededExpForLevel(getLevel() + level);
             if (exp >= 0) level++;
         }
         return level;

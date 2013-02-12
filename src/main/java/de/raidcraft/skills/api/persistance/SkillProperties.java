@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,6 +34,8 @@ public interface SkillProperties {
     public boolean canUseOutOfCombat();
 
     public ConfigurationSection getData();
+
+    public LevelFormula getLevelFormula();
 
     public SkillInformation getInformation();
 

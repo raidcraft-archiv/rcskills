@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.profession;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.ConfigurableLevel;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
@@ -48,6 +49,8 @@ public abstract class AbstractProfession implements Profession {
         this.database = database;
         this.parent = parent;
         this.children = data.loadChildren(this);
+        // attach a level
+        attachLevel(new ConfigurableLevel<Profession>(this, data.getLevelFormula(), database));
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);

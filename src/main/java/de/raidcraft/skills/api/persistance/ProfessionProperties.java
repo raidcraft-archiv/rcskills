@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +25,8 @@ public interface ProfessionProperties {
     public boolean isEnabled();
 
     public Profession getParentProfession(Hero hero);
+
+    public LevelFormula getLevelFormula();
 
     public int getMaxLevel();
 

@@ -1,6 +1,6 @@
-package de.raidcraft.skills.professions;
+package de.raidcraft.skills.api.level;
 
-import de.raidcraft.skills.api.level.AbstractLevel;
+import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.profession.Profession;
 
@@ -13,7 +13,7 @@ public final class NullLevel extends AbstractLevel<Profession> {
 
     public NullLevel(Profession levelObject, LevelData data) {
 
-        super(levelObject, data);
+        super(levelObject, FormulaType.STATIC.create(null), data);
     }
 
     @Override
@@ -91,11 +91,5 @@ public final class NullLevel extends AbstractLevel<Profession> {
     public boolean hasReachedMaxLevel() {
 
         return true;
-    }
-
-    @Override
-    public int getNeededExpForLevel(int level) {
-
-        return 1;
     }
 }

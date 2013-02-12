@@ -5,6 +5,8 @@ package de.raidcraft.skills.api.level;
  */
 public interface Levelable<T extends Levelable> {
 
+    public String getName();
+
     public Level<T> getLevel();
 
     public void attachLevel(Level<T> level);

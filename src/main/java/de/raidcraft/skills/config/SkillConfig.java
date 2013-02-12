@@ -3,6 +3,8 @@ package de.raidcraft.skills.config;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -38,6 +40,15 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
         } else {
             return factory.getSkillName();
         }
+    }
+
+    @Override
+    public LevelFormula getLevelFormula() {
+
+        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
+                LevelConfig.Type.SKILLS, getOverrideString("formula", "default"));
+        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
+        return formulaType.create(config);
     }
 
     @Override

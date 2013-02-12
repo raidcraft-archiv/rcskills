@@ -1,0 +1,15 @@
+professions:
+  default:
+    # (-.4 * level^3) + (modifier * level^2)
+    type: wow
+    modifier: 40.4
+skills:
+  default:
+    # base + x * level
+    type: mcmmo
+    base: 200
+    x: 40.5
+heroes:
+  default:
+    type: wow
+    modifier: 75.5

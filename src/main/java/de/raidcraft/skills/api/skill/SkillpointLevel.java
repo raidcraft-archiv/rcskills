@@ -45,10 +45,4 @@ public class SkillpointLevel extends SkillLevel {
 
         return 0;
     }
-
-    @Override
-    public int getNeededExpForLevel(int level) {
-
-        return 1;
-    }
 }

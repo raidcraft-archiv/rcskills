@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.level;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.tables.THeroExpPool;
 
@@ -13,7 +14,7 @@ public class ExpPool extends AbstractLevel<Hero> {
 
     public ExpPool(Hero levelObject, LevelData data) {
 
-        super(levelObject, data);
+        super(levelObject, FormulaType.STATIC.create(null), data);
     }
 
     @Override
@@ -70,12 +71,6 @@ public class ExpPool extends AbstractLevel<Hero> {
     public boolean hasReachedMaxLevel() {
 
         return true;
-    }
-
-    @Override
-    public int getNeededExpForLevel(int level) {
-
-        return 1;
     }
 
     @Override

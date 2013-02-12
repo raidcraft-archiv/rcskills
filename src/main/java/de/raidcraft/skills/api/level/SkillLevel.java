@@ -10,12 +10,7 @@ public abstract class SkillLevel extends AbstractLevel<LevelableSkill> {
 
     public SkillLevel(LevelableSkill levelObject, LevelData data) {
 
-        super(levelObject, data);
-    }
-
-    public SkillLevel(LevelableSkill levelObject) {
-
-        super(levelObject);
+        super(levelObject, levelObject.getProperties().getLevelFormula(), data);
     }
 
     @Override

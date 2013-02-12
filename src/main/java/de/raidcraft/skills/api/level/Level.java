@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.level;
 
+import de.raidcraft.skills.api.level.forumla.LevelFormula;
+
 /**
  * @author Silthus
  */
@@ -14,18 +16,19 @@ public interface Level<T extends Levelable> {
     public int getExp();
 
     /**
+     * Gets the level formula containing the information
+     * how much exp is needed to the next level.
+     *
+     * @return formula to calculate exp
+     */
+    public LevelFormula getFormula();
+
+    /**
      * Gets the maximum amount of exp for this level.
      *
      * @return max exp for level
      */
     public int getMaxExp();
-
-    /**
-     * Calculates how much total exp is needed for the given level.
-     *
-     * @return exp needed for the given level
-     */
-    public int getNeededExpForLevel(int level);
 
     /**
      * Calculates the total amount of exp needed to that level from level 0 and 0 exp.
