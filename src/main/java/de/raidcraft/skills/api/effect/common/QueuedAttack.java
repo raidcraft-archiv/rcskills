@@ -43,6 +43,10 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
+        if (attacked) {
+            return;
+        }
+        attacked = true;
         if (weapon != null && weapon.isOfType(getSource().getHero().getItemTypeInHand())) {
             trigger.setCancelled(true);
             trigger.getAttack().setCancelled(true);
@@ -54,7 +58,6 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         if (callback != null) {
             callback.run(trigger);
         }
-        attacked = true;
         info(getSource().getFriendlyName() + " ausgeführt!");
         remove();
     }
