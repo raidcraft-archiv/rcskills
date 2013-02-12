@@ -88,7 +88,7 @@ public final class ConfigUtil {
             try {
                 Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(), key);
                 int level = config.getOverride("requirements.professions." + key, profession.getMaxLevel());
-                unlockable.addRequirement(new ProfessionLevelRequirement(profession.getLevel(), level));
+                unlockable.addRequirement(new ProfessionLevelRequirement(profession, level));
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
             }
@@ -115,7 +115,7 @@ public final class ConfigUtil {
 
                 if (reqSkill instanceof LevelableSkill) {
                     int level = section.getInt("level", ((LevelableSkill) reqSkill).getMaxLevel());
-                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
+                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill), level));
                 } else {
                     throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
                 }

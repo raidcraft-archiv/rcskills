@@ -144,7 +144,8 @@ public final class CharacterManager implements Listener {
 
     public void clearCacheOf(CharacterTemplate character) {
 
-        characters.remove(character.getEntity().getUniqueId());
+        LivingEntity entity = character.getEntity();
+        if (entity != null) characters.remove(entity.getUniqueId());
         heroes.remove(character.getName());
     }
 

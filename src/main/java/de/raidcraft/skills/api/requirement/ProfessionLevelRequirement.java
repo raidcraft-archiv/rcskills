@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.requirement;
 
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.ChatColor;
 
@@ -10,12 +9,12 @@ import org.bukkit.ChatColor;
  */
 public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
 
-    public ProfessionLevelRequirement(Level<Profession> type, int requiredLevel) {
+    public ProfessionLevelRequirement(Profession type, int requiredLevel) {
 
         super(type, requiredLevel);
     }
 
-    public ProfessionLevelRequirement(Level<Profession> type) {
+    public ProfessionLevelRequirement(Profession type) {
 
         super(type);
     }
@@ -23,15 +22,14 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
     @Override
     public String getLongReason(Hero hero) {
 
-        return ChatColor.RED + "Du musst erst deine " + getLevelObject().getPath().getFriendlyName() + " Spezialisierung " +
-                ChatColor.AQUA + getLevelObject() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
+        return ChatColor.RED + "Du musst erst deine " + getType().getPath().getFriendlyName() + " Spezialisierung " +
+                ChatColor.AQUA + getType() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
                 + getRequiredLevel() + ChatColor.RED + " bringen.";
     }
 
     @Override
     public String getShortReason(Hero hero) {
 
-        return (ChatColor.YELLOW + getLevelObject().getPath().getFriendlyName() + " Spezialisierung " + ChatColor.AQUA +
-                getLevelObject() + ChatColor.YELLOW + " auf Level " + getRequiredLevel());
+        return getType().getPath().getFriendlyName() + " Spezialisierung " + getType() + " auf Level " + getRequiredLevel();
     }
 }

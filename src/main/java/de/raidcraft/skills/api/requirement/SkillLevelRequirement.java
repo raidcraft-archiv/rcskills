@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.requirement;
 
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import org.bukkit.ChatColor;
 
@@ -10,12 +9,12 @@ import org.bukkit.ChatColor;
  */
 public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
 
-    public SkillLevelRequirement(Level<LevelableSkill> type, int requiredLevel) {
+    public SkillLevelRequirement(LevelableSkill type, int requiredLevel) {
 
         super(type, requiredLevel);
     }
 
-    public SkillLevelRequirement(Level<LevelableSkill> type) {
+    public SkillLevelRequirement(LevelableSkill type) {
 
         super(type);
     }
@@ -24,13 +23,13 @@ public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
     public String getLongReason(Hero hero) {
 
         return ChatColor.RED +
-                "Du musst erst deinen Skill " + ChatColor.AQUA + getLevelObject() +
+                "Du musst erst deinen Skill " + ChatColor.AQUA + getType() +
                 ChatColor.RED + " auf Level " + ChatColor.AQUA + getRequiredLevel() + ChatColor.RED + " bringen.";
     }
 
     @Override
     public String getShortReason(Hero hero) {
 
-        return "Skill " + getLevelObject() + " auf Level " + getRequiredLevel();
+        return "Skill " + getType()+ " auf Level " + getRequiredLevel();
     }
 }
