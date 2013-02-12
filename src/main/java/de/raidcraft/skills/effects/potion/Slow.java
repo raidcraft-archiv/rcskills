@@ -1,7 +1,6 @@
 package de.raidcraft.skills.effects.potion;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
@@ -19,14 +18,13 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Slow",
         description = "Das Ziel wird verlangsamt",
-        types = {EffectType.DEBUFF},
-        elements = {EffectElement.DARK}
+        types = {EffectType.DEBUFF, EffectType.MOVEMENT}
 )
-public class Slowness<S> extends ExpirableEffect<S> {
+public class Slow<S> extends ExpirableEffect<S> {
 
     private int amplifier;
 
-    public Slowness(S source, CharacterTemplate target, EffectData data) {
+    public Slow(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
