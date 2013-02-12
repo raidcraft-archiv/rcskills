@@ -12,7 +12,7 @@ public class LinearFormula extends AbstractFormula {
     @Param("x")
     private double x = 50;
 
-    protected LinearFormula(ConfigurationSection config) {
+    public LinearFormula(ConfigurationSection config) {
 
         super(config);
         loadParams();

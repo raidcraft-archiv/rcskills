@@ -12,7 +12,7 @@ public class StaticFormula extends AbstractFormula {
     @Param("amount")
     private int amount = 1;
 
-    protected StaticFormula(ConfigurationSection config) {
+    public StaticFormula(ConfigurationSection config) {
 
         super(config);
         loadParams();

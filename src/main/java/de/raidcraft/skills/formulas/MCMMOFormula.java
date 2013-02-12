@@ -14,7 +14,7 @@ public class MCMMOFormula extends AbstractFormula {
     @Param("x")
     private double x = 40.5;
 
-    protected MCMMOFormula(ConfigurationSection config) {
+    public MCMMOFormula(ConfigurationSection config) {
 
         super(config);
         loadParams();

@@ -12,7 +12,7 @@ public class WoWFormula extends AbstractFormula {
     @Param("modifier")
     private double modifier = 40.4;
 
-    protected WoWFormula(ConfigurationSection config) {
+    public WoWFormula(ConfigurationSection config) {
 
         super(config);
         loadParams();

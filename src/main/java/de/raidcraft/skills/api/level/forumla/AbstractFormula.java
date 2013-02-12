@@ -12,7 +12,7 @@ public abstract class AbstractFormula implements LevelFormula {
 
     private final ConfigurationSection config;
 
-    protected AbstractFormula(ConfigurationSection config) {
+    public AbstractFormula(ConfigurationSection config) {
 
         this.config = config;
     }
