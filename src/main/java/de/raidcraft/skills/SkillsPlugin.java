@@ -59,7 +59,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void enable() {
 
         // create the config
-        this.configuration = configure(new LocalConfiguration(this), false);
+        this.configuration = configure(new LocalConfiguration(this));
         this.pathConfig = configure(new PathConfig(this), false);
         this.levelConfig = configure(new LevelConfig(this), false);
         levelConfig.loadFormulas();
