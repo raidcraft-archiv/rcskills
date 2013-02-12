@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.skill.LevelableSkill;
 /**
  * @author Silthus
  */
-public abstract class SkillLevel extends AbstractLevel<LevelableSkill> {
+public class SkillLevel extends AbstractLevel<LevelableSkill> {
 
     public SkillLevel(LevelableSkill levelObject, LevelData data) {
 

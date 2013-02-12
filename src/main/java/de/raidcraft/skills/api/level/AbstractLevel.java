@@ -189,7 +189,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
             // increase the level
             setLevel(newLevel);
             // lets get the total needed exp from the old level to the new level-1
-            int neededExp = getTotalNeededExpForLevel(newLevel - 1) - getTotalNeededExpForLevel(oldLevel);
+            int neededExp = getFormula().getNeededExpForLevel(oldLevel);
             // set the exp
             setExp(getExp() - neededExp);
         } else if (getExp() < 0 && getLevel() > 0) {
