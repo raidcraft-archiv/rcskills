@@ -123,6 +123,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         }
         // lets create a new skill for this name
         skill = skillFactories.get(skillName).create(hero, profession, overrides);
+        skill.getProperties().loadRequirements(skill);
         playerSkills.get(hero.getName()).add(skill);
         // lets add the skill as a trigger handler
         if (skill instanceof Triggered) {

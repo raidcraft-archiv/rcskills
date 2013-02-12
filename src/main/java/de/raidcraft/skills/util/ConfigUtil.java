@@ -80,28 +80,7 @@ public final class ConfigUtil {
 
     public static void loadRequirements(ConfigurationBase<SkillsPlugin> config, Unlockable unlockable) {
 
-        ConfigurationSection skills = config.getOverrideSection("requirements.skills");
-        // lets load some skill requirements first
-        for (String key : skills.getKeys(false)) {
-            try {
-                ConfigurationSection section = config.getOverrideSection("requirements.skills." + key);
-                Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(),
-                        section.getString("profession",
-                                (unlockable instanceof Skill ?
-                                        ((Skill) unlockable).getProfession().getName() :
-                                        unlockable.getHero().getVirtualProfession().getName())));
-                Skill reqSkill = config.getPlugin().getSkillManager().getSkill(unlockable.getHero(), profession, key);
-
-                if (reqSkill instanceof LevelableSkill) {
-                    int level = section.getInt("level", ((LevelableSkill) reqSkill).getMaxLevel());
-                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
-                } else {
-                    throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
-                }
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
-            }
-        }
+        SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
 
         ConfigurationSection professions = config.getOverrideSection("requirements.professions");
         // lets get on some hot action with the profession requirements
@@ -110,6 +89,36 @@ public final class ConfigUtil {
                 Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(), key);
                 int level = config.getOverride("requirements.professions." + key, profession.getMaxLevel());
                 unlockable.addRequirement(new ProfessionLevelRequirement(profession.getLevel(), level));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
+            }
+        }
+
+        ConfigurationSection skills = config.getOverrideSection("requirements.skills");
+        // lets load some skill requirements
+        for (String key : skills.getKeys(false)) {
+            try {
+                ConfigurationSection section = config.getOverrideSection("requirements.skills." + key);
+
+                Profession profession;
+                if (section.isSet("profession")) {
+                    profession = component.getProfessionManager().getProfession(unlockable.getHero(), section.getString("profession"));
+                } else if (unlockable instanceof Profession) {
+                    profession = (Profession) unlockable;
+                } else if (unlockable instanceof Skill) {
+                    profession = ((Skill) unlockable).getProfession();
+                } else {
+                    profession = unlockable.getHero().getVirtualProfession();
+                }
+
+                Skill reqSkill = config.getPlugin().getSkillManager().getSkill(unlockable.getHero(), profession, key);
+
+                if (reqSkill instanceof LevelableSkill) {
+                    int level = section.getInt("level", ((LevelableSkill) reqSkill).getMaxLevel());
+                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill).getLevel(), level));
+                } else {
+                    throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
+                }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
             }

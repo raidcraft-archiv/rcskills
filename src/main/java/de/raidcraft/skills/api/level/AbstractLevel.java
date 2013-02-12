@@ -152,7 +152,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
             int oldLevel = this.level;
             this.level = level;
 
-            if (level > oldLevel) increaseLevel(oldLevel, level);
+            if (level > oldLevel) increaseLevel();
             if (level < oldLevel) decreaseLevel();
         }
     }
@@ -200,15 +200,13 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void increaseLevel(int oldLevel, int newLevel) {
+    private void increaseLevel() {
 
         calculateMaxExp();
         saveLevelProgress();
         getLevelObject().onLevelGain();
     }
 
-    @SuppressWarnings("unchecked")
     private void decreaseLevel() {
 
         calculateMaxExp();
