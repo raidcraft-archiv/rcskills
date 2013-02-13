@@ -36,8 +36,6 @@ public class THero implements LevelData, HeroData, Bean {
     private int exp;
     private int level;
     private int health;
-    private boolean debugging;
-    private boolean combatLogging;
     @OneToOne
     private THeroExpPool expPool;
 
@@ -48,6 +46,10 @@ public class THero implements LevelData, HeroData, Bean {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "hero_id")
     private List<THeroSkill> skills;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "hero_id")
+    private List<THeroOption> options;
 
     @Override
     public List<String> getProfessionNames() {
@@ -159,26 +161,6 @@ public class THero implements LevelData, HeroData, Bean {
         this.health = health;
     }
 
-    public boolean isDebugging() {
-
-        return debugging;
-    }
-
-    public void setDebugging(boolean debugging) {
-
-        this.debugging = debugging;
-    }
-
-    public boolean isCombatLogging() {
-
-        return combatLogging;
-    }
-
-    public void setCombatLogging(boolean combatLogging) {
-
-        this.combatLogging = combatLogging;
-    }
-
     public THeroExpPool getExpPool() {
 
         return expPool;
@@ -187,6 +169,16 @@ public class THero implements LevelData, HeroData, Bean {
     public void setExpPool(THeroExpPool expPool) {
 
         this.expPool = expPool;
+    }
+
+    public List<THeroOption> getOptions() {
+
+        return options;
+    }
+
+    public void setOptions(List<THeroOption> options) {
+
+        this.options = options;
     }
 
     public void delete() {

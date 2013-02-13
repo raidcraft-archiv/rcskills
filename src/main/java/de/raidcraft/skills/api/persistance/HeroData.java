@@ -15,10 +15,6 @@ public interface HeroData {
 
     public int getHealth();
 
-    public boolean isDebugging();
-
-    public boolean isCombatLogging();
-
     public int getMaxLevel();
 
     public List<String> getProfessionNames();

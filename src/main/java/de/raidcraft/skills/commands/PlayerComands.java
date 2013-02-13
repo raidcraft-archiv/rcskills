@@ -8,6 +8,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
@@ -80,6 +81,18 @@ public class PlayerComands {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Command(
+            aliases = {"combatlog", "cl", "kampflog", "kl"},
+            desc = "Aktiviert/Deaktiviert das Kampflog."
+    )
+    public void combatLog(CommandContext args, CommandSender sender) {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Option.COMBAT_LOGGING.set(hero, !Option.COMBAT_LOGGING.isSet(hero));
+        sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Kampflog wurde " + ChatColor.AQUA +
+                (Option.COMBAT_LOGGING.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
     }
 
     private void addExp(Level<Hero> expPool, Level level, int exp) throws InvalidChoiceException {

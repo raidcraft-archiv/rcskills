@@ -10,6 +10,7 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
@@ -61,9 +62,9 @@ public class AdminCommands {
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }
-        hero.setDebugging(!hero.isDebugging());
+        Option.DEBUGGING.set(hero, !Option.DEBUGGING.isSet(hero));
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +
-                (hero.isDebugging() ? "on." : "off."));
+                (Option.DEBUGGING.isSet(hero) ? "on." : "off."));
     }
 
     @Command(

@@ -47,10 +47,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final int id;
     private final RCPlayer player;
     private final Level<Hero> expPool;
+    private final HeroOptions options;
     // every player is member of his own group by default
     private Group group;
-    private boolean debugging = false;
-    private boolean combatLoggging = false;
     private int health;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
@@ -68,9 +67,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.id = data.getId();
         this.player = RaidCraft.getPlayer(data.getName());
         this.expPool = new ExpPool(this, data.getExpPool());
+        this.options = new HeroOptions(this);
         this.health = data.getHealth();
-        this.debugging = data.isDebugging();
-        this.combatLoggging = data.isCombatLogging();
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
@@ -179,6 +177,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadSkills();
         reset();
         save();
+    }
+
+    @Override
+    public HeroOptions getOptions() {
+
+        return options;
     }
 
     @Override
@@ -339,30 +343,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public boolean isDebugging() {
-
-        return debugging;
-    }
-
-    @Override
-    public void setDebugging(boolean debug) {
-
-        this.debugging = debug;
-    }
-
-    @Override
-    public boolean isCombatLogging() {
-
-        return combatLoggging;
-    }
-
-    @Override
-    public void setCombatLogging(boolean logging) {
-
-        this.combatLoggging = logging;
-    }
-
-    @Override
     public boolean isMastered() {
 
         return getLevel().hasReachedMaxLevel();
@@ -371,7 +351,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void debug(String message) {
 
-        if (isDebugging() && message != null && !message.equals("")) {
+        if (Option.DEBUGGING.isSet(this) && message != null && !message.equals("")) {
             player.sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
         }
     }
@@ -379,8 +359,15 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void combatLog(String message) {
 
-        if (isCombatLogging() && message != null && !message.equals("")) {
-            player.sendMessage(ChatColor.GRAY + "[Combat]" + ChatColor.ITALIC + message);
+        combatLog(null, message);
+    }
+
+    @Override
+    public void combatLog(Object o, String message) {
+
+        if (Option.COMBAT_LOGGING.isSet(this) && message != null && !message.equals("")) {
+            player.sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? o : "")
+                    + " " + ChatColor.ITALIC + message);
         }
     }
 
@@ -459,11 +446,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         THero tHero = Ebean.find(THero.class, getId());
         tHero.setHealth(getHealth());
-        tHero.setDebugging(isDebugging());
-        tHero.setCombatLogging(isCombatLogging());
         tHero.setSelectedProfession(getSelectedProfession().getName());
         Database.save(tHero);
 
+        getOptions().save();
         saveProfessions();
         saveLevelProgress(getLevel());
         getExpPool().saveLevelProgress();

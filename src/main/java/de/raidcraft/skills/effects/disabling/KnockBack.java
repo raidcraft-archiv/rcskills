@@ -45,6 +45,7 @@ public class KnockBack extends AbstractEffect<Location> {
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
         // also interrupt the target
         target.addEffect(this, Interrupt.class);
+        remove();
     }
 
     @Override

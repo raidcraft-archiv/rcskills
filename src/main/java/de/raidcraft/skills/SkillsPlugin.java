@@ -25,6 +25,7 @@ import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
+import de.raidcraft.skills.tables.THeroOption;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -134,6 +135,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         List<Class<?>> classes = new ArrayList<>();
         classes.add(THero.class);
+        classes.add(THeroOption.class);
         classes.add(THeroExpPool.class);
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);

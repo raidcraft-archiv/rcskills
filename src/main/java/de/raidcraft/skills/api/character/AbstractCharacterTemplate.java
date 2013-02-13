@@ -98,6 +98,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(
                         "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
+                ((Hero) attack.getSource()).combatLog("Du hast " + attack.getTarget() + " " + attack.getDamage() + " Schaden zugefügt.");
+            }
+            if (attack.getTarget() instanceof Hero) {
+                ((Hero) attack.getTarget()).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() + " erhalten.");
             }
         }
     }

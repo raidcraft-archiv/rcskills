@@ -35,23 +35,19 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public Group getGroup();
 
+    public HeroOptions getOptions();
+
     public boolean isInGroup(Group group);
 
     public void joinGroup(Group group);
 
     public void leaveGroup(Group group);
 
-    public boolean isDebugging();
-
-    public void setDebugging(boolean debug);
-
     public void debug(String message);
 
-    public boolean isCombatLogging();
-
-    public void setCombatLogging(boolean logging);
-
     public void combatLog(String message);
+
+    public void combatLog(Object o, String message);
 
     public void reset();
 
