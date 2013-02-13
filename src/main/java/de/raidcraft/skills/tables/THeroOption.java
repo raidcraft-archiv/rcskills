@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.database.Bean;
 
 import javax.persistence.Entity;
@@ -18,12 +17,9 @@ public class THeroOption implements Bean {
     @Id
     private int id;
     @ManyToOne
-    @NotNull
     private THero hero;
-    @NotNull
-    private String option;
-    @NotNull
-    private boolean value;
+    private String optionKey;
+    private boolean optionValue;
 
     public int getId() {
 
@@ -45,23 +41,23 @@ public class THeroOption implements Bean {
         this.hero = hero;
     }
 
-    public String getOption() {
+    public String getOptionKey() {
 
-        return option;
+        return optionKey;
     }
 
-    public void setOption(String option) {
+    public void setOptionKey(String optionKey) {
 
-        this.option = option;
+        this.optionKey = optionKey;
     }
 
-    public boolean isValue() {
+    public boolean isOptionValue() {
 
-        return value;
+        return optionValue;
     }
 
-    public void setValue(boolean value) {
+    public void setOptionValue(boolean optionValue) {
 
-        this.value = value;
+        this.optionValue = optionValue;
     }
 }

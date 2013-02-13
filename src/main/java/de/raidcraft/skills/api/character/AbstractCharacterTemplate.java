@@ -370,6 +370,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         this.maxHealth = maxHealth;
     }
 
+    @Override
+    public String toString() {
+
+        return getName();
+    }
+
     protected float getSoundStrength(LivingEntity target) {
 
         if (!(target instanceof Ageable)) {

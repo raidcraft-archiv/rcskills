@@ -366,7 +366,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void combatLog(Object o, String message) {
 
         if (Option.COMBAT_LOGGING.isSet(this) && message != null && !message.equals("")) {
-            player.sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? o : "")
+            player.sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
                     + " " + ChatColor.ITALIC + message);
         }
     }
@@ -597,11 +597,5 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         return obj instanceof Hero
                 && ((Hero) obj).getName().equals(getName());
-    }
-
-    @Override
-    public String toString() {
-
-        return "[H:" + getName() + "]";
     }
 }
