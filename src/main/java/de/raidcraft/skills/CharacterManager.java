@@ -97,8 +97,6 @@ public final class CharacterManager implements Listener {
                 heroTable.setHealth(20);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                heroTable.setCombatLogging(false);
-                heroTable.setDebugging(false);
                 Database.save(heroTable);
                 // also create a new exp pool for the hero
                 THeroExpPool pool = Ebean.find(THeroExpPool.class).where().eq("player", name).findUnique();
