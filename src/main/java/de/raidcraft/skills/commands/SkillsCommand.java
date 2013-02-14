@@ -72,6 +72,14 @@ public class SkillsCommand {
                 }
             }
         }
+        // remove all virtual skills
+        if (!args.hasFlag('v')) {
+            for (Skill skill : new ArrayList<>(skills)) {
+                if (skill.getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)) {
+                    skills.remove(skill);
+                }
+            }
+        }
         // lets sort them by their required level
         Collections.sort(skills);
         // lets list all skills
