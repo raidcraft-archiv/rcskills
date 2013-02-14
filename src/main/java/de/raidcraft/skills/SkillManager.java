@@ -134,7 +134,12 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     public SkillFactory getFactory(Skill skill) {
 
-        return skillFactories.get(skill.getName());
+        return getFactory(skill.getName());
+    }
+
+    protected SkillFactory getFactory(String name) {
+
+        return skillFactories.get(name);
     }
 
     public Collection<? extends Skill> getAllSkills(Hero hero) {
@@ -157,6 +162,17 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             } catch (UnknownSkillException e) {
                 hero.sendMessage(ChatColor.RED + e.getMessage());
                 plugin.getLogger().warning(e.getMessage());
+            }
+        }
+        return skills;
+    }
+
+    protected Collection<String> getSkillsFor(Class<? extends Skill> sClass) {
+
+        Set<String> skills = new HashSet<>();
+        for (Map.Entry<String, Class<? extends Skill>> entry : skillClasses.entrySet()) {
+            if (entry.getValue() == sClass) {
+                skills.add(entry.getKey());
             }
         }
         return skills;

@@ -54,7 +54,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private LocalConfiguration configuration;
     private PathConfig pathConfig;
     private LevelConfig levelConfig;
-
+    private SkillPermissionsProvider permissionsProvider;
 
     @Override
     public void enable() {
@@ -91,6 +91,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
+        // lets register our permissions provider last
+        this.permissionsProvider = new SkillPermissionsProvider(this);
     }
 
     private void registerSkills() {
@@ -128,6 +130,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.combatManager.reload();
         this.damageManager.reload();
         this.characterManager.startTasks();
+
+        this.permissionsProvider.reload();
     }
 
     @Override
@@ -211,6 +215,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double global_cooldown = 1.5;
         @Setting("defaults.swing-delay")
         public double swing_delay = 1.0;
+        @Setting("defaults.permission-group")
+        public String default_permission_group = "default";
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")

@@ -71,6 +71,35 @@ public final class SkillFactory {
         config.getCastTimeSkillLevelModifier();
     }
 
+    protected Skill createDummy() throws UnknownSkillException {
+
+        SkillConfig config = plugin.configure(new SkillConfig(this), false);
+        // we need to set all the overrides to null because they are used multiple times
+        if (useAlias()) {
+            config.merge(aliasConfig);
+        }
+
+        if (!config.isEnabled()) {
+            throw new UnknownSkillException("The skill " + skillName + " is not enabled!");
+        }
+
+        // its reflection time yay!
+        try {
+            Skill skill = constructor.newInstance(null, config, null, null);
+            if (!skill.isEnabled()) {
+                throw new UnknownSkillException("The Skill " + skillName + " is disabled!");
+            }
+            skill.load(config.getData());
+            return skill;
+        } catch (Throwable e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+            // lets disable the skill so the console wont be spammed
+            if (plugin.getCommonConfig().disable_error_skills) config.setEnabled(false);
+        }
+        throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
+    }
+
     protected Skill create(Hero hero, Profession profession, ConfigurationSection... overrides) throws UnknownSkillException {
 
         SkillConfig config;
@@ -168,5 +197,10 @@ public final class SkillFactory {
     public SkillConfig getConfig(Profession profession) {
 
         return skillConfigs.get(profession);
+    }
+
+    protected SkillConfig getNewConfig() {
+
+        return plugin.configure(new SkillConfig(this), false);
     }
 }
