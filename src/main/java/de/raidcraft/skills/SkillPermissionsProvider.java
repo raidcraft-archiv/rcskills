@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.permissions.PermissionsPlugin;
@@ -10,6 +11,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.skills.PermissionSkill;
+import de.raidcraft.skills.tables.THeroSkill;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,12 +53,14 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
 
         String defaultGroup = plugin.getCommonConfig().default_permission_group;
         // every permission skill is handled as a group
-        for (String group : plugin.getSkillManager().getSkillsFor(PermissionSkill.class)) {
+        for (SkillFactory skillFactory : plugin.getSkillManager().getSkillFactoriesFor(PermissionSkill.class)) {
             try {
-                SkillFactory skillFactory = plugin.getSkillManager().getFactory(group);
                 Skill skill = skillFactory.createDummy();
                 if (skill instanceof PermissionSkill) {
-                    SimpleGroup simpleGroup = new SimpleGroup(this, skill.getName(), ((PermissionSkill) skill).getWorldPermissions());
+                    Set<String> globalPermissions = ((PermissionSkill) skill).getGlobalPermissions();
+                    SimpleGroup simpleGroup = new SimpleGroup(this, skill.getName(),
+                            ((PermissionSkill) skill).getWorldPermissions(),
+                            globalPermissions.toArray(new String[globalPermissions.size()]));
                     groups.add(simpleGroup);
                     if (simpleGroup.getName().equalsIgnoreCase(defaultGroup)) {
                         this.defaultGroup = simpleGroup;
@@ -94,9 +98,10 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
 
         Set<String> groups = new HashSet<>();
         try {
-            Hero hero = plugin.getCharacterManager().getHero(player);
-            for (Skill skill : hero.getSkills()) {
-                if (skill instanceof PermissionSkill && skill.isActive() && skill.isUnlocked() && skill.isEnabled()) {
+            Hero hero = plugin.getCharacterManager().getHero(player, false);
+            List<THeroSkill> skills = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
+            for (THeroSkill skill : skills) {
+                if (plugin.getSkillManager().getFactory(skill.getName()).getSkillClass() == PermissionSkill.class) {
                     groups.add(skill.getName());
                 }
             }

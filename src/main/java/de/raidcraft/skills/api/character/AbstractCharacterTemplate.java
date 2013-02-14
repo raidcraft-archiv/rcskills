@@ -42,7 +42,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
-    private int maxHealth;
     private boolean inCombat = false;
     private long lastSwing;
 
@@ -50,14 +49,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         this.entity = entity;
         this.name = (entity instanceof Player) ? ((Player) entity).getName() : entity.getType().getName();
-        this.maxHealth = getDefaultHealth();
     }
 
     protected AbstractCharacterTemplate(String name) {
 
         this.entity = Bukkit.getPlayer(name);
         this.name = name;
-        this.maxHealth = getDefaultHealth();
     }
 
     @Override
@@ -356,18 +353,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         this.lastSwing = System.currentTimeMillis()
                 + (long) (RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().swing_delay * 1000);
-    }
-
-    @Override
-    public int getMaxHealth() {
-
-        return maxHealth;
-    }
-
-    @Override
-    public void setMaxHealth(int maxHealth) {
-
-        this.maxHealth = maxHealth;
     }
 
     @Override

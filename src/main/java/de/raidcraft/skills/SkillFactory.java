@@ -203,4 +203,9 @@ public final class SkillFactory {
 
         return plugin.configure(new SkillConfig(this), false);
     }
+
+    protected Class<? extends Skill> getSkillClass() {
+
+        return sClass;
+    }
 }

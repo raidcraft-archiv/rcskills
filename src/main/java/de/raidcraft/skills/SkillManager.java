@@ -167,12 +167,12 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         return skills;
     }
 
-    protected Collection<String> getSkillsFor(Class<? extends Skill> sClass) {
+    protected Collection<SkillFactory> getSkillFactoriesFor(Class<? extends Skill> sClass) {
 
-        Set<String> skills = new HashSet<>();
-        for (Map.Entry<String, Class<? extends Skill>> entry : skillClasses.entrySet()) {
-            if (entry.getValue() == sClass) {
-                skills.add(entry.getKey());
+        Set<SkillFactory> skills = new HashSet<>();
+        for (SkillFactory factory : skillFactories.values()) {
+            if (factory.getSkillClass() == sClass) {
+                skills.add(factory);
             }
         }
         return skills;

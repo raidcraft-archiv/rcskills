@@ -74,7 +74,7 @@ public final class CharacterManager implements Listener {
         }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
     }
 
-    public Hero getHero(String name) throws UnknownPlayerException {
+    public Hero getHero(String name, boolean cache) throws UnknownPlayerException {
 
         Hero hero;
         if (!heroes.containsKey(name)) {
@@ -110,17 +110,22 @@ public final class CharacterManager implements Listener {
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
-            heroes.put(hero.getName(), hero);
+            if (cache) heroes.put(hero.getName(), hero);
         } else {
             hero = heroes.get(name);
         }
         return hero;
     }
 
-    public Hero getHero(Player player) {
+    public Hero getHero(String name) throws UnknownPlayerException {
+
+        return getHero(name, true);
+    }
+
+    public Hero getHero(Player player, boolean cache) {
 
         try {
-            return getHero(player.getName());
+            return getHero(player.getName(), cache);
         } catch (UnknownPlayerException e) {
             // will never be thrown
             e.printStackTrace();
@@ -128,16 +133,30 @@ public final class CharacterManager implements Listener {
         return null;
     }
 
-    public CharacterTemplate getCharacter(LivingEntity entity) {
+    public Hero getHero(Player player) {
+
+        return getHero(player, true);
+    }
+
+    public CharacterTemplate getCharacter(LivingEntity entity, boolean cache) {
 
         if (entity instanceof Player) {
             return getHero((Player) entity);
         }
 
+        CharacterTemplate creature;
         if (!characters.containsKey(entity.getUniqueId())) {
-            characters.put(entity.getUniqueId(), new Creature(entity));
+            creature = new Creature(entity);
+            if (cache) characters.put(entity.getUniqueId(), creature);
+        } else {
+            creature = characters.get(entity.getUniqueId());
         }
-        return characters.get(entity.getUniqueId());
+        return creature;
+    }
+
+    public CharacterTemplate getCharacter(LivingEntity entity) {
+
+        return getCharacter(entity, true);
     }
 
     public void clearCacheOf(CharacterTemplate character) {

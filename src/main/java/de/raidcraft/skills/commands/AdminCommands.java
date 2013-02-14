@@ -52,6 +52,8 @@ public class AdminCommands {
     @CommandPermissions("rcskills.admin.debug")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
 
+        sender.sendMessage("Du hast die permission testpermission: " + sender.hasPermission("testpermission"));
+
         Hero hero;
         if (args.argsLength() > 1) {
             try {

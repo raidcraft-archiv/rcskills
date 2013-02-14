@@ -1,5 +1,7 @@
 package de.raidcraft.skills.skills;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -20,7 +22,7 @@ import java.util.Set;
  * @author Silthus
  */
 @SkillInformation(
-        name = "permission-skill",
+        name = "permission",
         desc = "Represents a generic permissions skill.",
         types = {EffectType.UNBINDABLE},
         triggerCombat = false
@@ -29,6 +31,7 @@ public class PermissionSkill extends AbstractSkill {
 
     // maps the worlds to their permissions
     private Map<String, Set<String>> worldPermissions = new HashMap<>();
+    private Set<String> globalPermissions = new HashSet<>();
 
     public PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -41,6 +44,7 @@ public class PermissionSkill extends AbstractSkill {
         for (World world : Bukkit.getWorlds()) {
             worldPermissions.put(world.getName(), new HashSet<>(data.getStringList(world.getName())));
         }
+        globalPermissions.addAll(data.getStringList("global"));
     }
 
     public Map<String, Set<String>> getWorldPermissions() {
@@ -48,15 +52,20 @@ public class PermissionSkill extends AbstractSkill {
         return worldPermissions;
     }
 
+    public Set<String> getGlobalPermissions() {
+
+        return globalPermissions;
+    }
+
     @Override
     public void apply() {
 
-        // our permission provider looks directly in the database so no need to do anything
+        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().addPlayerToGroup(getHero().getName(), getName());
     }
 
     @Override
     public void remove() {
 
-        // our permission provider looks directly in the database so no need to do anything
+        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().removePlayerFromGroup(getHero().getName(), getName());
     }
 }

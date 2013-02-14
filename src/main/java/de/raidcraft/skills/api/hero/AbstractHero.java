@@ -378,6 +378,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public void setMaxHealth(int maxHealth) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getHealth() {
 
         return health;

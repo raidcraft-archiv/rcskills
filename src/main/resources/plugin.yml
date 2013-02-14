@@ -5,3 +5,4 @@ description: API for creating and using custom skills.
 author: Silthus
 website: http://www.raid-craft.de
 depend: [RaidCraft-API]
+softdepend: [RCPermissions]

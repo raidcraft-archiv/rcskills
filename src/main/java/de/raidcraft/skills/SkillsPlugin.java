@@ -3,7 +3,6 @@ package de.raidcraft.skills;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
@@ -277,7 +276,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 desc = "Base Command for Admins"
         )
         @NestedCommand(AdminCommands.class)
-        @CommandPermissions("rcskills.admin")
         public void admin(CommandContext args, CommandSender sender) {
 
         }

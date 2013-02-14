@@ -19,17 +19,31 @@ import java.lang.reflect.Field;
  */
 public class Creature extends AbstractCharacterTemplate {
 
+    private int maxHealth = 20;
     private Field nmsHealth = null;
 
     public Creature(LivingEntity entity) {
 
         super(entity);
+        this.maxHealth = getDefaultHealth();
         try {
             // make the health field in NMS accessible
             this.nmsHealth = EntityLiving.class.getDeclaredField("health");
             this.nmsHealth.setAccessible(true);
         } catch (NoSuchFieldException ignored) {
         }
+    }
+
+    @Override
+    public int getMaxHealth() {
+
+        return maxHealth;
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth) {
+
+        this.maxHealth = maxHealth;
     }
 
     @Override
