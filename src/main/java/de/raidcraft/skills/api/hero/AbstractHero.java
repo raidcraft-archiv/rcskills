@@ -278,7 +278,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Resource getResource(String type) {
 
         for (Profession profession : professions.values()) {
-            if (profession.getResource(type) != null) {
+            if (profession.isActive() && profession.getResource(type) != null) {
                 return profession.getResource(type);
             }
         }
@@ -290,7 +290,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         Set<Resource> resources = new HashSet<>();
         for (Profession profession : professions.values()) {
-            resources.addAll(profession.getResources());
+            if (profession.isActive()) {
+                resources.addAll(profession.getResources());
+            }
         }
         return resources;
     }
