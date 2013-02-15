@@ -29,7 +29,8 @@ public enum EffectType {
     AVATAR,
     UNKNOWN,
     DEFAULT_ATTACK,
-    PROTECTION;
+    PROTECTION,
+    PURGEABLE;
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
 

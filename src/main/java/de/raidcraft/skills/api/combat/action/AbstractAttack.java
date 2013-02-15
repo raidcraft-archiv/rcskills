@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.hero.Hero;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -88,5 +89,17 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
     public boolean isCancelled() {
 
         return cancelled;
+    }
+
+    @Override
+    public void combatLog(Object o, String message) {
+
+        message = message.replace("<t>", getTarget().toString()).replace("<s>", getSource().toString());
+        if (getTarget() instanceof Hero) {
+            ((Hero) getTarget()).combatLog(o, message);
+        }
+        if (getSource() instanceof Hero) {
+            ((Hero) getSource()).combatLog(o, message);
+        }
     }
 }

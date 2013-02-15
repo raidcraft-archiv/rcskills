@@ -28,7 +28,8 @@ public class CombatException extends RaidCraftException {
         PASSIVE("Passive Skills können nicht gezaubert werden."),
         UNKNOWN("Unbekannter Fehlschlag."),
         SILENCED("Ein Stille Effekt ist aktiv! Du kannst keine Zauber wirken."),
-        DISARMED("Du wurdest entwaffnet und kannst nicht angreifen!");
+        DISARMED("Du wurdest entwaffnet und kannst nicht angreifen!"),
+        OUT_OF_RANGE("Ziel ist nicht in Reichweite.");
 
         private final String message;
 

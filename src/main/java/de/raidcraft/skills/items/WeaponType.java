@@ -49,6 +49,16 @@ public enum WeaponType {
     ),
     BOW(
             Material.BOW
+    ),
+    SHIELD(
+            Material.TRAP_DOOR,
+            Material.IRON_DOOR,
+            Material.WOOD_DOOR,
+            Material.WOODEN_DOOR
+    ),
+    MAGIC_WAND(
+            Material.STICK,
+            Material.BLAZE_ROD
     );
 
     private final Set<Material> items = new HashSet<>();

@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,6 +60,8 @@ public interface CharacterTemplate {
     public boolean hasEffectType(EffectType type);
 
     public void removeEffectTypes(EffectType type) throws CombatException;
+
+    public List<Effect> getEffects();
 
     public void clearEffects();
 

@@ -269,6 +269,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
     }
 
+    public final List<Effect> getEffects() {
+
+        return new ArrayList<>(effects.values());
+    }
+
     @Override
     public Set<CharacterTemplate> getNearbyTargets() throws CombatException {
 

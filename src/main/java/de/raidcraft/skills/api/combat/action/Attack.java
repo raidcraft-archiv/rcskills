@@ -26,4 +26,6 @@ public interface Attack<S, T> extends Action<S>, Cancellable {
     public AttackSource getAttackSource();
 
     public boolean hasSource(AttackSource source);
+
+    public void combatLog(Object o, String message);
 }

@@ -51,6 +51,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     // every player is member of his own group by default
     private Group group;
     private int health;
+    private int maxHealth = 20;
     private int maxLevel;
     private final Map<String, Skill> skills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -70,6 +71,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.options = new HeroOptions(this);
         this.health = data.getHealth();
         this.maxLevel = data.getMaxLevel();
+        this.maxHealth = getDefaultHealth();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
@@ -374,13 +376,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public int getMaxHealth() {
 
-        return getDefaultHealth();
+        return maxHealth;
     }
 
     @Override
     public void setMaxHealth(int maxHealth) {
 
-        throw new UnsupportedOperationException();
+        this.maxHealth = maxHealth;
     }
 
     @Override
@@ -538,6 +540,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setSelectedProfession(Profession profession) {
 
         this.selectedProfession = profession;
+        setMaxHealth(getDefaultHealth());
         if (getUserInterface() != null) {
             getUserInterface().refresh();
         }
