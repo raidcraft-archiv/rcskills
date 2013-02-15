@@ -396,6 +396,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
+        if (getUserInterface() != null) {
+            getUserInterface().refresh();
+        }
         debug("Health set to " + health);
     }
 

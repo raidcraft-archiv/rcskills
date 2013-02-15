@@ -46,7 +46,7 @@ public class CastCommand {
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
         // lets parse the argument for a valid spell
-        Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
+        Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
 
         if (!skill.isActive()) {
             throw new CommandException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");

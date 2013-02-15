@@ -122,7 +122,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             getEntity().setNoDamageTicks(1);
             setHealth(newHealth);
             if (this instanceof Hero) {
-                ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
                 ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
             }
         } catch (CombatException e) {
@@ -262,7 +261,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Effect effect : effects.values()) {
+        for (Effect effect : new ArrayList<>(effects.values())) {
             if (effect.isOfType(type)) {
                 effect.remove();
             }
