@@ -28,7 +28,8 @@ public enum EffectType {
     AURA,
     AVATAR,
     UNKNOWN,
-    DEFAULT_ATTACK;
+    DEFAULT_ATTACK,
+    PROTECTION;
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
 
