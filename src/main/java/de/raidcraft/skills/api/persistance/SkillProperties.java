@@ -55,7 +55,7 @@ public interface SkillProperties {
 
     public double getDamageLevelModifier();
 
-    public int getCastTime();
+    public double getCastTime();
 
     public double getCastTimeLevelModifier();
 

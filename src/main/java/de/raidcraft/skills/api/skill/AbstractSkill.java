@@ -236,7 +236,7 @@ public abstract class AbstractSkill implements Skill {
 
         return (int) (properties.getCastTime()
                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel()));
+                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel())) * 20;
     }
 
     @Override

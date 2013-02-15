@@ -160,9 +160,9 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public int getCastTime() {
+    public double getCastTime() {
 
-        return getOverride("casttime.base", 0);
+        return getOverride("casttime.base", 0.0);
     }
 
     @Override
