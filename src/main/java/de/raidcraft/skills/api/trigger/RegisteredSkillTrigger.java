@@ -2,10 +2,7 @@ package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.ChatColor;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
 
 /**
@@ -28,7 +25,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
      *
      * @throws EventException If an event handler throws an exception.
      */
-    protected void call(final Trigger trigger) throws EventException {
+    protected void call(final Trigger trigger) throws EventException, CombatException {
 
 
         if (skill == null) {
@@ -39,32 +36,20 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             return;
         }
 
-        try {
-            if (info.checkUsage()) {
-                // check the skill usage
-                skill.checkUsage();
-            }
+        if (info.checkUsage()) {
+            // check the skill usage
+            skill.checkUsage();
+        }
 
-            // add a combat effect when a skill is beeing casted
-            if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
+        // add a combat effect when a skill is beeing casted
+        if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
 
-            // and lets pass on the trigger
-            executor.execute(listener, trigger);
+        // and lets pass on the trigger
+        executor.execute(listener, trigger);
 
-            // only substract usage cost if the skill does not fail when executing
-            if (info.substractUsageCosts()) {
-                skill.substractUsageCost();
-            }
-        } catch (CombatException e) {
-            if (trigger.getSource() instanceof Hero) {
-                ((Hero) trigger.getSource()).sendMessage(ChatColor.RED + e.getMessage());
-            }
-            // lets check if we need to cancel a bukkit event
-            if (info.cancelEventOnFail() && trigger instanceof BukkitEventTrigger) {
-                if (((BukkitEventTrigger) trigger).getEvent() instanceof Cancellable) {
-                    ((Cancellable) ((BukkitEventTrigger) trigger).getEvent()).setCancelled(true);
-                }
-            }
+        // only substract usage cost if the skill does not fail when executing
+        if (info.substractUsageCosts()) {
+            skill.substractUsageCost();
         }
     }
 }

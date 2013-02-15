@@ -105,7 +105,7 @@ public abstract class AbstractResource implements Resource {
         if (current < getMin()) current = getMin();
         if (current > getMax()) current = getMax();
         // lets fire the trigger
-        ResourceChangeTrigger trigger = TriggerManager.callTrigger(new ResourceChangeTrigger(getHero(), this, current));
+        ResourceChangeTrigger trigger = TriggerManager.callSafeTrigger(new ResourceChangeTrigger(getHero(), this, current));
         if (trigger.isCancelled()) {
             return;
         }

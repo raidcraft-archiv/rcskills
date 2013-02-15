@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.trigger;
 
+import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
 
@@ -44,7 +45,7 @@ public abstract class RegisteredTrigger {
      *
      * @param trigger The event
      */
-    public void callTrigger(final Trigger trigger) throws EventException {
+    public void callTrigger(final Trigger trigger) throws CombatException, EventException {
 
         if (trigger instanceof Cancellable && !isIgnoringCancelled() && ((Cancellable) trigger).isCancelled()) {
             return;
@@ -52,5 +53,5 @@ public abstract class RegisteredTrigger {
         call(trigger);
     }
 
-    protected abstract void call(final Trigger trigger) throws EventException;
+    protected abstract void call(final Trigger trigger) throws CombatException, EventException;
 }

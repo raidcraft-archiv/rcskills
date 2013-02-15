@@ -3,7 +3,10 @@ package de.raidcraft.skills.api.trigger;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.ChatColor;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -28,7 +31,22 @@ public class TriggerManager {
      *
      * @param trigger Trigger to handle
      */
-    public static <T extends Trigger> T callTrigger(T trigger) {
+    public static <T extends Trigger> T callSafeTrigger(T trigger) {
+
+        try {
+            callTrigger(trigger);
+        } catch (CombatException e) {
+            if (trigger.getSource() instanceof Hero) {
+                ((Hero) trigger.getSource()).sendMessage(ChatColor.RED + e.getMessage());
+            }
+            if (trigger instanceof Cancellable) {
+                ((Cancellable) trigger).setCancelled(true);
+            }
+        }
+        return trigger;
+    }
+
+    public static <T extends Trigger> T callTrigger(T trigger) throws CombatException {
 
         HandlerList handlerlist = trigger.getHandlers();
         handlerlist.bake();
@@ -38,7 +56,7 @@ public class TriggerManager {
         for (RegisteredTrigger listener : handlers) {
             try {
                 listener.callTrigger(trigger);
-            } catch (Throwable t) {
+            } catch (EventException t) {
                 System.err.println("Error while passing trigger " + trigger);
                 t.printStackTrace();
             }

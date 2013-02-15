@@ -19,6 +19,4 @@ public @interface TriggerHandler {
     public boolean checkUsage() default false;
 
     public boolean substractUsageCosts() default false;
-
-    public boolean cancelEventOnFail() default false;
 }

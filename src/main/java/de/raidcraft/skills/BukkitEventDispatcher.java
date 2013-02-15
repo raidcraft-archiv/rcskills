@@ -63,7 +63,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new BlockBreakTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
@@ -71,7 +71,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new BlockPlaceTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
@@ -79,7 +79,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new PlayerInteractTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
@@ -87,7 +87,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new InventoryCloseTrigger(plugin.getCharacterManager().getHero((Player) event.getPlayer()), event)
         );
     }
@@ -95,7 +95,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemHeld(PlayerItemHeldEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new ItemHeldTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
@@ -103,7 +103,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClick(InventoryClickEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new InventoryClickTrigger(plugin.getCharacterManager().getHero((Player) event.getWhoClicked()), event)
         );
     }
@@ -111,7 +111,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onCraft(CraftItemEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new CraftTrigger(plugin.getCharacterManager().getHero((Player) event.getWhoClicked()), event)
         );
     }
@@ -119,7 +119,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onEnchant(EnchantItemEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new EnchantTrigger(plugin.getCharacterManager().getHero(event.getEnchanter()), event)
         );
     }
@@ -129,7 +129,7 @@ public final class BukkitEventDispatcher implements Listener {
 
         try {
             if (brewingPlayers.containsKey(event.getBlock())) {
-                TriggerManager.callTrigger(
+                TriggerManager.callSafeTrigger(
                         new BrewTrigger(plugin.getCharacterManager().getHero(brewingPlayers.get(event.getBlock())), event)
                 );
             }
@@ -142,7 +142,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onInventoryOpen(InventoryOpenEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new InventoryOpenTrigger(plugin.getCharacterManager().getHero((Player) event.getPlayer()), event)
         );
         if (event.getInventory().getType() == InventoryType.BREWING) {
@@ -156,7 +156,7 @@ public final class BukkitEventDispatcher implements Listener {
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new EntityTargetTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()), event)
         );
     }
@@ -164,7 +164,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onCombat(RCCombatEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new CombatTrigger(event.getHero(), event)
         );
     }
@@ -172,7 +172,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onProjectileHit(ProjectileHitEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new ProjectileHitTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
     }
@@ -180,7 +180,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onProjectileFire(ProjectileLaunchEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new ProjectileLaunchTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
     }
@@ -188,7 +188,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onShootBow(EntityShootBowEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new BowFireTrigger(plugin.getCharacterManager().getCharacter(event.getEntity()), event)
         );
     }
@@ -196,7 +196,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPotionSplash(PotionSplashEvent event) {
 
-        TriggerManager.callTrigger(
+        TriggerManager.callSafeTrigger(
                 new PotionSplashTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
     }

@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.trigger;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventException;
 
 /**
@@ -27,7 +26,7 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
      * @throws org.bukkit.event.EventException
      *          If an event handler throws an exception.
      */
-    protected void call(final Trigger trigger) throws EventException {
+    protected void call(final Trigger trigger) throws CombatException, EventException {
 
 
         if (effect == null) {
@@ -37,12 +36,7 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
         if (!(effect.getTarget() instanceof Hero) || !effect.getTarget().equals(trigger.getSource())) {
             return;
         }
-
-        try {
-            // and lets pass on the trigger
-            executor.execute(listener, trigger);
-        } catch (CombatException e) {
-            ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
-        }
+        // and lets pass on the trigger
+        executor.execute(listener, trigger);
     }
 }

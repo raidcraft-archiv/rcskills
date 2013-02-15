@@ -106,23 +106,29 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void heal(int amount) {
 
-        HealTrigger trigger = TriggerManager.callTrigger(
-                new HealTrigger(this, amount)
-        );
+        try {
+            HealTrigger trigger = TriggerManager.callTrigger(
+                    new HealTrigger(this, amount)
+            );
 
-        if (trigger.isCancelled()) {
-            return;
-        }
+            if (trigger.isCancelled()) {
+                return;
+            }
 
-        amount = trigger.getAmount();
+            amount = trigger.getAmount();
 
-        int newHealth = getHealth() + amount;
-        if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
-        getEntity().setNoDamageTicks(1);
-        setHealth(newHealth);
-        if (this instanceof Hero) {
-            ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
-            ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
+            int newHealth = getHealth() + amount;
+            if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
+            getEntity().setNoDamageTicks(1);
+            setHealth(newHealth);
+            if (this instanceof Hero) {
+                ((Hero) this).debug("You were healed by " + amount + "hp - [" + newHealth + "]");
+                ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
+            }
+        } catch (CombatException e) {
+            if (this instanceof Hero) {
+                ((Hero)this).sendMessage(ChatColor.RED + e.getMessage());
+            }
         }
     }
 
