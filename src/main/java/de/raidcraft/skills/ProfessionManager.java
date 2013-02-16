@@ -22,8 +22,6 @@ public final class ProfessionManager {
     public static final String VIRTUAL_PROFESSION = "virtual";
     private final SkillsPlugin plugin;
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
-    // maps all of the player professions by name to the player
-    private final Map<String, Map<String, Profession>> professions = new HashMap<>();
 
     protected ProfessionManager(SkillsPlugin plugin) {
 
@@ -34,7 +32,6 @@ public final class ProfessionManager {
     public void reload() {
 
         professionFactories.clear();
-        professions.clear();
         loadProfessions();
     }
 
@@ -97,16 +94,10 @@ public final class ProfessionManager {
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
-        if (!professions.containsKey(hero.getName())) {
-            professions.put(hero.getName(), new HashMap<String, Profession>());
+        if (!hero.hasProfession(profId)) {
+            return professionFactories.get(profId).create(hero, parent);
         }
-        if (!professions.get(hero.getName()).containsKey(profId)) {
-            Profession profession = professionFactories.get(profId).create(hero, parent);
-            professions.get(hero.getName()).put(profId, profession);
-            // lets load all requirements - this needs to happen after the init
-            profession.getProperties().loadRequirements(profession);
-        }
-        return professions.get(hero.getName()).get(profId);
+        return hero.getProfession(profId);
     }
 
     public List<Profession> getAllProfessions(Hero hero) {
@@ -135,10 +126,5 @@ public final class ProfessionManager {
     public ProfessionFactory getFactory(Profession profession) {
 
         return professionFactories.get(profession.getProperties().getName());
-    }
-
-    public void clearCacheOf(String player) {
-
-        professions.remove(player);
     }
 }

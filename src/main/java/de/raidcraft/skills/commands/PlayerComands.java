@@ -54,7 +54,7 @@ public class PlayerComands {
             }
             Level level = null;
             if (args.hasFlag('p')) {
-                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'));
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
                 level = profession.getLevel();
             } else if (args.hasFlag('s')) {
                 Skill skill = hero.getSkill(args.getFlag('s'));

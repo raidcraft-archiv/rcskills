@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -49,14 +50,18 @@ public class ProfessionCommands {
         professions = plugin.getProfessionManager().getAllProfessions(hero);
 
         if (professions == null || professions.size() < 1) {
-            throw new CommandException("Da gibts noch nix zu sehen!");
+            throw new CommandException("Es wurden noch keine Berufe oder Klassen konfiguriert.");
         }
 
-        for (int i = 0; i < professions.size(); i++) {
-            if (!args.hasFlag('a') && !professions.get(i).isUnlockable()) {
-                professions.remove(i);
+        if (!args.hasFlag('a')) {
+            List<Profession> temp = new ArrayList<>(professions);
+            for (Profession profession : temp) {
+                if (!profession.isUnlockable()) {
+                    professions.remove(profession);
+                }
             }
         }
+
         Collections.sort(professions);
 
         new PaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
@@ -90,7 +95,7 @@ public class ProfessionCommands {
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
             Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
 
-            if (hero.hasProfession(profession)) {
+            if (hero.hasProfession(profession) && profession.isActive()) {
                 throw new CommandException("Du hast diese " + profession.getPath().getFriendlyName() + " Spezialisierung bereits ausgewählt.");
             }
             if (!profession.isUnlockable()) {

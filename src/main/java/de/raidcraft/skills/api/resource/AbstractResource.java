@@ -219,7 +219,7 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void regen() {
 
-        if (!isEnabled()) {
+        if (!isEnabled() || !profession.isActive()) {
             return;
         }
         if (isMax() && getRegenPercent() > 0) {

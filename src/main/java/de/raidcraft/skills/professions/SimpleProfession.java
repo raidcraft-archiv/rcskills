@@ -59,14 +59,13 @@ public class SimpleProfession extends AbstractProfession {
     @Override
     public void checkSkillsForUnlock() {
 
-        // check all skills and if we need to unlock any
+
         for (Skill skill : getSkills()) {
+            // check all skills and if we need to unlock any
             if (!skill.isUnlocked() && skill.isUnlockable()) {
                 skill.unlock();
             }
-        }
-        // check if we need to lock any skills
-        for (Skill skill : getSkills()) {
+            // check if we need to lock any skills
             if (skill.isUnlocked() && !skill.isUnlockable()) {
                 skill.lock();
             }

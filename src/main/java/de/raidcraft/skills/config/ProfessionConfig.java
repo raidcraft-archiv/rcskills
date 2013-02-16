@@ -16,7 +16,9 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,9 +38,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Skill> loadSkills(Profession profession) {
+    public Map<String, Skill> loadSkills(Profession profession) {
 
-        List<Skill> skills = new ArrayList<>();
+        Map<String, Skill> skills = new HashMap<>();
         ConfigurationSection section = getSafeConfigSection("skills");
         Set<String> keys = section.getKeys(false);
         if (keys == null) return skills;
@@ -46,7 +48,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         for (String skill : keys) {
             try {
                 Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
-                skills.add(profSkill);
+                skills.put(profSkill.getName(), profSkill);
             } catch (UnknownSkillException e) {
                 getPlugin().getLogger().warning(e.getMessage());
             }

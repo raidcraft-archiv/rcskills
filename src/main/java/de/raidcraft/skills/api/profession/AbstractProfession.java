@@ -16,6 +16,7 @@ import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +37,7 @@ public abstract class AbstractProfession implements Profession {
     // list of requirements to unlock this profession
     private final List<Requirement> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
-    protected final List<Skill> skills = new ArrayList<>();
+    protected final Map<String, Skill> skills;
     protected final THeroProfession database;
 
     private Level<Profession> level;
@@ -63,11 +64,12 @@ public abstract class AbstractProfession implements Profession {
                 tHeroResource = new THeroResource();
                 tHeroResource.setName(key);
                 tHeroResource.setProfession(database);
-                Database.save(tHeroResource);
             }
             ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
             resources.put(key, resource);
         }
+        // load the skills at the end because they access the level of the profession and more
+        this.skills = properties.loadSkills(this);
     }
 
     public THeroProfession getDatabase() {
@@ -148,12 +150,15 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public List<Skill> getSkills() {
+    public Collection<Skill> getSkills() {
 
-        if (skills.size() < 1) {
-            this.skills.addAll(properties.loadSkills(this));
-        }
-        return skills;
+        return skills.values();
+    }
+
+    @Override
+    public boolean hasSkill(String id) {
+
+        return skills.containsKey(id);
     }
 
     @Override
@@ -183,6 +188,9 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public List<Requirement> getRequirements() {
 
+        if (requirements.size() < 1) {
+            getProperties().loadRequirements(this);
+        }
         return requirements;
     }
 
@@ -195,7 +203,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean isUnlockable() {
 
-        for (Requirement requirement : requirements) {
+        for (Requirement requirement : getRequirements()) {
             if (!requirement.isMet(getHero())) {
                 return false;
             }

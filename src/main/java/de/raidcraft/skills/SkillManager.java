@@ -31,8 +31,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
-    // holds skills that were already loaded for that player
-    private final Map<String, Set<Skill>> playerSkills = new HashMap<>();
 
     protected SkillManager(SkillsPlugin plugin) {
 
@@ -45,7 +43,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     public void reload() {
 
         skillFactories.clear();
-        playerSkills.clear();
         loadFactories();
     }
 
@@ -110,12 +107,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
-        if (!playerSkills.containsKey(hero.getName())) {
-            playerSkills.put(hero.getName(), new HashSet<Skill>());
-        }
         // always create a new skill instance if there are additional configs
         if (overrides.length < 1) {
-            for (Skill playerSkill : playerSkills.get(hero.getName())) {
+            for (Skill playerSkill : hero.getSkills()) {
                 if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
                     return playerSkill;
                 }
@@ -123,8 +117,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         }
         // lets create a new skill for this name
         skill = skillFactories.get(skillName).create(hero, profession, overrides);
-        skill.getProperties().loadRequirements(skill);
-        playerSkills.get(hero.getName()).add(skill);
         // lets add the skill as a trigger handler
         if (skill instanceof Triggered) {
             TriggerManager.registerListeners((Triggered) skill);
@@ -182,10 +174,5 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         skill = StringUtils.formatName(skill);
         return skillFactories.containsKey(skill);
-    }
-
-    public void clearCacheOf(String player) {
-
-        playerSkills.remove(player);
     }
 }

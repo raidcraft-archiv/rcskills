@@ -128,7 +128,7 @@ public final class SkillFactory {
         }
 
         // also save the profession to generate a db entry if none exists
-        profession.save();
+        // profession.save();
 
         // lets load the database
         THeroSkill database = loadDatabase(hero, profession);
@@ -139,6 +139,8 @@ public final class SkillFactory {
             if (!skill.isEnabled()) {
                 throw new UnknownSkillException("The Skill " + skillName + " is disabled!");
             }
+            // this is called after the skill is created in order
+            // to give local variables of the skill a chance to init
             skill.load(config.getData());
             return skill;
         } catch (Throwable e) {

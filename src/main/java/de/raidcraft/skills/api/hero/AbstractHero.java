@@ -53,7 +53,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private int health;
     private int maxHealth = 20;
     private int maxLevel;
-    private final Map<String, Skill> skills = new HashMap<>();
+    private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
     private Level<Hero> level;
@@ -71,7 +71,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.options = new HeroOptions(this);
         this.health = data.getHealth();
         this.maxLevel = data.getMaxLevel();
-        this.maxHealth = getDefaultHealth();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
@@ -81,8 +80,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadProfessions(data.getProfessionNames());
         loadSkills();
 
-        this.virtualProfession = getVirtualProfession();
-        setSelectedProfession(loadSelectedProfession(data));
         this.group = new SimpleGroup(this);
     }
 
@@ -96,57 +93,49 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
                     this.virtualProfession = profession;
                 } else {
-                    // only add professions to our list that are currently active
-                    if (profession.isActive()) {
-                        professions.put(profession.getProperties().getName(), profession);
-                        paths.add(profession.getPath());
-                        // set selected profession
-                        if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()) {
-                            setSelectedProfession(profession);
-                        }
+                    professions.put(profession.getProperties().getName(), profession);
+                    paths.add(profession.getPath());
+                    // set selected profession
+                    if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
+                            && profession.isActive()) {
+                        setSelectedProfession(profession);
+                    }
+                    // also add the parent if one exists
+                    if (profession.getParent() != null) {
+                        professions.put(profession.getParent().getName(), profession.getParent());
+                    }
+                    // add all child professions to our list
+                    for (Profession child : profession.getChildren()) {
+                        professions.put(child.getName(), child);
                     }
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }
         }
+        if (virtualProfession == null) {
+            this.virtualProfession = manager.getVirtualProfession(this);
+        }
+        if (selectedProfession == null) {
+            setSelectedProfession(getVirtualProfession());
+        }
     }
 
     private void loadSkills() {
 
-        skills.clear();
-        // this simple creates a second reference to all skills owned by the player
-        // to allow faster access to the player skills
+        virtualSkills.clear();
+        // check all the profession skills for unlock
         for (Profession profession : professions.values()) {
-            if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
-                continue;
-            }
-            profession.checkSkillsForUnlock();
-            for (Skill skill : profession.getSkills()) {
-                // only add active skills
-                if (skill.isActive()) {
-                    skills.put(skill.getName(), skill);
-                }
+            if (profession.isActive()) {
+                profession.checkSkillsForUnlock();
             }
         }
         // make sure all virtual skills are added last and override normal skills
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
-                skills.put(skill.getName(), skill);
+                virtualSkills.put(skill.getName(), skill);
             }
         }
-    }
-
-    private Profession loadSelectedProfession(HeroData data) {
-
-        if (data.getSelectedProfession() != null && !data.getSelectedProfession().equals("")) {
-            try {
-                return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(this, data.getSelectedProfession());
-            } catch (UnknownSkillException | UnknownProfessionException ignored) {
-                // do nothing and return the getter
-            }
-        }
-        return getSelectedProfession();
     }
 
     @Override
@@ -159,8 +148,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         Path path = profession.getPath();
         for (Profession currentProf : getProfessions()) {
             if (currentProf.getPath().equals(path)) {
-                currentProf.setActive(false);
-                professions.remove(currentProf.getName());
+                if (profession.isActive()) {
+                    currentProf.setActive(false);
+                    profession.save();
+                }
             }
         }
         // lets set the selected profession before we go all wanky in the while loop
@@ -172,8 +163,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         do {
             profession.setActive(true);
             professions.put(profession.getName(), profession);
+            profession.save();
             profession = profession.getParent();
-        } while (profession != null && profession.hasParent());
+        } while (profession != null);
 
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
@@ -315,6 +307,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
+        setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();
         getUserInterface().refresh();
@@ -473,7 +466,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void saveProfessions() {
 
         for (Profession profession : professions.values()) {
-            profession.save();
+            if (profession.isActive()) {
+                profession.save();
+            }
         }
     }
 
@@ -501,17 +496,24 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public boolean hasSkill(String id) {
 
         id = id.toLowerCase();
+        boolean hasSkill = virtualSkills.containsKey(id);
         if (player.isOnline()) {
-            return skills.containsKey(id);
+            for (Profession profession : getProfessions()) {
+                if (profession.isActive() && profession.hasSkill(id)) {
+                    hasSkill = true;
+                    break;
+                }
+            }
         } else {
             List<THeroSkill> skills = Ebean.find(THero.class, getId()).getSkills();
             for (THeroSkill skill : skills) {
                 if (skill.getName().equalsIgnoreCase(id)) {
-                    return true;
+                    hasSkill = true;
+                    break;
                 }
             }
         }
-        return false;
+        return hasSkill;
     }
 
     @Override
@@ -523,7 +525,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public List<Skill> getSkills() {
 
-        return new ArrayList<>(skills.values());
+        ArrayList<Skill> skills = new ArrayList<>(virtualSkills.values());
+        for (Profession profession : professions.values()) {
+            if (profession.isActive()) {
+                skills.addAll(profession.getSkills());
+            }
+        }
+        return skills;
     }
 
     @Override
@@ -554,9 +562,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public Profession getVirtualProfession() {
 
-        if (virtualProfession == null) {
-            return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getVirtualProfession(this);
-        }
         return virtualProfession;
     }
 

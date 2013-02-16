@@ -76,18 +76,20 @@ public final class CharacterManager implements Listener {
 
     public Hero getHero(String name, boolean cache) throws UnknownPlayerException {
 
+        // lets try bukkit to autocomplete the name
+        Player player = Bukkit.getPlayer(name);
+        THero heroTable = null;
+        if (player != null) {
+            name = player.getName();
+        } else {
+            // try to find a match in the db
+            heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
+            if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
+        }
+        name = name.toLowerCase();
+
         Hero hero;
         if (!heroes.containsKey(name)) {
-            // lets try bukkit to autocomplete the name
-            Player player = Bukkit.getPlayer(name);
-            THero heroTable = null;
-            if (player != null) {
-                name = player.getName();
-            } else {
-                // try to find a match in the db
-                heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
-                if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
-            }
 
             if (heroTable == null) heroTable = Ebean.find(THero.class).where().eq("player", name).findUnique();
             if (heroTable == null) {
@@ -110,7 +112,7 @@ public final class CharacterManager implements Listener {
                 Database.save(heroTable);
             }
             hero = new SimpleHero(heroTable);
-            if (cache) heroes.put(hero.getName(), hero);
+            if (cache) heroes.put(hero.getName().toLowerCase(), hero);
         } else {
             hero = heroes.get(name);
         }

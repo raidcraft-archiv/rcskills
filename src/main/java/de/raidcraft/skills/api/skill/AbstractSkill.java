@@ -482,6 +482,9 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final List<Requirement> getRequirements() {
 
+        if (requirements.size() < 1) {
+            getProperties().loadRequirements(this);
+        }
         return requirements;
     }
 
@@ -494,7 +497,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final boolean isUnlockable() {
 
-        for (Requirement requirement : requirements) {
+        for (Requirement requirement : getRequirements()) {
             if (!requirement.isMet(getHero())) {
                 return false;
             }

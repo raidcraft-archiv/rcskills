@@ -16,6 +16,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public final class VirtualProfession extends AbstractProfession {
     }
 
     @Override
-    public List<Skill> getSkills() {
+    public Collection<Skill> getSkills() {
 
         if (skills.size() < 1) {
             // at this point we normally load the skills from the config
@@ -45,20 +46,21 @@ public final class VirtualProfession extends AbstractProfession {
             if (dbSkills != null) {
                 for (THeroSkill tHeroSkill : dbSkills) {
                     try {
-                        this.skills.add(skillManager.getSkill(getHero(), this, tHeroSkill.getName()));
+                        Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
+                        this.skills.put(skill.getName(), skill);
                     } catch (UnknownSkillException e) {
                         getHero().sendMessage(ChatColor.RED + e.getMessage());
                     }
                 }
             }
         }
-        return skills;
+        return skills.values();
     }
 
     @Override
     public void addSkill(Skill skill) {
 
-        this.skills.add(skill);
+        this.skills.put(skill.getName(), skill);
         skill.unlock();
         skill.save();
     }

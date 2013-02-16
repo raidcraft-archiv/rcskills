@@ -25,9 +25,14 @@ public final class ProfessionUtil {
 
     public static Profession getProfessionFromArgs(Hero hero, String input) throws CommandException {
 
+        return getProfessionFromArgs(hero, input, RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getAllProfessions(hero));
+    }
+
+    public static Profession getProfessionFromArgs(Hero hero, String input, Collection<Profession> choices) throws CommandException {
+
         input = input.toLowerCase();
         List<Profession> professions = new ArrayList<>();
-        for (Profession profession : RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getAllProfessions(hero)) {
+        for (Profession profession : choices) {
             if (profession.getName().contains(input) || profession.getProperties().getFriendlyName().toLowerCase().contains(input)) {
                 professions.add(profession);
             }

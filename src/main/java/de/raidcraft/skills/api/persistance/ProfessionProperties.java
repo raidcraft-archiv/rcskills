@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,7 +39,7 @@ public interface ProfessionProperties {
 
     public ConfigurationSection getResourceConfig(String type);
 
-    public List<Skill> loadSkills(Profession profession);
+    public Map<String, Skill> loadSkills(Profession profession);
 
     public void loadRequirements(Profession profession);
 
