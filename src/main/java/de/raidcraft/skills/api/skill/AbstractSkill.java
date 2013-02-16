@@ -83,7 +83,8 @@ public abstract class AbstractSkill implements Skill {
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         for (Resource resource : getHero().getResources()) {
-            if (this.getTotalResourceCost(resource.getName()) > resource.getCurrent()) {
+            int resourceCost = this.getTotalResourceCost(resource.getName());
+            if (resourceCost > 0 && resourceCost > resource.getCurrent()) {
                 throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
             }
         }
@@ -111,8 +112,9 @@ public abstract class AbstractSkill implements Skill {
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHero().getResources()) {
-            if (getTotalResourceCost(resource.getName()) > 0) {
-                resource.setCurrent(resource.getCurrent() - getTotalResourceCost(resource.getName()));
+            int resourceCost = getTotalResourceCost(resource.getName());
+            if (resourceCost != 0) {
+                resource.setCurrent(resource.getCurrent() - resourceCost);
             }
         }
         // keep this last or items will be removed before casting

@@ -78,11 +78,12 @@ public final class SkillUtil {
         }
 
         for (Resource resource : skill.getHero().getResources()) {
-            if (skill.getTotalResourceCost(resource.getName()) > 0) {
+            int resourceCost = skill.getTotalResourceCost(resource.getName());
+            if (resourceCost > 0) {
                 sb = new StringBuilder();
                 sb.append(ChatColor.YELLOW).append("  - ");
                 sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ")
-                        .append(ChatColor.AQUA).append(skill.getTotalResourceCost(resource.getName()));
+                        .append(ChatColor.AQUA).append(resourceCost);
                 body.add(sb.toString());
             }
         }
