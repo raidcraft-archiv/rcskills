@@ -112,7 +112,7 @@ public abstract class AbstractResource implements Resource {
         // update the value if it changed in the trigger
         current = trigger.getNewValue();
 
-        boolean update = getCurrent() != current;
+        boolean update = this.current != current;
         this.current = current;
 
         if (update) {
