@@ -3,7 +3,7 @@ package de.raidcraft.skills.util;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.items.WeaponType;
-import de.raidcraft.skillsandeffects.effects.disabling.Disarm;
+import de.raidcraft.skills.effects.disabling.Disarm;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
