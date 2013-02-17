@@ -61,6 +61,7 @@ public class TestSkill extends AbstractSkill implements CommandTriggered {
                     EffectUtil.playFirework(world, circle.get(i), effect);
                     i++;
                 } else {
+                    world.strikeLightningEffect(center);
                     Entity[] entities = LocationUtil.getNearbyEntities(center, radius);
                     for (Entity entity : entities) {
                         if (entity instanceof LivingEntity) {
