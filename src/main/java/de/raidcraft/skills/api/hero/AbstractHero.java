@@ -77,17 +77,17 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         FormulaType formulaType = FormulaType.fromName(levelConfig.getString("type", "wow"));
         attachLevel(new ConfigurableLevel<Hero>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
-        loadProfessions(data.getProfessionNames());
+        loadProfessions(data);
         loadSkills();
 
         this.group = new SimpleGroup(this);
     }
 
     @SuppressWarnings("unchecked")
-    private void loadProfessions(List<String> professionNames) {
+    private void loadProfessions(HeroData data) {
 
         ProfessionManager manager = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager();
-        for (String professionName : professionNames) {
+        for (String professionName : data.getProfessionNames()) {
             try {
                 Profession profession = manager.getProfession(this, professionName);
                 if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
@@ -96,7 +96,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                     professions.put(profession.getProperties().getName(), profession);
                     paths.add(profession.getPath());
                     // set selected profession
-                    if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
+                    if (selectedProfession == null || getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
                             && profession.isActive()) {
                         setSelectedProfession(profession);
                     }
@@ -116,6 +116,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (virtualProfession == null) {
             this.virtualProfession = manager.getVirtualProfession(this);
         }
+        setSelectedProfession(professions.get(data.getSelectedProfession()));
         if (selectedProfession == null) {
             setSelectedProfession(getVirtualProfession());
         }
