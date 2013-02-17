@@ -220,9 +220,13 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalDamage() {
 
-        return (int) (properties.getDamage()
+        double damage = (properties.getDamage()
                 + (properties.getDamageLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getProfLevelDamageModifier() * getProfession().getLevel().getLevel()));
+                + (properties.getDamageProfLevelModifier() * getProfession().getLevel().getLevel()));
+        for (Resource resource : getHero().getResources()) {
+            damage += properties.getDamageResourceModifier(resource.getName()) * resource.getCurrent();
+        }
+        return (int) damage;
     }
 
     @Override
@@ -236,25 +240,37 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public int getTotalCastTime() {
 
-        return (int) (properties.getCastTime()
+        double castTime = (properties.getCastTime()
                 + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel())) * 20;
+                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel()));
+        for (Resource resource : getHero().getResources()) {
+            castTime += properties.getCastTimeResourceModifier(resource.getName()) * resource.getCurrent();
+        }
+        return (int) castTime * 20;
     }
 
     @Override
     public int getTotalRange() {
 
-        return (int) (properties.getRange()
+        double range = (properties.getRange()
                 + (properties.getRangeLevelModifier() * hero.getLevel().getLevel())
                 + (properties.getRangeProfLevelModifier() * getProfession().getLevel().getLevel()));
+        for (Resource resource : getHero().getResources()) {
+            range += properties.getRangeResourceModifier(resource.getName()) * resource.getCurrent();
+        }
+        return (int) range;
     }
 
     @Override
     public double getTotalCooldown() {
 
-        return (properties.getCooldown()
+        double cooldown = (properties.getCooldown()
                 + (properties.getCooldownLevelModifier() * hero.getLevel().getLevel())
                 + (properties.getCooldownProfLevelModifier() * getProfession().getLevel().getLevel()));
+        for (Resource resource : getHero().getResources()) {
+            cooldown += properties.getCooldownResourceModifier(resource.getName()) * resource.getCurrent();
+        }
+        return (int) cooldown;
     }
 
     @Override

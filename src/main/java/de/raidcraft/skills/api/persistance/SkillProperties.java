@@ -55,9 +55,21 @@ public interface SkillProperties {
 
     public double getDamageLevelModifier();
 
+    public double getDamageProfLevelModifier();
+
+    public double getDamageSkillLevelModifier();
+
+    public double getDamageResourceModifier(String resouce);
+
     public double getCastTime();
 
     public double getCastTimeLevelModifier();
+
+    public double getCastTimeProfLevelModifier();
+
+    public double getCastTimeSkillLevelModifier();
+
+    public double getCastTimeResourceModifier(String resouce);
 
     public int getRange();
 
@@ -67,6 +79,8 @@ public interface SkillProperties {
 
     public double getRangeSkillLevelModifier();
 
+    public double getRangeResourceModifier(String resouce);
+
     public double getCooldown();
 
     public double getCooldownLevelModifier();
@@ -75,11 +89,5 @@ public interface SkillProperties {
 
     public double getCooldownProfLevelModifier();
 
-    public double getSkillLevelDamageModifier();
-
-    public double getCastTimeSkillLevelModifier();
-
-    public double getProfLevelDamageModifier();
-
-    public double getCastTimeProfLevelModifier();
+    public double getCooldownResourceModifier(String resouce);
 }

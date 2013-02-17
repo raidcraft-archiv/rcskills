@@ -43,7 +43,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final int getTotalDamage() {
 
-        return (int) (super.getTotalDamage() + (getProperties().getSkillLevelDamageModifier() * getLevel().getLevel()));
+        return (int) (super.getTotalDamage() + (getProperties().getDamageSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override

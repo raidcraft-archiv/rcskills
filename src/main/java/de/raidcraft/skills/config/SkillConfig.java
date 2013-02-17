@@ -148,6 +148,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public int getMaxLevel() {
+
+        return getOverride("max-level", 10);
+    }
+
+    @Override
     public int getDamage() {
 
         return getOverride("damage.base", 0);
@@ -157,6 +163,24 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public double getDamageLevelModifier() {
 
         return getOverride("damage.level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDamageProfLevelModifier() {
+
+        return getOverride("damage.prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDamageSkillLevelModifier() {
+
+        return getOverride("damage.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getDamageResourceModifier(String resouce) {
+
+        return getOverrideDouble("damage." + resouce + "-modifier", 0.0);
     }
 
     @Override
@@ -172,33 +196,21 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public int getMaxLevel() {
-
-        return getOverride("max-level", 10);
-    }
-
-    @Override
-    public double getSkillLevelDamageModifier() {
-
-        return getOverride("damage.skill-level-modifier", 0.0);
-    }
-
-    @Override
     public double getCastTimeSkillLevelModifier() {
 
         return getOverride("casttime.skill-level-modifier", 0.0);
     }
 
     @Override
-    public double getProfLevelDamageModifier() {
-
-        return getOverride("damage.prof-level-modifier", 0.0);
-    }
-
-    @Override
     public double getCastTimeProfLevelModifier() {
 
         return getOverride("casttime.prof-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getCastTimeResourceModifier(String resouce) {
+
+        return getOverrideDouble("casttime." + resouce + "-modifier", 0.0);
     }
 
     @Override
@@ -250,6 +262,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public double getCooldownResourceModifier(String resource) {
+
+        return getOverrideDouble("cooldown." + resource + "-modifier", 0.0);
+    }
+
+    @Override
     public int getRange() {
 
         return getOverride("range.base", 30);
@@ -271,5 +289,11 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public double getRangeSkillLevelModifier() {
 
         return getOverride("range.skill-level-modifier", 0.0);
+    }
+
+    @Override
+    public double getRangeResourceModifier(String resource) {
+
+        return getOverrideDouble("range." + resource + "-modifier", 0.0);
     }
 }
