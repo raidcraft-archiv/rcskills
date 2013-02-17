@@ -48,6 +48,7 @@ public final class CharacterManager implements Listener {
 
         for (Hero hero : heroes.values()) {
             hero.clearEffects();
+            hero.save();
         }
         heroes.clear();
         for (CharacterTemplate character : characters.values()) {

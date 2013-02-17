@@ -3,6 +3,8 @@ package de.raidcraft.skills.skills;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,11 +14,15 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.EffectUtil;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
@@ -55,8 +61,18 @@ public class TestSkill extends AbstractSkill implements CommandTriggered {
                     EffectUtil.playFirework(world, circle.get(i), effect);
                     i++;
                 } else {
-                    for (Location location : EffectUtil.circle(center, radius-2, 1, false, false, 0)) {
-                        world.strikeLightning(location);
+                    Entity[] entities = LocationUtil.getNearbyEntities(center, radius);
+                    for (Entity entity : entities) {
+                        if (entity instanceof LivingEntity) {
+                            CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
+                                    .getCharacterManager().getCharacter((LivingEntity) entity);
+                            try {
+                                new MagicalAttack(getHero(), character, getTotalDamage()).run();
+                                world.strikeLightningEffect(entity.getLocation());
+                            } catch (CombatException e) {
+                                getHero().sendMessage(ChatColor.RED + e.getMessage());
+                            }
+                        }
                     }
                     i = 0;
                     task.cancel();
