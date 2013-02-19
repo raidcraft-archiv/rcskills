@@ -10,7 +10,7 @@ public enum EffectElement {
     ICE,
     EARTH,
     DARK,
-    LIGHTING,
+    LIGHTNING,
     LIGHT,
     AIR
 }
