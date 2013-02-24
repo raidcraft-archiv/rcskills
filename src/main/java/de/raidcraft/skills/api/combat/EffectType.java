@@ -30,7 +30,8 @@ public enum EffectType {
     UNKNOWN,
     DEFAULT_ATTACK,
     PROTECTION,
-    PURGEABLE;
+    PURGEABLE,
+    DISABLEING;
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
 

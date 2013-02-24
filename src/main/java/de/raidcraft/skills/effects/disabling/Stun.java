@@ -1,6 +1,7 @@
 package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -14,7 +15,8 @@ import org.bukkit.potion.PotionEffectType;
  */
 @EffectInformation(
         name = "Stun",
-        description = "Stunnt den Gegegner und verhindert alle Aktionen"
+        description = "Stunnt den Gegegner und verhindert alle Aktionen",
+        types = {EffectType.DISABLEING, EffectType.HARMFUL}
 )
 public class Stun<S> extends PeriodicExpirableEffect<S> {
 
