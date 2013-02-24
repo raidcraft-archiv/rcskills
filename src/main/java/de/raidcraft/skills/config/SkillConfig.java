@@ -137,6 +137,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public List<Requirement<Skill>> loadUseRequirements(Skill skill) {
+
+        return RequirementManager.createRequirements(skill, getOverrideSection("use-requirements"));
+    }
+
+    @Override
     public ConfigurationSection getData() {
 
         return getOverrideSection("custom");

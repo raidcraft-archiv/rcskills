@@ -45,6 +45,7 @@ public abstract class AbstractSkill implements Skill {
     private final Profession profession;
     private final SkillInformation information;
     private final List<Requirement> requirements = new ArrayList<>();
+    private final List<Requirement> useRequirements = new ArrayList<>();
     protected final THeroSkill database;
     private String description;
     private long lastCast;
@@ -94,6 +95,20 @@ public abstract class AbstractSkill implements Skill {
                 throw new CombatException(CombatException.Type.MISSING_REAGENT);
             }
         }
+        // lets check the players use requirements
+        for (Requirement requirement : getUseRequirements()) {
+            if (!requirement.isMet()) {
+                throw new CombatException(requirement.getLongReason());
+            }
+        }
+    }
+
+    private List<Requirement> getUseRequirements() {
+
+        if (useRequirements.size() < 1) {
+            useRequirements.addAll(getProperties().loadUseRequirements(this));
+        }
+        return useRequirements;
     }
 
     @Override

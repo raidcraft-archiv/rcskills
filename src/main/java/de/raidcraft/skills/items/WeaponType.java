@@ -12,59 +12,61 @@ import java.util.Set;
  */
 public enum WeaponType {
 
-    SWORD(
+    SWORD("Schwert",
             Material.WOOD_SWORD,
             Material.STONE_SWORD,
             Material.IRON_SWORD,
             Material.GOLD_SWORD,
             Material.DIAMOND_SWORD
     ),
-    AXE(
+    AXE("Axt",
             Material.WOOD_AXE,
             Material.STONE_AXE,
             Material.IRON_AXE,
             Material.GOLD_AXE,
             Material.DIAMOND_AXE
     ),
-    SPADE(
+    SPADE("Lanze",
             Material.WOOD_SPADE,
             Material.STONE_SPADE,
             Material.IRON_SPADE,
             Material.GOLD_SPADE,
             Material.DIAMOND_SPADE
     ),
-    PICKAXE(
+    PICKAXE("Streitkolben",
             Material.WOOD_PICKAXE,
             Material.STONE_PICKAXE,
             Material.IRON_PICKAXE,
             Material.GOLD_PICKAXE,
             Material.DIAMOND_PICKAXE
     ),
-    HOE(
+    HOE("Lanze",
             Material.WOOD_HOE,
             Material.STONE_HOE,
             Material.IRON_HOE,
             Material.GOLD_HOE,
             Material.DIAMOND_HOE
     ),
-    BOW(
+    BOW("Bogen",
             Material.BOW
     ),
-    SHIELD(
+    SHIELD("Schild",
             Material.TRAP_DOOR,
             Material.IRON_DOOR,
             Material.WOOD_DOOR,
             Material.WOODEN_DOOR
     ),
-    MAGIC_WAND(
+    MAGIC_WAND("Zauberstab",
             Material.STICK,
             Material.BLAZE_ROD
     );
 
     private final Set<Material> items = new HashSet<>();
+    private final String friendlyName;
 
-    private WeaponType(Material... items) {
+    private WeaponType(String friendlyName, Material... items) {
 
+        this.friendlyName = friendlyName;
         this.items.addAll(Arrays.asList(items));
     }
 
@@ -86,5 +88,10 @@ public enum WeaponType {
     public static WeaponType fromString(String name) {
 
         return EnumUtils.getEnumFromString(WeaponType.class, name);
+    }
+
+    public String getFriendlyName() {
+
+        return friendlyName;
     }
 }

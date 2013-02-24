@@ -16,6 +16,8 @@ public interface SkillProperties {
 
     public List<Requirement<Skill>> loadRequirements(Skill skill);
 
+    public List<Requirement<Skill>> loadUseRequirements(Skill skill);
+
     public String getName();
 
     public String getFriendlyName();
