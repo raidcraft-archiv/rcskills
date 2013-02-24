@@ -1,17 +1,18 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.formulas.FormulaType;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -78,9 +79,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public void loadRequirements(Profession profession) {
+    public List<Requirement<Profession>> loadRequirements(Profession profession) {
 
-        ConfigUtil.loadRequirements(this, profession);
+        return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
     }
 
     @Override

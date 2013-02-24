@@ -2,9 +2,9 @@ package de.raidcraft.skills.util;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
-import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
@@ -93,8 +93,8 @@ public final class SkillUtil {
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
             for (Requirement requirement : skill.getRequirements()) {
                 sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet(skill.getHero()) ? ChatColor.GREEN : ChatColor.RED));
-                sb.append(requirement.getShortReason(skill.getHero()));
+                sb.append((requirement.isMet() ? ChatColor.GREEN : ChatColor.RED));
+                sb.append(requirement.getShortReason());
                 sb.append("\n");
             }
             body.add(sb.toString());

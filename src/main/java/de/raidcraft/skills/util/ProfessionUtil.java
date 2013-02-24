@@ -3,10 +3,10 @@ package de.raidcraft.skills.util;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.ChatColor;
 
@@ -108,8 +108,8 @@ public final class ProfessionUtil {
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
             for (Requirement requirement : profession.getRequirements()) {
                 sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet(profession.getHero()) ? ChatColor.GREEN : ChatColor.RED));
-                sb.append(requirement.getShortReason(profession.getHero()));
+                sb.append((requirement.isMet() ? ChatColor.GREEN : ChatColor.RED));
+                sb.append(requirement.getShortReason());
                 sb.append("\n");
             }
             body.add(sb.toString());

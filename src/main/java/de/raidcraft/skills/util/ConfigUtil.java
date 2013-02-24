@@ -1,17 +1,8 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.requirement.ProfessionLevelRequirement;
-import de.raidcraft.skills.api.requirement.SkillLevelRequirement;
-import de.raidcraft.skills.api.requirement.Unlockable;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.EnumMap;
@@ -78,52 +69,6 @@ public final class ConfigUtil {
         return map;
     }
 
-    public static void loadRequirements(ConfigurationBase<SkillsPlugin> config, Unlockable unlockable) {
-
-        SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
-
-        ConfigurationSection professions = config.getOverrideSection("requirements.professions");
-        // lets get on some hot action with the profession requirements
-        for (String key : professions.getKeys(false)) {
-            try {
-                Profession profession = config.getPlugin().getProfessionManager().getProfession(unlockable.getHero(), key);
-                int level = config.getOverride("requirements.professions." + key, profession.getMaxLevel());
-                unlockable.addRequirement(new ProfessionLevelRequirement(profession, level));
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
-            }
-        }
-
-        ConfigurationSection skills = config.getOverrideSection("requirements.skills");
-        // lets load some skill requirements
-        for (String key : skills.getKeys(false)) {
-            try {
-                ConfigurationSection section = config.getOverrideSection("requirements.skills." + key);
-
-                Profession profession;
-                if (section.isSet("profession")) {
-                    profession = component.getProfessionManager().getProfession(unlockable.getHero(), section.getString("profession"));
-                } else if (unlockable instanceof Profession) {
-                    profession = (Profession) unlockable;
-                } else if (unlockable instanceof Skill) {
-                    profession = ((Skill) unlockable).getProfession();
-                } else {
-                    profession = unlockable.getHero().getVirtualProfession();
-                }
-
-                Skill reqSkill = config.getPlugin().getSkillManager().getSkill(unlockable.getHero(), profession, key);
-
-                if (reqSkill instanceof LevelableSkill) {
-                    int level = section.getInt("level", ((LevelableSkill) reqSkill).getMaxLevel());
-                    unlockable.addRequirement(new SkillLevelRequirement(((LevelableSkill) reqSkill), level));
-                } else {
-                    throw new UnknownSkillException("The skill must be a levelable skill: " + reqSkill);
-                }
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                unlockable.getHero().sendMessage("See Console: " + ChatColor.RED + e.getMessage());
-            }
-        }
-    }
 
     public static double getTotalValue(Skill skill, ConfigurationSection section) {
 

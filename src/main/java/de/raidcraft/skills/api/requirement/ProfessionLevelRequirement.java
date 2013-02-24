@@ -1,35 +1,57 @@
 package de.raidcraft.skills.api.requirement;
 
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.requirement.RequirementInformation;
+import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
-public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
+@RequirementInformation("profession-level")
+public class ProfessionLevelRequirement extends LevelRequirement {
 
-    public ProfessionLevelRequirement(Profession type, int requiredLevel) {
+    private Profession profession;
 
-        super(type, requiredLevel);
-    }
+    protected ProfessionLevelRequirement(Unlockable resolver, ConfigurationSection config) {
 
-    public ProfessionLevelRequirement(Profession type) {
-
-        super(type);
+        super(resolver, config);
     }
 
     @Override
-    public String getLongReason(Hero hero) {
+    protected Levelable getLevelable() {
 
-        return ChatColor.RED + "Du musst erst deine " + getType().getPath().getFriendlyName() + " Spezialisierung " +
-                ChatColor.AQUA + getType() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
+        return profession;
+    }
+
+    @Override
+    protected void load(ConfigurationSection data) {
+
+        try {
+            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getResolver().getHero(), data.getString("profession"));
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+        }
+        super.load(data);
+    }
+
+    @Override
+    public String getLongReason() {
+
+        return ChatColor.RED + "Du musst erst deine " + profession.getPath().getFriendlyName() + " Spezialisierung " +
+                ChatColor.AQUA + profession.getFriendlyName() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
                 + getRequiredLevel() + ChatColor.RED + " bringen.";
     }
 
     @Override
-    public String getShortReason(Hero hero) {
+    public String getShortReason() {
 
-        return getType().getPath().getFriendlyName() + " Spezialisierung " + getType() + " auf Level " + getRequiredLevel();
+        return profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName() + " auf Level " + getRequiredLevel();
     }
 }

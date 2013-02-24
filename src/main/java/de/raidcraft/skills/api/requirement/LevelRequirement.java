@@ -1,42 +1,37 @@
 package de.raidcraft.skills.api.requirement;
 
-import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.api.requirement.AbstractRequirement;
 import de.raidcraft.skills.api.level.Levelable;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
-public abstract class LevelRequirement<T extends Levelable<T>> extends AbstractRequirement<T> {
+public abstract class LevelRequirement extends AbstractRequirement<Unlockable> {
 
-    private final int requiredLevel;
+    private int requiredLevel;
 
-    public LevelRequirement(T type, int requiredLevel) {
+    protected LevelRequirement(Unlockable resolver, ConfigurationSection config) {
 
-        super(type);
-        this.requiredLevel = requiredLevel;
+        super(resolver, config);
     }
 
-    public LevelRequirement(T type) {
+    protected abstract Levelable getLevelable();
 
-        // needs to be mastered
-        this(type, type.getMaxLevel());
+    @Override
+    protected void load(ConfigurationSection data) {
+
+        requiredLevel = data.getInt("level", getLevelable().getMaxLevel());
     }
 
-    public Level<T> getLevel() {
-
-        return getType().getLevel();
-    }
-
-    public int getRequiredLevel() {
+    protected int getRequiredLevel() {
 
         return requiredLevel;
     }
 
     @Override
-    public boolean isMet(Hero hero) {
+    public boolean isMet() {
 
-        // we assume that the hero already matches
-        return requiredLevel <= getLevel().getLevel();
+        return requiredLevel <= getLevelable().getLevel().getLevel();
     }
 }

@@ -2,12 +2,12 @@ package de.raidcraft.skills.api.profession;
 
 import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.ConfigurableLevel;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
-import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
@@ -189,22 +189,16 @@ public abstract class AbstractProfession implements Profession {
     public List<Requirement> getRequirements() {
 
         if (requirements.size() < 1) {
-            getProperties().loadRequirements(this);
+            requirements.addAll(getProperties().loadRequirements(this));
         }
         return requirements;
-    }
-
-    @Override
-    public void addRequirement(Requirement requirement) {
-
-        requirements.add(requirement);
     }
 
     @Override
     public boolean isUnlockable() {
 
         for (Requirement requirement : getRequirements()) {
-            if (!requirement.isMet(getHero())) {
+            if (!requirement.isMet()) {
                 return false;
             }
         }
@@ -215,8 +209,8 @@ public abstract class AbstractProfession implements Profession {
     public String getUnlockReason() {
 
         for (Requirement requirement : requirements) {
-            if (!requirement.isMet(getHero())) {
-                return requirement.getLongReason(getHero());
+            if (!requirement.isMet()) {
+                return requirement.getLongReason();
             }
         }
         return "Spezialisierung kann freigeschaltet werden.";

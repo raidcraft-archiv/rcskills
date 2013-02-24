@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.skill;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -17,7 +18,6 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.requirement.Requirement;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
@@ -501,22 +501,16 @@ public abstract class AbstractSkill implements Skill {
     public final List<Requirement> getRequirements() {
 
         if (requirements.size() < 1) {
-            getProperties().loadRequirements(this);
+            requirements.addAll(getProperties().loadRequirements(this));
         }
         return requirements;
-    }
-
-    @Override
-    public final void addRequirement(Requirement requirement) {
-
-        requirements.add(requirement);
     }
 
     @Override
     public final boolean isUnlockable() {
 
         for (Requirement requirement : getRequirements()) {
-            if (!requirement.isMet(getHero())) {
+            if (!requirement.isMet()) {
                 return false;
             }
         }
@@ -527,8 +521,8 @@ public abstract class AbstractSkill implements Skill {
     public final String getUnlockReason() {
 
         for (Requirement requirement : requirements) {
-            if (!requirement.isMet(getHero())) {
-                return requirement.getLongReason(getHero());
+            if (!requirement.isMet()) {
+                return requirement.getLongReason();
             }
         }
         if (getProperties().getRequiredLevel() > getProfession().getLevel().getLevel()) {

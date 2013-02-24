@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.profession.Profession;
@@ -41,7 +42,7 @@ public interface ProfessionProperties {
 
     public Map<String, Skill> loadSkills(Profession profession);
 
-    public void loadRequirements(Profession profession);
+    public List<Requirement<Profession>> loadRequirements(Profession profession);
 
     public List<Profession> loadChildren(Profession profession);
 }

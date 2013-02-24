@@ -1,14 +1,15 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.formulas.FormulaType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -130,9 +131,9 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public void loadRequirements(Skill skill) {
+    public List<Requirement<Skill>> loadRequirements(Skill skill) {
 
-        ConfigUtil.loadRequirements(this, skill);
+        return RequirementManager.createRequirements(skill, getOverrideSection("requirements"));
     }
 
     @Override

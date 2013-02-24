@@ -1,17 +1,20 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 /**
  * @author Silthus
  */
 public interface SkillProperties {
 
-    public void loadRequirements(Skill skill);
+    public List<Requirement<Skill>> loadRequirements(Skill skill);
 
     public String getName();
 
