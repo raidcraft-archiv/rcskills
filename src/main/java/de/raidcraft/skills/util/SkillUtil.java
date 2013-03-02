@@ -78,14 +78,30 @@ public final class SkillUtil {
         }
 
         for (Resource resource : skill.getHero().getResources()) {
-            int resourceCost = skill.getTotalResourceCost(resource.getName());
-            if (resourceCost > 0) {
-                sb = new StringBuilder();
-                sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ")
-                        .append(ChatColor.AQUA).append(resourceCost);
-                body.add(sb.toString());
+            double resourceCost = skill.getTotalResourceCost(resource.getName());
+
+            if (resourceCost == 0) {
+                continue;
             }
+
+            sb = new StringBuilder();
+            sb.append(ChatColor.YELLOW).append("  - ");
+            sb.append(ChatColor.AQUA);
+
+            switch (skill.getResourceCostType(resource.getName())) {
+
+                case PERCENTAGE:
+                    if (resourceCost < 0) sb.append("+");
+                    sb.append((int)resourceCost * 100);
+                    sb.append("%");
+                    break;
+                case FLAT:
+                    if (resourceCost < 0) sb.append("+");
+                    sb.append(resourceCost);
+                    break;
+            }
+            sb.append(ChatColor.YELLOW).append(" ").append(resource.getFriendlyName());
+            body.add(sb.toString());
         }
 
         if (skill.getRequirements().size() > 0) {

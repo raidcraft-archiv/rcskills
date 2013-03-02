@@ -84,10 +84,24 @@ public abstract class AbstractSkill implements Skill {
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         for (Resource resource : getHero().getResources()) {
-            int resourceCost = this.getTotalResourceCost(resource.getName());
-            if (resourceCost > 0 && resourceCost > resource.getCurrent()) {
-                throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
+
+            double resourceCost = this.getTotalResourceCost(resource.getName());
+
+            switch (getResourceCostType(resource.getName())) {
+
+                case FLAT:
+                    if (resourceCost > 0 && resourceCost > resource.getCurrent()) {
+                        throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
+                    }
+                    break;
+                case PERCENTAGE:
+                    int cost = (int) (resource.getMax() * resourceCost);
+                    if (resourceCost > 0.0 && cost > resource.getCurrent()) {
+                        throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
+                    }
+                    break;
             }
+
         }
         // lets check if the player has the required reagents
         for (ItemStack itemStack : getProperties().getReagents()) {
@@ -127,9 +141,18 @@ public abstract class AbstractSkill implements Skill {
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHero().getResources()) {
-            int resourceCost = getTotalResourceCost(resource.getName());
+            double resourceCost = getTotalResourceCost(resource.getName());
             if (resourceCost != 0) {
-                resource.setCurrent(resource.getCurrent() - resourceCost);
+                switch (getResourceCostType(resource.getName())) {
+
+                    case FLAT:
+                        resource.setCurrent((int) (resource.getCurrent() - resourceCost));
+                        break;
+                    case PERCENTAGE:
+                        int newVal = (int) (resource.getCurrent() - resource.getMax() * resourceCost);
+                        resource.setCurrent(newVal);
+                        break;
+                }
             }
         }
         // keep this last or items will be removed before casting
@@ -245,11 +268,17 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int getTotalResourceCost(String resource) {
+    public Resource.Type getResourceCostType(String resource) {
 
-        return (int) (properties.getResourceCost(resource)
+        return properties.getResourceType(resource);
+    }
+
+    @Override
+    public double getTotalResourceCost(String resource) {
+
+        return properties.getResourceCost(resource)
                 + (properties.getResourceCostLevelModifier(resource) * hero.getLevel().getLevel())
-                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getLevel().getLevel()));
+                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getLevel().getLevel());
     }
 
     @Override

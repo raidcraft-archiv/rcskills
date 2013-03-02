@@ -8,6 +8,8 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 
 /**
  * @author Silthus
@@ -53,8 +55,16 @@ public class SkillAction extends AbstractAction<Hero> {
         // lets cancel other casts first
         getSource().removeEffect(CastTime.class);
 
+        PlayerCastSkillTrigger trigger = TriggerManager.callTrigger(new PlayerCastSkillTrigger(getSource(), getSkill()));
+        if (trigger.isCancelled()) {
+            throw new CombatException(CombatException.Type.CANCELLED);
+        }
+
         if (delayed) {
-            getSource().addEffect(skill, this, CastTime.class);
+            CastTime castTime = getSource().addEffect(skill, this, CastTime.class);
+            if (trigger.isCastTimeChanged()) {
+                castTime.setCastTime(trigger.getCastTime());
+            }
             this.delayed = false;
             return;
         }

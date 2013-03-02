@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import org.bukkit.configuration.ConfigurationSection;
@@ -46,7 +47,9 @@ public interface SkillProperties {
 
     public int getMaxLevel();
 
-    public int getResourceCost(String resource);
+    public Resource.Type getResourceType(String resource);
+
+    public double getResourceCost(String resource);
 
     public double getResourceCostLevelModifier(String resource);
 

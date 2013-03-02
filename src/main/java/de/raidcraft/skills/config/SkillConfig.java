@@ -7,6 +7,7 @@ import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
@@ -221,9 +222,15 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public int getResourceCost(String resource) {
+    public Resource.Type getResourceType(String resource) {
 
-        return getOverrideInt("resources." + resource + ".base", 0);
+        return Resource.Type.fromString(getOverrideString("resources." + resource + ".type", "flat"));
+    }
+
+    @Override
+    public double getResourceCost(String resource) {
+
+        return getOverrideDouble("resources." + resource + ".base", 0);
     }
 
     @Override

@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.requirement.Unlockable;
+import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -62,7 +63,9 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public int getTotalDamage();
 
-    public int getTotalResourceCost(String resource);
+    public double getTotalResourceCost(String resource);
+
+    public Resource.Type getResourceCostType(String resource);
 
     public int getTotalCastTime();
 

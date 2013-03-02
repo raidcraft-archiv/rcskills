@@ -47,10 +47,10 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final int getTotalResourceCost(String resource) {
+    public final double getTotalResourceCost(String resource) {
 
-        return (int) (super.getTotalResourceCost(resource) +
-                (getProperties().getResourceCostSkillLevelModifier(resource) * getLevel().getLevel()));
+        return super.getTotalResourceCost(resource) +
+                (getProperties().getResourceCostSkillLevelModifier(resource) * getLevel().getLevel());
     }
 
     @Override

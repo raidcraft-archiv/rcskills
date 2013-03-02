@@ -29,6 +29,12 @@ public class CastTime extends DelayedEffect<SkillAction> {
         debug("started timer");
     }
 
+    public void setCastTime(long time) throws CombatException {
+
+        delay = time * 20;
+        renew();
+    }
+
     @Override
     public void apply() throws CombatException {
 

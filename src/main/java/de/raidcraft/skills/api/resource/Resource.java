@@ -2,12 +2,24 @@ package de.raidcraft.skills.api.resource;
 
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.util.EnumUtils;
 import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
  */
 public interface Resource {
+
+    public enum Type {
+
+        PERCENTAGE,
+        FLAT;
+
+        public static Type fromString(String name) {
+
+            return EnumUtils.getEnumFromString(Type.class, name);
+        }
+    }
 
     public Hero getHero();
 
