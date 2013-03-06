@@ -28,6 +28,19 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         this.item = item;
     }
 
+    public boolean contains(Skill skill) {
+        for(Skill currentSkill : skills) {
+            if(currentSkill.getName().equalsIgnoreCase(skill.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void add(Skill skill) {
+        skills.add(skill);
+    }
+
     public Hero getHero() {
 
         return hero;
@@ -46,6 +59,10 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         } catch (CombatException | CommandException e) {
             getHero().sendMessage(ChatColor.RED + e.getMessage());
         }
+    }
+
+    public Skill getCurrent() {
+        return skills.get(index);
     }
 
     @Override
