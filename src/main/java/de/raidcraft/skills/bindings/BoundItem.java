@@ -41,6 +41,10 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         skills.add(skill);
     }
 
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
     public Hero getHero() {
 
         return hero;

@@ -1,9 +1,11 @@
 package de.raidcraft.skills.bindings;
 
-import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,19 +19,24 @@ public class BindManager {
 
     public static BindManager INST = null;
 
-    private BasePlugin plugin;
+    private SkillsPlugin plugin;
     private Map<String, List<BoundItem>> boundItems = new HashMap<>();
 
-    public BindManager(BasePlugin plugin) {
+    public BindManager(SkillsPlugin plugin) {
 
         INST = this;
         this.plugin = plugin;
         plugin.registerCommands(BindCommands.class);
         plugin.registerEvents(new BindListener());
+        plugin.registerTable(BindingsTable.class, new BindingsTable());
     }
 
-    public void loadBoundItems(String player) {
-        //TODO implement
+    public void loadBoundItems(Player player) {
+        Hero hero = plugin.getCharacterManager().getHero(player);
+        List<Binding> bindings = Database.getTable(BindingsTable.class).getBindings(hero);
+        for(Binding binding : bindings) {
+            addBinding(binding.getHero(), binding.getMaterial(), binding.getSkill(), false);
+        }
     }
 
     public void unloadBoundItems(String player) {
@@ -40,31 +47,44 @@ public class BindManager {
         return boundItems.get(player);
     }
 
-    public boolean addBoundItem(Hero hero, Material item, Skill skill) {
+    public boolean addBinding(Hero hero, Material item, Skill skill) {
+        return addBinding(hero, item, skill, true);
+    }
+
+    public boolean addBinding(Hero hero, Material item, Skill skill, boolean save) {
 
         if(!boundItems.containsKey(hero.getName())) {
             boundItems.put(hero.getName(), new ArrayList<BoundItem>());
         }
 
+        boolean found = false;
         for(BoundItem boundItem : boundItems.get(hero.getName())) {
             if(boundItem.getItem() == item) {
                 if(boundItem.contains(skill)) {
                     return false;
                 }
                 boundItem.add(skill);
-                return true;
+                found = true;
             }
         }
-        BoundItem boundItem = new BoundItem(hero, item);
-        boundItem.add(skill);
-        boundItems.get(hero.getName()).add(boundItem);
+        if(!found) {
+            BoundItem boundItem = new BoundItem(hero, item);
+            boundItem.add(skill);
+            boundItems.get(hero.getName()).add(boundItem);
+        }
+        if(save) {
+            Database.getTable(BindingsTable.class).saveBinding(new Binding(hero, item, skill));
+        }
         return true;
     }
 
-    public boolean removeBoundItem(Hero hero, Material item) {
+    public boolean removeBindings(Hero hero, Material item) {
         if(boundItems.containsKey(hero.getName())) {
             for(BoundItem boundItem : boundItems.get(hero.getName())) {
                 if(boundItem.getItem() == item) {
+                    for(Skill skill : boundItem.getSkills()) {
+                        Database.getTable(BindingsTable.class).deleteBinding(new Binding(hero, item, skill));
+                    }
                     boundItems.get(hero.getName()).remove(boundItem);
                     return true;
                 }

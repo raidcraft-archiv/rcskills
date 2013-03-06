@@ -48,7 +48,7 @@ public class BindCommands {
             throw new CommandException("Du kannst diesen Skill nicht binden.");
         }
 
-        if(BindManager.INST.addBoundItem(hero, hero.getPlayer().getItemInHand().getType(), skill)) {
+        if(BindManager.INST.addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill)) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Der Skill " + skill.getFriendlyName() + " wurde an dieses Item gebunden!");
             return;
         }
@@ -73,7 +73,7 @@ public class BindCommands {
             throw new CommandException("Kein Item in der Hand.");
         }
 
-        if(BindManager.INST.removeBoundItem(hero, hero.getPlayer().getItemInHand().getType())) {
+        if(BindManager.INST.removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Alle Skills auf diesem Item wurden entfernt!");
             return;
         }

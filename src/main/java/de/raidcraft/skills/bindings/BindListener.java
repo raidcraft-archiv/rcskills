@@ -50,7 +50,7 @@ public class BindListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        BindManager.INST.loadBoundItems(event.getPlayer().getName());
+        BindManager.INST.loadBoundItems(event.getPlayer());
     }
 
     @EventHandler
