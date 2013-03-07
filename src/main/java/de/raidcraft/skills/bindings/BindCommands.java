@@ -5,13 +5,22 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.util.SkillUtil;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BindCommands {
 
@@ -93,5 +102,91 @@ public class BindCommands {
 
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
+
+        for(Skill skill : hero.getSkills()) {
+            if (!(skill instanceof CommandTriggered)) {
+                continue;
+            }
+
+            Map<Material, List<Skill>> assignments = new HashMap<>();
+            ItemStack item;
+            boolean noItem = false;
+            for(EffectType type : skill.getTypes()) {
+                // damage spells (item in slot 0)
+                if(type == EffectType.DAMAGING || type == EffectType.HARMFUL) {
+                    item = hero.getPlayer().getInventory().getItem(0);
+                    if(item != null && item.getType() != Material.AIR) {
+                        if(!assignments.containsKey(item.getType())) {
+                            assignments.put(item.getType(), new ArrayList<Skill>());
+                        }
+                        assignments.get(item.getType()).add(skill);
+                    }
+                    else {
+                        noItem = true;
+                    }
+                    break;
+                }
+
+                // protection spells (item in slot 1)
+                if(type == EffectType.PROTECTION) {
+                    item = hero.getPlayer().getInventory().getItem(1);
+                    if(item != null && item.getType() != Material.AIR) {
+                        if(!assignments.containsKey(item.getType())) {
+                            assignments.put(item.getType(), new ArrayList<Skill>());
+                        }
+                        assignments.get(item.getType()).add(skill);
+                    }
+                    else {
+                        noItem = true;
+                    }
+                    break;
+                }
+
+                // helpful spells (item in slot 2)
+                if(type == EffectType.HELPFUL) {
+                    item = hero.getPlayer().getInventory().getItem(2);
+                    if(item != null && item.getType() != Material.AIR) {
+                        if(!assignments.containsKey(item.getType())) {
+                            assignments.put(item.getType(), new ArrayList<Skill>());
+                        }
+                        assignments.get(item.getType()).add(skill);
+                    }
+                    else {
+                        noItem = true;
+                    }
+                    break;
+                }
+            }
+
+            if(noItem) {
+                hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items im Inventar um alle Skilltypen zu binden!");
+            }
+            if(assignments.size() > 0) {
+                hero.sendMessage(ChatColor.DARK_GREEN + "Es wurden folgende Skills an Items gebunden:");
+
+                String bindingText = "";
+                for(Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
+                    // remove old bindings
+                    BindManager.INST.removeBindings(hero, entry.getKey());
+                    bindingText = ChatColor.GOLD + WordUtils.capitalizeFully(entry.getKey().name()) + ChatColor.WHITE + ": ";
+
+                    // add new binding
+                    boolean colorToggle = true;
+                    for(Skill sk : entry.getValue()) {
+                        BindManager.INST.addBinding(hero, entry.getKey(), sk);
+                        if(colorToggle) {
+                            bindingText += ChatColor.WHITE;
+                            colorToggle = false;
+                        }
+                        else {
+                            bindingText += ChatColor.DARK_GRAY;
+                            colorToggle = true;
+                        }
+                        bindingText += sk.getFriendlyName() + ", ";
+                    }
+                    hero.sendMessage(bindingText);
+                }
+            }
+        }
     }
 }
