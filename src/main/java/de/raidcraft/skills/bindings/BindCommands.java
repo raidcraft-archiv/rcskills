@@ -159,7 +159,7 @@ public class BindCommands {
             }
 
             if(noItem) {
-                hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items im Inventar um alle Skilltypen zu binden!");
+                hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items in der Inventarleiste um alle Skilltypen zu binden!");
             }
             if(assignments.size() > 0) {
                 hero.sendMessage(ChatColor.DARK_GREEN + "Es wurden folgende Skills an Items gebunden:");
