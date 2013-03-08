@@ -102,15 +102,14 @@ public class BindCommands {
 
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
-
+        boolean noItem = false;
+        Map<Material, List<Skill>> assignments = new HashMap<>();
         for(Skill skill : hero.getSkills()) {
             if (!(skill instanceof CommandTriggered)) {
                 continue;
             }
 
-            Map<Material, List<Skill>> assignments = new HashMap<>();
             ItemStack item;
-            boolean noItem = false;
             for(EffectType type : skill.getTypes()) {
                 // damage spells (item in slot 0)
                 if(type == EffectType.DAMAGING || type == EffectType.HARMFUL) {
@@ -157,36 +156,38 @@ public class BindCommands {
                     break;
                 }
             }
+        }
 
-            if(noItem) {
-                hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items in der Inventarleiste um alle Skilltypen zu binden!");
-            }
-            if(assignments.size() > 0) {
-                hero.sendMessage(ChatColor.DARK_GREEN + "Es wurden folgende Skills an Items gebunden:");
+        if(noItem) {
+            hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items in der Inventarleiste um alle Skilltypen zu binden!");
+        }
+        if(assignments.size() == 0) {
+            throw new CommandException("Du hast keine Skills zum binden!");
+        }
 
-                String bindingText = "";
-                for(Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
-                    // remove old bindings
-                    BindManager.INST.removeBindings(hero, entry.getKey());
-                    bindingText = ChatColor.GOLD + WordUtils.capitalizeFully(entry.getKey().name()) + ChatColor.WHITE + ": ";
+        hero.sendMessage(ChatColor.DARK_GREEN + "Es wurden folgende Skills an Items gebunden:");
 
-                    // add new binding
-                    boolean colorToggle = true;
-                    for(Skill sk : entry.getValue()) {
-                        BindManager.INST.addBinding(hero, entry.getKey(), sk);
-                        if(colorToggle) {
-                            bindingText += ChatColor.WHITE;
-                            colorToggle = false;
-                        }
-                        else {
-                            bindingText += ChatColor.DARK_GRAY;
-                            colorToggle = true;
-                        }
-                        bindingText += sk.getFriendlyName() + ", ";
-                    }
-                    hero.sendMessage(bindingText);
+        String bindingText = "";
+        for(Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
+            // remove old bindings
+            BindManager.INST.removeBindings(hero, entry.getKey());
+            bindingText = ChatColor.GOLD + WordUtils.capitalizeFully(entry.getKey().name()) + ChatColor.WHITE + ": ";
+
+            // add new binding
+            boolean colorToggle = true;
+            for(Skill sk : entry.getValue()) {
+                BindManager.INST.addBinding(hero, entry.getKey(), sk);
+                if(colorToggle) {
+                    bindingText += ChatColor.WHITE;
+                    colorToggle = false;
                 }
+                else {
+                    bindingText += ChatColor.DARK_GRAY;
+                    colorToggle = true;
+                }
+                bindingText += sk.getFriendlyName() + ", ";
             }
+            hero.sendMessage(bindingText);
         }
     }
 }
