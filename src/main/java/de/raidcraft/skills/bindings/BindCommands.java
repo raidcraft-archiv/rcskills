@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.util.SkillUtil;
-import org.apache.commons.lang.WordUtils;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -171,7 +171,7 @@ public class BindCommands {
         for(Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
             // remove old bindings
             BindManager.INST.removeBindings(hero, entry.getKey());
-            bindingText = ChatColor.GOLD + WordUtils.capitalizeFully(entry.getKey().name()) + ChatColor.WHITE + ": ";
+            bindingText = ChatColor.GOLD + ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN) + ChatColor.WHITE + ": ";
 
             // add new binding
             boolean colorToggle = true;

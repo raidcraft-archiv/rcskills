@@ -87,7 +87,7 @@ public final class CharacterManager implements Listener {
             heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
             if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
         }
-        name = name.toLowerCase();
+//        name = name.toLowerCase();
 
         Hero hero;
         if (!heroes.containsKey(name)) {
