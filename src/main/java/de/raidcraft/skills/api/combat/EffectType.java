@@ -19,7 +19,6 @@ public enum EffectType {
     SILENCABLE,
     SUMMON,
     MAGICAL,
-    UNBINDABLE,
     ABSORBING,
     REFLECTING,
     REDUCING,

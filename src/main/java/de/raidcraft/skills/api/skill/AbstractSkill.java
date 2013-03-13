@@ -216,14 +216,12 @@ public abstract class AbstractSkill implements Skill {
         return attack;
     }
 
-    @SuppressWarnings("unchecked")
-    protected final RangedAttack rangedAttack(ProjectileType type) throws CombatException {
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
 
         return rangedAttack(type, getTotalDamage(), null);
     }
 
-    @SuppressWarnings("unchecked")
-    protected final RangedAttack rangedAttack(ProjectileType type, int damage) throws CombatException {
+    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage) throws CombatException {
 
         return rangedAttack(type, damage, null);
     }

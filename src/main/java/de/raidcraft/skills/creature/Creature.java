@@ -6,44 +6,18 @@ import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
-import net.minecraft.server.v1_4_R1.EntityLiving;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Wolf;
-
-import java.lang.reflect.Field;
 
 /**
  * @author Silthus
  */
 public class Creature extends AbstractCharacterTemplate {
 
-    private int maxHealth = 20;
-    private Field nmsHealth = null;
-
     public Creature(LivingEntity entity) {
 
         super(entity);
-        this.maxHealth = getDefaultHealth();
-        try {
-            // make the health field in NMS accessible
-            this.nmsHealth = EntityLiving.class.getDeclaredField("health");
-            this.nmsHealth.setAccessible(true);
-        } catch (NoSuchFieldException ignored) {
-        }
-    }
-
-    @Override
-    public int getMaxHealth() {
-
-        return maxHealth;
-    }
-
-    @Override
-    public void setMaxHealth(int maxHealth) {
-
-        this.maxHealth = maxHealth;
     }
 
     @Override
@@ -69,28 +43,6 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public final int getHealth() {
-
-        return getEntity().getHealth();
-    }
-
-    @Override
-    public final void setHealth(int health) {
-
-        if (health < 0) {
-            health = 0;
-        } else if (health > getMaxHealth()) {
-            health = getMaxHealth();
-        }
-        try {
-            nmsHealth.setInt(((CraftLivingEntity) getEntity()).getHandle(), health);
-        } catch (IllegalAccessException e) {
-            getEntity().setHealth(health);
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public int getDefaultHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
@@ -99,6 +51,7 @@ public class Creature extends AbstractCharacterTemplate {
     @Override
     public boolean isFriendly(Hero source) {
 
+        // TODO: implement friendly check for summoned creatures
         return false;
     }
 }

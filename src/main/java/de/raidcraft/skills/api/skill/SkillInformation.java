@@ -19,7 +19,7 @@ public @interface SkillInformation {
 
     public String desc();
 
-    public EffectType[] types() default {EffectType.UNBINDABLE};
+    public EffectType[] types() default {};
 
     public EffectElement[] elements() default {};
 

@@ -59,6 +59,30 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         return entity;
     }
 
+    @Override
+    public int getHealth() {
+
+        return getEntity().getHealth();
+    }
+
+    @Override
+    public void setHealth(int health) {
+
+        getEntity().setHealth(health);
+    }
+
+    @Override
+    public int getMaxHealth() {
+
+        return getEntity().getMaxHealth();
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth) {
+
+        getEntity().setMaxHealth(maxHealth);
+    }
+
     private void damage(int damage) {
 
         int newHealth = getHealth() - damage;
@@ -133,16 +157,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill() {
 
-        getEntity().damage(getEntity().getHealth());
-        // play the death sound
-        getEntity().getWorld().playSound(
-                getEntity().getLocation(),
-                getDeathSound(getEntity().getType()),
-                1.0F,
-                getSoundStrength(getEntity())
-        );
-        // play the death effect
-        getEntity().playEffect(EntityEffect.DEATH);
+        setHealth(0);
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {

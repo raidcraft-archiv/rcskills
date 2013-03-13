@@ -50,8 +50,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final HeroOptions options;
     // every player is member of his own group by default
     private Group group;
-    private int health;
-    private int maxHealth = 20;
     private int maxLevel;
     private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -69,7 +67,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.player = RaidCraft.getPlayer(data.getName());
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
-        this.health = data.getHealth();
+        this.setHealth(data.getHealth());
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
@@ -370,46 +368,10 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public int getMaxHealth() {
-
-        return maxHealth;
-    }
-
-    @Override
-    public void setMaxHealth(int maxHealth) {
-
-        this.maxHealth = maxHealth;
-    }
-
-    @Override
-    public int getHealth() {
-
-        return health;
-    }
-
-    @Override
-    public void setHealth(int health) {
-
-        if (health > getMaxHealth()) health = getMaxHealth();
-        this.health = health;
-        if (getUserInterface() != null) {
-            getUserInterface().refresh();
-        }
-        debug("Health set to " + health);
-    }
-
-    @Override
     public int getDefaultHealth() {
 
         return (int) (getSelectedProfession().getProperties().getBaseHealth()
                 + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getLevel().getLevel());
-    }
-
-    @Override
-    public void kill() {
-
-        setHealth(0);
-        super.kill();
     }
 
     @Override
