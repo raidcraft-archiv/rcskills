@@ -7,12 +7,15 @@ import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
+import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -236,6 +239,71 @@ public abstract class AbstractSkill implements Skill {
         RangedAttack<T> attack = new RangedAttack<>(getHero(), type, damage, callback);
         attack.run();
         return attack;
+    }
+
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage, RangedCallback callback) throws CombatException {
+
+        MagicalAttack attack = new MagicalAttack(getHero(), target, damage, callback);
+        type.run(attack);
+        attack.run();
+        return attack;
+    }
+
+    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage, RangedCallback callback) throws CombatException {
+
+        return magicalAttack(getTarget(), type, damage, callback);
+    }
+
+    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage) throws CombatException {
+
+        return magicalAttack(type, damage, null);
+    }
+
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage) throws CombatException {
+
+        return magicalAttack(target, type, damage, null);
+    }
+
+    protected final MagicalAttack magicalAttack(MagicalAttackType type, RangedCallback callback) throws CombatException {
+
+        return magicalAttack(type, getTotalDamage(), callback);
+    }
+
+    protected final MagicalAttack magicalAttack(MagicalAttackType type) throws CombatException {
+
+        return magicalAttack(type, getTotalDamage(), null);
+    }
+
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, RangedCallback callback) throws CombatException {
+
+        MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, callback);
+        magicalAttack.run();
+        return magicalAttack;
+    }
+
+    protected final MagicalAttack magicalAttack(int damage, RangedCallback callback) throws CombatException {
+
+        return magicalAttack(getTarget(), damage, callback);
+    }
+
+    protected final MagicalAttack magicalAttack(RangedCallback callback) throws CombatException {
+
+        return magicalAttack(getTarget(), getTotalDamage(), callback);
+    }
+
+    protected final MagicalAttack magicalAttack() throws CombatException {
+
+        return magicalAttack(getTarget(), getTotalDamage(), null);
+    }
+
+    protected final MagicalAttack magicalAttack(int damage) throws CombatException {
+
+        return magicalAttack(damage, null);
+    }
+
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, RangedCallback callback) throws CombatException {
+
+        return magicalAttack(target, getTotalDamage(), callback);
     }
 
     protected final void addPermission(String node) {
