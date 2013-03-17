@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -165,7 +166,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (hasEffect(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);
             // lets check priorities
-            if (existingEffect.getPriority() < 0) {
+            if (existingEffect instanceof Stackable) {
+                // we dont replace or renew stackable effects, we increase their stacks :)
+                ((Stackable) existingEffect).setStacks(((Stackable) existingEffect).getStacks() + 1);
+            } else if (existingEffect.getPriority() < 0) {
                 // prio less then 0 is special and means always replace
                 existingEffect.remove();
                 addEffect(eClass, effect);

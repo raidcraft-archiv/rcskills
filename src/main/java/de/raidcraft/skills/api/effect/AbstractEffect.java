@@ -25,6 +25,8 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private final CharacterTemplate target;
     private boolean enabled;
     private int damage = 0;
+    private int stacks;
+    private int maxStacks;
     private double priority;
 
     public AbstractEffect(S source, CharacterTemplate target, EffectData data) {
@@ -36,6 +38,11 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.source = source;
         this.target = target;
         this.enabled = data.isEnabled();
+
+        if (this instanceof Stackable) {
+            stacks = 0;
+            maxStacks = data.getMaxStacks();
+        }
 
         load(data);
     }
@@ -58,6 +65,22 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     @Override
     public void load(ConfigurationSection data) {
         // override if needed
+    }
+
+    public int getStacks() {
+
+        return stacks;
+    }
+
+    public void setStacks(int stacks) {
+
+        if (stacks > getMaxStacks()) stacks = getMaxStacks();
+        this.stacks = stacks;
+    }
+
+    public int getMaxStacks() {
+
+        return maxStacks;
     }
 
     @Override

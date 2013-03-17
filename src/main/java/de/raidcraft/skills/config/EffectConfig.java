@@ -55,6 +55,12 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     }
 
     @Override
+    public int getMaxStacks() {
+
+        return getOverrideInt("max-stacks", 5);
+    }
+
+    @Override
     public double getEffectPriority() {
 
         return getOverride("priority", getPlugin().getCommonConfig().default_effect_priority);

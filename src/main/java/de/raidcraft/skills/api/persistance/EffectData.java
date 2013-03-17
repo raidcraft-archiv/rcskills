@@ -16,6 +16,8 @@ public interface EffectData {
 
     public ConfigurationSection getDataMap();
 
+    public int getMaxStacks();
+
     public double getEffectPriority();
 
     public long getEffectDuration();
