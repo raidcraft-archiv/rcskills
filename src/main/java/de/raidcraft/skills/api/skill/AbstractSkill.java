@@ -306,6 +306,11 @@ public abstract class AbstractSkill implements Skill {
         return magicalAttack(target, getTotalDamage(), callback);
     }
 
+    protected final MagicalAttack magicalAttack(CharacterTemplate taraget, int damage) throws CombatException {
+
+        return magicalAttack(taraget, damage, null);
+    }
+
     protected final void addPermission(String node) {
 
         RaidCraft.getPermissions().playerAdd(getHero().getPlayer(), node);
