@@ -10,6 +10,8 @@ import de.raidcraft.skills.api.requirement.Unlockable;
 import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Set;
+
 /**
  * @author Silthus
  */
@@ -43,11 +45,15 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public void substractUsageCost();
 
-    public EffectType[] getTypes();
+    public Set<EffectType> getTypes();
+
+    public void addTypes(EffectType... effectTypes);
 
     public boolean isOfType(EffectType type);
 
-    public EffectElement[] getElements();
+    public Set<EffectElement> getElements();
+
+    public void addElements(EffectElement... effectElements);
 
     public boolean isOfElement(EffectElement element);
 

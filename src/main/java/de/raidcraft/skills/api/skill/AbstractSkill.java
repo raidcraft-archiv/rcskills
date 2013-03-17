@@ -35,6 +35,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,9 +48,10 @@ public abstract class AbstractSkill implements Skill {
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
-    private final SkillInformation information;
     private final List<Requirement> requirements = new ArrayList<>();
     private final List<Requirement> useRequirements = new ArrayList<>();
+    private final Set<EffectType> effectTypes = new HashSet<>();
+    private final Set<EffectElement> effectElements = new HashSet<>();
     protected final THeroSkill database;
     private String description;
     private long lastCast;
@@ -60,7 +63,8 @@ public abstract class AbstractSkill implements Skill {
         this.database = database;
         this.description = data.getDescription();
         this.profession = profession;
-        this.information = data.getInformation();
+        this.effectTypes.addAll(Arrays.asList(data.getInformation().types()));
+        this.effectElements.addAll(Arrays.asList(data.getInformation().elements()));
     }
 
     @Override
@@ -214,7 +218,7 @@ public abstract class AbstractSkill implements Skill {
 
     protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
 
-        EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes());
+        EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.run();
         return attack;
     }
@@ -523,9 +527,16 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final EffectType[] getTypes() {
+    public final Set<EffectType> getTypes() {
 
-        return information.types();
+        return effectTypes;
+    }
+
+    @Override
+    public void addTypes(EffectType... effectTypes) {
+
+        if (effectTypes == null) return;
+        this.effectTypes.addAll(Arrays.asList(effectTypes));
     }
 
     @Override
@@ -540,9 +551,16 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final EffectElement[] getElements() {
+    public final Set<EffectElement> getElements() {
 
-        return information.elements();
+        return effectElements;
+    }
+
+    @Override
+    public void addElements(EffectElement... effectElements) {
+
+        if (effectElements == null) return;
+        this.effectElements.addAll(Arrays.asList(effectElements));
     }
 
     @Override
