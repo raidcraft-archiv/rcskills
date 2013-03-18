@@ -4,7 +4,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -20,6 +20,14 @@ public interface CharacterTemplate {
     public String getName();
 
     public LivingEntity getEntity();
+
+    Party getParty();
+
+    boolean isInParty(Party party);
+
+    void joinParty(Party party);
+
+    void leaveParty(Party party);
 
     public int getHealth();
 
@@ -39,7 +47,7 @@ public interface CharacterTemplate {
 
     public void kill();
 
-    public boolean isFriendly(Hero source);
+    public boolean isFriendly(CharacterTemplate source);
 
     public boolean isBehind(CharacterTemplate target);
 

@@ -8,6 +8,8 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.party.Party;
+import de.raidcraft.skills.api.party.SimpleParty;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -33,6 +35,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    // every player is member of his own party by default
+    private Party party;
     private boolean inCombat = false;
     private long lastSwing;
 
@@ -46,6 +50,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         this.entity = Bukkit.getPlayer(name);
         this.name = name;
+        this.party = new SimpleParty(this);
     }
 
     @Override
@@ -428,5 +433,41 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             default:
                 return Sound.HURT_FLESH;
         }
+    }
+
+    @Override
+    public Party getParty() {
+
+        return party;
+    }
+
+    @Override
+    public boolean isInParty(Party party) {
+
+        return party.isInGroup(this);
+    }
+
+    @Override
+    public void joinParty(Party party) {
+
+        if (!this.party.equals(party)) {
+            this.party = party;
+            party.addMember(this);
+        }
+    }
+
+    @Override
+    public void leaveParty(Party party) {
+
+        if (this.party.equals(party)) {
+            this.party = new SimpleParty(this);
+            party.removeMember(this);
+        }
+    }
+
+    @Override
+    public boolean isFriendly(CharacterTemplate source) {
+
+        return getParty().isInGroup(source);
     }
 }

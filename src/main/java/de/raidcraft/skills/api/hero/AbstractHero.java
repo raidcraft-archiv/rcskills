@@ -11,8 +11,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.group.Group;
-import de.raidcraft.skills.api.group.SimpleGroup;
 import de.raidcraft.skills.api.level.ConfigurableLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.level.Level;
@@ -48,8 +46,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final RCPlayer player;
     private final Level<Hero> expPool;
     private final HeroOptions options;
-    // every player is member of his own group by default
-    private Group group;
     private int maxLevel;
     private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
@@ -78,7 +74,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadProfessions(data);
         loadSkills();
 
-        this.group = new SimpleGroup(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -217,42 +212,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             throw new UnknownSkillException("Es gibt mehrere Skills mit dem Namen: " + name);
         }
         return foundSkills.get(0);
-    }
-
-    @Override
-    public Group getGroup() {
-
-        return group;
-    }
-
-    @Override
-    public boolean isInGroup(Group group) {
-
-        return group.isInGroup(this);
-    }
-
-    @Override
-    public void joinGroup(Group group) {
-
-        if (!this.group.equals(group)) {
-            this.group = group;
-            group.addMember(this);
-        }
-    }
-
-    @Override
-    public void leaveGroup(Group group) {
-
-        if (this.group.equals(group)) {
-            this.group = new SimpleGroup(this);
-            group.removeMember(this);
-        }
-    }
-
-    @Override
-    public boolean isFriendly(Hero source) {
-
-        return getGroup().isInGroup(source);
     }
 
     @Override

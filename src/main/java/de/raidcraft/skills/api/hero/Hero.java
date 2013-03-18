@@ -4,7 +4,6 @@ import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.group.Group;
 import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.path.Path;
@@ -33,15 +32,7 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public UserInterface getUserInterface();
 
-    public Group getGroup();
-
     public HeroOptions getOptions();
-
-    public boolean isInGroup(Group group);
-
-    public void joinGroup(Group group);
-
-    public void leaveGroup(Group group);
 
     public void debug(String message);
 
