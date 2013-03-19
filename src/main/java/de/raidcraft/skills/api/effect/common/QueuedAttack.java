@@ -53,7 +53,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
             throw new CombatException(CombatException.Type.INVALID_WEAPON);
         }
         trigger.getAttack().setDamage(getSource().getTotalDamage());
-        trigger.getAttack().addAttackTypes(getSource().getTypes());
+        trigger.getAttack().addAttackTypes(getSource().getTypes().toArray(new EffectType[getSource().getTypes().size()]));
         trigger.getAttack().addAttackTypes(getTypes());
         if (callback != null) {
             callback.run(trigger);
