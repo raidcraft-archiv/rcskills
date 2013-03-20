@@ -25,6 +25,7 @@ import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.ChatColor;
@@ -340,15 +341,9 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int getTotalDamage() {
+    public final int getTotalDamage() {
 
-        double damage = (properties.getDamage()
-                + (properties.getDamageLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getDamageProfLevelModifier() * getProfession().getLevel().getLevel()));
-        for (Resource resource : getHero().getResources()) {
-            damage += properties.getDamageResourceModifier(resource.getName()) * resource.getCurrent();
-        }
-        return (int) damage;
+        return (int) ConfigUtil.getTotalValue(this, properties.getDamage());
     }
 
     @Override
@@ -366,39 +361,21 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public int getTotalCastTime() {
+    public final int getTotalCastTime() {
 
-        double castTime = (properties.getCastTime()
-                + (properties.getCastTimeLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getCastTimeProfLevelModifier() * getProfession().getLevel().getLevel()));
-        for (Resource resource : getHero().getResources()) {
-            castTime += properties.getCastTimeResourceModifier(resource.getName()) * resource.getCurrent();
-        }
-        return (int) castTime * 20;
+        return (int) ConfigUtil.getTotalValue(this, properties.getCastTime()) * 20;
     }
 
     @Override
-    public int getTotalRange() {
+    public final int getTotalRange() {
 
-        double range = (properties.getRange()
-                + (properties.getRangeLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getRangeProfLevelModifier() * getProfession().getLevel().getLevel()));
-        for (Resource resource : getHero().getResources()) {
-            range += properties.getRangeResourceModifier(resource.getName()) * resource.getCurrent();
-        }
-        return (int) range;
+        return (int) ConfigUtil.getTotalValue(this, properties.getRange());
     }
 
     @Override
-    public double getTotalCooldown() {
+    public final double getTotalCooldown() {
 
-        double cooldown = (properties.getCooldown()
-                + (properties.getCooldownLevelModifier() * hero.getLevel().getLevel())
-                + (properties.getCooldownProfLevelModifier() * getProfession().getLevel().getLevel()));
-        for (Resource resource : getHero().getResources()) {
-            cooldown += properties.getCooldownResourceModifier(resource.getName()) * resource.getCurrent();
-        }
-        return (int) cooldown;
+        return ConfigUtil.getTotalValue(this, properties.getCooldown());
     }
 
     @Override

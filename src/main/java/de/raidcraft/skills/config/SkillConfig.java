@@ -162,65 +162,16 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public int getDamage() {
+    public ConfigurationSection getDamage() {
 
-        return getOverride("damage.base", 0);
+        return getOverrideSection("damage");
     }
 
     @Override
-    public double getDamageLevelModifier() {
+    public ConfigurationSection getCastTime() {
 
-        return getOverride("damage.level-modifier", 0.0);
+        return getOverrideSection("casttime");
     }
-
-    @Override
-    public double getDamageProfLevelModifier() {
-
-        return getOverride("damage.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getDamageSkillLevelModifier() {
-
-        return getOverride("damage.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getDamageResourceModifier(String resouce) {
-
-        return getOverrideDouble("damage." + resouce + "-modifier", 0.0);
-    }
-
-    @Override
-    public double getCastTime() {
-
-        return getOverride("casttime.base", 0.0);
-    }
-
-    @Override
-    public double getCastTimeLevelModifier() {
-
-        return getOverride("casttime.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCastTimeSkillLevelModifier() {
-
-        return getOverride("casttime.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCastTimeProfLevelModifier() {
-
-        return getOverride("casttime.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCastTimeResourceModifier(String resouce) {
-
-        return getOverrideDouble("casttime." + resouce + "-modifier", 0.0);
-    }
-
     @Override
     public Resource.Type getResourceType(String resource) {
 
@@ -252,62 +203,14 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public double getCooldown() {
+    public ConfigurationSection getCooldown() {
 
-        return getOverride("cooldown.base", 0.0);
+        return getOverrideSection("cooldown");
     }
 
     @Override
-    public double getCooldownLevelModifier() {
+    public ConfigurationSection getRange() {
 
-        return getOverride("cooldown.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCooldownSkillLevelModifier() {
-
-        return getOverride("cooldown.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCooldownProfLevelModifier() {
-
-        return getOverride("cooldown.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getCooldownResourceModifier(String resource) {
-
-        return getOverrideDouble("cooldown." + resource + "-modifier", 0.0);
-    }
-
-    @Override
-    public int getRange() {
-
-        return getOverride("range.base", 30);
-    }
-
-    @Override
-    public double getRangeLevelModifier() {
-
-        return getOverride("range.level-modifier", 0.0);
-    }
-
-    @Override
-    public double getRangeProfLevelModifier() {
-
-        return getOverride("range.prof-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getRangeSkillLevelModifier() {
-
-        return getOverride("range.skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getRangeResourceModifier(String resource) {
-
-        return getOverrideDouble("range." + resource + "-modifier", 0.0);
+        return getOverrideSection("range");
     }
 }

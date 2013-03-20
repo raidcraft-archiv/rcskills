@@ -1,6 +1,7 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -81,6 +82,11 @@ public final class ConfigUtil {
             value += section.getDouble("prof-level-modifier", 0.0) * skill.getProfession().getLevel().getLevel();
             if (skill instanceof LevelableSkill) {
                 value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getLevel().getLevel();
+            }
+            for (Resource resource : skill.getHero().getResources()) {
+                if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
+                    value += section.getDouble(resource.getName() + "-modifier");
+                }
             }
         }
         return value;

@@ -41,34 +41,10 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final int getTotalDamage() {
-
-        return (int) (super.getTotalDamage() + (getProperties().getDamageSkillLevelModifier() * getLevel().getLevel()));
-    }
-
-    @Override
     public final double getTotalResourceCost(String resource) {
 
         return super.getTotalResourceCost(resource) +
                 (getProperties().getResourceCostSkillLevelModifier(resource) * getLevel().getLevel());
-    }
-
-    @Override
-    public final int getTotalCastTime() {
-
-        return (int) (super.getTotalCastTime() + (getProperties().getCastTimeSkillLevelModifier() * getLevel().getLevel()));
-    }
-
-    @Override
-    public int getTotalRange() {
-
-        return (int) (super.getTotalRange() + (getProperties().getRangeSkillLevelModifier() * getLevel().getLevel()));
-    }
-
-    @Override
-    public final double getTotalCooldown() {
-
-        return (super.getTotalCooldown() + (getProperties().getCooldownSkillLevelModifier() * getLevel().getLevel()));
     }
 
     @Override
