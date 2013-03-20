@@ -5,7 +5,6 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
@@ -198,23 +197,7 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        final Hero hero = getHero(event.getPlayer());
-        // save the hero first
-        hero.save();
-        hero.clearEffects();
-        // destroy all resources
-        for (Resource resource : hero.getResources()) {
-            resource.destroy();
-        }
-        // lets clear the cache for the hero
-        // we need to delay this for some ticks in order to clear the cache for real
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                HeroUtil.clearCache(hero);
-            }
-        }, 5);
+        HeroUtil.clearCache(getHero(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

@@ -6,6 +6,11 @@ import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -25,10 +30,31 @@ public final class HeroUtil {
 
     }
 
-    public static void clearCache(Hero hero) {
+    public static void clearCache(final Hero hero) {
 
-        SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
-        plugin.getCharacterManager().clearCacheOf(hero);
+        final SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+
+        // save the hero first
+        hero.save();
+        hero.clearEffects();
+        // destroy all resources
+        for (Resource resource : hero.getResources()) {
+            resource.destroy();
+        }
+        // we also need to unregister all skill listeners
+        for (Skill skill : hero.getSkills()) {
+            if (skill instanceof Triggered) {
+                TriggerManager.unregisterListeners((Triggered) skill);
+            }
+        }
+        // we clear the cache later to avoid events beeing triggered
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                plugin.getCharacterManager().clearCacheOf(hero);
+            }
+        }, 5L);
     }
 
     public static Collection<CharacterTemplate> toCharacters(Collection<LivingEntity> entities) {
