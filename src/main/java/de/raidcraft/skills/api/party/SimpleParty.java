@@ -59,8 +59,9 @@ public class SimpleParty implements Party {
     @Override
     public void removeMember(CharacterTemplate member) {
 
-        members.remove(member);
-        member.leaveParty(this);
+        if (members.remove(member)) {
+            member.leaveParty();
+        }
     }
 
     @Override
