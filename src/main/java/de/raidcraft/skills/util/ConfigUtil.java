@@ -1,6 +1,9 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
@@ -74,20 +77,52 @@ public final class ConfigUtil {
     public static double getTotalValue(Skill skill, ConfigurationSection section) {
 
         if (section == null) {
-            return 0;
+            return 0.0;
         }
-        double value = section.getDouble("base", 0);
+        Set<String> availableModifier = section.getKeys(false);
+        double value = section.getDouble("base", 0.0);
+        double cap = section.getDouble("cap", 100.0);
         if (skill != null) {
             value += section.getDouble("level-modifier", 0.0) * skill.getHero().getLevel().getLevel();
+            availableModifier.remove("level-modifier");
             value += section.getDouble("prof-level-modifier", 0.0) * skill.getProfession().getLevel().getLevel();
+            availableModifier.remove("prof-level-modifier");
             if (skill instanceof LevelableSkill) {
                 value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getLevel().getLevel();
+                availableModifier.remove("skill-level-modifier");
             }
+            // uses resources as value modifiers
             for (Resource resource : skill.getHero().getResources()) {
                 if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
                     value += section.getDouble(resource.getName() + "-modifier");
+                    availableModifier.remove(resource.getName() + "-modifier");
                 }
             }
+            // makes it possible to to use skills dynamically as config values
+            for (String key : availableModifier) {
+                if (key.endsWith("-skill-modifier")) {
+                    key = key.replace("-skill-modifier", "").trim();
+                    try {
+                        Skill extraSkill = skill.getHero().getSkill(key);
+                        if (extraSkill instanceof LevelableSkill) {
+                            value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getLevel().getLevel();
+                        }
+                    } catch (UnknownSkillException e) {
+                        RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
+                    }
+                } else if (key.endsWith("-prof-modifier")) {
+                    key = key.replace("-prof-modifier", "").trim();
+                    try {
+                        Profession profession = skill.getHero().getProfession(key);
+                        value += section.getDouble(key, 0.0) * profession.getLevel().getLevel();
+                    } catch (UnknownSkillException | UnknownProfessionException e) {
+                        RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
+                    }
+                }
+            }
+        }
+        if (value > cap) {
+            value = cap;
         }
         return value;
     }

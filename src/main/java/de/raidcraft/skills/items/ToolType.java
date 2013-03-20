@@ -51,15 +51,35 @@ public enum ToolType {
         return armor;
     }
 
-    public static ToolType fromMaterial(Material material) {
+    public boolean isOfType(int itemId) {
+
+        for (Material mat : getTools()) {
+            if (mat.getId() == itemId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isOfType(Material material) {
+
+        return isOfType(material.getId());
+    }
+
+    public static ToolType fromItemId(int itemId) {
 
         for (ToolType type : ToolType.values()) {
             for (Material tool : type.getTools()) {
-                if (material == tool) {
+                if (tool.getId() == itemId) {
                     return type;
                 }
             }
         }
         return null;
+    }
+
+    public static ToolType fromMaterial(Material material) {
+
+        return fromItemId(material.getId());
     }
 }

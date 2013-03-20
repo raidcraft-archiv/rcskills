@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.commands.*;
+import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.skills.PermissionSkill;
@@ -45,6 +46,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private LocalConfiguration configuration;
     private PathConfig pathConfig;
     private LevelConfig levelConfig;
+    private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
 
     @Override
@@ -54,6 +56,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.configuration = configure(new LocalConfiguration(this));
         this.pathConfig = configure(new PathConfig(this), false);
         this.levelConfig = configure(new LevelConfig(this), false);
+        this.experienceConfig = configure(new ExperienceConfig(this), false);
         levelConfig.loadFormulas();
         loadEngine();
         // and commands gogogo
@@ -109,8 +112,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         // cancel all tasks
         Bukkit.getScheduler().cancelTasks(this);
-        // and reload all of our managers
+        // and reload all of our managers and configs
         this.configuration.reload();
+        this.pathConfig.reload();
+        this.levelConfig.reload();
+        this.experienceConfig.reload();
         // before reloading the managers we need to unregister all listeners
         TriggerManager.unregisterAll();
 
@@ -201,6 +207,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public LevelConfig getLevelConfig() {
 
         return levelConfig;
+    }
+
+    public ExperienceConfig getExperienceConfig() {
+
+        return experienceConfig;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
