@@ -27,7 +27,7 @@ public interface CharacterTemplate {
 
     void joinParty(Party party);
 
-    void leaveParty(Party party);
+    void leaveParty();
 
     public int getDamage();
 

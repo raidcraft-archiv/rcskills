@@ -497,10 +497,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void leaveParty(Party party) {
+    public void leaveParty() {
 
-        if (this.party.equals(party)) {
-            this.party = new SimpleParty(this);
+        if (this.party != null) {
             party.removeMember(this);
         }
     }
