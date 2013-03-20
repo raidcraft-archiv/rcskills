@@ -29,6 +29,10 @@ public interface CharacterTemplate {
 
     void leaveParty(Party party);
 
+    public int getDamage();
+
+    public void setDamage(int damage);
+
     public int getHealth();
 
     public void setHealth(int health);

@@ -37,6 +37,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
     // every player is member of his own party by default
     private Party party;
+    private int damage;
     private boolean inCombat = false;
     private long lastSwing;
 
@@ -63,6 +64,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public LivingEntity getEntity() {
 
         return entity;
+    }
+
+    @Override
+    public int getDamage() {
+
+        return damage;
+    }
+
+    @Override
+    public void setDamage(int damage) {
+
+        this.damage = damage;
     }
 
     @Override

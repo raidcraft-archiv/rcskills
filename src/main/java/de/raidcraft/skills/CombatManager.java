@@ -18,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -94,6 +95,36 @@ public final class CombatManager implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onTarget(EntityTargetLivingEntityEvent event) {
+
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+
+        CharacterTemplate creature = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+        CharacterTemplate target = plugin.getCharacterManager().getCharacter(event.getTarget());
+
+        if (target.isFriendly(creature)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onFriendlyAttack(EntityDamageByEntityEvent event) {
+
+        if (!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof LivingEntity)) {
+            return;
+        }
+
+        CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+        CharacterTemplate attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
+
+        if (attacker.isFriendly(victim)) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onAttack(EntityDamageByEntityEvent event) {
 
@@ -123,12 +154,10 @@ public final class CombatManager implements Listener {
 
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                int damage = event.getDamage();
+                int damage = attacker.getDamage();
                 if (attacker instanceof Hero && !attacker.canSwing()) {
                     event.setCancelled(true);
                     return;
-                } else {
-                    damage = plugin.getDamageManager().getCreatureDamage(attacker.getEntity().getType());
                 }
                 PhysicalAttack attack = new PhysicalAttack(event, damage);
                 // cancel event because we are handling stuff

@@ -11,6 +11,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -179,8 +180,11 @@ public final class CharacterManager implements Listener {
         if (character instanceof Hero) {
             return;
         }
+        DamageManager damageManager = plugin.getDamageManager();
+        EntityType entityType = character.getEntity().getType();
         // lets set the health and damage of the entity
-        character.setHealth(plugin.getDamageManager().getCreatureHealth(character.getEntity().getType()));
+        character.setHealth(damageManager.getCreatureHealth(entityType));
+        character.setDamage(damageManager.getCreatureDamage(entityType));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
