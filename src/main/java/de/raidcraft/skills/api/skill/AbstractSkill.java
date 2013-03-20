@@ -13,9 +13,8 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
-import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -211,12 +210,12 @@ public abstract class AbstractSkill implements Skill {
         return attack(target, getTotalDamage(), null);
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, Callback<CharacterTemplate> callback) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
 
         return attack(target, getTotalDamage(), callback);
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, Callback<CharacterTemplate> callback) throws CombatException {
+    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHero(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.run();
@@ -245,7 +244,7 @@ public abstract class AbstractSkill implements Skill {
         return attack;
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack attack = new MagicalAttack(getHero(), target, damage, callback);
         type.run(attack);
@@ -253,7 +252,7 @@ public abstract class AbstractSkill implements Skill {
         return attack;
     }
 
-    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), type, damage, callback);
     }
@@ -268,7 +267,7 @@ public abstract class AbstractSkill implements Skill {
         return magicalAttack(target, type, damage, null);
     }
 
-    protected final MagicalAttack magicalAttack(MagicalAttackType type, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(MagicalAttackType type, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(type, getTotalDamage(), callback);
     }
@@ -278,19 +277,19 @@ public abstract class AbstractSkill implements Skill {
         return magicalAttack(type, getTotalDamage(), null);
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, callback);
         magicalAttack.run();
         return magicalAttack;
     }
 
-    protected final MagicalAttack magicalAttack(int damage, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(int damage, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), damage, callback);
     }
 
-    protected final MagicalAttack magicalAttack(RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), getTotalDamage(), callback);
     }
@@ -305,7 +304,7 @@ public abstract class AbstractSkill implements Skill {
         return magicalAttack(damage, null);
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, RangedCallback callback) throws CombatException {
+    protected final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(target, getTotalDamage(), callback);
     }
