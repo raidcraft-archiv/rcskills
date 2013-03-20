@@ -301,6 +301,33 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public Set<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException {
+
+        Set<CharacterTemplate> targets = new HashSet<>();
+        List<LivingEntity> nearbyEntities = BukkitUtil.getLivingEntitiesInCone(getEntity(), range, degrees);
+
+        if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
+
+        for (LivingEntity target : nearbyEntities) {
+            targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
+        }
+
+        return targets;
+    }
+
+    @Override
+    public Set<CharacterTemplate> getTargetsInFront(int range) throws CombatException {
+
+        return getTargetsInFront(range, 45.0F);
+    }
+
+    @Override
+    public Set<CharacterTemplate> getTargetsInFront() throws CombatException {
+
+        return getTargetsInFront(15, 45.0F);
+    }
+
+    @Override
     public Set<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getNearbyTargets(30);

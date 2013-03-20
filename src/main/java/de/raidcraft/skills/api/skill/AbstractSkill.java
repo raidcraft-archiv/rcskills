@@ -190,6 +190,16 @@ public abstract class AbstractSkill implements Skill {
         return getHero().getNearbyTargets(getTotalRange());
     }
 
+    protected final Set<CharacterTemplate> getTargetsInFront() throws CombatException {
+
+        return getHero().getTargetsInFront(getTotalRange());
+    }
+
+    protected final Set<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
+
+        return getHero().getTargetsInFront(getTotalRange(), degrees);
+    }
+
     protected final CharacterTemplate getTarget() throws CombatException {
 
         return getHero().getTarget(getTotalRange());

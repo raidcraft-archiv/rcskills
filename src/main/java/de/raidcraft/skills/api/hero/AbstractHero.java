@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.hero;
 import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
-import de.raidcraft.api.player.RCPlayer;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
@@ -43,7 +42,6 @@ import java.util.Set;
 public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
 
     private final int id;
-    private final RCPlayer player;
     private final Level<Hero> expPool;
     private final HeroOptions options;
     private int maxLevel;
@@ -60,7 +58,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         super(data.getName());
 
         this.id = data.getId();
-        this.player = RaidCraft.getPlayer(data.getName());
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.setHealth(data.getHealth());
@@ -286,12 +283,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public RCPlayer getRCPlayer() {
-
-        return player;
-    }
-
-    @Override
     public Level<Hero> getExpPool() {
 
         return expPool;
@@ -307,7 +298,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void debug(String message) {
 
         if (Option.DEBUGGING.isSet(this) && message != null && !message.equals("")) {
-            player.sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
+            getPlayer().sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
         }
     }
 
@@ -321,7 +312,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void combatLog(Object o, String message) {
 
         if (Option.COMBAT_LOGGING.isSet(this) && message != null && !message.equals("")) {
-            player.sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
+            getPlayer().sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
                     + " " + ChatColor.ITALIC + message);
         }
     }
@@ -419,7 +410,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         id = id.toLowerCase();
         boolean hasSkill = virtualSkills.containsKey(id);
-        if (player.isOnline()) {
+        if (getPlayer().isOnline()) {
             for (Profession profession : getProfessions()) {
                 if (profession.isActive() && profession.hasSkill(id)) {
                     hasSkill = true;
@@ -530,7 +521,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void sendMessage(String... messages) {
 
-        player.sendMessage(messages);
+        getPlayer().sendMessage(messages);
     }
 
     @Override

@@ -93,6 +93,12 @@ public interface CharacterTemplate {
 
     Set<CharacterTemplate> getNearbyTargets(int range) throws CombatException;
 
+    Set<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException;
+
+    Set<CharacterTemplate> getTargetsInFront(int range) throws CombatException;
+
+    Set<CharacterTemplate> getTargetsInFront() throws CombatException;
+
     public boolean canSwing();
 
     public long getLastSwing();
