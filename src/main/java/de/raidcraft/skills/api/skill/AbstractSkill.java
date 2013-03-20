@@ -93,6 +93,9 @@ public abstract class AbstractSkill implements Skill {
         for (Resource resource : getHero().getResources()) {
 
             double resourceCost = this.getTotalResourceCost(resource.getName());
+            if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
+                resourceCost = resource.getCurrent();
+            }
 
             switch (getResourceCostType(resource.getName())) {
 
@@ -148,7 +151,12 @@ public abstract class AbstractSkill implements Skill {
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHero().getResources()) {
+
             double resourceCost = getTotalResourceCost(resource.getName());
+            if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
+                resourceCost = resource.getCurrent();
+            }
+
             if (resourceCost != 0) {
                 switch (getResourceCostType(resource.getName())) {
 
@@ -350,6 +358,12 @@ public abstract class AbstractSkill implements Skill {
     public Resource.Type getResourceCostType(String resource) {
 
         return properties.getResourceType(resource);
+    }
+
+    @Override
+    public boolean isVariableResourceCost(String resource) {
+
+        return properties.isVariableResourceCost(resource);
     }
 
     @Override

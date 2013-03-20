@@ -91,12 +91,18 @@ public final class SkillUtil {
             switch (skill.getResourceCostType(resource.getName())) {
 
                 case PERCENTAGE:
-                    if (resourceCost < 0) sb.append("+");
+                    if (resourceCost < 0 && !skill.isVariableResourceCost(resource.getName())) sb.append("+");
+                    if (skill.isVariableResourceCost(resource.getName())) {
+                        sb.append("0%-");
+                    }
                     sb.append((int)resourceCost * 100);
                     sb.append("%");
                     break;
                 case FLAT:
                     if (resourceCost < 0) sb.append("+");
+                    if (skill.isVariableResourceCost(resource.getName())) {
+                        sb.append("0-");
+                    }
                     sb.append(resourceCost);
                     break;
             }

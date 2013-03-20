@@ -178,6 +178,11 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
         return Resource.Type.fromString(getOverrideString("resources." + resource + ".type", "flat"));
     }
 
+    public boolean isVariableResourceCost(String resource) {
+
+        return getOverrideBool("resource." + resource + ".variable", false);
+    }
+
     @Override
     public double getResourceCost(String resource) {
 

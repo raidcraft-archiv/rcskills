@@ -73,6 +73,8 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public Resource.Type getResourceCostType(String resource);
 
+    public boolean isVariableResourceCost(String resource);
+
     public int getTotalCastTime();
 
     public int getTotalRange();

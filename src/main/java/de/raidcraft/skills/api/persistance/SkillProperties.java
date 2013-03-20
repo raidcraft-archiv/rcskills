@@ -49,6 +49,8 @@ public interface SkillProperties {
 
     public Resource.Type getResourceType(String resource);
 
+    public boolean isVariableResourceCost(String resource);
+
     public double getResourceCost(String resource);
 
     public double getResourceCostLevelModifier(String resource);

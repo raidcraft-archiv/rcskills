@@ -73,6 +73,7 @@ public class SkillAction extends AbstractAction<Hero> {
         ((CommandTriggered) skill).runCommand(args);
 
         // lets remove the costs
+        // it is important to remove them after the skill usage in order to calculate all the variable properly
         skill.substractUsageCost();
 
         // lets start the global cooldown
