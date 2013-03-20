@@ -62,13 +62,7 @@ public final class SkillFactory {
         config.getMaxLevel();
         config.getReagents();
         config.getCooldown();
-        config.getCooldownLevelModifier();
-        config.getCooldownProfLevelModifier();
-        config.getCooldownSkillLevelModifier();
         config.getCastTime();
-        config.getCastTimeLevelModifier();
-        config.getCastTimeProfLevelModifier();
-        config.getCastTimeSkillLevelModifier();
     }
 
     protected Skill createDummy() throws UnknownSkillException {
