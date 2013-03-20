@@ -5,7 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -22,7 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTemplate> {
 
-    private Callback<CharacterTemplate> callback;
+    private Callback<EntityAttack> callback;
     private EntityDamageEvent.DamageCause cause = null;
 
     public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
@@ -30,13 +30,13 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         super(source, target, damage, types);
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<CharacterTemplate> callback, EffectType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<EntityAttack> callback, EffectType... types) {
 
         this(attacker, target, 0, types);
         this.callback = callback;
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<CharacterTemplate> callback, EffectType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<EntityAttack> callback, EffectType... types) {
 
         this(attacker, target, damage, types);
         this.callback = callback;
@@ -74,13 +74,14 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);
             }
+            // if no exceptions was thrown to this point issue the callback
+            if (callback != null && callback instanceof EntityAttackCallback) {
+                callback.run(this);
+            }
+            // now actually damage the target
             getTarget().damage(this);
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
-            // if no exceptions was thrown to this point issue the callback
-            if (callback != null && !(callback instanceof RangedCallback)) {
-                callback.run(getTarget());
-            }
         } else {
             setCancelled(true);
         }
