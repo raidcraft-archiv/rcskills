@@ -6,9 +6,12 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.items.ArmorPiece;
+import de.raidcraft.skills.items.ArmorType;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +23,12 @@ public interface CharacterTemplate {
     public String getName();
 
     public LivingEntity getEntity();
+
+    Collection<ArmorPiece> getArmor();
+
+    ArmorPiece getArmor(ArmorType slot);
+
+    void setArmor(ArmorType slot, ArmorPiece armorPiece);
 
     Party getParty();
 

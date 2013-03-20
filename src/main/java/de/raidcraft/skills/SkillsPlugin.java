@@ -40,6 +40,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private CharacterManager characterManager;
     private CombatManager combatManager;
     private DamageManager damageManager;
+    private ArmorManager armorManager;
     private BukkitEnvironmentManager bukkitEnvironmentManager;
     private LocalConfiguration configuration;
     private PathConfig pathConfig;
@@ -81,6 +82,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager = new CharacterManager(this);
         this.combatManager = new CombatManager(this);
         this.damageManager = new DamageManager(this);
+        this.armorManager = new ArmorManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
         // lets register our permissions provider last
         this.permissionsProvider = new SkillPermissionsProvider(this);
@@ -121,6 +123,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager.reload();
         this.combatManager.reload();
         this.damageManager.reload();
+        this.armorManager.reload();
         this.characterManager.startTasks();
 
         this.permissionsProvider.reload();
@@ -173,6 +176,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public DamageManager getDamageManager() {
 
         return damageManager;
+    }
+
+    public ArmorManager getArmorManager() {
+
+        return armorManager;
     }
 
     public BukkitEnvironmentManager getBukkitEnvironmentManager() {

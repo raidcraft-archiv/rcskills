@@ -162,6 +162,15 @@ public class TriggerManager {
                 eventSet.add(new RegisteredSkillTrigger(listener, executor, annotation));
             } else if (Effect.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredEffectTrigger(listener, executor, annotation));
+            } else {
+                // if it is not a skill or effect pass it on like a bukkit event without any checks
+                eventSet.add(new RegisteredTrigger(listener, executor, annotation) {
+                    @Override
+                    protected void call(Trigger trigger) throws CombatException, EventException {
+
+                        executor.execute(listener, trigger);
+                    }
+                });
             }
         }
         return ret;

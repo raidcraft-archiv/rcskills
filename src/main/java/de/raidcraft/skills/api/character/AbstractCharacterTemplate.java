@@ -13,6 +13,8 @@ import de.raidcraft.skills.api.party.SimpleParty;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.ArmorPiece;
+import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.LocationUtil;
@@ -35,6 +37,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
     // every player is member of his own party by default
     private Party party;
     private int damage;
@@ -64,6 +67,24 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public LivingEntity getEntity() {
 
         return entity;
+    }
+
+    @Override
+    public Collection<ArmorPiece> getArmor() {
+
+        return armorPieces.values();
+    }
+
+    @Override
+    public ArmorPiece getArmor(ArmorType slot) {
+
+        return armorPieces.get(slot);
+    }
+
+    @Override
+    public void setArmor(ArmorType slot, ArmorPiece armorPiece) {
+
+        armorPieces.put(slot, armorPiece);
     }
 
     @Override

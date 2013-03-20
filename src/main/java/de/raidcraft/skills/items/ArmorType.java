@@ -61,15 +61,20 @@ public enum ArmorType {
         return armor;
     }
 
-    public static ArmorType fromMaterial(Material material) {
+    public static ArmorType fromItemId(int id) {
 
         for (ArmorType slot : ArmorType.values()) {
             for (Material armor : slot.getArmor()) {
-                if (material == armor) {
+                if (id == armor.getId()) {
                     return slot;
                 }
             }
         }
         return null;
+    }
+
+    public static ArmorType fromMaterial(Material material) {
+
+        return fromItemId(material.getId());
     }
 }
