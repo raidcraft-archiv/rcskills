@@ -39,23 +39,7 @@ public class BukkitUserInterface implements UserInterface {
             @Override
             public void onPacketSending(PacketEvent event) {
 
-                Profession prof = hero.getSelectedProfession();
-                PacketContainer packet = event.getPacket();
-                float exp;
-                int level;
-                if (prof != null) {
-                    // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
-                    exp = ((float) prof.getLevel().getExp()) / ((float) prof.getLevel().getMaxExp());
-                    level = prof.getLevel().getLevel();
-                } else {
-                    // lets set the level to 0
-                    exp = 0.0F;
-                    level = 0;
-                }
-                // lets modify the actual paket
-                packet.getFloat().write(0, exp);
-                packet.getIntegers().write(0, level);
-                packet.getIntegers().write(1, hero.getPlayer().getTotalExperience());
+                modifyExperiencePacket(event.getPacket());
             }
         });
     }
@@ -92,9 +76,8 @@ public class BukkitUserInterface implements UserInterface {
 
         // lets also send an exp update packet to the client
         try {
-            PacketContainer packet = protocolManager.createPacket(Packets.Server.SET_EXPERIENCE);
-            modifyExperiencePacket(packet);
-            protocolManager.sendServerPacket(getHero().getPlayer(), packet);
+            // we only need to create a default packet - it will be modified in our listener
+            protocolManager.sendServerPacket(getHero().getPlayer(), protocolManager.createPacket(Packets.Server.SET_EXPERIENCE));
         } catch (InvocationTargetException ignored) {
         }
     }
@@ -104,33 +87,17 @@ public class BukkitUserInterface implements UserInterface {
         Profession prof = hero.getSelectedProfession();
         float exp;
         int level;
-        int totalExperience;
         if (prof != null) {
             // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
             exp = ((float) prof.getLevel().getExp()) / ((float) prof.getLevel().getMaxExp());
             level = prof.getLevel().getLevel();
-            totalExperience = getMinecraftTotalExperienceForLevel(prof.getLevel().getLevel());
         } else {
             // lets set the level to 0
             exp = 0.0F;
             level = 0;
-            totalExperience = 0;
         }
         // lets modify the actual paket
         packet.getFloat().write(0, exp);
-        packet.getIntegers().write(0, level);
-        packet.getIntegers().write(1, totalExperience);
-    }
-
-    private int getMinecraftTotalExperienceForLevel(int level) {
-
-        if (level >= 0 && level <= 15) {
-            return 17 * level;
-        }
-        if (level > 15 && level <= 30) {
-            return (int) (1.5 * Math.pow(level, 2) - 29.5 * level + 360);
-        } else {
-            return (int) (3.5 * Math.pow(level, 2) - 151.5 * level + 2220);
-        }
+        packet.getIntegers().write(1, level);
     }
 }
