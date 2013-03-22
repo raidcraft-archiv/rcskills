@@ -77,7 +77,11 @@ public final class ArmorManager implements Triggered {
         }
 
         double damageReduction = getDamageReduction(attack, totalArmor);
-        attack.setDamage((int) (attack.getDamage() - attack.getDamage() * damageReduction));
+        int reducedDamage = (int) (attack.getDamage() * damageReduction);
+        attack.setDamage(attack.getDamage() - reducedDamage);
+        if (reducedDamage > 0) {
+            attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + (damageReduction * 100) + ") verringert.");
+        }
     }
 
     public int getDefaultArmorValue(int itemId) {

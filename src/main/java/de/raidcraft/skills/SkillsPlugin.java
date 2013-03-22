@@ -10,6 +10,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -18,6 +19,11 @@ import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
+import de.raidcraft.skills.requirement.ItemRequirement;
+import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
+import de.raidcraft.skills.requirement.SkillLevelRequirement;
+import de.raidcraft.skills.requirement.SkillRequirement;
+import de.raidcraft.skills.requirement.WeaponTypeRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.skills.TestSkill;
 import de.raidcraft.skills.tables.*;
@@ -52,6 +58,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @Override
     public void enable() {
 
+        // register ourself as a RPG Component
+        RaidCraft.registerComponent(SkillsPlugin.class, this);
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
         this.pathConfig = configure(new PathConfig(this), false);
@@ -65,12 +73,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerCommands(BaseCommands.class);
         new BindManager(this);
         new BukkitEventDispatcher(this);
-        // register ourself as a RPG Component
-        RaidCraft.registerComponent(SkillsPlugin.class, this);
     }
 
     private void loadEngine() {
 
+        registerRequirements();
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.effectManager = new EffectManager(this);
@@ -89,6 +96,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
         // lets register our permissions provider last
         this.permissionsProvider = new SkillPermissionsProvider(this);
+    }
+
+    private void registerRequirements() {
+
+        RequirementManager.registerRequirementType(ItemRequirement.class);
+        RequirementManager.registerRequirementType(ProfessionLevelRequirement.class);
+        RequirementManager.registerRequirementType(SkillLevelRequirement.class);
+        RequirementManager.registerRequirementType(SkillRequirement.class);
+        RequirementManager.registerRequirementType(WeaponTypeRequirement.class);
     }
 
     private void registerSkills() {

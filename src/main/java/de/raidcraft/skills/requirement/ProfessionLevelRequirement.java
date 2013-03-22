@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.requirement;
+package de.raidcraft.skills.requirement;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.RequirementInformation;
@@ -18,7 +18,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
 
     private Profession profession;
 
-    protected ProfessionLevelRequirement(Unlockable resolver, ConfigurationSection config) {
+    public ProfessionLevelRequirement(Unlockable resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }
@@ -35,8 +35,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
         try {
             profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getResolver().getHero(), data.getString("profession"));
         } catch (UnknownSkillException | UnknownProfessionException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
         super.load(data);
     }

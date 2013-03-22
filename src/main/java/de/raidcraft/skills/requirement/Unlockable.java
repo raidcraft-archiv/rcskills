@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.requirement;
+package de.raidcraft.skills.requirement;
 
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;

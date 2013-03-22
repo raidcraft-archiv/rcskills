@@ -75,10 +75,8 @@ public final class CharacterManager implements Listener {
         }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
     }
 
-    public Hero getHero(String name, boolean cache) throws UnknownPlayerException {
+    public Hero getHero(Player player, String name, boolean cache) throws UnknownPlayerException {
 
-        // lets try bukkit to autocomplete the name
-        Player player = Bukkit.getPlayer(name);
         THero heroTable = null;
         if (player != null) {
             name = player.getName();
@@ -87,7 +85,7 @@ public final class CharacterManager implements Listener {
             heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
             if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
         }
-//        name = name.toLowerCase();
+        name = name.toLowerCase();
 
         Hero hero;
         if (!heroes.containsKey(name)) {
@@ -112,12 +110,17 @@ public final class CharacterManager implements Listener {
                 heroTable.setExpPool(pool);
                 Database.save(heroTable);
             }
-            hero = new SimpleHero(heroTable);
+            hero = new SimpleHero(player, heroTable);
             if (cache) heroes.put(hero.getName().toLowerCase(), hero);
         } else {
             hero = heroes.get(name);
         }
         return hero;
+    }
+
+    public Hero getHero(String name, boolean cache) throws UnknownPlayerException {
+
+        return getHero(Bukkit.getPlayer(name), name, cache);
     }
 
     public Hero getHero(String name) throws UnknownPlayerException {
@@ -128,9 +131,8 @@ public final class CharacterManager implements Listener {
     public Hero getHero(Player player, boolean cache) {
 
         try {
-            return getHero(player.getName(), cache);
+            return getHero(player, player.getName(), cache);
         } catch (UnknownPlayerException e) {
-            // will never be thrown
             e.printStackTrace();
         }
         return null;
@@ -223,6 +225,6 @@ public final class CharacterManager implements Listener {
     public void onPlayerGainExp(PlayerExpChangeEvent event) {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
-        event.setAmount(0);
+        // event.setAmount(0);
     }
 }

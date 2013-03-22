@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.requirement;
+package de.raidcraft.skills.requirement;
 
 import de.raidcraft.api.requirement.AbstractRequirement;
 import de.raidcraft.skills.api.level.Levelable;
@@ -11,7 +11,7 @@ public abstract class LevelRequirement extends AbstractRequirement<Unlockable> {
 
     private int requiredLevel;
 
-    protected LevelRequirement(Unlockable resolver, ConfigurationSection config) {
+    public LevelRequirement(Unlockable resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

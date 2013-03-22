@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.requirement;
+package de.raidcraft.skills.requirement;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.AbstractRequirement;
@@ -14,12 +14,12 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * @author Silthus
  */
-@RequirementInformation("skill")
+@RequirementInformation("skills")
 public class SkillRequirement extends AbstractRequirement<Unlockable> {
 
     private Skill requiredSkill;
 
-    protected SkillRequirement(Unlockable type, ConfigurationSection config) {
+    public SkillRequirement(Unlockable type, ConfigurationSection config) {
 
         super(type, config);
     }
@@ -40,14 +40,14 @@ public class SkillRequirement extends AbstractRequirement<Unlockable> {
             }
             requiredSkill = component.getSkillManager().getSkill(getResolver().getHero(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
     }
 
     @Override
     public boolean isMet() {
 
+        if (requiredSkill == null) return false;
         return getResolver().getHero().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
     }
 

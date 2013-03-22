@@ -22,6 +22,7 @@ import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -53,14 +54,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
 
-    protected AbstractHero(HeroData data) {
+    protected AbstractHero(Player player, HeroData data) {
 
-        super(data.getName());
+        super(player);
 
         this.id = data.getId();
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
-        this.setHealth(data.getHealth());
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
@@ -70,7 +70,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
         loadSkills();
+        // keep this last because we need to professions to load first
+        setMaxHealth(getDefaultHealth());
+        setHealth(data.getHealth());
+    }
 
+    protected AbstractHero(HeroData data) {
+
+        this(Bukkit.getPlayer(data.getName()), data);
     }
 
     @SuppressWarnings("unchecked")

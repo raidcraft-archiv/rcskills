@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.requirement.Unlockable;
+import de.raidcraft.skills.requirement.Unlockable;
 import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.configuration.ConfigurationSection;
 

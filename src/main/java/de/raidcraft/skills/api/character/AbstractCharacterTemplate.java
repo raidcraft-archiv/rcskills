@@ -47,13 +47,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public AbstractCharacterTemplate(LivingEntity entity) {
 
         this.entity = entity;
-        this.name = (entity instanceof Player) ? ((Player) entity).getName() : entity.getType().getName();
-    }
-
-    protected AbstractCharacterTemplate(String name) {
-
-        this.entity = Bukkit.getPlayer(name);
-        this.name = name;
+        if (entity != null) {
+            if (entity.getCustomName() != null && !entity.getCustomName().equals("")) {
+                this.name = entity.getCustomName();
+            } else if (entity instanceof Player) {
+                this.name = ((Player) entity).getName();
+            } else {
+                this.name = entity.getType().getName();
+            }
+        } else {
+            this.name = "UNKNOWN";
+        }
         this.party = new SimpleParty(this);
     }
 
@@ -198,6 +202,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void kill() {
 
         setHealth(0);
+        // play the death sound
+        getEntity().getWorld().playSound(
+                getEntity().getLocation(),
+                getDeathSound(getEntity().getType()),
+                1.0F,
+                getSoundStrength(getEntity())
+        );
+        // play the death effect
+        getEntity().playEffect(EntityEffect.DEATH);
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.requirement;
+package de.raidcraft.skills.requirement;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.RequirementInformation;
@@ -20,7 +20,7 @@ public class SkillLevelRequirement extends LevelRequirement {
 
     private LevelableSkill requiredSkill;
 
-    protected SkillLevelRequirement(Unlockable type, ConfigurationSection config) {
+    public SkillLevelRequirement(Unlockable type, ConfigurationSection config) {
 
         super(type, config);
     }
@@ -40,11 +40,9 @@ public class SkillLevelRequirement extends LevelRequirement {
             }
             requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getHero(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         } catch (ClassCastException e) {
             RaidCraft.LOGGER.warning("The skill level requirement " + skillName + " needs to be a levelable skill.");
-            e.printStackTrace();
         }
         super.load(data);
     }
