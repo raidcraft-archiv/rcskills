@@ -15,6 +15,7 @@ import de.raidcraft.skills.trigger.InventoryClickTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.InventoryOpenTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
+import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.trigger.ProjectileHitTrigger;
@@ -40,6 +41,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
@@ -76,7 +78,7 @@ public final class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         TriggerManager.callSafeTrigger(
@@ -198,6 +200,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PotionSplashTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerFishing(PlayerFishEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerFishTrigger(plugin.getCharacterManager().getCharacter(event.getPlayer()), event)
         );
     }
 }
