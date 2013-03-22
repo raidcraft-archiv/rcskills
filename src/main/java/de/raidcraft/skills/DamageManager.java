@@ -127,9 +127,19 @@ public final class DamageManager implements Listener {
                     switch (event.getCause()) {
 
                         case FALL:
-                            // the minecraft fall damage is caluclate like so: FD = number of blocks - 3
+                            // the minecraft fall damage is caluclate like so: fall_damage = number of blocks - 3
                             int height = damage + 3;
                             damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
+                            break;
+                        case BLOCK_EXPLOSION:
+                        case ENTITY_EXPLOSION:
+                            // explosions are measured by power and how far the entity is away from the center
+                            // a list of the power of each explosion is here http://www.minecraftwiki.net/wiki/Explosion#Properties
+                            // default damage is as follows: 97 (charged creeper), 65 (TNT), 49 (creepers), 17 (fireballs)
+                            // (1 x 1 + 1) defines the range the entity is away and how much the power gets reduced
+                            // damage = (1 × 1 + 1) × 8 × power + 1
+                            float power = (damage - 1) / 8;
+                            damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * power));
                             break;
                         default:
                             damage = (int) (character.getMaxHealth() * environmentalDamage.get(event.getCause()));
