@@ -121,18 +121,27 @@ public final class DamageManager implements Listener {
         CharacterTemplate character = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
 
         try {
+            int damage = event.getDamage();
             if (environmentalDamage.containsKey(event.getCause())) {
-                int damage = event.getDamage();
-                damage += damage * environmentalDamage.get(event.getCause());
-                EnvironmentAttack attack = new EnvironmentAttack(event, damage);
-                event.setCancelled(true);
-                attack.run();
-            } else {
-                // simply issue an environment attack with no modified damage
-                EnvironmentAttack attack = new EnvironmentAttack(event, event.getDamage());
-                event.setCancelled(true);
-                attack.run();
+                if (plugin.getCommonConfig().environment_damage_in_percent) {
+                    switch (event.getCause()) {
+
+                        case FALL:
+                            // the minecraft fall damage is caluclate like so: FD = number of blocks - 3
+                            int height = damage + 3;
+                            damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
+                            break;
+                        default:
+                            damage = (int) (character.getMaxHealth() * environmentalDamage.get(event.getCause()));
+                            break;
+                    }
+                } else {
+                    damage = (int) (damage * environmentalDamage.get(event.getCause()));
+                }
             }
+            EnvironmentAttack attack = new EnvironmentAttack(event, damage);
+            event.setCancelled(true);
+            attack.run();
         } catch (CombatException e) {
             if (character instanceof Hero) {
                 ((Hero) character).sendMessage(ChatColor.RED + e.getMessage());

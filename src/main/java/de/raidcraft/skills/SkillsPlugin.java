@@ -220,6 +220,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public boolean disable_error_skills = false;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
+        @Setting("defaults.environment-damage-in-percent")
+        public boolean environment_damage_in_percent = false;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
         @Setting("defaults.global-cooldown")
@@ -234,14 +236,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double profession_change_level_modifier = 1.0;
         @Setting("interface.updateinterval")
         public long interface_update_interval = 20;
-        @Setting("interface.resource-bar-interval")
-        public long interface_resource_bar_update = 5 * 1000;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
-        @Setting("hero.stamina-regain-interval")
-        public long hero_stamina_regain_interval = 25;
-        @Setting("hero.stamina-regain-amount")
-        public int hero_stamina_regain_default_amount = 1;
         @Setting("paths.skill-configs")
         public String skill_config_path = "skill-configs/";
         @Setting("paths.alias-configs")
