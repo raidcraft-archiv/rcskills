@@ -23,6 +23,9 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private final String friendlyName;
     private final S source;
     private final CharacterTemplate target;
+    private String activateMessage;
+    private String deactivateMessage;
+    private String renewMessage;
     private boolean enabled;
     private int damage = 0;
     private int stacks;
@@ -34,6 +37,9 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.info = data.getInformation();
         this.name = convertName(info.name());
         this.friendlyName = data.getFriendlyName();
+        this.activateMessage = data.getActivateMessage();
+        this.deactivateMessage = data.getDeactivateMessage();
+        this.renewMessage = data.getRenewMessage();
         this.priority = (data.getEffectPriority() == 0.0 ? info.priority() : data.getEffectPriority());
         this.source = source;
         this.target = target;
@@ -175,6 +181,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         }
         apply(getTarget());
         debug("applied effect");
+        info(activateMessage);
     }
 
     @Override
@@ -187,6 +194,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         remove(getTarget());
         getTarget().removeEffect(this);
         debug("removed effect");
+        info(deactivateMessage);
     }
 
     @Override
@@ -194,6 +202,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
         renew(getTarget());
         debug("renewed effect");
+        info(renewMessage);
     }
 
     protected abstract void apply(CharacterTemplate target) throws CombatException;
@@ -204,6 +213,9 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void debug(String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         if (getSource() instanceof Hero) {
             ((Hero) getSource()).debug("You->" + getTarget().getName() + ": " + message + " - " + getName());
         }
@@ -216,6 +228,9 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void warn(String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         if (getTarget() instanceof Hero) {
             warn((Hero) getTarget(), message);
         }
@@ -223,11 +238,17 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void warn(Hero hero, String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         hero.sendMessage(ChatColor.RED + message);
     }
 
     protected void info(String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         if (getTarget() instanceof Hero) {
             info((Hero) getTarget(), message);
         }
@@ -235,11 +256,17 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void info(Hero hero, String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         hero.sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + message);
     }
 
     protected void msg(String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         if (getTarget() instanceof Hero) {
             msg((Hero) getTarget(), message);
         }
@@ -247,6 +274,9 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected void msg(Hero hero, String message) {
 
+        if (message == null || message.equals("")) {
+            return;
+        }
         hero.sendMessage(message);
     }
 

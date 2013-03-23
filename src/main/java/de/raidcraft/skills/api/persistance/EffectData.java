@@ -10,6 +10,12 @@ public interface EffectData {
 
     public String getFriendlyName();
 
+    public String getActivateMessage();
+
+    public String getDeactivateMessage();
+
+    public String getRenewMessage();
+
     public EffectInformation getInformation();
 
     public boolean isEnabled();

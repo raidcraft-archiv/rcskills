@@ -37,6 +37,24 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     }
 
     @Override
+    public String getActivateMessage() {
+
+        return getOverrideString("activate-message", null);
+    }
+
+    @Override
+    public String getDeactivateMessage() {
+
+        return getOverrideString("deactivate-message", null);
+    }
+
+    @Override
+    public String getRenewMessage() {
+
+        return getOverrideString("renew-message", null);
+    }
+
+    @Override
     public ConfigurationSection getDataMap() {
 
         return getOverrideSection("custom");
