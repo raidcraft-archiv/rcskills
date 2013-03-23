@@ -3,6 +3,7 @@ package de.raidcraft.skills.config;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.util.StringUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,6 +24,10 @@ public class CustomConfig extends ConfigurationBase<SkillsPlugin> {
 
     public static CustomConfig getConfig(String name) {
 
+        name = StringUtils.formatName(name);
+        if (!name.endsWith(".yml")) {
+            name = name + ".yml";
+        }
         CustomConfig config;
         if (!customConfigs.containsKey(name)) {
             File dir = new File(PLUGIN.getDataFolder(), "custom-configs");
