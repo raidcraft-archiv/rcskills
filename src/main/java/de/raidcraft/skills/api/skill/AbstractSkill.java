@@ -38,6 +38,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -634,6 +635,7 @@ public abstract class AbstractSkill implements Skill {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         database.setUnlocked(true);
+        database.setUnlockTime(new Time(System.currentTimeMillis()));
         save();
         // apply the skill
         apply();

@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.sql.Time;
 import java.util.List;
 
 /**
@@ -40,6 +41,7 @@ public class THeroSkill implements LevelData, Bean {
     private int level;
     private int exp;
     private boolean unlocked;
+    private Time unlockTime;
 
     public int getId() {
 
@@ -119,6 +121,16 @@ public class THeroSkill implements LevelData, Bean {
     public void setSkillData(List<TSkillData> skillData) {
 
         this.skillData = skillData;
+    }
+
+    public Time getUnlockTime() {
+
+        return unlockTime;
+    }
+
+    public void setUnlockTime(Time unlockTime) {
+
+        this.unlockTime = unlockTime;
     }
 
     public void delete() {
