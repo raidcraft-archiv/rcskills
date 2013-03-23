@@ -17,6 +17,7 @@ import de.raidcraft.skills.trigger.InventoryOpenTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.skills.trigger.PlayerItemBreakTrigger;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 import de.raidcraft.skills.trigger.ProjectileLaunchTrigger;
@@ -43,6 +44,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import java.util.HashMap;
@@ -208,6 +210,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerFishTrigger(plugin.getCharacterManager().getCharacter(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onItemBreak(PlayerItemBreakEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerItemBreakTrigger(plugin.getCharacterManager().getCharacter(event.getPlayer()), event)
         );
     }
 }
