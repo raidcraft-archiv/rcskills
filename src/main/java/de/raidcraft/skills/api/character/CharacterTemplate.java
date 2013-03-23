@@ -84,6 +84,8 @@ public interface CharacterTemplate {
 
     public List<Effect> getEffects();
 
+    public List<Effect> getEffects(EffectType... type);
+
     public void clearEffects();
 
     public boolean isInCombat();

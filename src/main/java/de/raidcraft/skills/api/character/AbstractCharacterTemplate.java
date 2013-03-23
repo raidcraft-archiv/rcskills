@@ -261,9 +261,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        // lets silently remove the effect from the list of applied effects
-        // we asume the remove() method of the effect has already been called at this point
-        effects.remove(effect.getClass());
+        Effect removedEffect = effects.remove(effect.getClass());
+        if (removedEffect != null) {
+            effect.remove();
+        }
         // lets remove the effect as a listener
         if (effect instanceof Triggered) {
             TriggerManager.unregisterListeners((Triggered) effect);
@@ -329,9 +330,25 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
     }
 
+    @Override
     public final List<Effect> getEffects() {
 
         return new ArrayList<>(effects.values());
+    }
+
+    @Override
+    public final List<Effect> getEffects(EffectType... types) {
+
+        List<Effect> effects = new ArrayList<>();
+        OUTTER: for (Effect effect : this.effects.values()) {
+            for (EffectType type : types) {
+                if (!effect.isOfType(type)) {
+                    continue OUTTER;
+                }
+            }
+            effects.add(effect);
+        }
+        return effects;
     }
 
     @Override

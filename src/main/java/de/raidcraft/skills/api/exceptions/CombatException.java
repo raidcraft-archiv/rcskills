@@ -29,7 +29,8 @@ public class CombatException extends RaidCraftException {
         UNKNOWN("Unbekannter Fehlschlag."),
         SILENCED("Ein Stille Effekt ist aktiv! Du kannst keine Zauber wirken."),
         DISARMED("Du wurdest entwaffnet und kannst nicht angreifen!"),
-        OUT_OF_RANGE("Ziel ist nicht in Reichweite.");
+        OUT_OF_RANGE("Ziel ist nicht in Reichweite."),
+        NO_GROUP("Dein Ziel ist nicht in deiner Gruppe.");
 
         private final String message;
 
