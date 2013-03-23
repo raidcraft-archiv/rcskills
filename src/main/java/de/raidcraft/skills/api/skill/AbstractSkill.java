@@ -343,7 +343,7 @@ public abstract class AbstractSkill implements Skill {
         RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), node);
     }
 
-    protected BlockFace getFacing() {
+    protected final BlockFace getFacing() {
 
         return HeroUtil.yawToFace(getHero().getPlayer().getLocation().getYaw());
     }
@@ -355,13 +355,13 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public Resource.Type getResourceCostType(String resource) {
+    public final Resource.Type getResourceCostType(String resource) {
 
         return properties.getResourceType(resource);
     }
 
     @Override
-    public boolean isVariableResourceCost(String resource) {
+    public final boolean isVariableResourceCost(String resource) {
 
         return properties.isVariableResourceCost(resource);
     }
@@ -515,13 +515,13 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public boolean canUseInCombat() {
+    public final boolean canUseInCombat() {
 
         return properties.canUseInCombat();
     }
 
     @Override
-    public boolean canUseOutOfCombat() {
+    public final boolean canUseOutOfCombat() {
 
         return properties.canUseOutOfCombat();
     }
@@ -533,7 +533,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void addTypes(EffectType... effectTypes) {
+    public final void addTypes(EffectType... effectTypes) {
 
         if (effectTypes == null) return;
         this.effectTypes.addAll(Arrays.asList(effectTypes));
@@ -557,7 +557,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public void addElements(EffectElement... effectElements) {
+    public final void addElements(EffectElement... effectElements) {
 
         if (effectElements == null) return;
         this.effectElements.addAll(Arrays.asList(effectElements));
