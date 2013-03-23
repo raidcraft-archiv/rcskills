@@ -1,9 +1,12 @@
 package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -28,6 +31,7 @@ import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -212,6 +216,27 @@ public abstract class AbstractSkill implements Skill {
     protected final CharacterTemplate getTarget() throws CombatException {
 
         return getHero().getTarget(getTotalRange());
+    }
+
+    protected final CharacterTemplate getTarget(CommandContext args, boolean self) throws CombatException {
+
+        CharacterTemplate target;
+        if (args.argsLength() > 0) {
+            try {
+                target = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
+                if (!LocationUtil.isWithinRadius(getHero().getPlayer().getLocation(), target.getEntity().getLocation(), getTotalRange())) {
+                    throw new CombatException(CombatException.Type.OUT_OF_RANGE);
+                }
+            } catch (UnknownPlayerException e) {
+                throw new CombatException(e.getMessage());
+            }
+        } else if (self || getHero().getPlayer().isSneaking()) {
+            // self holy
+            target = getHero();
+        } else {
+            target = getTarget();
+        }
+        return target;
     }
 
     protected final Location getBlockTarget() throws CombatException {
