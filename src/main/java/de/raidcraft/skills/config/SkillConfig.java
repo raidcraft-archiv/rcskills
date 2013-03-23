@@ -68,7 +68,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     @Override
     public String getDescription() {
 
-        return getOverride("description", getInformation().desc());
+        return getOverride("description", getInformation().description());
     }
 
     @Override

@@ -32,7 +32,7 @@ import java.util.List;
  */
 @SkillInformation(
         name = "Test",
-        desc = "Skill is for testing stuff..."
+        description = "Skill is for testing stuff..."
 )
 public class TestSkill extends AbstractSkill implements CommandTriggered {
 

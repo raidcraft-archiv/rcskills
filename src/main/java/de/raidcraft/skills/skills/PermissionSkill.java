@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "permission",
-        desc = "Represents a generic permissions skill.",
+        description = "Represents a generic permissions skill.",
         triggerCombat = false
 )
 public class PermissionSkill extends AbstractSkill {
