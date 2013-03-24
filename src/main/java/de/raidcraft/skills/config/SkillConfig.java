@@ -180,7 +180,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
 
     public boolean isVariableResourceCost(String resource) {
 
-        return getOverrideBool("resource." + resource + ".variable", false);
+        return getOverrideBool("resources." + resource + ".variable", false);
     }
 
     @Override

@@ -42,6 +42,10 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onBowFire(BowFireTrigger trigger) throws CombatException {
 
+        // lets substract the usage cost if the skill is marked as a queued attack
+        if (getSource().getProperties().getInformation().queuedAttack()) {
+            getSource().substractUsageCost();
+        }
         // lets replace the fired projectile with ours so we can track the impact and callback
         RangedAttack<T> attack =
                 new RangedAttack<>(getSource().getHero(), ProjectileType.ARROW, getSource().getTotalDamage(), callback);

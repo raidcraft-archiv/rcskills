@@ -53,6 +53,10 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
         if (type != null && type != ProjectileType.valueOf(trigger.getEvent().getEntity())) {
             return;
         }
+        // lets substract the usage cost if the skill is marked as a queued attack
+        if (getSource().getProperties().getInformation().queuedAttack()) {
+            getSource().substractUsageCost();
+        }
         if (callback != null) {
             callback.run(trigger.getEvent().getEntity().getLocation());
             info("Fernkampf Angriff \"" + getSource() + "\" wurde ausgeführt.");

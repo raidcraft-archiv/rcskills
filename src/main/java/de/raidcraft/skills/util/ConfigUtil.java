@@ -81,7 +81,7 @@ public final class ConfigUtil {
         }
         Set<String> availableModifier = section.getKeys(false);
         double value = section.getDouble("base", 0.0);
-        double cap = section.getDouble("cap", 100.0);
+        double cap = section.getDouble("cap", 0);
         if (skill != null) {
             value += section.getDouble("level-modifier", 0.0) * skill.getHero().getLevel().getLevel();
             availableModifier.remove("level-modifier");
@@ -94,7 +94,7 @@ public final class ConfigUtil {
             // uses resources as value modifiers
             for (Resource resource : skill.getHero().getResources()) {
                 if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
-                    value += section.getDouble(resource.getName() + "-modifier");
+                    value += section.getDouble(resource.getName() + "-modifier") * resource.getCurrent();
                     availableModifier.remove(resource.getName() + "-modifier");
                 }
             }
@@ -121,7 +121,7 @@ public final class ConfigUtil {
                 }
             }
         }
-        if (value > cap) {
+        if (cap > 0 && value > cap) {
             value = cap;
         }
         return value;

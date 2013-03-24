@@ -24,4 +24,6 @@ public @interface SkillInformation {
     public EffectElement[] elements() default {};
 
     public boolean triggerCombat() default false;
+
+    public boolean queuedAttack() default false;
 }

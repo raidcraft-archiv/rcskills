@@ -26,6 +26,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     private Callback<AttackTrigger> callback;
     private boolean attacked = false;
     private WeaponType weapon;
+    int damage = 0;
 
     public QueuedAttack(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -33,6 +34,8 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         if (duration == 0) duration = 20 * 5;
         // lets see if the attack is restricted to a weapon type
         weapon = WeaponType.fromString(source.getProperties().getData().getString("weapon"));
+        // we need to get the damage now because of the variable resource damage stuff
+        damage = getSource().getTotalDamage();
     }
 
     public void addCallback(Callback<AttackTrigger> callback) {
@@ -46,13 +49,18 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         if (attacked) {
             return;
         }
+        // lets substract the usage cost if the skill is marked as a queued attack
+        if (getSource().getProperties().getInformation().queuedAttack()) {
+            getSource().substractUsageCost();
+        }
+        // and now do some attack magic :)
         attacked = true;
         if (weapon != null && weapon.isOfType(getSource().getHero().getItemTypeInHand())) {
             trigger.setCancelled(true);
             trigger.getAttack().setCancelled(true);
             throw new CombatException(CombatException.Type.INVALID_WEAPON);
         }
-        trigger.getAttack().setDamage(getSource().getTotalDamage());
+        trigger.getAttack().setDamage(damage);
         trigger.getAttack().addAttackTypes(getSource().getTypes().toArray(new EffectType[getSource().getTypes().size()]));
         trigger.getAttack().addAttackTypes(getTypes());
         if (callback != null) {
