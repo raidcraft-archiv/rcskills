@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
 import org.bukkit.ChatColor;
@@ -67,6 +68,23 @@ public class AdminCommands {
         Option.DEBUGGING.set(hero, !Option.DEBUGGING.isSet(hero));
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +
                 (Option.DEBUGGING.isSet(hero) ? "on." : "off."));
+    }
+
+    @Command(
+            aliases = "maxout",
+            desc = "Maxes our all of the player levels",
+            usage = "<player>",
+            min = 1
+    )
+    public void maxOutAll(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            HeroUtil.maxOutAll(hero);
+            sender.sendMessage(ChatColor.GREEN + "Alle Skills, Berufe und Klassen von " + hero.getName() + " wurden auf max gesetzt.");
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
+        }
     }
 
     @Command(

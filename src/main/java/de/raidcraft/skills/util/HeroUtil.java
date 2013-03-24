@@ -6,6 +6,8 @@ import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -123,6 +125,19 @@ public final class HeroUtil {
     public static Hero getHeroFromName(String name) throws UnknownPlayerException {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(name);
+    }
+
+    public static void maxOutAll(Hero hero) {
+
+        hero.getLevel().setLevel(hero.getMaxLevel());
+        for (Profession profession : hero.getProfessions()) {
+            profession.getLevel().setLevel(profession.getMaxLevel());
+        }
+        for (Skill skill : hero.getSkills()) {
+            if (skill instanceof Levelable) {
+                ((Levelable) skill).getLevel().setLevel(((Levelable) skill).getMaxLevel());
+            }
+        }
     }
 
     public static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };

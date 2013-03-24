@@ -34,6 +34,7 @@ public final class CombatManager implements Listener {
     private final SkillsPlugin plugin;
     private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
     private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback> rangedAttacks = new HashMap<>();
 
     protected CombatManager(SkillsPlugin plugin) {
 
@@ -44,6 +45,24 @@ public final class CombatManager implements Listener {
     public void reload() {
 
         // dont clear the callbacks let them run out quietly to not interrupt combat
+    }
+
+    public void queueRangedAttack(final SourcedRangeCallback rangedAttack) {
+
+        // remove the callback from the queue after the configured time
+        rangedAttack.setTaskId(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                rangedAttacks.remove(rangedAttack.getTaskId());
+            }
+        }, plugin.getCommonConfig().callback_purge_time));
+
+        rangedAttacks.put(rangedAttack.getTaskId(), rangedAttack);
+
+        if (rangedAttack.getSource() instanceof Hero) {
+            ((Hero) rangedAttack.getSource()).debug("Queued Range Entity Callback - " + rangedAttack.getTaskId());
+        }
     }
 
     public void queueEntityCallback(final SourcedRangeCallback<RangedCallback> sourcedCallback) {
@@ -264,10 +283,22 @@ public final class CombatManager implements Listener {
                 }
             }
             if (!callback) {
-                // lets issue a new physical attack for the event
-                try {
-                    new PhysicalAttack(source, target, event.getDamage()).run();
-                } catch (CombatException ignored) {
+                boolean damaged = false;
+                // lets check all registered ranged attacks first
+                for (SourcedRangeCallback attack : new ArrayList<>(rangedAttacks.values())) {
+                    if (attack.getProjectile().equals(event.getDamager()) && attack.getSource().equals(source)) {
+                        target.damage(attack.getAttack());
+                        rangedAttacks.remove(attack.getTaskId());
+                        damaged = true;
+                        break;
+                    }
+                }
+                if (!damaged) {
+                    // lets issue a new physical attack for the event
+                    try {
+                        new PhysicalAttack(source, target, event.getDamage()).run();
+                    } catch (CombatException ignored) {
+                    }
                 }
                 event.setDamage(0);
             }

@@ -2,7 +2,9 @@ package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.effect.common.CastTime;
+import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -75,6 +77,15 @@ public class SkillAction extends AbstractAction<Hero> {
         // lets remove the costs
         // it is important to remove them after the skill usage in order to calculate all the variable properly
         skill.substractUsageCost();
+
+        // also trigger combat effect if not supressed
+        if (skill.getProperties().getInformation().triggerCombat()) {
+            try {
+                skill.getHero().addEffect(skill, Combat.class);
+            } catch (CombatException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+            }
+        }
 
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);

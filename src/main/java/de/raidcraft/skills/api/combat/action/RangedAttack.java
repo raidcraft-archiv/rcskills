@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.Location;
 import org.bukkit.entity.Projectile;
+import org.bukkit.util.Vector;
 
 /**
  * @author Silthus
@@ -17,6 +18,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     private final ProjectileType projectileType;
     private T callback;
     private Projectile projectile;
+    private Vector velocity;
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage) {
 
@@ -61,9 +63,24 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         this.projectile = projectile;
     }
 
+    public void setCallback(T callback) {
+
+        this.callback = callback;
+    }
+
     public T getCallback() {
 
         return callback;
+    }
+
+    public Vector getVelocity() {
+
+        return velocity;
+    }
+
+    public void setVelocity(Vector velocity) {
+
+        this.velocity = velocity;
     }
 
     @Override
@@ -72,6 +89,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         if (projectile == null) projectile = projectileType.spawn(getSource());
         projectile.setBounce(false);
         projectile.setFireTicks(0);
+        if (velocity != null) projectile.setVelocity(velocity);
         // queue the ranged callback to be called if the projectile hits
         SourcedRangeCallback<T> rangeCallback = new SourcedRangeCallback<>(this);
         rangeCallback.queueCallback();

@@ -20,6 +20,7 @@ public class THeroExpPool implements LevelData, Bean {
     private int heroId;
     private String player;
     private int exp;
+    private THeroProfession linkedProfession;
 
     public int getId() {
 
@@ -65,6 +66,16 @@ public class THeroExpPool implements LevelData, Bean {
     public void setExp(int exp) {
 
         this.exp = exp;
+    }
+
+    public THeroProfession getLinkedProfession() {
+
+        return linkedProfession;
+    }
+
+    public void setLinkedProfession(THeroProfession linkedProfession) {
+
+        this.linkedProfession = linkedProfession;
     }
 
     public void delete() {

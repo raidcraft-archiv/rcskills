@@ -1,7 +1,11 @@
 package de.raidcraft.skills.api.combat.action;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.common.Combat;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 
 import java.util.Arrays;
@@ -26,6 +30,14 @@ public abstract class AbstractAttack<S, T> extends AbstractAction<S> implements 
         this.damage = damage;
         this.attackTypes.addAll(Arrays.asList(types));
         this.source = AttackSource.fromObject(attacker);
+        // lets trigger the combat effect
+        if (attacker instanceof CharacterTemplate) {
+            try {
+                ((CharacterTemplate)attacker).addEffect(source, Combat.class);
+            } catch (CombatException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+            }
+        }
     }
 
     @Override

@@ -112,6 +112,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setHealth(int health) {
 
+        if (getEntity() == null) return;
+        if (health > getMaxHealth()) {
+            health = getMaxHealth();
+        }
         getEntity().setHealth(health);
     }
 
@@ -124,6 +128,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setMaxHealth(int maxHealth) {
 
+        if (getEntity() == null) return;
         getEntity().setMaxHealth(maxHealth);
     }
 
@@ -153,10 +158,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(
                         "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
-                ((Hero) attack.getSource()).combatLog("Du hast " + attack.getTarget() + " " + attack.getDamage() + " Schaden zugefügt.");
+                ((Hero) attack.getSource()).combatLog("Du hast " + getName() + " " + attack.getDamage() + " Schaden zugefügt.");
             }
-            if (attack.getTarget() instanceof Hero) {
-                ((Hero) attack.getTarget()).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() + " erhalten.");
+            if (this instanceof Hero) {
+                ((Hero)this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() + " erhalten.");
             }
         }
     }

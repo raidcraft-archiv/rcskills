@@ -63,6 +63,8 @@ public class SourcedRangeCallback<T extends ProjectileCallback> {
             combatManager.queueEntityCallback((SourcedRangeCallback<RangedCallback>) this);
         } else if (getCallback() instanceof LocationCallback) {
             combatManager.queueLocationCallback((SourcedRangeCallback<LocationCallback>) this);
+        } else {
+            combatManager.queueRangedAttack(this);
         }
     }
 }
