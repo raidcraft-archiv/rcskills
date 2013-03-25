@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
@@ -191,6 +192,7 @@ public final class CombatManager implements Listener {
                 }
                 // okay now that the attacker can swing his weapon lets do some damage YEAH!
                 PhysicalAttack attack = new PhysicalAttack(event, attacker.getDamage());
+                attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 // cancel event because we are handling stuff
                 event.setCancelled(true);
                 attack.run();

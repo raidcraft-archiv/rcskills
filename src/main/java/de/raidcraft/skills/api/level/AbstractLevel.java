@@ -109,7 +109,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void addExp(int exp) {
 
-        if (getLevelObject().isMastered()) {
+        if (getLevelObject().isMastered() || exp == 0) {
             return;
         }
         this.exp += exp;
@@ -120,6 +120,9 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void removeExp(int exp) {
 
+        if (exp == 0) {
+            return;
+        }
         this.exp -= exp;
         getLevelObject().onExpLoss(exp);
         checkProgress();
@@ -160,12 +163,18 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     @Override
     public void addLevel(int level) {
 
+        if (level == 0) {
+            return;
+        }
         setLevel(getLevel() + level);
     }
 
     @Override
     public void removeLevel(int level) {
 
+        if (level == 0) {
+            return;
+        }
         setLevel(getLevel() - level);
     }
 
