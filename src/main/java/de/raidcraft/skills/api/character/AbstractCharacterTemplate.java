@@ -15,34 +15,43 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
+import de.raidcraft.skills.items.Weapon;
 import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.LocationUtil;
-import org.bukkit.*;
+import de.raidcraft.util.MathUtil;
+import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
  */
 public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
-    private static final Random RANDOM = new Random();
-
     private final String name;
     private final LivingEntity entity;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
+    private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
     private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
     // every player is member of his own party by default
     private Party party;
     private int damage;
     private boolean inCombat = false;
-    private long lastSwing;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -74,6 +83,49 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public Weapon getWeapon(Weapon.Slot slot) {
+
+        return weapons.get(slot);
+    }
+
+    @Override
+    public boolean hasWeapon(Weapon.Slot slot) {
+
+        return weapons.containsKey(slot);
+    }
+
+    @Override
+    public void setWeapon(Weapon weapon) {
+
+        weapons.put(weapon.getSlot(), weapon);
+    }
+
+    @Override
+    public void removeWeapon(Weapon.Slot slot) {
+
+        weapons.remove(slot);
+    }
+
+    @Override
+    public boolean canSwing(Weapon.Slot slot) {
+
+        return System.currentTimeMillis() > getLastSwing(slot);
+    }
+
+    @Override
+    public long getLastSwing(Weapon.Slot slot) {
+
+        return lastSwing.get(slot);
+    }
+
+    @Override
+    public void setLastSwing(Weapon.Slot slot) {
+
+        long lastSwing = System.currentTimeMillis() + (long)(getWeapon(slot).getSwingTime() * 1000);
+        this.lastSwing.put(slot, lastSwing);
+    }
+
+    @Override
     public Collection<ArmorPiece> getArmor() {
 
         return armorPieces.values();
@@ -86,14 +138,39 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setArmor(ArmorType slot, ArmorPiece armorPiece) {
+    public void setArmor(ArmorPiece armorPiece) {
 
-        armorPieces.put(slot, armorPiece);
+        armorPieces.put(armorPiece.getType(), armorPiece);
+    }
+
+    @Override
+    public void removeArmor(ArmorType type) {
+
+        armorPieces.remove(type);
+    }
+
+    @Override
+    public void clearArmor() {
+
+        armorPieces.clear();
+    }
+
+    @Override
+    public boolean hasArmor(ArmorType slot) {
+
+        return armorPieces.containsKey(slot);
     }
 
     @Override
     public int getDamage() {
 
+        int damage = this.damage;
+        for (Weapon.Slot slot : Weapon.Slot.values()) {
+            Weapon weapon = getWeapon(slot);
+            if (weapon != null) {
+                damage += weapon.getDamage();
+            }
+        }
         return damage;
     }
 
@@ -357,9 +434,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Set<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException {
+    public List<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException {
 
-        Set<CharacterTemplate> targets = new HashSet<>();
+        List<CharacterTemplate> targets = new ArrayList<>();
         List<LivingEntity> nearbyEntities = BukkitUtil.getLivingEntitiesInCone(getEntity(), range, degrees);
 
         if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
@@ -372,27 +449,27 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Set<CharacterTemplate> getTargetsInFront(int range) throws CombatException {
+    public List<CharacterTemplate> getTargetsInFront(int range) throws CombatException {
 
         return getTargetsInFront(range, 45.0F);
     }
 
     @Override
-    public Set<CharacterTemplate> getTargetsInFront() throws CombatException {
+    public List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
         return getTargetsInFront(15, 45.0F);
     }
 
     @Override
-    public Set<CharacterTemplate> getNearbyTargets() throws CombatException {
+    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getNearbyTargets(30);
     }
 
     @Override
-    public Set<CharacterTemplate> getNearbyTargets(int range) throws CombatException {
+    public List<CharacterTemplate> getNearbyTargets(int range) throws CombatException {
 
-        Set<CharacterTemplate> targets = new HashSet<>();
+        List<CharacterTemplate> targets = new ArrayList<>();
         List<LivingEntity> nearbyEntities = BukkitUtil.getNearbyEntities(getEntity(), range);
         if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
         for (LivingEntity target : nearbyEntities) {
@@ -457,25 +534,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public boolean canSwing() {
-
-        return System.currentTimeMillis() > getLastSwing();
-    }
-
-    @Override
-    public long getLastSwing() {
-
-        return lastSwing;
-    }
-
-    @Override
-    public void setLastSwing() {
-
-        this.lastSwing = System.currentTimeMillis()
-                + (long) (RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().swing_delay * 1000);
-    }
-
-    @Override
     public String toString() {
 
         return getName();
@@ -487,9 +545,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return 1.0F;
         }
         if (((Ageable) target).isAdult()) {
-            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.0F;
+            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.0F;
         } else {
-            return (RANDOM.nextFloat() - RANDOM.nextFloat()) * 0.2F + 1.5F;
+            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.5F;
         }
     }
 

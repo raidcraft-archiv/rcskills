@@ -4,10 +4,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -28,25 +28,12 @@ public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        delay = data.getEffectDelay();
-        duration = data.getEffectDuration();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel());
-
-            duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel());
-        }
         if (getSource() instanceof Skill) {
-            delay += data.getEffectDelayLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            delay += data.getEffectDelayProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-
-            duration += data.getEffectDurationLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            duration += data.getEffectDurationProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-        }
-        if (getSource() instanceof LevelableSkill) {
-            delay += data.getEffectDelaySkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
-
-            duration += data.getEffectDurationSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+            delay = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectDelay()));
+            duration = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectDuration()));
+        } else {
+            delay = TimeUtil.secondsToTicks(data.getEffectDelay().getInt("base", 0));
+            duration = TimeUtil.secondsToTicks(data.getEffectDuration().getInt("base", 0));
         }
     }
 

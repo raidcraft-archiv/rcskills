@@ -6,10 +6,10 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -55,16 +55,10 @@ public abstract class AbstractEffect<S> implements Effect<S> {
 
     private void load(EffectData data) {
 
-        damage = data.getEffectDamage();
-        if (getSource() instanceof Hero) {
-            damage += data.getEffectDamageLevelModifier() * ((Hero) getSource()).getLevel().getLevel();
-        }
         if (getSource() instanceof Skill) {
-            damage += data.getEffectDamageLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            damage += data.getEffectDamageProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-        }
-        if (getSource() instanceof LevelableSkill) {
-            damage += data.getEffectDamageSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+            damage = (int) ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectDamage());
+        } else {
+            damage = data.getEffectDamage().getInt("base", 0);
         }
     }
 

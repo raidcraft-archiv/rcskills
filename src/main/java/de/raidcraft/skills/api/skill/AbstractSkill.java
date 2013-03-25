@@ -199,17 +199,35 @@ public abstract class AbstractSkill implements Skill {
         return target.addEffect(this, source, eClass);
     }
 
-    protected final Set<CharacterTemplate> getNearbyTargets() throws CombatException {
+    protected final List<CharacterTemplate> getNearbyTargets() throws CombatException {
 
-        return getHero().getNearbyTargets(getTotalRange());
+        return getNearbyTargets(true);
     }
 
-    protected final Set<CharacterTemplate> getTargetsInFront() throws CombatException {
+    protected final List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
+
+        List<CharacterTemplate> nearbyTargets = getHero().getNearbyTargets(getTotalRange());
+        if (!friendly) {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (!target.isFriendly(getHero())) {
+                    targets.add(target);
+                }
+            }
+            if (targets.size() < 1) {
+                throw new CombatException(CombatException.Type.INVALID_TARGET);
+            }
+            return targets;
+        }
+        return nearbyTargets;
+    }
+
+    protected final List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
         return getHero().getTargetsInFront(getTotalRange());
     }
 
-    protected final Set<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
+    protected final List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
 
         return getHero().getTargetsInFront(getTotalRange(), degrees);
     }

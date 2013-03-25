@@ -82,6 +82,7 @@ public final class ConfigUtil {
         Set<String> availableModifier = section.getKeys(false);
         double value = section.getDouble("base", 0.0);
         double cap = section.getDouble("cap", 0);
+        boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
         if (skill != null) {
             value += section.getDouble("level-modifier", 0.0) * skill.getHero().getLevel().getLevel();
             availableModifier.remove("level-modifier");
@@ -120,7 +121,12 @@ public final class ConfigUtil {
                     }
                 }
             }
+
+            if (addWeaponDamage) {
+                value += skill.getHero().getDamage();
+            }
         }
+
         if (cap > 0 && value > cap) {
             value = cap;
         }

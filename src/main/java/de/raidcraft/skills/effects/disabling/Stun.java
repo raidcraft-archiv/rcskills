@@ -6,7 +6,12 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
+import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,11 +23,12 @@ import org.bukkit.potion.PotionEffectType;
         description = "Stunnt den Gegegner und verhindert alle Aktionen",
         types = {EffectType.DISABLEING, EffectType.HARMFUL}
 )
-public class Stun<S> extends PeriodicExpirableEffect<S> {
+public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
 
     private final PotionEffect confusionEffect;
     private final PotionEffect slowEffect;
     private Location location;
+    private boolean removeOnDamage = false;
 
     public Stun(S source, CharacterTemplate target, EffectData data) {
 
@@ -30,6 +36,20 @@ public class Stun<S> extends PeriodicExpirableEffect<S> {
         this.interval = 2;
         this.confusionEffect = new PotionEffect(PotionEffectType.CONFUSION, (int) getDuration(), 5, false);
         this.slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 10, false);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        removeOnDamage = data.getBoolean("remove-on-damage", false);
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onDamage(DamageTrigger trigger) throws CombatException {
+
+        if (removeOnDamage && trigger.getAttack().getDamage() > 0) {
+            remove();
+        }
     }
 
     @Override

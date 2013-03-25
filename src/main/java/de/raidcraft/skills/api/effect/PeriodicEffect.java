@@ -4,10 +4,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.Bukkit;
 
 /**
@@ -26,25 +26,12 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        delay = data.getEffectDelay();
-        interval = data.getEffectInterval();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            delay += (data.getEffectDelayLevelModifier() * hero.getLevel().getLevel());
-
-            interval += (data.getEffectIntervalLevelModifier() * hero.getLevel().getLevel());
-        }
         if (getSource() instanceof Skill) {
-            delay += data.getEffectDelayLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            delay += data.getEffectDelayProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-
-            interval += data.getEffectIntervalLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            interval += data.getEffectIntervalProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-        }
-        if (getSource() instanceof LevelableSkill) {
-            delay += data.getEffectDelaySkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
-
-            interval += data.getEffectIntervalSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+            delay = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectDelay()));
+            interval = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectInterval()));
+        } else {
+            delay = TimeUtil.secondsToTicks(data.getEffectDelay().getInt("base", 0));
+            interval = TimeUtil.secondsToTicks(data.getEffectInterval().getInt("base", 0));
         }
     }
 

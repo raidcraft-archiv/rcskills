@@ -4,10 +4,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.Bukkit;
 
 /**
@@ -25,17 +25,10 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
     private void load(EffectData data) {
 
-        duration = data.getEffectDuration();
-        if (getSource() instanceof Hero) {
-            Hero hero = (Hero) getSource();
-            duration += (data.getEffectDurationLevelModifier() * hero.getLevel().getLevel());
-        }
         if (getSource() instanceof Skill) {
-            duration += data.getEffectDurationLevelModifier() * ((Skill) getSource()).getHero().getLevel().getLevel();
-            duration += data.getEffectDurationProfLevelModifier() * ((Skill) getSource()).getProfession().getLevel().getLevel();
-        }
-        if (getSource() instanceof LevelableSkill) {
-            duration += data.getEffectDurationSkillLevelModifier() * ((LevelableSkill) getSource()).getLevel().getLevel();
+            duration = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue((Skill) getSource(), data.getEffectDuration()));
+        } else {
+            duration = TimeUtil.secondsToTicks(data.getEffectDuration().getInt("base", 0));
         }
     }
 

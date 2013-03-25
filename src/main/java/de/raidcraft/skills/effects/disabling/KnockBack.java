@@ -1,6 +1,7 @@
 package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -15,7 +16,7 @@ import org.bukkit.util.Vector;
 @EffectInformation(
         name = "KnockBack",
         description = "Knocks back the target",
-        types = {}
+        types = {EffectType.PHYSICAL, EffectType.MOVEMENT, EffectType.HARMFUL}
 )
 public class KnockBack extends AbstractEffect<Location> {
 

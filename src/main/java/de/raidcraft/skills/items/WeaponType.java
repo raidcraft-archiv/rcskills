@@ -50,12 +50,6 @@ public enum WeaponType {
     BOW("Bogen",
             Material.BOW
     ),
-    SHIELD("Schild",
-            Material.TRAP_DOOR,
-            Material.IRON_DOOR,
-            Material.WOOD_DOOR,
-            Material.WOODEN_DOOR
-    ),
     MAGIC_WAND("Zauberstab",
             Material.STICK,
             Material.BLAZE_ROD
@@ -75,6 +69,11 @@ public enum WeaponType {
         return items.contains(material);
     }
 
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
     public static WeaponType fromMaterial(Material material) {
 
         for (WeaponType type : values()) {
@@ -88,10 +87,5 @@ public enum WeaponType {
     public static WeaponType fromString(String name) {
 
         return EnumUtils.getEnumFromString(WeaponType.class, name);
-    }
-
-    public String getFriendlyName() {
-
-        return friendlyName;
     }
 }

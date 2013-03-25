@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.items.Weapon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +25,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -173,17 +176,27 @@ public final class CombatManager implements Listener {
 
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                int damage = attacker.getDamage();
-                if (attacker instanceof Hero && !attacker.canSwing()) {
-                    event.setCancelled(true);
-                    return;
+                // lets check all weapon slots of the char
+                Set<Weapon.Slot> attackingWeapons = new HashSet<>();
+                if (attacker instanceof Hero) {
+                    for (Weapon.Slot slot : Weapon.Slot.values()) {
+                        if (attacker.hasWeapon(slot) && attacker.canSwing(slot)) {
+                            attackingWeapons.add(slot);
+                        }
+                    }
+                    if (attackingWeapons.size() < 1) {
+                        event.setCancelled(true);
+                        return;
+                    }
                 }
-                PhysicalAttack attack = new PhysicalAttack(event, damage);
+                // okay now that the attacker can swing his weapon lets do some damage YEAH!
+                PhysicalAttack attack = new PhysicalAttack(event, attacker.getDamage());
                 // cancel event because we are handling stuff
                 event.setCancelled(true);
                 attack.run();
-                if (attacker instanceof Hero) {
-                    attacker.setLastSwing();
+                // lets set the swing timer for all weapons the attacker attacked with
+                for (Weapon.Slot slot : attackingWeapons) {
+                    attacker.setLastSwing(slot);
                 }
             }
         } catch (CombatException e) {

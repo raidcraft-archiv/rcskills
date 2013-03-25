@@ -7,53 +7,53 @@ import org.bukkit.Material;
 */
 public enum ArmorType {
 
-    HEAD(103,
+    HEAD("Helm",
             Material.LEATHER_HELMET,
             Material.IRON_HELMET,
             Material.CHAINMAIL_HELMET,
             Material.GOLD_HELMET,
             Material.DIAMOND_HELMET
     ),
-    CHEST(102,
+    CHEST("Brustplatte",
             Material.LEATHER_CHESTPLATE,
             Material.IRON_CHESTPLATE,
             Material.CHAINMAIL_CHESTPLATE,
             Material.GOLD_CHESTPLATE,
             Material.DIAMOND_CHESTPLATE
     ),
-    LEGS(101,
+    LEGS("Beinschoner",
             Material.LEATHER_LEGGINGS,
             Material.IRON_LEGGINGS,
             Material.CHAINMAIL_LEGGINGS,
             Material.GOLD_LEGGINGS,
             Material.DIAMOND_LEGGINGS
     ),
-    FEET(100,
+    FEET("Schuhe",
             Material.LEATHER_BOOTS,
             Material.IRON_BOOTS,
             Material.CHAINMAIL_BOOTS,
             Material.GOLD_BOOTS,
             Material.DIAMOND_BOOTS
     ),
-    SHIELD(-1,
+    SHIELD("Schild",
             Material.TRAP_DOOR,
             Material.IRON_DOOR,
             Material.WOOD_DOOR,
             Material.WOODEN_DOOR
     );
 
-    private final int slotId;
+    private final String friendylName;
     private final Material[] armor;
 
-    ArmorType(int slotId, Material... armor) {
+    ArmorType(String friendylName, Material... armor) {
 
-        this.slotId = slotId;
+        this.friendylName = friendylName;
         this.armor = armor;
     }
 
-    public int getSlotId() {
+    public String getFriendylName() {
 
-        return slotId;
+        return friendylName;
     }
 
     public Material[] getArmor() {

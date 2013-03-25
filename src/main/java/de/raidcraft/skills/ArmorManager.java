@@ -12,13 +12,14 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.items.ArmorPiece;
+import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -38,17 +39,18 @@ public final class ArmorManager implements Triggered {
     private void load() {
 
         defaultArmorValue.clear();
-        ConfigurationSection config = CustomConfig.getConfig("armor").getConfigurationSection("armor");
-        if (config == null) {
+        CustomConfig config = CustomConfig.getConfig("armor");
+        Set<String> keys = config.getKeys(false);
+        if (keys == null || keys.size() < 1) {
             plugin.getLogger().warning("No armor pieces in custom armor.yml config configured!");
             return;
         }
-        for (String key : config.getKeys(false)) {
+        for (String key : keys) {
             Material item = ItemUtils.getItem(key);
-            if (item != null) {
+            if (item != null && ArmorType.fromItemId(item.getId()) != null) {
                 defaultArmorValue.put(item.getId(), config.getInt(key, 0));
             } else {
-                plugin.getLogger().warning("Wrong item configured in custom config: armor.yml - " + key);
+                plugin.getLogger().warning("Wrong armor item configured in custom config: " + config.getName() + " - " + key);
             }
         }
     }

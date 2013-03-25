@@ -8,12 +8,12 @@ import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
+import de.raidcraft.skills.items.Weapon;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -24,11 +24,31 @@ public interface CharacterTemplate {
 
     public LivingEntity getEntity();
 
+    public Weapon getWeapon(Weapon.Slot slot);
+
+    public boolean hasWeapon(Weapon.Slot slot);
+
+    public void setWeapon(Weapon weapon);
+
+    public void removeWeapon(Weapon.Slot slot);
+
+    public boolean canSwing(Weapon.Slot slot);
+
+    public long getLastSwing(Weapon.Slot slot);
+
+    public void setLastSwing(Weapon.Slot slot);
+
     Collection<ArmorPiece> getArmor();
 
     ArmorPiece getArmor(ArmorType slot);
 
-    void setArmor(ArmorType slot, ArmorPiece armorPiece);
+    void setArmor(ArmorPiece armorPiece);
+
+    void removeArmor(ArmorType type);
+
+    void clearArmor();
+
+    boolean hasArmor(ArmorType slot);
 
     Party getParty();
 
@@ -100,19 +120,13 @@ public interface CharacterTemplate {
 
     CharacterTemplate getTarget() throws CombatException;
 
-    Set<CharacterTemplate> getNearbyTargets() throws CombatException;
+    List<CharacterTemplate> getNearbyTargets() throws CombatException;
 
-    Set<CharacterTemplate> getNearbyTargets(int range) throws CombatException;
+    List<CharacterTemplate> getNearbyTargets(int range) throws CombatException;
 
-    Set<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException;
+    List<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException;
 
-    Set<CharacterTemplate> getTargetsInFront(int range) throws CombatException;
+    List<CharacterTemplate> getTargetsInFront(int range) throws CombatException;
 
-    Set<CharacterTemplate> getTargetsInFront() throws CombatException;
-
-    public boolean canSwing();
-
-    public long getLastSwing();
-
-    public void setLastSwing();
+    List<CharacterTemplate> getTargetsInFront() throws CombatException;
 }
