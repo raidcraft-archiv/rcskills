@@ -26,6 +26,7 @@ public class Weapon {
 
     private static final Pattern META_IDENTIFIER = Pattern.compile("^([0-9]+)\\-([0-9]+)\\sSchaden\\s\\-\\sTempo\\s(\\d\\.\\d{2})");
 
+    private final int taskBarSlot;
     private final ItemStack item;
     private final WeaponType weaponType;
     private final Slot slot;
@@ -34,8 +35,9 @@ public class Weapon {
     private double swingTime;
     private double modifier = 1.0;
 
-    public Weapon(ItemStack item, Slot slot) {
+    public Weapon(int taskBarSlot, ItemStack item, Slot slot) {
 
+        this.taskBarSlot = taskBarSlot;
         this.item = item;
         this.slot = slot;
         this.weaponType = WeaponType.fromMaterial(item.getType());
@@ -62,6 +64,11 @@ public class Weapon {
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
+    }
+
+    public int getTaskBarSlot() {
+
+        return taskBarSlot;
     }
 
     public int getItemId() {

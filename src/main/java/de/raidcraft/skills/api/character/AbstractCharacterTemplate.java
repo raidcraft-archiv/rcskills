@@ -109,6 +109,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean canSwing(Weapon.Slot slot) {
 
+        if (this instanceof Hero) {
+            int itemSlot = ((Hero) this).getPlayer().getInventory().getHeldItemSlot();
+            if (itemSlot != getWeapon(slot).getTaskBarSlot()) {
+                return false;
+            }
+        }
         return System.currentTimeMillis() > getLastSwing(slot);
     }
 

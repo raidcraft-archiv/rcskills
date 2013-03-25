@@ -250,8 +250,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double default_effect_priority = 1.0;
         @Setting("defaults.global-cooldown")
         public double global_cooldown = 1.5;
-        @Setting("defaults.swing-delay")
-        public double swing_delay = 1.0;
+        @Setting("defaults.fist-damage")
+        public int fist_attack_damage = 1;
         @Setting("defaults.permission-group")
         public String default_permission_group = "default";
         @Setting("profession.change-cost")

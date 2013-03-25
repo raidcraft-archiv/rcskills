@@ -23,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,6 +178,14 @@ public final class CombatManager implements Listener {
 
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                // fisting is defined in the common config
+                ItemStack itemInHand = attacker.getEntity().getEquipment().getItemInHand();
+                if (attacker instanceof Hero && (itemInHand == null || itemInHand.getTypeId() == 0)) {
+                    int damage = plugin.getCommonConfig().fist_attack_damage;
+                    event.setCancelled(true);
+                    new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
+                    return;
+                }
                 // lets check all weapon slots of the char
                 Set<Weapon.Slot> attackingWeapons = new HashSet<>();
                 if (attacker instanceof Hero) {
@@ -311,11 +320,11 @@ public final class CombatManager implements Listener {
                 if (!damaged) {
                     // lets issue a new physical attack for the event
                     try {
-                        new PhysicalAttack(source, target, event.getDamage()).run();
+                        new PhysicalAttack(source, target, source.getDamage()).run();
                     } catch (CombatException ignored) {
                     }
                 }
-                event.setDamage(0);
+                event.setCancelled(true);
             }
         }
     }
