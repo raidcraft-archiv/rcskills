@@ -1,6 +1,5 @@
 package de.raidcraft.skills.bindings;
 
-import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -60,7 +59,7 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         Skill skill = skills.get(index);
         try {
             new SkillAction(skill).run();
-        } catch (CombatException | CommandException e) {
+        } catch (CombatException e) {
             getHero().sendMessage(ChatColor.RED + e.getMessage());
         }
     }

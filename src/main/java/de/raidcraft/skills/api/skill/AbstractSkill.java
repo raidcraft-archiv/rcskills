@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
@@ -180,7 +179,7 @@ public abstract class AbstractSkill implements Skill {
         try {
             checkUsage(new SkillAction(this));
             return true;
-        } catch (CombatException | CommandException ignored) {
+        } catch (CombatException ignored) {
         }
         return false;
     }
