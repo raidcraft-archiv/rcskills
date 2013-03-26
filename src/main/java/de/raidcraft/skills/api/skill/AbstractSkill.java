@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
@@ -16,6 +17,7 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
@@ -73,7 +75,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final void checkUsage() throws CombatException {
+    public final void checkUsage(SkillAction action) throws CombatException {
 
         if (this instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
@@ -91,13 +93,14 @@ public abstract class AbstractSkill implements Skill {
         if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
         }
+        setRemainingCooldown(action.getRemainingCooldown());
         if (isOnCooldown()) {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
         for (Resource resource : getHero().getResources()) {
 
-            double resourceCost = this.getTotalResourceCost(resource.getName());
+            double resourceCost = action.getResourceCost(resource.getName());
             if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
                 resourceCost = resource.getCurrent();
             }
@@ -132,32 +135,13 @@ public abstract class AbstractSkill implements Skill {
         }
     }
 
-    private List<Requirement> getUseRequirements() {
-
-        if (useRequirements.size() < 1) {
-            useRequirements.addAll(getProperties().loadUseRequirements(this));
-        }
-        return useRequirements;
-    }
-
     @Override
-    public final boolean canUseSkill() {
-
-        try {
-            checkUsage();
-            return true;
-        } catch (CombatException ignored) {
-        }
-        return false;
-    }
-
-    @Override
-    public final void substractUsageCost() {
+    public final void substractUsageCost(SkillAction action) {
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHero().getResources()) {
 
-            double resourceCost = getTotalResourceCost(resource.getName());
+            double resourceCost = action.getResourceCost(resource.getName());
             if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
                 resourceCost = resource.getCurrent();
             }
@@ -180,6 +164,25 @@ public abstract class AbstractSkill implements Skill {
         hero.getPlayer().getInventory().removeItem(getProperties().getReagents());
         // and lets set the cooldown because it is like a usage cost for further casting
         setLastCast(System.currentTimeMillis());
+    }
+
+    private List<Requirement> getUseRequirements() {
+
+        if (useRequirements.size() < 1) {
+            useRequirements.addAll(getProperties().loadUseRequirements(this));
+        }
+        return useRequirements;
+    }
+
+    @Override
+    public final boolean canUseSkill() {
+
+        try {
+            checkUsage(new SkillAction(this));
+            return true;
+        } catch (CombatException | CommandException ignored) {
+        }
+        return false;
     }
 
     @Override
@@ -206,20 +209,7 @@ public abstract class AbstractSkill implements Skill {
 
     protected final List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
 
-        List<CharacterTemplate> nearbyTargets = getHero().getNearbyTargets(getTotalRange());
-        if (!friendly) {
-            List<CharacterTemplate> targets = new ArrayList<>();
-            for (CharacterTemplate target : nearbyTargets) {
-                if (!target.isFriendly(getHero())) {
-                    targets.add(target);
-                }
-            }
-            if (targets.size() < 1) {
-                throw new CombatException(CombatException.Type.INVALID_TARGET);
-            }
-            return targets;
-        }
-        return nearbyTargets;
+        return getHero().getNearbyTargets(getTotalRange(), friendly);
     }
 
     protected final List<CharacterTemplate> getTargetsInFront() throws CombatException {
@@ -434,6 +424,12 @@ public abstract class AbstractSkill implements Skill {
     public final double getTotalCooldown() {
 
         return ConfigUtil.getTotalValue(this, properties.getCooldown());
+    }
+
+    @Override
+    public final void setRemainingCooldown(long cooldown) {
+
+        setLastCast(System.currentTimeMillis() - cooldown * 1000);
     }
 
     @Override

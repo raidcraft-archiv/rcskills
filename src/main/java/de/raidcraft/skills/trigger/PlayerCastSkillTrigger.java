@@ -1,6 +1,6 @@
 package de.raidcraft.skills.trigger;
 
-import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.HandlerList;
 import de.raidcraft.skills.api.trigger.Trigger;
@@ -11,35 +11,23 @@ import org.bukkit.event.Cancellable;
  */
 public class PlayerCastSkillTrigger extends Trigger implements Cancellable {
 
-    private final Skill skill;
+    private final SkillAction action;
     private boolean cancelled = false;
-    private long castTime;
 
-    public PlayerCastSkillTrigger(CharacterTemplate source, Skill skill) {
+    public PlayerCastSkillTrigger(SkillAction action) {
 
-        super(source);
-        this.skill = skill;
-        castTime = skill.getTotalCastTime();
+        super(action.getSource());
+        this.action = action;
     }
 
     public Skill getSkill() {
 
-        return skill;
+        return action.getSkill();
     }
 
-    public long getCastTime() {
+    public SkillAction getAction() {
 
-        return castTime;
-    }
-
-    public void setCastTime(long time) {
-
-        this.castTime = time;
-    }
-
-    public boolean isCastTimeChanged() {
-
-        return castTime != getSkill().getTotalCastTime();
+        return action;
     }
 
     /*///////////////////////////////////////////////////

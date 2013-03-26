@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
@@ -51,7 +52,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         }
         // lets substract the usage cost if the skill is marked as a queued attack
         if (getSource().getProperties().getInformation().queuedAttack()) {
-            getSource().substractUsageCost();
+            getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // and now do some attack magic :)
         attacked = true;

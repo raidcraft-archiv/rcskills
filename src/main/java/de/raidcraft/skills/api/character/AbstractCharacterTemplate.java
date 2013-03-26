@@ -341,6 +341,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException {
 
+        if (source instanceof Skill) {
+            return addEffect((Skill) source, source, eClass);
+        }
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         return effect;
@@ -482,6 +485,24 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
         }
         return targets;
+    }
+
+    public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
+
+        List<CharacterTemplate> nearbyTargets = getNearbyTargets(range);
+        if (!friendly) {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (!target.isFriendly(this)) {
+                    targets.add(target);
+                }
+            }
+            if (targets.size() < 1) {
+                throw new CombatException(CombatException.Type.INVALID_TARGET);
+            }
+            return targets;
+        }
+        return nearbyTargets;
     }
 
     @Override

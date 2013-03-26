@@ -36,20 +36,10 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             return;
         }
 
-        if (info.checkUsage()) {
-            // check the skill usage
-            skill.checkUsage();
-        }
-
         // add a combat effect when a skill is beeing casted
         if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
 
         // and lets pass on the trigger
         executor.execute(listener, trigger);
-
-        // only substract usage cost if the skill does not fail when executing
-        if (info.substractUsageCosts()) {
-            skill.substractUsageCost();
-        }
     }
 }

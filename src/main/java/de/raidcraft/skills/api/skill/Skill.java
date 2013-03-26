@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -39,11 +40,11 @@ public interface Skill extends Comparable<Skill>, Unlockable {
 
     public boolean canUseOutOfCombat();
 
-    public void checkUsage() throws CombatException;
+    public void checkUsage(SkillAction action) throws CombatException;
 
     public boolean canUseSkill();
 
-    public void substractUsageCost();
+    public void substractUsageCost(SkillAction action);
 
     public Set<EffectType> getTypes();
 
@@ -80,6 +81,8 @@ public interface Skill extends Comparable<Skill>, Unlockable {
     public int getTotalRange();
 
     public double getTotalCooldown();
+
+    public void setRemainingCooldown(long cooldown);
 
     public long getRemainingCooldown();
 

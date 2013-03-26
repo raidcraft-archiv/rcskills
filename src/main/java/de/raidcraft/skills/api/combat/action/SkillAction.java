@@ -1,17 +1,20 @@
 package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -20,19 +23,31 @@ public class SkillAction extends AbstractAction<Hero> {
 
     private final Skill skill;
     private final CommandContext args;
+    private final Map<String, Double> resourceCosts = new HashMap<>();
+    private long remainingCooldown;
+    private int castTime;
     private boolean delayed = false;
+
+    private final PlayerCastSkillTrigger trigger;
 
     public SkillAction(Skill skill, CommandContext args) {
 
         super(skill.getHero());
         this.skill = skill;
         this.args = args;
-        this.delayed = skill.getTotalCastTime() > 0;
+        this.remainingCooldown = skill.getRemainingCooldown();
+        this.castTime = skill.getTotalCastTime();
+        for (Resource resource : skill.getHero().getResources()) {
+            resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
+        }
+
+        // lets issue a trigger that can be modified by other skills
+        this.trigger = TriggerManager.callSafeTrigger(new PlayerCastSkillTrigger(this));
     }
 
-    public SkillAction(Skill skill) throws CommandException {
+    public SkillAction(Skill skill) {
 
-        this(skill, new CommandContext(""));
+        this(skill, null);
     }
 
     public Skill getSkill() {
@@ -40,33 +55,56 @@ public class SkillAction extends AbstractAction<Hero> {
         return skill;
     }
 
+    public double getResourceCost(String resource) {
+
+        return resourceCosts.get(resource);
+    }
+
+    public void setResourceCost(String resource, double cost) {
+
+        resourceCosts.put(resource, cost);
+    }
+
+    public long getRemainingCooldown() {
+
+        return remainingCooldown;
+    }
+
+    public void setRemainingCooldown(long remainingCooldown) {
+
+        this.remainingCooldown = remainingCooldown;
+    }
+
+    public int getCastTime() {
+
+        return castTime;
+    }
+
+    public void setCastTime(int castTime) {
+
+        this.castTime = castTime;
+    }
+
     @Override
     public void run() throws CombatException {
-
-        if (!(skill instanceof CommandTriggered)) {
-            throw new CombatException("Du kannst diesen Skill nicht via Command ausführen.");
-        }
 
         if (getSource().hasEffect(GlobalCooldown.class)) {
             throw new CombatException(CombatException.Type.ON_GLOBAL_COOLDOWN);
         }
 
-        // check if we meet all requirements to use the skill
-        getSkill().checkUsage();
-
         // lets cancel other casts first
         getSource().removeEffect(CastTime.class);
 
-        PlayerCastSkillTrigger trigger = TriggerManager.callTrigger(new PlayerCastSkillTrigger(getSource(), getSkill()));
         if (trigger.isCancelled()) {
             throw new CombatException(CombatException.Type.CANCELLED);
         }
 
+        // check if we meet all requirements to use the skill
+        getSkill().checkUsage(this);
+
         if (delayed) {
             CastTime castTime = getSource().addEffect(skill, this, CastTime.class);
-            if (trigger.isCastTimeChanged()) {
-                castTime.setCastTime(trigger.getCastTime());
-            }
+            castTime.setCastTime(getCastTime());
             this.delayed = false;
             return;
         }
@@ -79,7 +117,7 @@ public class SkillAction extends AbstractAction<Hero> {
         if (!skill.getProperties().getInformation().queuedAttack()) {
             // dont substract usage cost on queued attacks
             // the queued effect will take care of that
-            skill.substractUsageCost();
+            skill.substractUsageCost(this);
         }
 
         // also trigger combat effect if not supressed
