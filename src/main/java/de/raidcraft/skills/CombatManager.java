@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
+import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
@@ -186,9 +187,10 @@ public final class CombatManager implements Listener {
                     new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
                     return;
                 }
-                // lets check all weapon slots of the char
-                Set<Weapon.Slot> attackingWeapons = new HashSet<>();
                 if (attacker instanceof Hero) {
+                    // lets check all weapon slots of the char
+                    Set<Weapon.Slot> attackingWeapons = new HashSet<>();
+
                     for (Weapon.Slot slot : Weapon.Slot.values()) {
                         if (attacker.hasWeapon(slot) && attacker.canSwing(slot)) {
                             attackingWeapons.add(slot);
@@ -198,17 +200,22 @@ public final class CombatManager implements Listener {
                         event.setCancelled(true);
                         return;
                     }
+                    // now lets issue an attack for each weapon
+                    for (Weapon.Slot slot : attackingWeapons) {
+                        Weapon weapon = attacker.getWeapon(slot);
+                        WeaponAttack attack = new WeaponAttack(event, weapon, weapon.getDamage());
+                        attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
+                        attack.run();
+                        attacker.setLastSwing(slot);
+                    }
+                } else {
+                    // this is for entity attacks
+                    PhysicalAttack attack = new PhysicalAttack(event, attacker.getDamage());
+                    attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
+                    // cancel event because we are handling stuff
+                    attack.run();
                 }
-                // okay now that the attacker can swing his weapon lets do some damage YEAH!
-                PhysicalAttack attack = new PhysicalAttack(event, attacker.getDamage());
-                attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
-                // cancel event because we are handling stuff
                 event.setCancelled(true);
-                attack.run();
-                // lets set the swing timer for all weapons the attacker attacked with
-                for (Weapon.Slot slot : attackingWeapons) {
-                    attacker.setLastSwing(slot);
-                }
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {
