@@ -121,6 +121,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public long getLastSwing(Weapon.Slot slot) {
 
+        if (!lastSwing.containsKey(slot)) {
+            return 0;
+        }
         return lastSwing.get(slot);
     }
 

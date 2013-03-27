@@ -3,9 +3,10 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
-import de.raidcraft.skills.items.WeaponType;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.Set;
  */
 public final class WeaponManager implements Triggered {
 
+    private static final String CONFIG_NAME = "weapons";
     private final SkillsPlugin plugin;
     // maps the weapon (itemId) to the min/max damage (key/value)
     private final Map<Integer, DefaultWeaponConfig> defaultWeaponMinMaxDamage = new HashMap<>();
@@ -30,7 +32,7 @@ public final class WeaponManager implements Triggered {
     private void load() {
 
         defaultWeaponMinMaxDamage.clear();
-        CustomConfig config = CustomConfig.getConfig("weapons");
+        ConfigurationSection config = CustomConfig.getConfig(CONFIG_NAME).getSafeConfigSection("weapons");
         Set<String> keys = config.getKeys(false);
         if (keys == null || keys.size() < 1) {
             plugin.getLogger().warning("No weapons configured in custom weapons.yml config.");
@@ -38,7 +40,7 @@ public final class WeaponManager implements Triggered {
         }
         for (String key : keys) {
             Material item = ItemUtils.getItem(key);
-            if (item != null && WeaponType.fromMaterial(item) != null) {
+            if (item != null && ItemUtil.isWeapon(item)) {
                 int minDamage = config.getInt(key + ".min", 0);
                 int maxDamage = config.getInt(key + ".max", 0);
                 double swingTime = config.getDouble(key + ".swing-time", 1.5);
@@ -51,6 +53,7 @@ public final class WeaponManager implements Triggered {
 
     public void reload() {
 
+        CustomConfig.getConfig(CONFIG_NAME).reload();
         load();
     }
 

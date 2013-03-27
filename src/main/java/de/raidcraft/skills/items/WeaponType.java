@@ -76,8 +76,13 @@ public enum WeaponType {
 
     public static WeaponType fromMaterial(Material material) {
 
+        return fromItemId(material.getId());
+    }
+
+    public static WeaponType fromItemId(int typeId) {
+
         for (WeaponType type : values()) {
-            if (type.isOfType(material)) {
+            if (type.isOfType(Material.getMaterial(typeId))) {
                 return type;
             }
         }

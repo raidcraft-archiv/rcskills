@@ -51,7 +51,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
                 Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.put(profSkill.getName(), profSkill);
             } catch (UnknownSkillException e) {
-                getPlugin().getLogger().warning(e.getMessage());
+                getPlugin().getLogger().warning(e.getMessage() + " in " + getName() + ".yml");
             }
         }
         return skills;
