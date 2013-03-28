@@ -24,7 +24,13 @@ public class Weapon {
         OFF_HAND
     }
 
-    private static final Pattern META_IDENTIFIER = Pattern.compile("^([0-9]+)\\-([0-9]+)\\sSchaden\\s\\-\\sTempo\\s(\\d\\.\\d{2})");
+    public static final Pattern[] LORE_IDENTIFIER = {
+            Pattern.compile("^Item\\sLevel\\s([0-9]+)$"),
+            Pattern.compile("^Wird beim Benutzen gebunden$"),
+            Pattern.compile("^([Einhändig|Beidhändig|Schildhand])\t\t\t([\\w]+)$"),
+            Pattern.compile("^([0-9]+)\\-([0-9]+)\\sSchaden\t\t\tTempo\\s(\\d\\.\\d{2})$"),
+            Pattern.compile("^([\\d]+)\\s([\\w]+)$")
+    };
 
     private final int taskBarSlot;
     private final ItemStack item;
@@ -44,10 +50,10 @@ public class Weapon {
         ItemMeta meta = item.getItemMeta();
         try {
             if (meta.hasLore()) {
-                String armor = ChatColor.stripColor(meta.getLore().get(0)).toLowerCase().trim();
-                Matcher matcher = META_IDENTIFIER.matcher(armor);
+                String weapon = ChatColor.stripColor(meta.getLore().get(0)).toLowerCase().trim();
+                Matcher matcher = LORE_IDENTIFIER[3].matcher(weapon);
                 if (matcher.matches()) {
-                    // group one is our armor value
+                    // group one is our weapon value
                     minDamage = Integer.parseInt(matcher.group(1));
                     maxDamage = Integer.parseInt(matcher.group(2));
                     swingTime = Double.parseDouble(matcher.group(3));
@@ -62,6 +68,7 @@ public class Weapon {
                 maxDamage = damage.getMaxDamage();
                 swingTime = damage.getSwingTime();
             }
+            save();
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
@@ -143,7 +150,7 @@ public class Weapon {
         if (itemMeta.hasLore()) {
             lore = itemMeta.getLore();
         } else {
-            lore = new ArrayList<>();
+            lore = new ArrayList<>(1);
         }
         String swingTime = Double.toString(getSwingTime());
         if (swingTime.length() < 3) {
@@ -151,6 +158,12 @@ public class Weapon {
         }
         StringBuilder sb = new StringBuilder();
         sb.append(getMinDamage()).append("-").append(getMaxDamage()).append(" Schaden - Tempo ").append(swingTime);
-        lore.set(0, sb.toString());
+        if (lore.size() > 0) {
+            lore.set(0, sb.toString());
+        } else {
+            lore.add(sb.toString());
+        }
+        itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
     }
 }
