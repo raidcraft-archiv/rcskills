@@ -146,10 +146,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         Path path = profession.getPath();
         for (Profession currentProf : getProfessions()) {
             if (currentProf.getPath().equals(path)) {
-                if (profession.isActive()) {
-                    currentProf.setActive(false);
-                    profession.save();
-                }
+                currentProf.setActive(false);
+                currentProf.save();
             }
         }
         // lets set the selected profession before we go all wanky in the while loop
