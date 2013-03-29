@@ -29,12 +29,12 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {
 
-        this(source, projectileType, 0);
+        this(source, projectileType, source.getDamage());
     }
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, T callback) {
 
-        this(source, projectileType, 0, callback);
+        this(source, projectileType, source.getDamage(), callback);
     }
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage, T callback) {
