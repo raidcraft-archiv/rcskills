@@ -21,6 +21,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -164,6 +165,13 @@ public final class CharacterManager implements Listener {
         return getCharacter(entity, true);
     }
 
+    /**
+     * This methods removes the character from the cache in this class.
+     * Do NOT use this to clear heroes from the cache! Use the {@link HeroUtil#clearCache(de.raidcraft.skills.api.hero.Hero)}
+     * method instead!!!
+     *
+     * @param character to clear the cache for
+     */
     public void clearCacheOf(CharacterTemplate character) {
 
         LivingEntity entity = character.getEntity();
@@ -203,6 +211,12 @@ public final class CharacterManager implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
+
+        HeroUtil.clearCache(getHero(event.getPlayer()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerKick(PlayerKickEvent event) {
 
         HeroUtil.clearCache(getHero(event.getPlayer()));
     }

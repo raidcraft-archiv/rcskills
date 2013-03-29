@@ -371,13 +371,15 @@ public class AdminCommands {
     private void purgeHero(CommandSender sender, Hero hero) {
 
         // kick the player if he is online
+        // kicking will clear the cache of that player
         if (hero.getPlayer() != null) {
             hero.getPlayer().kickPlayer("Dein RPG Profil wird zurück gesetzt bitte warte kurz.");
+        } else {
+            HeroUtil.clearCache(hero);
         }
         // this will delete all references to the object
         Ebean.find(THero.class, hero.getId()).delete();
         // remove the player from cache
-        plugin.getCharacterManager().clearCacheOf(hero);
         sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }
 }
