@@ -9,9 +9,9 @@ import de.raidcraft.skills.api.profession.Profession;
  *
  * @author Silthus
  */
-public final class NullLevel extends AbstractLevel<Profession> {
+public final class NullAttachedLevel extends AbstractAttachedLevel<Profession> {
 
-    public NullLevel(Profession levelObject, LevelData data) {
+    public NullAttachedLevel(Profession levelObject, LevelData data) {
 
         super(levelObject, FormulaType.STATIC.create(null), data);
     }

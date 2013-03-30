@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.events;
 
-import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.Levelable;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -28,9 +28,9 @@ public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cance
         return source;
     }
 
-    public Level<S> getLevel() {
+    public AttachedLevel<S> getLevel() {
 
-        return source.getLevel();
+        return source.getAttachedLevel();
     }
 
     public int getOldLevel() {

@@ -1,17 +1,17 @@
 package de.raidcraft.skills.creature;
 
-import de.raidcraft.skills.api.level.AbstractLevel;
+import de.raidcraft.skills.api.level.AbstractAttachedLevel;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.formulas.FormulaType;
 
 /**
  * @author Silthus
  */
-public class CreatureLevel<T extends Levelable<T>> extends AbstractLevel<T> {
+public class CreatureAttachedLevel<T extends Levelable<T>> extends AbstractAttachedLevel<T> {
 
     private int level;
 
-    public CreatureLevel(T levelObject, int level) {
+    public CreatureAttachedLevel(T levelObject, int level) {
 
         super(levelObject, FormulaType.STATIC.create(null));
         this.level = level;

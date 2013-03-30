@@ -72,7 +72,7 @@ public class ProfessionCommands {
                 return ChatColor.YELLOW + "[" + ChatColor.AQUA + profession.getProperties().getTag() + ChatColor.YELLOW + "]" +
                         (profession.isActive() ? ChatColor.GREEN : ChatColor.RED) + profession.getProperties().getFriendlyName() +
                         ChatColor.GRAY + ChatColor.ITALIC + " - " + profession.getPath().getFriendlyName() + " - " +
-                        ChatColor.RESET + (profession.getLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.RED) + profession.getLevel().getLevel();
+                        ChatColor.RESET + (profession.getAttachedLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.RED) + profession.getAttachedLevel().getLevel();
             }
         }.display(sender, professions, args.getFlagInteger('p', 1));
     }
@@ -108,7 +108,7 @@ public class ProfessionCommands {
                 int cost = 0;
                 if (hero.getProfessions().size() > 0) {
                     cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel()));
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
@@ -164,7 +164,7 @@ public class ProfessionCommands {
         int cost = 0;
         if (hero.getProfessions().size() > 0) {
             cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getLevel().getLevel()));
+                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel()));
         }
         hero.changeProfession(profession);
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +

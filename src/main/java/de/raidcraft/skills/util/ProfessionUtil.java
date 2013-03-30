@@ -61,7 +61,7 @@ public final class ProfessionUtil {
 
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.YELLOW).append("------- [");
-        sb.append(ChatColor.AQUA).append(profession.getLevel().getLevel());
+        sb.append(ChatColor.AQUA).append(profession.getAttachedLevel().getLevel());
         sb.append(ChatColor.YELLOW).append("] ").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED);
         sb.append(profession.getFriendlyName());
         sb.append(ChatColor.YELLOW).append(" -------");
@@ -84,10 +84,10 @@ public final class ProfessionUtil {
 
         // level information
         sb = new StringBuilder();
-        sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(profession.getLevel().getLevel())
-                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getLevel().getMaxLevel());
-        sb.append(ChatColor.YELLOW).append("  |   EXP: ").append(ChatColor.AQUA).append(profession.getLevel().getExp())
-                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getLevel().getMaxExp());
+        sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(profession.getAttachedLevel().getLevel())
+                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getAttachedLevel().getMaxLevel());
+        sb.append(ChatColor.YELLOW).append("  |   EXP: ").append(ChatColor.AQUA).append(profession.getAttachedLevel().getExp())
+                .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(profession.getAttachedLevel().getMaxExp());
         body.add(sb.toString());
 
         if (profession.getResources().size() > 0) {

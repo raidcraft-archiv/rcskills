@@ -8,7 +8,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
-import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.util.ProfessionUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +37,7 @@ public class PlayerComands {
 
         try {
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-            Level<Hero> expPool = hero.getExpPool();
+            AttachedLevel<Hero> expPool = hero.getExpPool();
             if (!(expPool.getExp() > 0)) {
                 throw new CommandException("Dein EXP Pool ist leer und du kannst keine EXP verteilen.");
             }
@@ -45,18 +45,18 @@ public class PlayerComands {
             if (exp > expPool.getExp()) {
                 throw new CommandException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
             }
-            Level level = ProfessionUtil.getProfessionFromArgs(hero, args.getString(1)).getLevel();
-            if (level == null) {
+            AttachedLevel attachedLevel = ProfessionUtil.getProfessionFromArgs(hero, args.getString(1)).getAttachedLevel();
+            if (attachedLevel == null) {
                 throw new CommandException("Bitte gebe eine Spezialisierung an, der du EXP geben willst.");
             }
 
             if (args.hasFlag('f')) {
                 // force the addexp
-                addExp(expPool, level, exp);
+                addExp(expPool, attachedLevel, exp);
             } else {
                 hero.sendMessage(ChatColor.RED + "Bist du sicher, dass du " + ChatColor.AQUA
-                        + level.getLevelObject() + " " + exp + "exp " + ChatColor.RED + "zuteilen willst?");
-                new QueuedCommand(sender, this, "addExp", expPool, level, exp);
+                        + attachedLevel.getLevelObject() + " " + exp + "exp " + ChatColor.RED + "zuteilen willst?");
+                new QueuedCommand(sender, this, "addExp", expPool, attachedLevel, exp);
             }
         } catch (InvalidChoiceException e) {
             throw new CommandException(e.getMessage());
@@ -78,7 +78,7 @@ public class PlayerComands {
                 (Option.COMBAT_LOGGING.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
     }
 
-    private void addExp(Level<Hero> expPool, Level level, int exp) throws InvalidChoiceException {
+    private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {
 
         Hero hero = expPool.getLevelObject();
         if (exp > expPool.getExp()) {
@@ -86,7 +86,7 @@ public class PlayerComands {
             throw new InvalidChoiceException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
         }
         expPool.removeExp(exp);
-        level.addExp(exp);
+        attachedLevel.addExp(exp);
         hero.sendMessage(ChatColor.GREEN + "Die EXP aus deinem EXP Pool wurden erfolgreich übertragen.");
     }
 }

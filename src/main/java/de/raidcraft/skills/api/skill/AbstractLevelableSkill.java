@@ -2,8 +2,8 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.SkillLevel;
+import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.level.SkillAttachedLevel;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -14,24 +14,24 @@ import org.bukkit.ChatColor;
  */
 public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
-    private Level<LevelableSkill> level;
+    private AttachedLevel<LevelableSkill> attachedLevel;
 
     public AbstractLevelableSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new SkillLevel(this, database));
+        attachLevel(new SkillAttachedLevel(this, database));
     }
 
     @Override
-    public final Level<LevelableSkill> getLevel() {
+    public final AttachedLevel<LevelableSkill> getAttachedLevel() {
 
-        return level;
+        return attachedLevel;
     }
 
     @Override
-    public final void attachLevel(Level<LevelableSkill> level) {
+    public final void attachLevel(AttachedLevel<LevelableSkill> attachedLevel) {
 
-        this.level = level;
+        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -44,13 +44,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public final double getTotalResourceCost(String resource) {
 
         return super.getTotalResourceCost(resource) +
-                (getProperties().getResourceCostSkillLevelModifier(resource) * getLevel().getLevel());
+                (getProperties().getResourceCostSkillLevelModifier(resource) * getAttachedLevel().getLevel());
     }
 
     @Override
     public final boolean isMastered() {
 
-        return getLevel().hasReachedMaxLevel();
+        return getAttachedLevel().hasReachedMaxLevel();
     }
 
     @Override
@@ -70,7 +70,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
         getHero().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         // lets check the skills of the profession if we need to unlock any
         getProfession().checkSkillsForUnlock();
     }
@@ -80,7 +80,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
         getHero().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         getProfession().checkSkillsForUnlock();
     }
 
@@ -88,14 +88,14 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public final void save() {
 
         super.save();
-        level.saveLevelProgress();
+        attachedLevel.saveLevelProgress();
     }
 
     @Override
-    public final void saveLevelProgress(Level<LevelableSkill> level) {
+    public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
 
-        database.setLevel(level.getLevel());
-        database.setExp(level.getExp());
+        database.setLevel(attachedLevel.getLevel());
+        database.setExp(attachedLevel.getExp());
         Database.save(database);
     }
 

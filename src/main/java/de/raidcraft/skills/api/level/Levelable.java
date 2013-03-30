@@ -7,9 +7,9 @@ public interface Levelable<T extends Levelable> {
 
     public String getName();
 
-    public Level<T> getLevel();
+    public AttachedLevel<T> getAttachedLevel();
 
-    public void attachLevel(Level<T> level);
+    public void attachLevel(AttachedLevel<T> attachedLevel);
 
     public int getMaxLevel();
 
@@ -23,5 +23,5 @@ public interface Levelable<T extends Levelable> {
 
     public boolean isMastered();
 
-    public void saveLevelProgress(Level<T> level);
+    public void saveLevelProgress(AttachedLevel<T> attachedLevel);
 }

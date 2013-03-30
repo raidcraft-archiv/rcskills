@@ -5,7 +5,7 @@ import de.raidcraft.skills.api.level.forumla.LevelFormula;
 /**
  * @author Silthus
  */
-public interface Level<T extends Levelable> {
+public interface AttachedLevel<T extends Levelable> {
 
     public T getLevelObject();
 

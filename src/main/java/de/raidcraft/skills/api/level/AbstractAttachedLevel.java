@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.persistance.LevelData;
 /**
  * @author Silthus
  */
-public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
+public abstract class AbstractAttachedLevel<T extends Levelable> implements AttachedLevel<T> {
 
     private final T levelObject;
     private final LevelFormula formula;
@@ -17,7 +17,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
     protected int exp = 0;
     protected int maxExp;
 
-    public AbstractLevel(T levelObject, LevelFormula formula, LevelData data) {
+    public AbstractAttachedLevel(T levelObject, LevelFormula formula, LevelData data) {
 
         this.levelObject = levelObject;
         this.formula = formula;
@@ -32,7 +32,7 @@ public abstract class AbstractLevel<T extends Levelable> implements Level<T> {
         calculateMaxExp();
     }
 
-    public AbstractLevel(T levelObject, LevelFormula formula) {
+    public AbstractAttachedLevel(T levelObject, LevelFormula formula) {
 
         this(levelObject, formula, null);
     }

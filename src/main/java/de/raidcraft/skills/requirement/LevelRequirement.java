@@ -32,6 +32,6 @@ public abstract class LevelRequirement extends AbstractRequirement<Unlockable> {
     @Override
     public boolean isMet() {
 
-        return requiredLevel <= getLevelable().getLevel().getLevel();
+        return requiredLevel <= getLevelable().getAttachedLevel().getLevel();
     }
 }

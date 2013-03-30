@@ -10,9 +10,9 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.level.ConfigurableLevel;
+import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
-import de.raidcraft.skills.api.level.Level;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.Profession;
@@ -43,13 +43,13 @@ import java.util.Set;
 public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
 
     private final int id;
-    private final Level<Hero> expPool;
+    private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
     private int maxLevel;
     private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
-    private Level<Hero> level;
+    private AttachedLevel<Hero> attachedLevel;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
@@ -66,7 +66,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
         FormulaType formulaType = FormulaType.fromName(levelConfig.getString("type", "wow"));
-        attachLevel(new ConfigurableLevel<Hero>(this, formulaType.create(levelConfig), data.getLevelData()));
+        attachLevel(new ConfigurableAttachedLevel<Hero>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
         loadSkills();
@@ -288,7 +288,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public Level<Hero> getExpPool() {
+    public AttachedLevel<Hero> getExpPool() {
 
         return expPool;
     }
@@ -296,7 +296,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public boolean isMastered() {
 
-        return getLevel().hasReachedMaxLevel();
+        return getAttachedLevel().hasReachedMaxLevel();
     }
 
     @Override
@@ -326,19 +326,19 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public int getDefaultHealth() {
 
         return (int) (getSelectedProfession().getProperties().getBaseHealth()
-                + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getLevel().getLevel());
+                + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getAttachedLevel().getLevel());
     }
 
     @Override
-    public Level<Hero> getLevel() {
+    public AttachedLevel<Hero> getAttachedLevel() {
 
-        return level;
+        return attachedLevel;
     }
 
     @Override
-    public void attachLevel(Level<Hero> level) {
+    public void attachLevel(AttachedLevel<Hero> attachedLevel) {
 
-        this.level = level;
+        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -355,27 +355,28 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void onLevelGain() {
 
         sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
     }
 
     @Override
     public void onLevelLoss() {
 
         sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
     }
 
     @Override
     public void save() {
 
         THero tHero = Ebean.find(THero.class, getId());
+        if (tHero == null) return;
         tHero.setHealth(getHealth());
         tHero.setSelectedProfession(getSelectedProfession().getName());
         Database.save(tHero);
 
         getOptions().save();
         saveProfessions();
-        saveLevelProgress(getLevel());
+        saveLevelProgress(getAttachedLevel());
         getExpPool().saveLevelProgress();
         saveSkills();
     }
@@ -391,11 +392,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void saveLevelProgress(Level<Hero> level) {
+    public void saveLevelProgress(AttachedLevel<Hero> attachedLevel) {
 
         THero heroTable = Ebean.find(THero.class, getId());
-        heroTable.setExp(getLevel().getExp());
-        heroTable.setLevel(getLevel().getLevel());
+        heroTable.setExp(getAttachedLevel().getExp());
+        heroTable.setLevel(getAttachedLevel().getLevel());
         Database.save(heroTable);
     }
 

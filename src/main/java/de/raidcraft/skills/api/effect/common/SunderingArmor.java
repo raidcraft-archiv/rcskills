@@ -39,11 +39,11 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
     public void load(ConfigurationSection data) {
 
         armorReductionPerStack = data.getDouble("reduction.base", 0.05);
-        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHero().getLevel().getLevel();
-        armorReductionPerStack += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getLevel().getLevel();
+        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHero().getAttachedLevel().getLevel();
+        armorReductionPerStack += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getAttachedLevel().getLevel();
 
         if (getSource() instanceof LevelableSkill) {
-            armorReductionPerStack += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getLevel().getLevel();
+            armorReductionPerStack += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getAttachedLevel().getLevel();
         }
         armorReductionCap = data.getDouble("reduction.cap", 0.6);
         // cap reduction default is 60%

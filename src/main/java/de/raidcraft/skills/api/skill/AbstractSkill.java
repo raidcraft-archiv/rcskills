@@ -403,8 +403,8 @@ public abstract class AbstractSkill implements Skill {
     public double getTotalResourceCost(String resource) {
 
         return properties.getResourceCost(resource)
-                + (properties.getResourceCostLevelModifier(resource) * hero.getLevel().getLevel())
-                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getLevel().getLevel());
+                + (properties.getResourceCostLevelModifier(resource) * hero.getAttachedLevel().getLevel())
+                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getAttachedLevel().getLevel());
     }
 
     @Override
@@ -687,7 +687,7 @@ public abstract class AbstractSkill implements Skill {
                 return false;
             }
         }
-        return getProperties().getRequiredLevel() <= getProfession().getLevel().getLevel();
+        return getProperties().getRequiredLevel() <= getProfession().getAttachedLevel().getLevel();
     }
 
     @Override
@@ -698,7 +698,7 @@ public abstract class AbstractSkill implements Skill {
                 return requirement.getLongReason();
             }
         }
-        if (getProperties().getRequiredLevel() > getProfession().getLevel().getLevel()) {
+        if (getProperties().getRequiredLevel() > getProfession().getAttachedLevel().getLevel()) {
             return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";

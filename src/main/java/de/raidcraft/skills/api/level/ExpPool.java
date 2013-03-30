@@ -10,7 +10,7 @@ import de.raidcraft.skills.tables.THeroExpPool;
 /**
  * @author Silthus
  */
-public class ExpPool extends AbstractLevel<Hero> {
+public class ExpPool extends AbstractAttachedLevel<Hero> {
 
     public ExpPool(Hero levelObject, LevelData data) {
 

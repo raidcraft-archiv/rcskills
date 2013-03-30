@@ -163,11 +163,11 @@ public abstract class AbstractResource implements Resource {
     public int getMax() {
 
         int max = config.getInt("max.base", 100);
-        if (getProfession().getLevel() != null) {
-            max += config.getDouble("max.level-modifier", 0.0) * getHero().getLevel().getLevel();
+        if (getProfession().getAttachedLevel() != null) {
+            max += config.getDouble("max.level-modifier", 0.0) * getHero().getAttachedLevel().getLevel();
         }
-        if (getProfession() != null && getProfession().getLevel() != null) {
-            max += config.getDouble("max.prof-level-modifier", 0.0) * getProfession().getLevel().getLevel();
+        if (getProfession() != null && getProfession().getAttachedLevel() != null) {
+            max += config.getDouble("max.prof-level-modifier", 0.0) * getProfession().getAttachedLevel().getLevel();
         }
         return max;
     }

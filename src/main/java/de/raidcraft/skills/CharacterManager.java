@@ -11,6 +11,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,6 +26,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -37,6 +40,7 @@ public final class CharacterManager implements Listener {
     private final SkillsPlugin plugin;
     private final Map<String, Hero> heroes = new HashMap<>();
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
+    private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -163,6 +167,60 @@ public final class CharacterManager implements Listener {
     public CharacterTemplate getCharacter(LivingEntity entity) {
 
         return getCharacter(entity, true);
+    }
+
+    /**
+     * Spawns a new entity with a custom defined class.
+     *
+     * @param entityType to spawn
+     * @param location to spawn the entity at
+     * @param creatureClazz that defines the entity
+     * @param args to pass to the constructor
+     * @param <T> type of the entity to spawn
+     * @return spawned entity of the defined class
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends CharacterTemplate> T spawnCharacter(EntityType entityType, Location location, Class<T> creatureClazz, Object... args) {
+
+        LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
+        // at this point the spawnEntity event was called
+        // now lets remove the spawned entity from the UUID list and add our own
+        characters.remove(entity.getUniqueId()).leaveParty();
+
+        if (!cachedClasses.containsKey(creatureClazz)) {
+            // lets find the matching constructor
+            for (Constructor constructor : creatureClazz.getDeclaredConstructors()) {
+                boolean match = true;
+                if (constructor.getParameterTypes().length != args.length) {
+                    continue;
+                }
+                if (!LivingEntity.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+                    continue;
+                }
+                for (int i = 1; i < args.length; i++) {
+                    if (!constructor.getParameterTypes()[i].isAssignableFrom(args[i].getClass())) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    cachedClasses.put(creatureClazz, constructor);
+                }
+            }
+        }
+        Constructor<T> constructor = (Constructor<T>) cachedClasses.get(creatureClazz);
+        // lets do some reflection to instantiate the custom class
+        constructor.setAccessible(true);
+        try {
+            // we also pass in the living entity
+            T character = constructor.newInstance(entity, args);
+            characters.put(character.getEntity().getUniqueId(), character);
+            return character;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

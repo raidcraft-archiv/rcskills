@@ -43,7 +43,7 @@ public class SimpleProfession extends AbstractProfession {
         getHero().reset();
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         checkSkillsForUnlock();
     }
 
@@ -52,7 +52,7 @@ public class SimpleProfession extends AbstractProfession {
 
         getHero().sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getLevel().getLevel());
+                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         checkSkillsForUnlock();
     }
 

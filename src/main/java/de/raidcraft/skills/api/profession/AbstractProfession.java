@@ -4,8 +4,8 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.ConfigurableLevel;
-import de.raidcraft.skills.api.level.Level;
+import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
+import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
@@ -40,7 +40,7 @@ public abstract class AbstractProfession implements Profession {
     protected final Map<String, Skill> skills;
     protected final THeroProfession database;
 
-    private Level<Profession> level;
+    private AttachedLevel<Profession> attachedLevel;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, Profession parent, THeroProfession database) {
 
@@ -51,7 +51,7 @@ public abstract class AbstractProfession implements Profession {
         this.parent = parent;
         this.children = data.loadChildren(this);
         // attach a level
-        attachLevel(new ConfigurableLevel<Profession>(this, data.getLevelFormula(), database));
+        attachLevel(new ConfigurableAttachedLevel<Profession>(this, data.getLevelFormula(), database));
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);
@@ -78,15 +78,15 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public final Level<Profession> getLevel() {
+    public final AttachedLevel<Profession> getAttachedLevel() {
 
-        return level;
+        return attachedLevel;
     }
 
     @Override
-    public final void attachLevel(Level<Profession> level) {
+    public final void attachLevel(AttachedLevel<Profession> attachedLevel) {
 
-        this.level = level;
+        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -140,7 +140,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean isMastered() {
 
-        return getLevel().hasReachedMaxLevel();
+        return getAttachedLevel().hasReachedMaxLevel();
     }
 
     @Override
@@ -247,16 +247,16 @@ public abstract class AbstractProfession implements Profession {
         for (Resource resource : getResources()) {
             resource.save();
         }
-        saveLevelProgress(getLevel());
+        saveLevelProgress(getAttachedLevel());
         database.setActive(isActive());
         Database.save(database);
     }
 
     @Override
-    public void saveLevelProgress(Level<Profession> level) {
+    public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
 
-        database.setLevel(level.getLevel());
-        database.setExp(level.getExp());
+        database.setLevel(attachedLevel.getLevel());
+        database.setExp(attachedLevel.getExp());
         Database.save(database);
     }
 

@@ -84,12 +84,12 @@ public final class ConfigUtil {
         double cap = section.getDouble("cap", 0);
         boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
         if (skill != null) {
-            value += section.getDouble("level-modifier", 0.0) * skill.getHero().getLevel().getLevel();
+            value += section.getDouble("level-modifier", 0.0) * skill.getHero().getAttachedLevel().getLevel();
             availableModifier.remove("level-modifier");
-            value += section.getDouble("prof-level-modifier", 0.0) * skill.getProfession().getLevel().getLevel();
+            value += section.getDouble("prof-level-modifier", 0.0) * skill.getProfession().getAttachedLevel().getLevel();
             availableModifier.remove("prof-level-modifier");
             if (skill instanceof LevelableSkill) {
-                value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getLevel().getLevel();
+                value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getAttachedLevel().getLevel();
                 availableModifier.remove("skill-level-modifier");
             }
             // uses resources as value modifiers
@@ -106,7 +106,7 @@ public final class ConfigUtil {
                     try {
                         Skill extraSkill = skill.getHero().getSkill(key);
                         if (extraSkill instanceof LevelableSkill) {
-                            value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getLevel().getLevel();
+                            value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getAttachedLevel().getLevel();
                         }
                     } catch (UnknownSkillException e) {
                         RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
@@ -115,7 +115,7 @@ public final class ConfigUtil {
                     key = key.replace("-prof-modifier", "").trim();
                     try {
                         Profession profession = skill.getHero().getProfession(key);
-                        value += section.getDouble(key, 0.0) * profession.getLevel().getLevel();
+                        value += section.getDouble(key, 0.0) * profession.getAttachedLevel().getLevel();
                     } catch (UnknownSkillException | UnknownProfessionException e) {
                         RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
                     }

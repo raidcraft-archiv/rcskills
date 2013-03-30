@@ -95,12 +95,12 @@ public class SkillsCommand {
 
                 sb.append(ChatColor.YELLOW).append("[").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED)
                         .append(profession.getProperties().getTag()).append(":")
-                        .append((profession.getLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
+                        .append((profession.getAttachedLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
                 sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
                         .append(skill.getProperties().getFriendlyName());
                 if (skill instanceof LevelableSkill) {
-                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getLevel().getLevel())
+                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getAttachedLevel().getLevel())
                             .append(ChatColor.YELLOW).append("] ");
                 }
                 return sb.toString();

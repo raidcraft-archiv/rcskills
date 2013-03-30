@@ -89,8 +89,8 @@ public class BukkitUserInterface implements UserInterface {
         int level;
         if (prof != null) {
             // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
-            exp = ((float) prof.getLevel().getExp()) / ((float) prof.getLevel().getMaxExp());
-            level = prof.getLevel().getLevel();
+            exp = ((float) prof.getAttachedLevel().getExp()) / ((float) prof.getAttachedLevel().getMaxExp());
+            level = prof.getAttachedLevel().getLevel();
         } else {
             // lets set the level to 0
             exp = 0.0F;

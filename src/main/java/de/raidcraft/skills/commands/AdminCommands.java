@@ -147,7 +147,7 @@ public class AdminCommands {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             int exp = args.getInteger(1);
             if (args.hasFlag('h')) {
-                hero.getLevel().addExp(exp);
+                hero.getAttachedLevel().addExp(exp);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + " " + exp + "xp" + ChatColor.GREEN + " hinzugefügt.");
                 hero.sendMessage(ChatColor.GREEN + "Ein Admin hat dir " + ChatColor.AQUA
@@ -155,7 +155,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('p')) {
                 Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
-                profession.getLevel().addExp(exp);
+                profession.getAttachedLevel().addExp(exp);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + exp + "xp" + ChatColor.GREEN + " hinzugefügt.");
@@ -165,7 +165,7 @@ public class AdminCommands {
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
                 if (skill instanceof Levelable) {
-                    ((Levelable) skill).getLevel().addExp(exp);
+                    ((Levelable) skill).getAttachedLevel().addExp(exp);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
                             + exp + "xp" + ChatColor.GREEN + " hinzugefügt.");
@@ -203,7 +203,7 @@ public class AdminCommands {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             int exp = args.getInteger(1);
             if (args.hasFlag('h')) {
-                hero.getLevel().removeExp(exp);
+                hero.getAttachedLevel().removeExp(exp);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                         hero.getName() + " " + exp + "xp" + ChatColor.RED + " entfernt.");
                 hero.sendMessage(ChatColor.RED + "Ein Admin hat dir " + ChatColor.AQUA
@@ -211,7 +211,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('p')) {
                 Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
-                profession.getLevel().removeExp(exp);
+                profession.getAttachedLevel().removeExp(exp);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.RED + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + exp + "xp" + ChatColor.RED + " entfernt.");
@@ -221,7 +221,7 @@ public class AdminCommands {
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
                 if (skill instanceof Levelable) {
-                    ((Levelable) skill).getLevel().removeExp(exp);
+                    ((Levelable) skill).getAttachedLevel().removeExp(exp);
                     sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.RED + "Skill " + ChatColor.AQUA + skill.getName()
                             + exp + "xp" + ChatColor.RED + " entfernt.");
@@ -259,7 +259,7 @@ public class AdminCommands {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             int level = args.getInteger(1);
             if (args.hasFlag('h')) {
-                hero.getLevel().addLevel(level);
+                hero.getAttachedLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
                 hero.sendMessage(ChatColor.GREEN + "Ein Admin hat dir " + ChatColor.AQUA
@@ -267,7 +267,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('p')) {
                 Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
-                profession.getLevel().addLevel(level);
+                profession.getAttachedLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + level + " level" + ChatColor.GREEN + " hinzugefügt.");
@@ -277,7 +277,7 @@ public class AdminCommands {
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
                 if (skill instanceof Levelable) {
-                    ((Levelable) skill).getLevel().addLevel(level);
+                    ((Levelable) skill).getAttachedLevel().addLevel(level);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
                             + level + " level" + ChatColor.GREEN + " hinzugefügt.");
@@ -310,7 +310,7 @@ public class AdminCommands {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             int level = args.getInteger(1);
             if (args.hasFlag('h')) {
-                hero.getLevel().removeLevel(level);
+                hero.getAttachedLevel().removeLevel(level);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                         hero.getName() + " " + level + "level" + ChatColor.RED + " entfernt.");
                 hero.sendMessage(ChatColor.RED + "Ein Admin hat dir " + ChatColor.AQUA
@@ -318,7 +318,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('p')) {
                 Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
-                profession.getLevel().removeLevel(level);
+                profession.getAttachedLevel().removeLevel(level);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.RED + "Spezialisierung " + ChatColor.AQUA + profession.getName()
                         + level + "level" + ChatColor.RED + " entfernt.");
@@ -328,7 +328,7 @@ public class AdminCommands {
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
                 if (skill instanceof Levelable) {
-                    ((Levelable) skill).getLevel().removeLevel(level);
+                    ((Levelable) skill).getAttachedLevel().removeLevel(level);
                     sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.RED + "Skill " + ChatColor.AQUA + skill.getName()
                             + level + "level" + ChatColor.RED + " entfernt.");

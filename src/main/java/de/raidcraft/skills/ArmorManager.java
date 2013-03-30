@@ -109,7 +109,7 @@ public final class ArmorManager implements Triggered {
         int level = 60;
         // we dont want to get the level of heroes and only calculate with mob level if applicable
         if (attack.getSource() instanceof Levelable && !(attack.getSource() instanceof Hero)) {
-            level = ((Levelable) attack.getSource()).getLevel().getLevel();
+            level = ((Levelable) attack.getSource()).getAttachedLevel().getLevel();
         }
         double reduction = armor / ((45.0 * level) + armor + 200.0);
         // cap reduction at 75%

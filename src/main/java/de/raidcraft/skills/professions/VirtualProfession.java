@@ -5,8 +5,8 @@ import de.raidcraft.skills.SkillManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.Level;
-import de.raidcraft.skills.api.level.NullLevel;
+import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.level.NullAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
@@ -28,7 +28,7 @@ public final class VirtualProfession extends AbstractProfession {
     public VirtualProfession(Hero hero, ProfessionProperties data, Path<Profession> path, THeroProfession database) {
 
         super(hero, data, path, null, database);
-        attachLevel(new NullLevel(this, database));
+        attachLevel(new NullAttachedLevel(this, database));
         // lets save the virtual profession when its loaded
         save();
     }
@@ -91,7 +91,7 @@ public final class VirtualProfession extends AbstractProfession {
     }
 
     @Override
-    public void saveLevelProgress(Level<Profession> level) {
+    public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
         // we dont want to save this stuff
     }
 

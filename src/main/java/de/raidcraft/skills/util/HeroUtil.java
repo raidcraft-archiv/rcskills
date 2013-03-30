@@ -129,13 +129,13 @@ public final class HeroUtil {
 
     public static void maxOutAll(Hero hero) {
 
-        hero.getLevel().setLevel(hero.getMaxLevel());
+        hero.getAttachedLevel().setLevel(hero.getMaxLevel());
         for (Profession profession : hero.getProfessions()) {
-            profession.getLevel().setLevel(profession.getMaxLevel());
+            profession.getAttachedLevel().setLevel(profession.getMaxLevel());
         }
         for (Skill skill : hero.getSkills()) {
             if (skill instanceof Levelable) {
-                ((Levelable) skill).getLevel().setLevel(((Levelable) skill).getMaxLevel());
+                ((Levelable) skill).getAttachedLevel().setLevel(((Levelable) skill).getMaxLevel());
             }
         }
     }
