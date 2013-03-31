@@ -31,15 +31,15 @@ public abstract class AbstractProfession implements Profession {
     private final ProfessionProperties properties;
     private final Hero hero;
     private final Path<Profession> path;
-    // can be null - if it is this profession has no parents :*(
-    private final Profession parent;
     private final List<Profession> children;
     // list of requirements to unlock this profession
     private final List<Requirement> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
-    protected final Map<String, Skill> skills;
+    protected final Map<String, Skill> skills = new HashMap<>();
     protected final THeroProfession database;
 
+    // can be null - if it is this profession has no parents :*(
+    private Profession parent;
     private AttachedLevel<Profession> attachedLevel;
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, Profession parent, THeroProfession database) {
@@ -68,9 +68,12 @@ public abstract class AbstractProfession implements Profession {
             ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
             resources.put(key, resource);
         }
-        // load the skills at the end because they access the level of the profession and more
-        this.skills = properties.loadSkills(this);
-        getProperties().loadRequirements(this);
+    }
+
+    public void loadSkills() {
+
+        this.skills.clear();
+        this.skills.putAll(properties.loadSkills(this));
     }
 
     public THeroProfession getDatabase() {
@@ -227,6 +230,12 @@ public abstract class AbstractProfession implements Profession {
     public Profession getParent() {
 
         return parent;
+    }
+
+    @Override
+    public void setParent(Profession parent) {
+
+        this.parent = parent;
     }
 
     @Override

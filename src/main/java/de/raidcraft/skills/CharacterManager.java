@@ -240,6 +240,7 @@ public final class CharacterManager implements Listener {
         if (entity != null) characters.remove(entity.getUniqueId());
         character.leaveParty();
         heroes.remove(character.getName());
+        plugin.getSkillManager().clearSkillCache(character.getName());
     }
 
     /*/////////////////////////////////////////////////////////////////////////

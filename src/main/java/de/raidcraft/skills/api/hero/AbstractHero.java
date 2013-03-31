@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.HeroData;
+import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
@@ -106,6 +107,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                         professions.put(child.getName(), child);
                     }
                 }
+                if (profession instanceof AbstractProfession) {
+                    ((AbstractProfession) profession).loadSkills();
+                }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }
@@ -159,6 +163,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         do {
             profession.setActive(true);
             professions.put(profession.getName(), profession);
+            if (profession instanceof AbstractProfession) {
+                ((AbstractProfession) profession).loadSkills();
+            }
             profession.save();
             profession = profession.getParent();
         } while (profession != null);

@@ -71,7 +71,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         if (childs == null) return professions;
         for (String prof : childs) {
             try {
-                professions.add(getPlugin().getProfessionManager().getProfession(profession, prof));
+                Profession childProf = getPlugin().getProfessionManager().getProfession(profession, prof);
+                professions.add(childProf);
+                childProf.setParent(profession);
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 getPlugin().getLogger().severe(e.getMessage());
             }

@@ -12,7 +12,6 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,6 +30,8 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
     private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
+    // list of cached skills mapped to a hero
+    private final Map<String, Map<CachedSkill, Skill>> cachedSkills = new HashMap<>();
 
     protected SkillManager(SkillsPlugin plugin) {
 
@@ -100,23 +101,26 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
         }
     }
 
-    public Skill getSkill(Hero hero, Profession profession, String skillName, ConfigurationSection... overrides) throws UnknownSkillException {
+    public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
 
         Skill skill;
         skillName = StringUtils.formatName(skillName);
         if (!skillFactories.containsKey(skillName)) {
             throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
         }
-        // always create a new skill instance if there are additional configs
-        if (overrides.length < 1) {
-            for (Skill playerSkill : hero.getSkills()) {
-                if (playerSkill.getName().equals(skillName) && playerSkill.getProfession().equals(profession)) {
-                    return playerSkill;
-                }
-            }
+        String heroName = StringUtils.formatName(hero.getName());
+        if (!cachedSkills.containsKey(heroName)) {
+            cachedSkills.put(heroName, new HashMap<CachedSkill, Skill>());
+        }
+        // lets create a cached skill instance to counter check with our cache
+        // the skill will be null in this cached skill instance
+        CachedSkill cache = new CachedSkill(hero, profession, skillName);
+        if (cachedSkills.get(heroName).containsKey(cache)) {
+            return cachedSkills.get(heroName).get(cache);
         }
         // lets create a new skill for this name
-        skill = skillFactories.get(skillName).create(hero, profession, overrides);
+        skill = skillFactories.get(skillName).create(hero, profession);
+        cachedSkills.get(heroName).put(cache, skill);
         // lets add the skill as a trigger handler
         if (skill instanceof Triggered) {
             TriggerManager.registerListeners((Triggered) skill);
@@ -174,5 +178,52 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         skill = StringUtils.formatName(skill);
         return skillFactories.containsKey(skill);
+    }
+
+    public void clearSkillCache(String heroName) {
+
+        cachedSkills.remove(StringUtils.formatName(heroName));
+    }
+
+    public static class CachedSkill {
+
+        private final String player;
+        private final String name;
+        private final String profession;
+
+        public CachedSkill(Skill skill) {
+
+            this.player = StringUtils.formatName(skill.getHero().getName());
+            this.name = StringUtils.formatName(skill.getName());
+            this.profession = StringUtils.formatName(skill.getProfession().getName());
+        }
+
+        public CachedSkill(Hero hero, Profession profession, String skillName) {
+
+            this.player = StringUtils.formatName(hero.getName());
+            this.name = StringUtils.formatName(skillName);
+            this.profession = StringUtils.formatName(profession.getName());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CachedSkill that = (CachedSkill) o;
+
+            return name.equals(that.name) && player.equals(that.player) && profession.equals(that.profession);
+
+        }
+
+        @Override
+        public int hashCode() {
+
+            int result = player.hashCode();
+            result = 31 * result + name.hashCode();
+            result = 31 * result + profession.hashCode();
+            return result;
+        }
     }
 }
