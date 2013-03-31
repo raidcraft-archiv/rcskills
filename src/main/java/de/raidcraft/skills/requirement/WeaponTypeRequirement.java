@@ -10,11 +10,11 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("weapons")
-public class WeaponTypeRequirement extends AbstractRequirement<Unlockable> {
+public class WeaponTypeRequirement extends AbstractRequirement<SkillRequirementResolver> {
 
     private WeaponType type;
 
-    public WeaponTypeRequirement(Unlockable resolver, ConfigurationSection config) {
+    public WeaponTypeRequirement(SkillRequirementResolver resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

@@ -680,7 +680,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final boolean isUnlockable() {
+    public final boolean isMeetingAllRequirements() {
 
         for (Requirement requirement : getRequirements()) {
             if (!requirement.isMet()) {
@@ -691,7 +691,7 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final String getUnlockReason() {
+    public final String getResolveReason() {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet()) {

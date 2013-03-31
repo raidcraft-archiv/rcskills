@@ -191,7 +191,7 @@ public final class CharacterManager implements Listener {
             // lets find the matching constructor
             for (Constructor constructor : creatureClazz.getDeclaredConstructors()) {
                 boolean match = true;
-                if (constructor.getParameterTypes().length != args.length) {
+                if (constructor.getParameterTypes().length != args.length + 1) {
                     continue;
                 }
                 if (!LivingEntity.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
@@ -212,8 +212,12 @@ public final class CharacterManager implements Listener {
         // lets do some reflection to instantiate the custom class
         constructor.setAccessible(true);
         try {
+            // we need to construct a new array or the constructor will handle our args as array
+            Object[] objects = new Object[args.length + 1];
+            objects[0] = entity;
+            System.arraycopy(args, 0, objects, 1, objects.length - 1);
             // we also pass in the living entity
-            T character = constructor.newInstance(entity, args);
+            T character = constructor.newInstance(objects);
             characters.put(character.getEntity().getUniqueId(), character);
             return character;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

@@ -18,6 +18,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import java.util.Set;
  */
 public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements ProfessionProperties {
 
+    private final Set<String> undefinedSkills = new HashSet<>();
     private final ProfessionFactory factory;
 
     public ProfessionConfig(ProfessionFactory factory) {
@@ -47,11 +49,15 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         if (keys == null) return skills;
         // now load the skills - when a skill does not exist in the database we will insert it
         for (String skill : keys) {
+            if (undefinedSkills.contains(skill)) {
+                continue;
+            }
             try {
                 Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
                 skills.put(profSkill.getName(), profSkill);
             } catch (UnknownSkillException e) {
                 getPlugin().getLogger().warning(e.getMessage() + " in " + getName() + ".yml");
+                undefinedSkills.add(skill);
             }
         }
         return skills;
@@ -79,7 +85,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Requirement<Profession>> loadRequirements(Profession profession) {
+    public List<Requirement> loadRequirements(Profession profession) {
 
         return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
     }

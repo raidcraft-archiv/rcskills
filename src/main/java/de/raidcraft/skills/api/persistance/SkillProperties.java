@@ -15,9 +15,9 @@ import java.util.List;
  */
 public interface SkillProperties {
 
-    public List<Requirement<Skill>> loadRequirements(Skill skill);
+    public List<Requirement> loadRequirements(Skill skill);
 
-    public List<Requirement<Skill>> loadUseRequirements(Skill skill);
+    public List<Requirement> loadUseRequirements(Skill skill);
 
     public String getName();
 

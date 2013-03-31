@@ -20,7 +20,7 @@ public class SkillLevelRequirement extends LevelRequirement {
 
     private LevelableSkill requiredSkill;
 
-    public SkillLevelRequirement(Unlockable type, ConfigurationSection config) {
+    public SkillLevelRequirement(SkillRequirementResolver type, ConfigurationSection config) {
 
         super(type, config);
     }

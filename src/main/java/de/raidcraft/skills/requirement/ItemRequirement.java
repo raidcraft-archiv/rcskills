@@ -11,11 +11,11 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("items")
-public class ItemRequirement extends AbstractRequirement<Unlockable> {
+public class ItemRequirement extends AbstractRequirement<SkillRequirementResolver> {
 
     private int itemId;
 
-    public ItemRequirement(Unlockable resolver, ConfigurationSection config) {
+    public ItemRequirement(SkillRequirementResolver resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

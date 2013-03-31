@@ -15,11 +15,11 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("skills")
-public class SkillRequirement extends AbstractRequirement<Unlockable> {
+public class SkillRequirement extends AbstractRequirement<SkillRequirementResolver> {
 
     private Skill requiredSkill;
 
-    public SkillRequirement(Unlockable type, ConfigurationSection config) {
+    public SkillRequirement(SkillRequirementResolver type, ConfigurationSection config) {
 
         super(type, config);
     }

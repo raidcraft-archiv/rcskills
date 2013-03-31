@@ -18,7 +18,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
 
     private Profession profession;
 
-    public ProfessionLevelRequirement(Unlockable resolver, ConfigurationSection config) {
+    public ProfessionLevelRequirement(SkillRequirementResolver resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

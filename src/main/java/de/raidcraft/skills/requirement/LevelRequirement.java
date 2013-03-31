@@ -7,11 +7,11 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * @author Silthus
  */
-public abstract class LevelRequirement extends AbstractRequirement<Unlockable> {
+public abstract class LevelRequirement extends AbstractRequirement<SkillRequirementResolver> {
 
     private int requiredLevel;
 
-    public LevelRequirement(Unlockable resolver, ConfigurationSection config) {
+    public LevelRequirement(SkillRequirementResolver resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

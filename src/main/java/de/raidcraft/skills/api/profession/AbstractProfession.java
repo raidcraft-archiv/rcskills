@@ -4,8 +4,8 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
 import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
@@ -70,6 +70,7 @@ public abstract class AbstractProfession implements Profession {
         }
         // load the skills at the end because they access the level of the profession and more
         this.skills = properties.loadSkills(this);
+        getProperties().loadRequirements(this);
     }
 
     public THeroProfession getDatabase() {
@@ -195,7 +196,7 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public boolean isUnlockable() {
+    public boolean isMeetingAllRequirements() {
 
         for (Requirement requirement : getRequirements()) {
             if (!requirement.isMet()) {
@@ -206,7 +207,7 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public String getUnlockReason() {
+    public String getResolveReason() {
 
         for (Requirement requirement : requirements) {
             if (!requirement.isMet()) {

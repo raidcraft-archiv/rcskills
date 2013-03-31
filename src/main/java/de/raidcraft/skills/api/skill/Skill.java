@@ -7,8 +7,8 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.requirement.Unlockable;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Skill extends Comparable<Skill>, Unlockable {
+public interface Skill extends Comparable<Skill>, SkillRequirementResolver {
 
     public void load(ConfigurationSection data);
 
