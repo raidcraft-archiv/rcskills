@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.level;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.events.RCExpGainEvent;
 import de.raidcraft.skills.api.events.RCLevelEvent;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.LevelData;
@@ -132,7 +133,12 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     public void setExp(int exp) {
 
         if (this.exp < exp) {
-            getLevelObject().onExpGain(exp - this.exp);
+            RCExpGainEvent event = new RCExpGainEvent(this, exp - this.exp);
+            RaidCraft.callEvent(event);
+            if (event.isCancelled()) {
+                return;
+            }
+            getLevelObject().onExpGain((this.exp + event.getGainedExp()) - this.exp);
         } else {
             getLevelObject().onExpLoss(this.exp - exp);
         }
