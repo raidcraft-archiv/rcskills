@@ -6,7 +6,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
-import de.raidcraft.skills.api.level.NullAttachedLevel;
+import de.raidcraft.skills.api.level.VirtualProfessionAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
@@ -28,7 +28,7 @@ public final class VirtualProfession extends AbstractProfession {
     public VirtualProfession(Hero hero, ProfessionProperties data, Path<Profession> path, THeroProfession database) {
 
         super(hero, data, path, null, database);
-        attachLevel(new NullAttachedLevel(this, database));
+        attachLevel(new VirtualProfessionAttachedLevel(this, database));
         // lets save the virtual profession when its loaded
         save();
     }
@@ -36,10 +36,11 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public Collection<Skill> getSkills() {
 
-        if (skills.size() < 1) {
-            // at this point we normally load the skills from the config
-            // but virtual skills can only be given manually
 
+        if (skills.size() < 1) {
+
+            this.skills.clear();
+            this.skills.putAll(getProperties().loadSkills(this));
             // also load all skills that are only added in the db
             SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
             List<THeroSkill> dbSkills = database.getSkills();
@@ -68,14 +69,9 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public void removeSkill(Skill skill) {
 
-        this.skills.remove(skill);
+        this.skills.remove(skill.getName());
         skill.lock();
         skill.save();
-    }
-
-    @Override
-    public void checkSkillsForUnlock() {
-        // do nothing
     }
 
     @Override
@@ -108,10 +104,12 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public void onLevelGain() {
 
+        getHero().sendMessage(ChatColor.GREEN + "Dein Server Rang hat sich erhöht: " + ChatColor.AQUA + "Rang " + getAttachedLevel().getLevel());
     }
 
     @Override
     public void onLevelLoss() {
 
+        getHero().sendMessage(ChatColor.RED + "Dein Server Rang hat sich verringert: " + ChatColor.AQUA + "Rang " + getAttachedLevel().getLevel());
     }
 }

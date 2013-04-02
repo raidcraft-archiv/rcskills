@@ -27,6 +27,6 @@ public class SkillAttachedLevel extends AbstractAttachedLevel<LevelableSkill> {
 
         super.removeExp(exp);
         // lets remove the same amount of exp from the profession
-        getLevelObject().getAttachedLevel().removeExp(exp);
+        getLevelObject().getProfession().getAttachedLevel().removeExp(exp);
     }
 }

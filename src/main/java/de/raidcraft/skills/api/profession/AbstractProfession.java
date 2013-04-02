@@ -289,4 +289,20 @@ public abstract class AbstractProfession implements Profession {
                 && ((Profession) obj).getId() != 0 && getId() != 0
                 && ((Profession) obj).getId() == getId();
     }
+
+    @Override
+    public void checkSkillsForUnlock() {
+
+
+        for (Skill skill : getSkills()) {
+            // check all skills and if we need to unlock any
+            if (!skill.isUnlocked() && skill.isMeetingAllRequirements()) {
+                skill.unlock();
+            }
+            // check if we need to lock any skills
+            if (skill.isUnlocked() && !skill.isMeetingAllRequirements()) {
+                skill.lock();
+            }
+        }
+    }
 }

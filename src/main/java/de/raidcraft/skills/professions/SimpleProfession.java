@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 import org.bukkit.ChatColor;
 
@@ -56,19 +55,4 @@ public class SimpleProfession extends AbstractProfession {
         checkSkillsForUnlock();
     }
 
-    @Override
-    public void checkSkillsForUnlock() {
-
-
-        for (Skill skill : getSkills()) {
-            // check all skills and if we need to unlock any
-            if (!skill.isUnlocked() && skill.isMeetingAllRequirements()) {
-                skill.unlock();
-            }
-            // check if we need to lock any skills
-            if (skill.isUnlocked() && !skill.isMeetingAllRequirements()) {
-                skill.lock();
-            }
-        }
-    }
 }
