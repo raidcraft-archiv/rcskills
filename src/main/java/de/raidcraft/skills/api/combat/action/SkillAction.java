@@ -24,7 +24,6 @@ public class SkillAction extends AbstractAction<Hero> {
     private final Skill skill;
     private final CommandContext args;
     private final Map<String, Double> resourceCosts = new HashMap<>();
-    private double totalCooldown;
     private int castTime;
     private boolean delayed = false;
 
@@ -35,7 +34,6 @@ public class SkillAction extends AbstractAction<Hero> {
         super(skill.getHero());
         this.skill = skill;
         this.args = args;
-        this.totalCooldown = (skill.isOnCooldown() ? skill.getTotalCooldown() : 0);
         this.castTime = skill.getTotalCastTime();
         for (Resource resource : skill.getHero().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
@@ -63,16 +61,6 @@ public class SkillAction extends AbstractAction<Hero> {
     public void setResourceCost(String resource, double cost) {
 
         resourceCosts.put(resource, cost);
-    }
-
-    public double getTotalCooldown() {
-
-        return totalCooldown;
-    }
-
-    public void setTotalCooldown(double totalCooldown) {
-
-        this.totalCooldown = totalCooldown;
     }
 
     public int getCastTime() {

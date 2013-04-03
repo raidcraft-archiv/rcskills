@@ -92,7 +92,7 @@ public abstract class AbstractSkill implements Skill {
         if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
         }
-        setRemainingCooldown(action.getTotalCooldown());
+        // setRemainingCooldown(action.getTotalCooldown());
         if (isOnCooldown()) {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
