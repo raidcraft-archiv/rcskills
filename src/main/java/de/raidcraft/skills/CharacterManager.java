@@ -262,14 +262,21 @@ public final class CharacterManager implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDeath(EntityDeathEvent event) {
+    public void onEntityDeath(final EntityDeathEvent event) {
 
-        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
-        character.clearEffects();
-        if (!(character instanceof Hero)) {
-            // lets remove that poor character from our cache... may he Rest in Peace :*(
-            clearCacheOf(character);
-        }
+        // dispatch a task that does this with 1 tick delay in order to allow the event to clear properly
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
+                character.clearEffects();
+                if (!(character instanceof Hero)) {
+                    // lets remove that poor character from our cache... may he Rest in Peace :*(
+                    clearCacheOf(character);
+                }
+            }
+        }, 1L);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
