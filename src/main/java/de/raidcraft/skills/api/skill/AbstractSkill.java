@@ -92,7 +92,7 @@ public abstract class AbstractSkill implements Skill {
         if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
         }
-        setRemainingCooldown(action.getRemainingCooldown());
+        setRemainingCooldown(action.getTotalCooldown());
         if (isOnCooldown()) {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
@@ -426,9 +426,9 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
-    public final void setRemainingCooldown(long cooldown) {
+    public final void setRemainingCooldown(double cooldown) {
 
-        setLastCast(System.currentTimeMillis() - cooldown * 1000);
+        setLastCast((long) (System.currentTimeMillis() - cooldown * 1000));
     }
 
     @Override
