@@ -100,11 +100,12 @@ public final class ProfessionManager {
         return hero.getProfession(profId);
     }
 
-    public List<Profession> getAllProfessions(Hero hero) {
+
+    public List<Profession> getAllProfessions(Hero hero, boolean virtual) {
 
         List<Profession> professions = new ArrayList<>();
         for (String prof : professionFactories.keySet()) {
-            if (!prof.equals(VIRTUAL_PROFESSION)) {
+            if (!virtual && !prof.equals(VIRTUAL_PROFESSION)) {
                 try {
                     professions.add(getProfession(hero, prof));
                 } catch (UnknownSkillException | UnknownProfessionException e) {
@@ -113,6 +114,12 @@ public final class ProfessionManager {
             }
         }
         return professions;
+    }
+
+
+    public List<Profession> getAllProfessions(Hero hero) {
+
+        return getAllProfessions(hero, true);
     }
 
     public ProfessionFactory getFactory(String name) throws UnknownProfessionException {
