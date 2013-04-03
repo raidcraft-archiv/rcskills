@@ -246,6 +246,57 @@ public class AdminCommands {
     }
 
     @Command(
+            aliases = {"setlevel", "setlvl", "sl"},
+            desc = "Sets level to the hero, prof or skill of the player",
+            usage = "<player> [-p <prof>] [-s <skill>] [-h] <level>",
+            flags = "p:s:h",
+            min = 2
+    )
+    @CommandPermissions("rcskills.admin.level.set")
+    public void setLevel(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            int level = args.getInteger(1);
+            if (args.hasFlag('h')) {
+                hero.getAttachedLevel().setLevel(level);
+                sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
+                        hero.getName() + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat dir " + ChatColor.AQUA
+                        + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+            }
+            if (args.hasFlag('p')) {
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
+                profession.getAttachedLevel().setLevel(level);
+                sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
+                        hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
+                        + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+                hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deiner Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName()
+                        + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+            }
+            if (args.hasFlag('s')) {
+                Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
+                if (skill instanceof Levelable) {
+                    ((Levelable) skill).getAttachedLevel().setLevel(level);
+                    sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
+                            hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
+                            + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+                    hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deinem Skill " + ChatColor.AQUA + skill.getFriendlyName()
+                            + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
+                } else {
+                    throw new CommandException("Der Skill " + skill.getName() + " ist kein Levelbarer Skill.");
+                }
+            }
+
+            if (!args.hasFlag('p') && !args.hasFlag('s') && !args.hasFlag('h')) {
+                throw new CommandException("Du kannst dem EXP Pool des Spielers keine Level hinzufügen.");
+            }
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    @Command(
             aliases = {"addlevel", "addlvl", "al"},
             desc = "Adds level to the hero, prof or skill of the player",
             usage = "<player> [-p <prof>] [-s <skill>] [-h] <level>",

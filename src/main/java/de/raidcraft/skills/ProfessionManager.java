@@ -105,13 +105,16 @@ public final class ProfessionManager {
 
         List<Profession> professions = new ArrayList<>();
         for (String prof : professionFactories.keySet()) {
-            if (!virtual && !prof.equals(VIRTUAL_PROFESSION)) {
+            if (!prof.equals(VIRTUAL_PROFESSION)) {
                 try {
                     professions.add(getProfession(hero, prof));
                 } catch (UnknownSkillException | UnknownProfessionException e) {
                     plugin.getLogger().warning(e.getMessage());
                 }
             }
+        }
+        if (virtual) {
+            professions.add(getVirtualProfession(hero));
         }
         return professions;
     }
