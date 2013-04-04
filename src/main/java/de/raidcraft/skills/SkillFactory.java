@@ -194,7 +194,7 @@ public final class SkillFactory {
 
     public SkillConfig getConfig(Profession profession) {
 
-        return skillConfigs.get(profession);
+        return skillConfigs.get(profession.getName());
     }
 
     protected SkillConfig getNewConfig() {
