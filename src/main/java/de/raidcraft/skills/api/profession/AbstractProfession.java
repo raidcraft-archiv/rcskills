@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -265,7 +266,8 @@ public abstract class AbstractProfession implements Profession {
         database.setActive(isActive());
 
         // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             Database.save(database);
         }
     }
@@ -277,7 +279,8 @@ public abstract class AbstractProfession implements Profession {
         database.setExp(attachedLevel.getExp());
 
         // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             Database.save(database);
         }
     }

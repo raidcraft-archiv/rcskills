@@ -6,6 +6,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -714,7 +715,8 @@ public abstract class AbstractSkill implements Skill {
 
         database.setUnlocked(isUnlocked());
         // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             Database.save(database);
         }
     }

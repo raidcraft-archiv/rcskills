@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -100,7 +101,8 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
         database.setExp(attachedLevel.getExp());
 
         // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             Database.save(database);
         }
     }
