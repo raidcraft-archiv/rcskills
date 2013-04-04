@@ -76,6 +76,16 @@ public class SkillAction extends AbstractAction<Hero> {
     @Override
     public void run() throws CombatException {
 
+        if (!skill.isActive()) {
+            throw new CombatException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");
+        }
+        if (!skill.isUnlocked()) {
+            throw new CombatException("Du hast diesen Skill noch nicht freigeschaltet.");
+        }
+        if (!(skill instanceof CommandTriggered)) {
+            throw new CombatException("Der Skill ist passiv und kann nicht aktiv genutzt werden.");
+        }
+
         if (getSource().hasEffect(GlobalCooldown.class)) {
             throw new CombatException(CombatException.Type.ON_GLOBAL_COOLDOWN);
         }

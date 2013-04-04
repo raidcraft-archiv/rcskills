@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.util.SkillUtil;
 import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.command.CommandSender;
@@ -47,16 +46,6 @@ public class CastCommand {
 
         // lets parse the argument for a valid spell
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
-
-        if (!skill.isActive()) {
-            throw new CommandException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");
-        }
-        if (!skill.isUnlocked()) {
-            throw new CommandException("Du hast diesen Skill noch nicht freigeschaltet.");
-        }
-        if (!(skill instanceof CommandTriggered)) {
-            throw new CommandException("Du kannst diesen Skill nicht via Command ausführen.");
-        }
 
         try {
             new SkillAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
