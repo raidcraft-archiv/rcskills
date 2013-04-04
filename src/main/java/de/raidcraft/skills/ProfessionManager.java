@@ -22,6 +22,7 @@ public final class ProfessionManager {
     public static final String VIRTUAL_PROFESSION = "virtual";
     private final SkillsPlugin plugin;
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
+    private final Map<String, Map<String, Profession>> cachedProfessions = new HashMap<>();
 
     protected ProfessionManager(SkillsPlugin plugin) {
 
@@ -94,10 +95,21 @@ public final class ProfessionManager {
         if (!professionFactories.containsKey(profId)) {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
-        if (!hero.hasProfession(profId)) {
-            return professionFactories.get(profId).create(hero, parent);
+        if (!cachedProfessions.containsKey(hero.getName())) {
+            cachedProfessions.put(hero.getName(), new HashMap<String, Profession>());
         }
-        return hero.getProfession(profId);
+        if (cachedProfessions.get(hero.getName()).containsKey(profId)) {
+            return cachedProfessions.get(hero.getName()).get(profId);
+        }
+        Profession profession;
+        if (hero.hasProfession(profId)) {
+            profession = hero.getProfession(profId);
+        } else {
+            // create a new profession
+            profession = professionFactories.get(profId).create(hero, parent);
+        }
+        cachedProfessions.get(hero.getName()).put(profId, profession);
+        return profession;
     }
 
 
@@ -136,5 +148,10 @@ public final class ProfessionManager {
     public ProfessionFactory getFactory(Profession profession) {
 
         return professionFactories.get(profession.getProperties().getName());
+    }
+
+    public void clearProfessionCache(String player) {
+
+        cachedProfessions.remove(player);
     }
 }

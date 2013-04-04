@@ -140,7 +140,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     public Collection<? extends Skill> getAllSkills(Hero hero) {
 
-        List<Skill> skills = new ArrayList<>();
+        Set<Skill> skills = new HashSet<>();
         for (Profession profession : plugin.getProfessionManager().getAllProfessions(hero)) {
             skills.addAll(profession.getSkills());
         }
@@ -182,7 +182,13 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
     public void clearSkillCache(String heroName) {
 
-        cachedSkills.remove(StringUtils.formatName(heroName));
+        Map<CachedSkill, Skill> cache = cachedSkills.remove(StringUtils.formatName(heroName));
+        if (cache == null) return;
+        for (Skill skill : cache.values()) {
+            if (skill instanceof Triggered) {
+                TriggerManager.unregisterListeners((Triggered) skill);
+            }
+        }
     }
 
     public static class CachedSkill {

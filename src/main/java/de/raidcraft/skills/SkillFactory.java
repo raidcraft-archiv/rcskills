@@ -27,7 +27,7 @@ public final class SkillFactory {
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     // every profession needs its own config instance
-    private final Map<Profession, SkillConfig> skillConfigs = new HashMap<>();
+    private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
     private final String skillName;
     private final AliasesConfig aliasConfig;
     private Constructor<? extends Skill> constructor;
@@ -98,7 +98,7 @@ public final class SkillFactory {
     protected Skill create(Hero hero, Profession profession, ConfigurationSection... overrides) throws UnknownSkillException {
 
         SkillConfig config;
-        if (!skillConfigs.containsKey(profession)) {
+        if (!skillConfigs.containsKey(profession.getName())) {
             config = plugin.configure(new SkillConfig(this), false);
             // we need to set all the overrides to null because they are used multiple times
             if (useAlias()) {
@@ -113,9 +113,9 @@ public final class SkillFactory {
                 config.getOverrideConfig().merge(section);
             }
 
-            skillConfigs.put(profession, config);
+            skillConfigs.put(profession.getName(), config);
         } else {
-            config = skillConfigs.get(profession);
+            config = skillConfigs.get(profession.getName());
         }
 
         if (!config.isEnabled()) {

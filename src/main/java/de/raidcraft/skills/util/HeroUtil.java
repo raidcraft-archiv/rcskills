@@ -36,25 +36,27 @@ public final class HeroUtil {
 
         final SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
 
+        // save the hero first
+        hero.save();
+        hero.clearEffects();
+        // destroy all resources
+        for (Resource resource : hero.getResources()) {
+            resource.destroy();
+        }
+        // we also need to unregister all skill listeners
+        for (Skill skill : plugin.getSkillManager().getAllSkills(hero)) {
+            if (skill instanceof Triggered) {
+                TriggerManager.unregisterListeners((Triggered) skill);
+            }
+        }
+
         // we clear the cache later to avoid events beeing triggered
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
 
-                // save the hero first
-                hero.save();
-                hero.clearEffects();
-                // destroy all resources
-                for (Resource resource : hero.getResources()) {
-                    resource.destroy();
-                }
-                // we also need to unregister all skill listeners
-                for (Skill skill : hero.getSkills()) {
-                    if (skill instanceof Triggered) {
-                        TriggerManager.unregisterListeners((Triggered) skill);
-                    }
-                }
-
+                plugin.getProfessionManager().clearProfessionCache(hero.getName());
+                plugin.getSkillManager().clearSkillCache(hero.getName());
                 plugin.getCharacterManager().clearCacheOf(hero);
             }
         }, 5L);
