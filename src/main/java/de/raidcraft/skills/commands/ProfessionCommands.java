@@ -118,7 +118,7 @@ public class ProfessionCommands {
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
                         + ChatColor.GREEN + " Spezialisierung wechseln willst?");
-                if (cost > 0) {
+                if (cost > 0 && plugin.getEconomy() != null) {
                     sender.sendMessage(ChatColor.RED +
                             "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
                             " Spezialisierung zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
