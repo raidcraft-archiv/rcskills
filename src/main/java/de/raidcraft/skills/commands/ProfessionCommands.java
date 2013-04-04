@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -174,8 +175,9 @@ public class ProfessionCommands {
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
                 ChatColor.YELLOW + " Spezialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
 
-        if (cost > 0) {
-            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural()
+        Economy economy = plugin.getEconomy();
+        if (economy != null && cost > 0) {
+            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + economy.currencyNamePlural()
                     + ChatColor.RED + " vom Konto abgezogen.");
         }
     }
