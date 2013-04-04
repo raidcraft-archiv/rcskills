@@ -1,7 +1,9 @@
 package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroOption;
 
@@ -47,7 +49,11 @@ class HeroOptions {
                 option.setOptionKey(entry.getKey());
             }
             option.setOptionValue(entry.getValue());
-            Database.save(option);
+
+            // dont save when the player is in a blacklist world
+            if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(hero.getPlayer().getWorld().getName())) {
+                Database.save(option);
+            }
         }
     }
 }

@@ -466,11 +466,9 @@ public abstract class AbstractSkill implements Skill {
         data.setDataValue(value.toString());
 
         // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            Database.save(data);
         }
-
-        Database.save(data);
     }
 
     protected final void removeData(String key) {
@@ -714,11 +712,9 @@ public abstract class AbstractSkill implements Skill {
     public void save() {
 
         // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            Database.save(database);
         }
-
-        Database.save(database);
     }
 
     @Override

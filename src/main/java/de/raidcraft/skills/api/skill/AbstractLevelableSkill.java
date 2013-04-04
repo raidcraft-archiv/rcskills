@@ -89,11 +89,6 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void save() {
 
-        // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
-        }
-
         super.save();
         attachedLevel.saveLevelProgress();
     }
@@ -101,14 +96,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
 
-        // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
-        }
-
         database.setLevel(attachedLevel.getLevel());
         database.setExp(attachedLevel.getExp());
-        Database.save(database);
+
+        // dont save when the player is in a blacklist world
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            Database.save(database);
+        }
     }
 
     @Override

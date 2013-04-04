@@ -255,31 +255,29 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void save() {
 
-        // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
-        }
-
         // save all resources
         for (Resource resource : getResources()) {
             resource.save();
         }
         saveLevelProgress(getAttachedLevel());
         database.setActive(isActive());
-        Database.save(database);
+
+        // dont save when the player is in a blacklist world
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            Database.save(database);
+        }
     }
 
     @Override
     public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
 
-        // dont save when the player is in a blacklist world
-        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            return;
-        }
-
         database.setLevel(attachedLevel.getLevel());
         database.setExp(attachedLevel.getExp());
-        Database.save(database);
+
+        // dont save when the player is in a blacklist world
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            Database.save(database);
+        }
     }
 
     @Override
