@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -41,7 +41,7 @@ public class THeroSkill implements LevelData, Bean {
     private int level;
     private int exp;
     private boolean unlocked;
-    private Time unlockTime;
+    private Timestamp unlockTime;
 
     public int getId() {
 
@@ -123,12 +123,12 @@ public class THeroSkill implements LevelData, Bean {
         this.skillData = skillData;
     }
 
-    public Time getUnlockTime() {
+    public Timestamp getUnlockTime() {
 
         return unlockTime;
     }
 
-    public void setUnlockTime(Time unlockTime) {
+    public void setUnlockTime(Timestamp unlockTime) {
 
         this.unlockTime = unlockTime;
     }

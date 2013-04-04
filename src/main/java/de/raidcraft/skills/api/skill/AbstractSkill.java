@@ -41,6 +41,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public abstract class AbstractSkill implements Skill {
     private String description;
     private long lastCast;
     private boolean unlocked = false;
-    private Time unlockTime;
+    private Timestamp unlockTime;
 
     public AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -73,6 +74,7 @@ public abstract class AbstractSkill implements Skill {
         this.properties = data;
         this.description = data.getDescription();
         this.profession = profession;
+        this.unlocked = (database != null && database.isUnlocked());
         this.effectTypes.addAll(Arrays.asList(data.getInformation().types()));
         this.effectElements.addAll(Arrays.asList(data.getInformation().elements()));
     }
@@ -656,7 +658,7 @@ public abstract class AbstractSkill implements Skill {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         unlocked = true;
-        unlockTime = new Time(System.currentTimeMillis());
+        unlockTime = new Timestamp(System.currentTimeMillis());
         save();
         // apply the skill
         apply();
