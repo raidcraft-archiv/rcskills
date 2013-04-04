@@ -649,7 +649,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (this.party != null) {
             party.removeMember(this);
         }
-        this.party = null;
+        this.party = new SimpleParty(this);
     }
 
     @Override
