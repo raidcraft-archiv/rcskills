@@ -79,6 +79,7 @@ public abstract class AbstractProfession implements Profession {
 
         this.skills.clear();
         this.skills.putAll(properties.loadSkills(this));
+        checkSkillsForUnlock();
     }
 
     public THeroProfession getDatabase() {
