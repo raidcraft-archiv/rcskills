@@ -137,7 +137,7 @@ public class ProfessionCommands {
     @Command(
             aliases = {"info"},
             desc = "Shows information about a profession",
-            flags = "h"
+            flags = "h:"
     )
     @CommandPermissions("rcskills.player.profession.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
