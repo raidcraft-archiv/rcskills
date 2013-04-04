@@ -59,6 +59,7 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         Skill skill = skills.get(index);
         try {
             new SkillAction(skill).run();
+            getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + getCurrent().getFriendlyName());
         } catch (CombatException e) {
             getHero().sendMessage(ChatColor.RED + e.getMessage());
         }

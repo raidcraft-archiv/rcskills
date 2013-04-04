@@ -38,7 +38,6 @@ public class BindListener implements Listener {
         }
 
         if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + boundItem.getCurrent().getFriendlyName());
             boundItem.use();
         }
 
