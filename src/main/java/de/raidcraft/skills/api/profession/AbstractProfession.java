@@ -40,6 +40,7 @@ public abstract class AbstractProfession implements Profession {
     protected final Map<String, Skill> skills = new HashMap<>();
     protected final THeroProfession database;
 
+    private boolean active = false;
     // can be null - if it is this profession has no parents :*(
     private Profession parent;
     private AttachedLevel<Profession> attachedLevel;
@@ -52,6 +53,7 @@ public abstract class AbstractProfession implements Profession {
         this.database = database;
         this.parent = parent;
         this.children = data.loadChildren(this);
+        this.active = database.isActive();
         // attach a level
         attachLevel(new ConfigurableAttachedLevel<Profession>(this, data.getLevelFormula(), database));
         // first we need to get the defined resources out of the config
@@ -134,13 +136,13 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public boolean isActive() {
 
-        return database.isActive();
+        return active;
     }
 
     @Override
     public void setActive(boolean active) {
 
-        database.setActive(active);
+        this.active = active;
     }
 
     @Override

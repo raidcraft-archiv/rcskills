@@ -61,6 +61,7 @@ public abstract class AbstractSkill implements Skill {
     protected final THeroSkill database;
     private String description;
     private long lastCast;
+    private boolean unlocked = false;
 
     public AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -644,14 +645,14 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final boolean isUnlocked() {
 
-        return database.isUnlocked();
+        return unlocked;
     }
 
     @Override
     public final void unlock() {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
-        database.setUnlocked(true);
+        unlocked = true;
         database.setUnlockTime(new Time(System.currentTimeMillis()));
         save();
         // apply the skill
@@ -662,7 +663,7 @@ public abstract class AbstractSkill implements Skill {
     public final void lock() {
 
         getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
-        database.setUnlocked(false);
+        unlocked = false;
         save();
         // remove the skill
         remove();
@@ -711,6 +712,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void save() {
 
+        database.setUnlocked(isUnlocked());
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             Database.save(database);
