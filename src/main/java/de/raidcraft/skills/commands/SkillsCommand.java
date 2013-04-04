@@ -17,7 +17,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -44,7 +46,7 @@ public class SkillsCommand {
         final Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
         // Profession profession = null;
-        List<Skill> skills = new ArrayList<>();
+        Collection<Skill> skills = new HashSet<>();
         // get the profession
         if (args.argsLength() > 0) {
             skills.addAll(ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0)).getSkills());
@@ -80,8 +82,10 @@ public class SkillsCommand {
                 }
             }
         }
+
+        skills = new ArrayList<>(skills);
         // lets sort them by their required level
-        Collections.sort(skills);
+        Collections.sort((List<Skill>) skills);
         // lets list all skills
         new PaginatedResult<Skill>("[Prof:Level] -   Name") {
 
