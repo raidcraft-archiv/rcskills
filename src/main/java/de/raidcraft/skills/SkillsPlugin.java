@@ -253,7 +253,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public boolean isSavingWorld(String world) {
 
-        return getCommonConfig().getIgnoredWorlds().contains(world);
+        return !getCommonConfig().getIgnoredWorlds().contains(world);
     }
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
