@@ -28,7 +28,7 @@ public class Weapon {
             Pattern.compile("^Item\\sLevel\\s([0-9]+)$"),
             Pattern.compile("^Wird beim Benutzen gebunden$"),
             Pattern.compile("^([Einhändig|Beidhändig|Schildhand])\t\t\t([\\w]+)$"),
-            Pattern.compile("^([0-9]+)\\-([0-9]+)\\sSchaden\t\t\tTempo\\s(\\d\\.\\d{2})$"),
+            Pattern.compile("^([0-9]+)\\-([0-9]+)\\sSchaden\\s\\s\\s\\s\\s\\s\\s\\s\\s\\sTempo\\s(\\d\\.\\d{2})$"),
             Pattern.compile("^([\\d]+)\\s([\\w]+)$")
     };
 
@@ -68,7 +68,6 @@ public class Weapon {
                 maxDamage = damage.getMaxDamage();
                 swingTime = damage.getSwingTime();
             }
-            save();
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
@@ -157,7 +156,7 @@ public class Weapon {
             swingTime = swingTime + "0";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(getMinDamage()).append("-").append(getMaxDamage()).append(" Schaden - Tempo ").append(swingTime);
+        sb.append(getMinDamage()).append("-").append(getMaxDamage()).append(" Schaden          Tempo ").append(swingTime);
         if (lore.size() > 0) {
             lore.set(0, sb.toString());
         } else {

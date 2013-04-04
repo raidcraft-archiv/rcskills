@@ -429,7 +429,8 @@ public class AdminCommands {
             HeroUtil.clearCache(hero);
         }
         // this will delete all references to the object
-        Ebean.find(THero.class, hero.getId()).delete();
+        THero tHero = Ebean.find(THero.class, hero.getId());
+        if (tHero != null) tHero.delete();
         // remove the player from cache
         sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }
