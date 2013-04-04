@@ -31,6 +31,7 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
+    private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
     private final Path<Profession> path;
@@ -39,7 +40,6 @@ public abstract class AbstractProfession implements Profession {
     private final List<Requirement> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
     protected final Map<String, Skill> skills = new HashMap<>();
-    protected final THeroProfession database;
 
     private boolean active = false;
     // can be null - if it is this profession has no parents :*(
@@ -48,10 +48,10 @@ public abstract class AbstractProfession implements Profession {
 
     protected AbstractProfession(Hero hero, ProfessionProperties data, Path<Profession> path, Profession parent, THeroProfession database) {
 
+        this.id = database.getId();
         this.properties = data;
         this.hero = hero;
         this.path = path;
-        this.database = database;
         this.parent = parent;
         this.children = data.loadChildren(this);
         this.active = database.isActive();
@@ -82,11 +82,6 @@ public abstract class AbstractProfession implements Profession {
         checkSkillsForUnlock();
     }
 
-    public THeroProfession getDatabase() {
-
-        return database;
-    }
-
     @Override
     public final AttachedLevel<Profession> getAttachedLevel() {
 
@@ -102,7 +97,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public int getId() {
 
-        return database.getId();
+        return id;
     }
 
     @Override
@@ -264,25 +259,28 @@ public abstract class AbstractProfession implements Profession {
             resource.save();
         }
         saveLevelProgress(getAttachedLevel());
-        database.setActive(isActive());
+
+        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
+        profession.setActive(isActive());
 
         // dont save when the player is in a blacklist world
         if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(database);
+            Database.save(profession);
         }
     }
 
     @Override
     public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
 
-        database.setLevel(attachedLevel.getLevel());
-        database.setExp(attachedLevel.getExp());
+        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
+        profession.setLevel(attachedLevel.getLevel());
+        profession.setExp(attachedLevel.getExp());
 
         // dont save when the player is in a blacklist world
         if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(database);
+            Database.save(profession);
         }
     }
 

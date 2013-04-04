@@ -52,6 +52,7 @@ import java.util.Set;
  */
 public abstract class AbstractSkill implements Skill {
 
+    private final int id;
     private final Hero hero;
     private final SkillProperties properties;
     private final Profession profession;
@@ -59,16 +60,17 @@ public abstract class AbstractSkill implements Skill {
     private final List<Requirement> useRequirements = new ArrayList<>();
     private final Set<EffectType> effectTypes = new HashSet<>();
     private final Set<EffectElement> effectElements = new HashSet<>();
-    protected final THeroSkill database;
+    // protected final THeroSkill database;
     private String description;
     private long lastCast;
     private boolean unlocked = false;
+    private Time unlockTime;
 
     public AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
+        this.id = database.getId();
         this.hero = hero;
         this.properties = data;
-        this.database = database;
         this.description = data.getDescription();
         this.profession = profession;
         this.effectTypes.addAll(Arrays.asList(data.getInformation().types()));
@@ -463,7 +465,7 @@ public abstract class AbstractSkill implements Skill {
         if (data == null) {
             data = new TSkillData();
             data.setDataKey(key);
-            data.setSkill(database);
+            data.setSkill(Ebean.find(THeroSkill.class, getId()));
         }
         data.setDataValue(value.toString());
 
@@ -518,7 +520,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final int getId() {
 
-        return database.getId();
+        return id;
     }
 
     @Override
@@ -654,7 +656,7 @@ public abstract class AbstractSkill implements Skill {
 
         getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
         unlocked = true;
-        database.setUnlockTime(new Time(System.currentTimeMillis()));
+        unlockTime = new Time(System.currentTimeMillis());
         save();
         // apply the skill
         apply();
@@ -713,11 +715,13 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void save() {
 
-        database.setUnlocked(isUnlocked());
+        THeroSkill skill = Ebean.find(THeroSkill.class, getId());
+        skill.setUnlockTime(unlockTime);
+        skill.setUnlocked(isUnlocked());
         // dont save when the player is in a blacklist world
         if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(database);
+            Database.save(skill);
         }
     }
 

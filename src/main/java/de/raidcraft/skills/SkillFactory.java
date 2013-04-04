@@ -1,16 +1,17 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
-import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -160,7 +161,8 @@ public final class SkillFactory {
             database.setExp(0);
             database.setLevel(1);
             database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession((((AbstractProfession) profession).getDatabase()));
+            database.setProfession(Ebean.find(THeroProfession.class, profession.getId()));
+            Database.save(database);
         }
         return database;
     }
