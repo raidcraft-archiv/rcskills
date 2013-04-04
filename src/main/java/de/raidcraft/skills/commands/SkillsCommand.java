@@ -93,7 +93,7 @@ public class SkillsCommand {
                 int level = skill.getProperties().getRequiredLevel();
                 Profession profession = skill.getProfession();
 
-                sb.append(ChatColor.YELLOW).append("[").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED)
+                sb.append(ChatColor.YELLOW).append("[").append(skill.isActive() ? ChatColor.GREEN : ChatColor.RED)
                         .append(profession.getProperties().getTag()).append(":")
                         .append((profession.getAttachedLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
