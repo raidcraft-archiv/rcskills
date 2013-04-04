@@ -266,7 +266,7 @@ public class AdminCommands {
                         + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('p')) {
-                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), plugin.getProfessionManager().getAllProfessions(hero));
                 profession.getAttachedLevel().setLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
@@ -317,7 +317,7 @@ public class AdminCommands {
                         + " " + level + " level" + ChatColor.GREEN + " hinzugefügt.");
             }
             if (args.hasFlag('p')) {
-                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), plugin.getProfessionManager().getAllProfessions(hero));
                 profession.getAttachedLevel().addLevel(level);
                 sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.GREEN + "Spezialisierung " + ChatColor.AQUA + profession.getName()
@@ -368,7 +368,7 @@ public class AdminCommands {
                         + " " + level + "level" + ChatColor.RED + " entfernt.");
             }
             if (args.hasFlag('p')) {
-                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), hero.getProfessions());
+                Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getFlag('p'), plugin.getProfessionManager().getAllProfessions(hero));
                 profession.getAttachedLevel().removeLevel(level);
                 sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                         hero.getName() + "'s " + ChatColor.RED + "Spezialisierung " + ChatColor.AQUA + profession.getName()

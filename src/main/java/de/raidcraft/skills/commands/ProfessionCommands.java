@@ -62,6 +62,10 @@ public class ProfessionCommands {
             }
         }
 
+        if (!args.hasFlag('v')) {
+            professions.remove(plugin.getProfessionManager().getVirtualProfession(hero));
+        }
+
         Collections.sort(professions);
 
         new PaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {

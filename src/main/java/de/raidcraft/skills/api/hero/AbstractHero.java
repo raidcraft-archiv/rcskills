@@ -132,6 +132,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 profession.checkSkillsForUnlock();
             }
         }
+        getVirtualProfession().checkSkillsForUnlock();
         // make sure all virtual skills are added last and override normal skills
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
