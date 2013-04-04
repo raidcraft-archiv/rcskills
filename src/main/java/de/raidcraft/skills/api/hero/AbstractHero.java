@@ -375,6 +375,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void save() {
 
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
+            return;
+        }
+
         THero tHero = Ebean.find(THero.class, getId());
         if (tHero == null) return;
         tHero.setHealth(getHealth());
@@ -400,6 +405,11 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
     @Override
     public void saveLevelProgress(AttachedLevel<Hero> attachedLevel) {
+
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
+            return;
+        }
 
         THero heroTable = Ebean.find(THero.class, getId());
         heroTable.setExp(getAttachedLevel().getExp());

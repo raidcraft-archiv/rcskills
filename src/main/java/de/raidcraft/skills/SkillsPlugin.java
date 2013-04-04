@@ -44,7 +44,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -249,6 +251,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         return experienceConfig;
     }
 
+    public boolean isSavingWorld(String world) {
+
+        return getCommonConfig().ignored_worlds.contains(world);
+    }
+
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
 
         @Setting("disable-error-skills")
@@ -285,6 +292,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String effect_jar_path = "effects/";
         @Setting("paths.profession-configs")
         public String profession_config_path = "professions/";
+        @Setting("ignored-worlds")
+        public Set<String> ignored_worlds = new HashSet<>();
 
         public LocalConfiguration(SkillsPlugin plugin) {
 

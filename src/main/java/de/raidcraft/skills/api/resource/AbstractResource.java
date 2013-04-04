@@ -241,6 +241,11 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void save() {
 
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            return;
+        }
+
         data.setValue(getCurrent());
         Database.save(data);
     }

@@ -1,8 +1,10 @@
 package de.raidcraft.skills.api.profession;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
@@ -253,6 +255,11 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void save() {
 
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            return;
+        }
+
         // save all resources
         for (Resource resource : getResources()) {
             resource.save();
@@ -264,6 +271,11 @@ public abstract class AbstractProfession implements Profession {
 
     @Override
     public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
+
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            return;
+        }
 
         database.setLevel(attachedLevel.getLevel());
         database.setExp(attachedLevel.getExp());

@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.SkillAttachedLevel;
@@ -87,12 +89,22 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void save() {
 
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            return;
+        }
+
         super.save();
         attachedLevel.saveLevelProgress();
     }
 
     @Override
     public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
+
+        // dont save when the player is in a blacklist world
+        if (!RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            return;
+        }
 
         database.setLevel(attachedLevel.getLevel());
         database.setExp(attachedLevel.getExp());
