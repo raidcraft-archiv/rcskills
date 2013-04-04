@@ -80,6 +80,8 @@ public interface Skill extends Comparable<Skill>, SkillRequirementResolver {
 
     public int getTotalRange();
 
+    public int getUseExp();
+
     public double getTotalCooldown();
 
     public void setRemainingCooldown(double cooldown);

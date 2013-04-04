@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,27 @@ public class PlayerComands {
     public PlayerComands(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+    }
+
+    @Command(
+            aliases = {"link"},
+            desc = "Links the EXP pool to the defined profession.",
+            usage = "<beruf/klasse>",
+            flags = "d"
+    )
+    public void linkExpPool(CommandContext args, CommandSender sender) throws CommandException {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        if (args.hasFlag('d') || args.argsLength() < 1) {
+            // unlink exp pool
+            Option.EXP_POOL_LINK.set(hero, null);
+            sender.sendMessage(ChatColor.RED + "Die Verknüpfung mit deinem EXP Pool wurde aufgehoben.");
+        } else {
+            Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
+            Option.EXP_POOL_LINK.set(hero, profession.getName());
+            sender.sendMessage(ChatColor.GREEN + "Dein EXP Pool ist nun mit deiner " + profession.getPath().getFriendlyName()
+                    + " Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName() + ChatColor.GREEN + " verknüpft.");
+        }
     }
 
     @Command(
@@ -73,9 +95,9 @@ public class PlayerComands {
     public void combatLog(CommandContext args, CommandSender sender) {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        Option.COMBAT_LOGGING.set(hero, !Option.COMBAT_LOGGING.isSet(hero));
+        Option.COMBAT_LOGGING.set(hero, (!Option.COMBAT_LOGGING.getBoolean(hero)) + "");
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Kampflog wurde " + ChatColor.AQUA +
-                (Option.COMBAT_LOGGING.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
+                (Option.COMBAT_LOGGING.getBoolean(hero) ? "eingeschaltet." : "ausgeschaltet."));
     }
 
     private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {

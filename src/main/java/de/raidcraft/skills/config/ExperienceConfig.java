@@ -42,6 +42,11 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
         return crafting.get(itemId);
     }
 
+    public double getExpBoost() {
+
+        return getDouble("exp-boost", 0.0);
+    }
+
     @Override
     public void load() {
 

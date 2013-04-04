@@ -6,7 +6,8 @@ package de.raidcraft.skills.api.hero;
 public enum Option {
 
     DEBUGGING("debug"),
-    COMBAT_LOGGING("combatlog");
+    COMBAT_LOGGING("combatlog"),
+    EXP_POOL_LINK("exp_pool_link");
 
     private final String key;
 
@@ -20,13 +21,18 @@ public enum Option {
         return key;
     }
 
-    public void set(Hero hero, boolean value) {
+    public void set(Hero hero, String value) {
 
         hero.getOptions().set(this, value);
     }
 
-    public boolean isSet(Hero hero) {
+    public String get(Hero hero) {
 
-        return hero.getOptions().isSet(this);
+        return hero.getOptions().get(this);
+    }
+
+    public boolean getBoolean(Hero hero) {
+
+        return Boolean.parseBoolean(get(hero));
     }
 }

@@ -67,5 +67,7 @@ public interface SkillProperties {
 
     public ConfigurationSection getRange();
 
+    public ConfigurationSection getUseExp();
+
     public ConfigurationSection getCooldown();
 }

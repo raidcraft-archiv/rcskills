@@ -24,6 +24,8 @@ public interface CharacterTemplate {
 
     public LivingEntity getEntity();
 
+    public Attack getLastDamageCause();
+
     public Weapon getWeapon(Weapon.Slot slot);
 
     public boolean hasWeapon(Weapon.Slot slot);

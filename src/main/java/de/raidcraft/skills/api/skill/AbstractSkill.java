@@ -40,7 +40,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,6 +168,13 @@ public abstract class AbstractSkill implements Skill {
         hero.getPlayer().getInventory().removeItem(getProperties().getReagents());
         // and lets set the cooldown because it is like a usage cost for further casting
         setLastCast(System.currentTimeMillis());
+        // also give the player the defined amount of exp for using the skill
+        int useExp = getUseExp();
+        if (this instanceof LevelableSkill) {
+            ((LevelableSkill) this).getAttachedLevel().addExp(useExp);
+        } else {
+            getProfession().getAttachedLevel().addExp(useExp);
+        }
     }
 
     private List<Requirement> getUseRequirements() {
@@ -423,6 +429,12 @@ public abstract class AbstractSkill implements Skill {
     public final int getTotalRange() {
 
         return (int) ConfigUtil.getTotalValue(this, properties.getRange());
+    }
+
+    @Override
+    public int getUseExp() {
+
+        return (int) ConfigUtil.getTotalValue(this, properties.getUseExp());
     }
 
     @Override

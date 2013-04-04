@@ -306,7 +306,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void debug(String message) {
 
-        if (Option.DEBUGGING.isSet(this) && message != null && !message.equals("")) {
+        if (Option.DEBUGGING.getBoolean(this) && message != null && !message.equals("")) {
             getPlayer().sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
         }
     }
@@ -320,7 +320,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void combatLog(Object o, String message) {
 
-        if (Option.COMBAT_LOGGING.isSet(this) && message != null && !message.equals("")) {
+        if (Option.COMBAT_LOGGING.getBoolean(this) && message != null && !message.equals("")) {
             getPlayer().sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
                     + " " + ChatColor.ITALIC + message);
         }

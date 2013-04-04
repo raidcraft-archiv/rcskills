@@ -16,30 +16,30 @@ import java.util.Map;
 class HeroOptions {
 
     private final Hero hero;
-    private final Map<String, Boolean> options = new HashMap<>();
+    private final Map<String, String> options = new HashMap<>();
 
     protected HeroOptions(Hero hero) {
 
         this.hero = hero;
         // load all the options from the database
         for (THeroOption option : Ebean.find(THero.class, hero.getId()).getOptions()) {
-            options.put(option.getOptionKey(), option.isOptionValue());
+            options.put(option.getOptionKey(), option.getOptionValue());
         }
     }
 
-    public void set(Option option, boolean value) {
+    public void set(Option option, String value) {
 
         options.put(option.getKey(), value);
     }
 
-    public boolean isSet(Option option) {
+    public String get(Option option) {
 
-        return options.get(option.getKey()) != null && options.get(option.getKey());
+        return options.get(option.getKey());
     }
 
     public void save() {
 
-        for (Map.Entry<String, Boolean> entry : options.entrySet()) {
+        for (Map.Entry<String, String> entry : options.entrySet()) {
 
             THeroOption option = Ebean.find(THeroOption.class).where()
                     .eq("hero_id", hero.getId()).eq("option_key", entry.getKey()).findUnique();

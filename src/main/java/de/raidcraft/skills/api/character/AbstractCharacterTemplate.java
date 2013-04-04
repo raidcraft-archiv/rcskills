@@ -52,6 +52,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private Party party;
     private int damage;
     private boolean inCombat = false;
+    private Attack lastAttack;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -132,6 +133,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         long lastSwing = System.currentTimeMillis() + (long)(getWeapon(slot).getSwingTime() * 1000);
         this.lastSwing.put(slot, lastSwing);
+    }
+
+    @Override
+    public Attack getLastDamageCause() {
+
+        return lastAttack;
     }
 
     @Override
@@ -244,6 +251,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             damage(attack.getDamage());
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
+            // set the last attack variable to track death
+            lastAttack = attack;
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(
                         "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");

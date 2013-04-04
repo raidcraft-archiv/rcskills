@@ -19,7 +19,7 @@ public class THeroOption implements Bean {
     @ManyToOne
     private THero hero;
     private String optionKey;
-    private boolean optionValue;
+    private String optionValue;
 
     public int getId() {
 
@@ -51,12 +51,12 @@ public class THeroOption implements Bean {
         this.optionKey = optionKey;
     }
 
-    public boolean isOptionValue() {
+    public String getOptionValue() {
 
         return optionValue;
     }
 
-    public void setOptionValue(boolean optionValue) {
+    public void setOptionValue(String optionValue) {
 
         this.optionValue = optionValue;
     }

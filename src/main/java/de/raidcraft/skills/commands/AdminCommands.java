@@ -65,9 +65,9 @@ public class AdminCommands {
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }
-        Option.DEBUGGING.set(hero, !Option.DEBUGGING.isSet(hero));
+        Option.DEBUGGING.set(hero, (!Option.DEBUGGING.getBoolean(hero)) + "");
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +
-                (Option.DEBUGGING.isSet(hero) ? "on." : "off."));
+                (Option.DEBUGGING.getBoolean(hero) ? "on." : "off."));
     }
 
     @Command(

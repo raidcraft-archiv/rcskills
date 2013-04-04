@@ -218,4 +218,9 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
 
         return getOverrideSection("range");
     }
+
+    public ConfigurationSection getUseExp() {
+
+        return getOverrideSection("exp");
+    }
 }
