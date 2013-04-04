@@ -253,7 +253,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public boolean isSavingWorld(String world) {
 
-        return getCommonConfig().ignored_worlds.contains(world);
+        return getCommonConfig().getIgnoredWorlds().contains(world);
     }
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
@@ -292,12 +292,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String effect_jar_path = "effects/";
         @Setting("paths.profession-configs")
         public String profession_config_path = "professions/";
-        @Setting("ignored-worlds")
-        public Set<String> ignored_worlds = new HashSet<>();
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
             super(plugin, "config.yml");
+        }
+
+        public Set<String> getIgnoredWorlds() {
+
+            return new HashSet<>(getStringList("ignored-worlds"));
         }
     }
 
