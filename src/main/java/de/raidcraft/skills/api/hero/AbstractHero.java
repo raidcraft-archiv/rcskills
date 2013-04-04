@@ -460,7 +460,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         ArrayList<Skill> skills = new ArrayList<>(virtualSkills.values());
         for (Profession profession : professions.values()) {
-            if (profession.isActive()) {
+            if (!profession.getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION) && profession.isActive()) {
                 skills.addAll(profession.getSkills());
             }
         }
