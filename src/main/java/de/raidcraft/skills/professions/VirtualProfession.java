@@ -5,7 +5,6 @@ import de.raidcraft.skills.SkillManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.VirtualProfessionAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
@@ -84,11 +83,6 @@ public final class VirtualProfession extends AbstractProfession {
     public boolean isMastered() {
 
         return true;
-    }
-
-    @Override
-    public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
-        // we dont want to save this stuff
     }
 
     @Override
