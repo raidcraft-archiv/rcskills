@@ -68,7 +68,7 @@ public abstract class AbstractSkill implements Skill {
 
     public AbstractSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
-        this.id = database.getId();
+        this.id = (database == null ? 0 : database.getId());
         this.hero = hero;
         this.properties = data;
         this.description = data.getDescription();
