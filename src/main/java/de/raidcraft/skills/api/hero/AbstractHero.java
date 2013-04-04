@@ -88,24 +88,20 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         for (String professionName : data.getProfessionNames()) {
             try {
                 Profession profession = manager.getProfession(this, professionName);
-                if (profession.getName().equals(ProfessionManager.VIRTUAL_PROFESSION)) {
-                    this.virtualProfession = profession;
-                } else {
-                    professions.put(profession.getProperties().getName(), profession);
-                    paths.add(profession.getPath());
-                    // set selected profession
-                    if (selectedProfession == null || getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
-                            && profession.isActive()) {
-                        setSelectedProfession(profession);
-                    }
-                    // also add the parent if one exists
-                    if (profession.getParent() != null) {
-                        professions.put(profession.getParent().getName(), profession.getParent());
-                    }
-                    // add all child professions to our list
-                    for (Profession child : profession.getChildren()) {
-                        professions.put(child.getName(), child);
-                    }
+                professions.put(profession.getProperties().getName(), profession);
+                paths.add(profession.getPath());
+                // set selected profession
+                if (selectedProfession == null || getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
+                        && profession.isActive()) {
+                    setSelectedProfession(profession);
+                }
+                // also add the parent if one exists
+                if (profession.getParent() != null) {
+                    professions.put(profession.getParent().getName(), profession.getParent());
+                }
+                // add all child professions to our list
+                for (Profession child : profession.getChildren()) {
+                    professions.put(child.getName(), child);
                 }
                 if (profession instanceof AbstractProfession) {
                     ((AbstractProfession) profession).loadSkills();
