@@ -310,7 +310,7 @@ public abstract class AbstractProfession implements Profession {
 
         for (Skill skill : getSkills()) {
             // check all skills and if we need to unlock any
-            if (!skill.isUnlocked() && skill.isMeetingAllRequirements()) {
+            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements()) {
                 skill.unlock();
             }
             // check if we need to lock any skills
