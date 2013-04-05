@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 )
 public class KnockBack extends AbstractEffect<Location> {
 
+    private boolean interrupt = false;
     private double power;
 
     public KnockBack(Location source, CharacterTemplate target, EffectData data) {
@@ -30,6 +31,7 @@ public class KnockBack extends AbstractEffect<Location> {
     @Override
     public void load(ConfigurationSection data) {
 
+        this.interrupt = data.getBoolean("interrupt", false);
         this.power = data.getDouble("power", 0.4);
     }
 
@@ -45,7 +47,7 @@ public class KnockBack extends AbstractEffect<Location> {
         // a power of 0.4 is a player jumping
         target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
         // also interrupt the target
-        target.addEffect(this, Interrupt.class);
+        if (interrupt) target.addEffect(this, Interrupt.class);
         remove();
     }
 

@@ -116,7 +116,11 @@ public final class CharacterManager implements Listener {
                 Database.save(heroTable);
             }
             hero = new SimpleHero(player, heroTable);
-            if (cache) heroes.put(hero.getName().toLowerCase(), hero);
+            if (cache) {
+                heroes.put(hero.getName().toLowerCase(), hero);
+            } else {
+                HeroUtil.clearCache(hero);
+            }
         } else {
             hero = heroes.get(name);
         }
