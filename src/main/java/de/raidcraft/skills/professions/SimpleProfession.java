@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THeroProfession;
 import org.bukkit.ChatColor;
 
@@ -27,12 +28,14 @@ public class SimpleProfession extends AbstractProfession {
     public void onExpGain(int exp) {
 
         getHero().getUserInterface().refresh();
+        ExpLogger.log(this, exp);
     }
 
     @Override
     public void onExpLoss(int exp) {
 
         getHero().getUserInterface().refresh();
+        ExpLogger.log(this, -exp);
     }
 
     @Override

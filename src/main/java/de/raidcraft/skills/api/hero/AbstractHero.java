@@ -21,6 +21,7 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Bukkit;
@@ -348,11 +349,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void onExpGain(int exp) {
 
+        ExpLogger.log(this, exp);
     }
 
     @Override
     public void onExpLoss(int exp) {
 
+        ExpLogger.log(this, -exp);
     }
 
     @Override
