@@ -99,12 +99,14 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public void onLevelGain() {
 
+        checkSkillsForUnlock();
         getHero().sendMessage(ChatColor.GREEN + "Dein Server Rang hat sich erhöht: " + ChatColor.AQUA + "Rang " + getAttachedLevel().getLevel());
     }
 
     @Override
     public void onLevelLoss() {
 
+        checkSkillsForUnlock();
         getHero().sendMessage(ChatColor.RED + "Dein Server Rang hat sich verringert: " + ChatColor.AQUA + "Rang " + getAttachedLevel().getLevel());
     }
 }
