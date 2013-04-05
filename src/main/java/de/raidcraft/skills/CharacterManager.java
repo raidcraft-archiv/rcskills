@@ -261,7 +261,9 @@ public final class CharacterManager implements Listener {
         DamageManager damageManager = plugin.getDamageManager();
         EntityType entityType = character.getEntity().getType();
         // lets set the health and damage of the entity
-        character.setHealth(damageManager.getCreatureHealth(entityType));
+        int creatureHealth = damageManager.getCreatureHealth(entityType);
+        character.setMaxHealth(creatureHealth);
+        character.setHealth(creatureHealth);
         character.setDamage(damageManager.getCreatureDamage(entityType));
     }
 
