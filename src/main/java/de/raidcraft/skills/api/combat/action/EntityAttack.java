@@ -57,7 +57,8 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
                 getSource().getEntity(),
                 getTarget().getEntity(),
-                EntityDamageEvent.DamageCause.CUSTOM,
+                (getAttackTypes().contains(EffectType.MAGICAL)
+                        ? EntityDamageEvent.DamageCause.MAGIC : EntityDamageEvent.DamageCause.ENTITY_ATTACK),
                 0);
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
