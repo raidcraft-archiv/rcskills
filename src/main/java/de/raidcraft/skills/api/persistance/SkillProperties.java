@@ -5,10 +5,12 @@ import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.items.WeaponType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -70,4 +72,6 @@ public interface SkillProperties {
     public ConfigurationSection getUseExp();
 
     public ConfigurationSection getCooldown();
+
+    public Set<WeaponType> getRequiredWeapons();
 }

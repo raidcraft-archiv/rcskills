@@ -28,6 +28,8 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
+import de.raidcraft.skills.items.Weapon;
+import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -97,10 +99,13 @@ public abstract class AbstractSkill implements Skill {
         if (this.isOfType(EffectType.PHYSICAL) && getHero().hasEffect(Disarm.class)) {
             throw new CombatException(CombatException.Type.DISARMED);
         }
-        // setRemainingCooldown(action.getTotalCooldown());
         if (isOnCooldown()) {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
+        }
+        Set<WeaponType> requiredWeapons = getProperties().getRequiredWeapons();
+        if (requiredWeapons.size() > 1 && !requiredWeapons.contains(getHero().getWeapon(Weapon.Slot.MAIN_HAND).getWeaponType())) {
+            throw new CombatException("Du kannst diesen Skill nicht mit dieser Waffe ausführen.");
         }
         for (Resource resource : getHero().getResources()) {
 

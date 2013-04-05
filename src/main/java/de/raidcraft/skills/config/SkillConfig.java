@@ -11,11 +11,13 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.items.WeaponType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -219,8 +221,23 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
         return getOverrideSection("range");
     }
 
+    @Override
     public ConfigurationSection getUseExp() {
 
         return getOverrideSection("exp");
+    }
+
+    @Override
+    public Set<WeaponType> getRequiredWeapons() {
+
+        HashSet<WeaponType> weaponTypes = new HashSet<>();
+        List<String> weapons = getStringList("weapons");
+        for (String weapon : weapons) {
+            WeaponType weaponType = WeaponType.fromString(weapon);
+            if (weaponType != null) {
+                weaponTypes.add(weaponType);
+            }
+        }
+        return weaponTypes;
     }
 }
