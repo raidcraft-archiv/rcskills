@@ -70,7 +70,7 @@ public final class ExperienceManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onExpGain(RCExpGainEvent event) {
 
-        double expBoost = plugin.getExperienceConfig().getExpBoost();
+        double expBoost = plugin.getExperienceConfig().getExpRate();
         if (expBoost == 0.0) {
             return;
         }

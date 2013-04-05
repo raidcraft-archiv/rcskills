@@ -1,12 +1,14 @@
 package de.raidcraft.skills.api.level;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 
 /**
  * @author Silthus
  */
-public class SkillAttachedLevel extends AbstractAttachedLevel<LevelableSkill> {
+public class SkillAttachedLevel extends ConfigurableAttachedLevel<LevelableSkill> {
 
     public SkillAttachedLevel(LevelableSkill levelObject, LevelData data) {
 
@@ -18,7 +20,7 @@ public class SkillAttachedLevel extends AbstractAttachedLevel<LevelableSkill> {
 
         super.addExp(exp);
         // lets add some exp to the profession of the skill
-        // TODO: maybe change the factor by a config value
+        exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getSkillProfessionExpRate());
         getLevelObject().getProfession().getAttachedLevel().addExp(exp);
     }
 
@@ -27,6 +29,7 @@ public class SkillAttachedLevel extends AbstractAttachedLevel<LevelableSkill> {
 
         super.removeExp(exp);
         // lets remove the same amount of exp from the profession
+        exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getSkillProfessionExpRate());
         getLevelObject().getProfession().getAttachedLevel().removeExp(exp);
     }
 }

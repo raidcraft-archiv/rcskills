@@ -42,9 +42,19 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
         return crafting.get(itemId);
     }
 
-    public double getExpBoost() {
+    public double getExpRate() {
 
-        return getDouble("exp-boost", 0.0);
+        return getDouble("exp-rate", 1.0);
+    }
+
+    public double getSkillProfessionExpRate() {
+
+        return getDouble("skill-prof-exp-rate", 1.0);
+    }
+
+    public double getProfessionHeroExpRate() {
+
+        return getDouble("prof-hero-exp-rate", 1.0);
     }
 
     @Override

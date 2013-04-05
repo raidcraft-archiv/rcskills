@@ -15,8 +15,8 @@ public enum WeaponType {
     SWORD("Schwert",
             Material.WOOD_SWORD,
             Material.STONE_SWORD,
-            Material.IRON_SWORD,
             Material.GOLD_SWORD,
+            Material.IRON_SWORD,
             Material.DIAMOND_SWORD
     ),
     AXE("Axt",
@@ -40,7 +40,7 @@ public enum WeaponType {
             Material.GOLD_PICKAXE,
             Material.DIAMOND_PICKAXE
     ),
-    HOE("Lanze",
+    HOE("Sichel",
             Material.WOOD_HOE,
             Material.STONE_HOE,
             Material.IRON_HOE,

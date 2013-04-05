@@ -96,8 +96,10 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public LevelFormula getLevelFormula() {
 
         ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
-                LevelConfig.Type.PROFESSIONS, getOverrideString("formula", "default"));
+                LevelConfig.Type.PROFESSIONS, getOverrideString("formula", "default")
+        );
         FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
+
         return formulaType.create(config);
     }
 

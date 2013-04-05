@@ -8,7 +8,7 @@ import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
-import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
+import de.raidcraft.skills.api.level.ProfessionAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
@@ -56,7 +56,7 @@ public abstract class AbstractProfession implements Profession {
         this.children = data.loadChildren(this);
         this.active = database.isActive();
         // attach a level
-        attachLevel(new ConfigurableAttachedLevel<Profession>(this, data.getLevelFormula(), database));
+        attachLevel(new ProfessionAttachedLevel(this, database));
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);
