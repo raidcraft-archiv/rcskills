@@ -24,6 +24,7 @@ import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
+import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
@@ -87,6 +88,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerCommands(BaseCommands.class);
         new BindManager(this);
         new BukkitEventDispatcher(this);
+        // lets start our logging tasks
+        ExpLogger.startTask(this);
     }
 
     private void loadEngine() {
@@ -178,6 +181,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         classes.add(THeroSkill.class);
         classes.add(TSkillData.class);
         classes.add(THeroResource.class);
+        classes.add(ExpLogger.class);
         return classes;
     }
 
@@ -258,6 +262,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
 
+        @Setting("log-interval")
+        public long log_interval = 60;
         @Setting("disable-error-skills")
         public boolean disable_error_skills = false;
         @Setting("callback-purge-ticks")
