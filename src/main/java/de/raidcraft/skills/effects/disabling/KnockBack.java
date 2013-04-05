@@ -38,6 +38,7 @@ public class KnockBack extends AbstractEffect<Location> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
+
         // knocks back the target based on the attackers center position
         Location knockBackCenter = getSource();
         double xOff = target.getEntity().getLocation().getX() - knockBackCenter.getX();
@@ -45,7 +46,7 @@ public class KnockBack extends AbstractEffect<Location> {
         double zOff = target.getEntity().getLocation().getZ() - knockBackCenter.getZ();
         // power is the velocity applied to the target
         // a power of 0.4 is a player jumping
-        target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).normalize().multiply(power));
+        target.getEntity().setVelocity(new Vector(xOff, yOff, zOff).multiply(power));
         // also interrupt the target
         if (interrupt) target.addEffect(this, Interrupt.class);
         remove();

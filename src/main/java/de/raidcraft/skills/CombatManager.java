@@ -215,7 +215,7 @@ public final class CombatManager implements Listener {
                     // cancel event because we are handling stuff
                     attack.run();
                 }
-                event.setCancelled(true);
+                event.setDamage(0);
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {
@@ -331,7 +331,7 @@ public final class CombatManager implements Listener {
                     } catch (CombatException ignored) {
                     }
                 }
-                event.setCancelled(true);
+                event.setDamage(0);
             }
         }
     }

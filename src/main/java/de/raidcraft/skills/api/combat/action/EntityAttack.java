@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.entity.LivingEntity;
@@ -83,10 +82,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             getTarget().damage(this);
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
-            // finally knockback the target if it is a default attack and physical
-            if (isOfAttackType(EffectType.PHYSICAL) && isOfAttackType(EffectType.DEFAULT_ATTACK)) {
-                getTarget().addEffect(getSource().getEntity().getLocation(), KnockBack.class);
-            }
         } else {
             setCancelled(true);
         }
