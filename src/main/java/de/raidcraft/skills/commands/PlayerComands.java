@@ -3,6 +3,7 @@ package de.raidcraft.skills.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
@@ -33,6 +34,7 @@ public class PlayerComands {
             usage = "<beruf/klasse>",
             flags = "d"
     )
+    @CommandPermissions("rcskills.player.cmd.link")
     public void linkExpPool(CommandContext args, CommandSender sender) throws CommandException {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
@@ -55,6 +57,7 @@ public class PlayerComands {
             usage = "<beruf/klasse> <exp>",
             min = 2
     )
+    @CommandPermissions("rcskills.player.cmd.addexp")
     public void addExpCommand(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
@@ -92,6 +95,7 @@ public class PlayerComands {
             aliases = {"combatlog", "cl", "kampflog", "kl"},
             desc = "Aktiviert/Deaktiviert das Kampflog."
     )
+    @CommandPermissions("rcskills.player.cmd.combatlog")
     public void combatLog(CommandContext args, CommandSender sender) {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);

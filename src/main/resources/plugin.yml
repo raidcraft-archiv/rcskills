@@ -6,3 +6,37 @@ author: Silthus
 website: http://www.raid-craft.de
 depend: [RaidCraft-API]
 softdepend: [RCPermissions, RCConversations]
+permissions:
+  rcskills.player:
+    description: Gives access to all relevant player commands.
+    default: false
+    children:
+      rcskills.player.profession.list: true
+      rcskills.player.profession.choose: true
+      rcskills.player.profession.info: true
+      rcskills.player.skill.info: true
+      rcskills.player.skill.list: true
+      rcskills.player.cmd.link: true
+      rcskills.player.cmd.addexp: true
+      rcskills.player.cmd.combatlog: true
+      rcskills.player.cast: true
+  rcskills.mod:
+    description: Grants aditional command permissions for moderators
+    default: false
+    children:
+      rcskills.player: true
+      rcskills.admin.debug: true
+      rcskills.admin.maxout: true
+      rcskills.admin.exp.add: true
+      rcskills.admin.exp.remove: true
+      rcskills.admin.level.add: true
+      rcskills.admin.level.remove: true
+      rcskills.admin.level.set: true
+  rcskills.admin:
+    description: Grants all rcskills permissions.
+    default: false
+    children:
+      rcskills.mod: true
+      rcskills.admin.purge: true
+      rcskills.admin.skill.add: true
+      rcskills.admin.skill.remove: true

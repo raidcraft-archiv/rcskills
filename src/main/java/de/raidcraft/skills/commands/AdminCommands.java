@@ -76,6 +76,7 @@ public class AdminCommands {
             usage = "<player>",
             min = 1
     )
+    @CommandPermissions("rcskills.admin.maxout")
     public void maxOutAll(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
