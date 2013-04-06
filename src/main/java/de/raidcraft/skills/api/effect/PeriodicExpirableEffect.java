@@ -1,14 +1,11 @@
 package de.raidcraft.skills.api.effect;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.TimeUtil;
-import org.bukkit.Bukkit;
 
 /**
  * @author Silthus
@@ -58,12 +55,7 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
     public void startTask() {
 
         if (!isStarted()) {
-            setTask(Bukkit.getScheduler().runTaskTimer(
-                    RaidCraft.getComponent(SkillsPlugin.class),
-                    this,
-                    getDelay(),
-                    getInterval()
-            ));
+            super.startTask();
             this.remainingTicks = getDuration();
         }
     }
@@ -83,12 +75,7 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
     public void run() {
 
         if (this.remainingTicks > 0) {
-            try {
-                tick(getTarget());
-                debug("effect ticked");
-            } catch (CombatException e) {
-                warn(e.getMessage());
-            }
+            super.run();
             // set the ticks that remain in this task
             // we want them outside the catch to make sure failed attempts count as ticked
             this.remainingTicks -= getInterval();

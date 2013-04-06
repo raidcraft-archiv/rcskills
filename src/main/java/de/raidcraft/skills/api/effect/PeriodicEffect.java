@@ -78,8 +78,8 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
         if (isStarted()) {
             stopTask();
-            super.remove();
         }
+        super.remove();
     }
 
     @Override
