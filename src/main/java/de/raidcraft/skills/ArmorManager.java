@@ -82,7 +82,7 @@ public final class ArmorManager implements Triggered {
         int reducedDamage = (int) (attack.getDamage() * damageReduction);
         attack.setDamage(attack.getDamage() - reducedDamage);
         if (reducedDamage > 0) {
-            attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + (damageReduction * 100) + ") verringert.");
+            attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int)(damageReduction * 10000)/100.0) + "%) verringert.");
         }
     }
 
