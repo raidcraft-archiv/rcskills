@@ -25,8 +25,19 @@ public final class SkillUtil {
 
         List<Skill> foundSkills = new ArrayList<>();
         input = StringUtils.formatName(input);
+        // lets try to query for an id input first
+        int id = -1;
+        try {
+            id = Integer.parseInt(input);
+        } catch (NumberFormatException ignored) {
+        }
         for (Skill skill : hero.getSkills()) {
-            if (skill.getName().contains(input)
+            if (id > 0) {
+                if (skill.getId() == id) {
+                    foundSkills.add(skill);
+                    break;
+                }
+            } else if (skill.getName().contains(input)
                     || StringUtils.formatName(skill.getFriendlyName()).contains(input)) {
                 foundSkills.add(skill);
             }
@@ -56,6 +67,7 @@ public final class SkillUtil {
         sb.append(ChatColor.YELLOW).append("------- [").append(skill.getProfession().isActive() ? ChatColor.GREEN : ChatColor.RED);
         sb.append(skill.getProfession().getProperties().getTag());
         sb.append(ChatColor.YELLOW).append("] ").append(skill.isUnlocked() ? ChatColor.AQUA : ChatColor.RED).append(skill.getFriendlyName());
+        sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GRAY).append("ID:").append(skill.getId()).append(ChatColor.YELLOW).append("]");
         sb.append(ChatColor.YELLOW).append(" -------");
         return sb.toString();
     }

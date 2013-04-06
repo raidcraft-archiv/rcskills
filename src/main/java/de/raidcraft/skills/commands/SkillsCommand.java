@@ -101,8 +101,8 @@ public class SkillsCommand {
                         .append(profession.getProperties().getTag()).append(":")
                         .append((profession.getAttachedLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
-                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED))
-                        .append(skill.getProperties().getFriendlyName());
+                sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GRAY).append("ID:").append(skill.getId()).append(ChatColor.YELLOW).append("]");
+                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
                 if (skill instanceof LevelableSkill) {
                     sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getAttachedLevel().getLevel())
                             .append(ChatColor.YELLOW).append("] ");
