@@ -37,7 +37,7 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
         }
 
         // also abort if the skill is combat only or non combat
-        if (!skill.getProperties().canUseOutOfCombat() && trigger.getSource().isInCombat()) {
+        if (!skill.getProperties().canUseOutOfCombat() && !trigger.getSource().isInCombat()) {
             return;
         }
         if (!skill.getProperties().canUseInCombat() && trigger.getSource().isInCombat()) {
