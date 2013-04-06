@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
@@ -13,6 +14,7 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.commands.AdminCommands;
@@ -355,6 +357,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 desc = "Heals the hero to full life.",
                 flags = "a"
         )
+        @CommandPermissions("rcskills.admin.heal")
         public void heal(CommandContext args, CommandSender sender) throws CommandException {
 
             Hero hero;
@@ -368,10 +371,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 hero = getCharacterManager().getHero((Player) sender);
             }
             if (args.hasFlag('a')) {
-                hero.reset();
-            } else {
-                hero.heal(hero.getMaxHealth());
+                for (Resource resource : hero.getResources()) {
+                    resource.setCurrent(resource.getMax());
+                }
             }
+            hero.heal(hero.getMaxHealth());
         }
     }
 }

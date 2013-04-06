@@ -36,6 +36,7 @@ permissions:
       rcskills.admin.level.add: true
       rcskills.admin.level.remove: true
       rcskills.admin.level.set: true
+      rcskills.admin.heal: true
   rcskills.admin:
     description: Grants all rcskills permissions.
     default: false
