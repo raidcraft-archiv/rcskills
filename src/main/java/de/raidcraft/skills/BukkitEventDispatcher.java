@@ -18,6 +18,7 @@ import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
 import de.raidcraft.skills.trigger.PlayerFishTrigger;
+import de.raidcraft.skills.trigger.RegainHealthTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.trigger.PlayerItemBreakTrigger;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
@@ -33,6 +34,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -238,6 +240,17 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerConsumeTrigger(plugin.getCharacterManager().getCharacter(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onHealthRegain(EntityRegainHealthEvent event) {
+
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return;
+        }
+        TriggerManager.callSafeTrigger(
+                new RegainHealthTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()), event)
         );
     }
 }
