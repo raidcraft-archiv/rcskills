@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.commands.QueuedCommand;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -16,6 +17,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 /**
  * @author Silthus
  */
@@ -26,6 +29,25 @@ public class PlayerComands {
     public PlayerComands(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+    }
+
+    @Command(
+            aliases = {"info"},
+            desc = "Gives information about the hero level and exp pool"
+    )
+    @CommandPermissions("rcskills.player.cmd.info")
+    public void info(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(sender.getName());
+            Collection<String> strings = ProfessionUtil.renderProfessionInformation(hero.getVirtualProfession());
+            strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
+            for (String line : strings) {
+                hero.sendMessage(line);
+            }
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
+        }
     }
 
     @Command(
