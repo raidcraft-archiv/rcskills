@@ -235,7 +235,7 @@ public final class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onConsumeItem(PlayerItemConsumeEvent event) {
 
         TriggerManager.callSafeTrigger(
@@ -243,7 +243,7 @@ public final class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onHealthRegain(EntityRegainHealthEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
