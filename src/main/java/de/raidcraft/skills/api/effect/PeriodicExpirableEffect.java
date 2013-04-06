@@ -79,10 +79,8 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
             // set the ticks that remain in this task
             // we want them outside the catch to make sure failed attempts count as ticked
             this.remainingTicks -= getInterval();
-        }
-
-        // lets cancel the task if the effect expired
-        if (this.remainingTicks <= 0) {
+        } else {
+            // lets cancel the task if the effect expired
             try {
                 remove();
             } catch (CombatException e) {

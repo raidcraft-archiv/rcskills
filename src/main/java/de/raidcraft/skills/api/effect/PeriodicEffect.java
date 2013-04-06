@@ -78,8 +78,8 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
         if (isStarted()) {
             stopTask();
+            super.remove();
         }
-        super.remove();
     }
 
     @Override
@@ -98,12 +98,13 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
         try {
             if (!firstTick) {
-                super.apply();
                 firstTick = true;
+                super.apply();
+            } else {
+                // a periodic effects apply method is called everytime the effect ticks
+                tick(getTarget());
+                debug("effect ticked");
             }
-            // a periodic effects apply method is called everytime the effect ticks
-            tick(getTarget());
-            debug("effect ticked");
         } catch (CombatException e) {
             warn(e.getMessage());
         }
