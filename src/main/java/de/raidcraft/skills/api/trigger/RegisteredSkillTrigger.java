@@ -36,6 +36,14 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
             return;
         }
 
+        // also abort if the skill is combat only or non combat
+        if (!skill.getProperties().canUseOutOfCombat() && trigger.getSource().isInCombat()) {
+            return;
+        }
+        if (!skill.getProperties().canUseInCombat() && trigger.getSource().isInCombat()) {
+            return;
+        }
+
         // add a combat effect when a skill is beeing casted
         if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
 
