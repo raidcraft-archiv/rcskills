@@ -36,6 +36,10 @@ public enum MagicalAttackType {
         EffectUtil.playSound(attacker.getLocation(), Sound.GHAST_FIREBALL, 5F, 1F);
         for (Block block : lineOfSight) {
             EffectUtil.playEffect(block.getLocation(), effect, 1);
+            EffectUtil.playEffect(block.getLocation(), effect, 1);
+            EffectUtil.playEffect(block.getLocation(), effect, 1);
+            EffectUtil.playEffect(block.getLocation(), effect, 1);
+            EffectUtil.playEffect(block.getLocation(), effect, 1);
         }
     }
 }
