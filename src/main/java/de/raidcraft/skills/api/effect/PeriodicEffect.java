@@ -17,6 +17,7 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
     protected long delay;
     protected long interval;
+    protected boolean firstTick = false;
 
     public PeriodicEffect(S source, CharacterTemplate target, EffectData data) {
 
@@ -55,6 +56,7 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
                     getDelay(),
                     getInterval()
             ));
+            firstTick = false;
         }
     }
 
@@ -68,7 +70,6 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
         if (!isStarted()) {
             // lets start the task
             startTask();
-            super.apply();
         }
     }
 
@@ -96,6 +97,10 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
     public void run() {
 
         try {
+            if (!firstTick) {
+                super.apply();
+                firstTick = true;
+            }
             // a periodic effects apply method is called everytime the effect ticks
             tick(getTarget());
             debug("effect ticked");
