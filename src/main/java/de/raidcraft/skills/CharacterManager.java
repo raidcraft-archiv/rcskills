@@ -296,7 +296,7 @@ public final class CharacterManager implements Listener {
     public void onPlayerGainExp(PlayerExpChangeEvent event) {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
-        // event.setAmount(0);
+        event.setAmount(0);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
