@@ -76,6 +76,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     @Override
     public void enable() {
 
+        setupDatabase();
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
         // create the config
