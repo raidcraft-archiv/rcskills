@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
@@ -244,13 +242,20 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void attachResource(Resource resource) {
 
-        resources.put(resource.getName().toLowerCase(), resource);
+        if (resource.getProfession().isActive()) {
+            resource.setEnabled(true);
+            resources.put(resource.getName().toLowerCase(), resource);
+        }
     }
 
     @Override
     public Resource detachResource(String name) {
 
-        return resources.remove(name.toLowerCase());
+        Resource resource = resources.remove(name.toLowerCase());
+        if (resource != null) {
+            resource.setEnabled(false);
+        }
+        return resource;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.resource;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ResourceData;
@@ -29,7 +28,7 @@ public abstract class AbstractResource implements Resource {
     private long regenInterval;
     private double regenValue;
     private int current;
-    private boolean enabled = true;
+    private boolean enabled = false;
     private boolean inPercent = true;
 
     public AbstractResource(ResourceData data, Profession profession, ConfigurationSection config) {
@@ -52,7 +51,7 @@ public abstract class AbstractResource implements Resource {
 
     private void startTask() {
 
-        if (getRegenInterval() < 1) {
+        if (getRegenInterval() < 1 || !enabled) {
             return;
         }
         task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
@@ -136,6 +135,11 @@ public abstract class AbstractResource implements Resource {
     public void setEnabled(boolean enabled) {
 
         this.enabled = enabled;
+        if (enabled) {
+            startTask();
+        } else {
+            destroy();
+        }
     }
 
     @Override

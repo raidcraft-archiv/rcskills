@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.profession;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
@@ -141,6 +139,13 @@ public abstract class AbstractProfession implements Profession {
     public void setActive(boolean active) {
 
         this.active = active;
+        for (Resource resource : getResources()) {
+            if (active) {
+                getHero().attachResource(resource);
+            } else {
+                getHero().detachResource(resource.getName());
+            }
+        }
     }
 
     @Override
