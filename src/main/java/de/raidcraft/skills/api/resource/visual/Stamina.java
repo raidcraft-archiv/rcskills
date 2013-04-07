@@ -18,7 +18,7 @@ public class Stamina implements VisualResource {
         int stamina = (int) (((double) resource.getCurrent() / (double) resource.getMax()) * 18) + 1;
         player.setFoodLevel(stamina);
         // see the minecraft wiki for the mechanics: http://www.minecraftwiki.net/wiki/Hunger#Mechanics
-        player.setSaturation(20.0F);
+        player.setSaturation(5.0F);
         player.setExhaustion(0.0F);
     }
 }
