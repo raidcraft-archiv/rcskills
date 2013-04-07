@@ -1,8 +1,6 @@
 package de.raidcraft.skills;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
@@ -21,7 +19,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -298,12 +295,5 @@ public final class CharacterManager implements Listener {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
         event.setAmount(0);
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onPlayerFoodGain(FoodLevelChangeEvent event) {
-
-        // always cancel the food gain event because we handle that extra
-        event.setCancelled(true);
     }
 }
