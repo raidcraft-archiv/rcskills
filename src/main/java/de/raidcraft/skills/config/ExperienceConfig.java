@@ -38,17 +38,26 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
 
     public int getBlockExperienceFor(int itemId) {
 
-        return blocks.get(itemId);
+        if (blocks.containsKey(itemId)) {
+            return blocks.get(itemId);
+        }
+        return 0;
     }
 
     public int getEntityExperienceFor(EntityType entityType) {
 
-        return entities.get(entityType);
+        if (entities.containsKey(entityType)) {
+            return entities.get(entityType);
+        }
+        return 0;
     }
 
     public int getCraftingExperienceFor(int itemId) {
 
-        return crafting.get(itemId);
+        if (crafting.containsKey(itemId)) {
+            return crafting.get(itemId);
+        }
+        return 0;
     }
 
     public double getExpRate() {
