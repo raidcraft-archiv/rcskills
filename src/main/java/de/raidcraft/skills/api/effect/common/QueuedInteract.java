@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 
 /**
@@ -25,11 +26,20 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
     private Callback<PlayerInteractTrigger> callback;
     private Action action;
     private boolean triggered = false;
+    private String activateMessage;
+    private String deactivateMessage;
 
     public QueuedInteract(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         if (duration == 0) duration = 20 * 5;
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        this.activateMessage = data.getString("activate-message");
+        this.deactivateMessage = data.getString("deactivate-message");
     }
 
     public void sendInfo(String msg) {
@@ -68,13 +78,15 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
+
+        info(activateMessage);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!triggered) {
-            info("Du senkst deine Arme.");
+            info(deactivateMessage);
         }
     }
 
