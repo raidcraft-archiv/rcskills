@@ -37,8 +37,7 @@ public final class DamageManager implements Listener {
     protected DamageManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
-        this.config = new SimpleConfiguration(plugin, CONFIG_NAME);
-        this.config.load();
+        this.config = plugin.configure(new SimpleConfiguration(plugin, CONFIG_NAME));
         loadConfig();
         plugin.registerEvents(this);
     }
@@ -69,7 +68,7 @@ public final class DamageManager implements Listener {
     public int getCreatureDamage(EntityType type) {
 
         if (creatureDamage.containsKey(type)) {
-            creatureDamage.get(type);
+            return creatureDamage.get(type);
         }
         return 10;
     }
