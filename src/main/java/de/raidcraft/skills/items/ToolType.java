@@ -1,5 +1,6 @@
 package de.raidcraft.skills.items;
 
+import de.raidcraft.util.EnumUtils;
 import org.bukkit.Material;
 
 /**
@@ -88,5 +89,10 @@ public enum ToolType {
     public static ToolType fromMaterial(Material material) {
 
         return fromItemId(material.getId());
+    }
+
+    public static ToolType fromName(String toolName) {
+
+        return EnumUtils.getEnumFromString(ToolType.class, toolName);
     }
 }
