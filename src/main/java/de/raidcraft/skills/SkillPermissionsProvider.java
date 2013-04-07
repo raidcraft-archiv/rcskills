@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.permissions.PermissionsPlugin;
@@ -98,7 +97,7 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
 
         Set<String> groups = new HashSet<>();
         try {
-            Hero hero = plugin.getCharacterManager().getHero(player, false);
+            Hero hero = plugin.getCharacterManager().getHero(player);
             List<THeroSkill> skills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
             for (THeroSkill skill : skills) {
                 if (plugin.getSkillManager().getFactory(skill.getName()).getSkillClass() == PermissionSkill.class) {
