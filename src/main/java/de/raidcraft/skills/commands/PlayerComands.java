@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.util.ProfessionUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -44,6 +45,18 @@ public class PlayerComands {
             strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
             for (String line : strings) {
                 hero.sendMessage(line);
+            }
+            if (hero.getResources().size() > 0) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(ChatColor.YELLOW).append("Resourcen: \n");
+                for (Resource resource : hero.getResources()) {
+                    sb.append(ChatColor.YELLOW).append("  - ");
+                    sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ");
+                    sb.append(ChatColor.AQUA).append(resource.getCurrent()).append(ChatColor.YELLOW).append("/");
+                    sb.append(ChatColor.AQUA).append(resource.getMax()).append(ChatColor.YELLOW);
+                    sb.append("\n");
+                }
+                hero.sendMessage(sb.toString());
             }
         } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
