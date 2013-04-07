@@ -256,7 +256,11 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void projectileHitEvent(ProjectileHitEvent event) {
 
-        CharacterTemplate source = plugin.getCharacterManager().getCharacter(event.getEntity().getShooter());
+        LivingEntity shooter = event.getEntity().getShooter();
+        if (shooter == null) {
+            return;
+        }
+        CharacterTemplate source = plugin.getCharacterManager().getCharacter(shooter);
         try {
             // lets add a combat effect first
             source.addEffect(source, Combat.class);
