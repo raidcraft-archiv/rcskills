@@ -240,7 +240,10 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void destroy() {
 
-        task.cancel();
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
     }
 
     @Override
