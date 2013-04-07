@@ -65,6 +65,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private DamageManager damageManager;
     private ArmorManager armorManager;
     private WeaponManager weaponManager;
+    private ExperienceManager experienceManager;
     private BukkitEnvironmentManager bukkitEnvironmentManager;
     private LocalConfiguration configuration;
     private PathConfig pathConfig;
@@ -113,6 +114,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.damageManager = new DamageManager(this);
         this.armorManager = new ArmorManager(this);
         this.weaponManager = new WeaponManager(this);
+        this.experienceManager = new ExperienceManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
         // lets register our permissions provider last
         this.permissionsProvider = new SkillPermissionsProvider(this);

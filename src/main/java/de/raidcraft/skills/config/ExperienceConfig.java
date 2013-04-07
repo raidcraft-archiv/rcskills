@@ -27,6 +27,15 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
         super(plugin, CONFIG_NAME);
     }
 
+    @Override
+    public void load() {
+
+        super.load();
+        entities.putAll(formatEntities(loadExperience(ENTITIES)));
+        blocks.putAll(formatItems(loadExperience(BLOCKS)));
+        crafting.putAll(formatItems(loadExperience(CRAFTING)));
+    }
+
     public int getBlockExperienceFor(int itemId) {
 
         return blocks.get(itemId);
@@ -55,15 +64,6 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
     public double getProfessionHeroExpRate() {
 
         return getDouble("prof-hero-exp-rate", 1.0);
-    }
-
-    @Override
-    public void load() {
-
-        super.load();
-        entities.putAll(formatEntities(loadExperience(ENTITIES)));
-        blocks.putAll(formatItems(loadExperience(BLOCKS)));
-        crafting.putAll(formatItems(loadExperience(CRAFTING)));
     }
 
     private Map<Integer, Integer> formatItems(Map<String, Integer> map) {
