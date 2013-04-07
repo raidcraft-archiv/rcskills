@@ -40,6 +40,10 @@ public final class ExperienceManager implements Listener {
         CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
         Attack attack = character.getLastDamageCause();
 
+        if (attack == null) {
+            return;
+        }
+
         AttachedLevel<Hero> expPool;
         if (attack.getSource() instanceof Hero) {
             expPool = ((Hero) attack.getSource()).getExpPool();
