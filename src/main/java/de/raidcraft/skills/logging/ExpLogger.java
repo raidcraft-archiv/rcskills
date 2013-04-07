@@ -1,7 +1,7 @@
 package de.raidcraft.skills.logging;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Bean;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.ExpPool;
@@ -69,7 +69,7 @@ public class ExpLogger implements Bean {
                         log.setGainedExp(typeEntry.getValue());
                         log.setType(typeEntry.getKey().name());
                         log.setTimestamp(new Timestamp(System.currentTimeMillis()));
-                        Database.save(log);
+                        RaidCraft.getDatabase(SkillsPlugin.class).save(log);
                     }
                 }
                 expCache.clear();

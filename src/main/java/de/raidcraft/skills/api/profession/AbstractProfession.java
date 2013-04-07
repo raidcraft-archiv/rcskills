@@ -61,7 +61,7 @@ public abstract class AbstractProfession implements Profession {
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);
             // query the database and check if we already have an entry for the player
-            THeroResource tHeroResource = Ebean.find(THeroResource.class).where()
+            THeroResource tHeroResource = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroResource.class).where()
                     .eq("name", key)
                     .eq("profession_id", database.getId()).findUnique();
             // create a new entry if none exists
@@ -251,27 +251,27 @@ public abstract class AbstractProfession implements Profession {
 
         saveLevelProgress(getAttachedLevel());
 
-        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
+        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
         profession.setActive(isActive());
 
         // dont save when the player is in a blacklist world
         if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(profession);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
         }
     }
 
     @Override
     public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
 
-        THeroProfession profession = Ebean.find(THeroProfession.class, getId());
+        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
         profession.setLevel(attachedLevel.getLevel());
         profession.setExp(attachedLevel.getExp());
 
         // dont save when the player is in a blacklist world
         if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(profession);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
         }
     }
 

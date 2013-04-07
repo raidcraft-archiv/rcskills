@@ -99,7 +99,7 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
         Set<String> groups = new HashSet<>();
         try {
             Hero hero = plugin.getCharacterManager().getHero(player, false);
-            List<THeroSkill> skills = Ebean.find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
+            List<THeroSkill> skills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
             for (THeroSkill skill : skills) {
                 if (plugin.getSkillManager().getFactory(skill.getName()).getSkillClass() == PermissionSkill.class) {
                     groups.add(skill.getName());

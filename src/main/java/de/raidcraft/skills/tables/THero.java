@@ -184,7 +184,7 @@ public class THero implements LevelData, HeroData, Bean {
     public void delete() {
 
         int expPool = getExpPool().getId();
-        Ebean.delete(this);
-        Ebean.find(THeroExpPool.class, expPool).delete();
+        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
+        RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class, expPool).delete();
     }
 }

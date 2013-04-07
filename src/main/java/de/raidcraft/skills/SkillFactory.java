@@ -1,7 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.api.database.Database;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -149,7 +149,7 @@ public final class SkillFactory {
 
     private THeroSkill loadDatabase(Hero hero, Profession profession) {
 
-        THeroSkill database = Ebean.find(THeroSkill.class).where()
+        THeroSkill database = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
                 .eq("name", (useAlias() ? getAlias() : getSkillName()))
                 .eq("profession_id", profession.getId()).findUnique();
@@ -160,9 +160,9 @@ public final class SkillFactory {
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(1);
-            database.setHero(Ebean.find(THero.class, hero.getId()));
-            database.setProfession(Ebean.find(THeroProfession.class, profession.getId()));
-            Database.save(database);
+            database.setHero(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId()));
+            database.setProfession(RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, profession.getId()));
+            RaidCraft.getDatabase(SkillsPlugin.class).save(database);
         }
         return database;
     }

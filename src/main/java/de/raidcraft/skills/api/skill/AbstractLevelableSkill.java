@@ -99,14 +99,14 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
 
-        THeroSkill skill = Ebean.find(THeroSkill.class, getId());
+        THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         skill.setLevel(attachedLevel.getLevel());
         skill.setExp(attachedLevel.getExp());
 
         // dont save when the player is in a blacklist world
         if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(skill);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
         }
     }
 

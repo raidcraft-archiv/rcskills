@@ -43,7 +43,7 @@ public final class VirtualProfession extends AbstractProfession {
             this.skills.putAll(getProperties().loadSkills(this));
             // also load all skills that are only added in the db
             SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
-            List<THeroSkill> dbSkills = Ebean.find(THeroProfession.class, getId()).getSkills();
+            List<THeroSkill> dbSkills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId()).getSkills();
             if (dbSkills != null) {
                 for (THeroSkill tHeroSkill : dbSkills) {
                     try {

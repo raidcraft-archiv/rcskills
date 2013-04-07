@@ -22,7 +22,7 @@ class HeroOptions {
 
         this.hero = hero;
         // load all the options from the database
-        for (THeroOption option : Ebean.find(THero.class, hero.getId()).getOptions()) {
+        for (THeroOption option : RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId()).getOptions()) {
             options.put(option.getOptionKey(), option.getOptionValue());
         }
     }
@@ -41,18 +41,18 @@ class HeroOptions {
 
         for (Map.Entry<String, String> entry : options.entrySet()) {
 
-            THeroOption option = Ebean.find(THeroOption.class).where()
+            THeroOption option = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroOption.class).where()
                     .eq("hero_id", hero.getId()).eq("option_key", entry.getKey()).findUnique();
             if (option == null) {
                 option = new THeroOption();
-                option.setHero(Ebean.find(THero.class, hero.getId()));
+                option.setHero(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId()));
                 option.setOptionKey(entry.getKey());
             }
             option.setOptionValue(entry.getValue());
 
             // dont save when the player is in a blacklist world
             if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(hero.getPlayer().getWorld().getName())) {
-                Database.save(option);
+                RaidCraft.getDatabase(SkillsPlugin.class).save(option);
             }
         }
     }

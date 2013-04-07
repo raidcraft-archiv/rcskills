@@ -1,10 +1,10 @@
 package de.raidcraft.skills.commands;
 
-import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
@@ -430,7 +430,7 @@ public class AdminCommands {
             HeroUtil.clearCache(hero);
         }
         // this will delete all references to the object
-        THero tHero = Ebean.find(THero.class, hero.getId());
+        THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId());
         if (tHero != null) tHero.delete();
         // remove the player from cache
         sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");

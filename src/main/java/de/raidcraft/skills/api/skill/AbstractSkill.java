@@ -480,31 +480,31 @@ public abstract class AbstractSkill implements Skill {
 
     protected final <V> void setData(String key, V value) {
 
-        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
         if (data == null) {
             data = new TSkillData();
             data.setDataKey(key);
-            data.setSkill(Ebean.find(THeroSkill.class, getId()));
+            data.setSkill(RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId()));
         }
         data.setDataValue(value.toString());
 
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(data);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
         }
     }
 
     protected final void removeData(String key) {
 
-        TSkillData data = Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
         if (data != null) {
-            Ebean.delete(data);
+            RaidCraft.getDatabase(SkillsPlugin.class).delete(data);
         }
     }
 
     protected final String getData(String key) {
 
-        return Ebean.find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
+        return RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
     }
 
     protected final int getDataInt(String key) {
@@ -734,13 +734,13 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public void save() {
 
-        THeroSkill skill = Ebean.find(THeroSkill.class, getId());
+        THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
         // dont save when the player is in a blacklist world
         if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            Database.save(skill);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
         }
     }
 

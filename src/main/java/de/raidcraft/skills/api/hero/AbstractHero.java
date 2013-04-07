@@ -385,14 +385,14 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
 
 
-        THero tHero = Ebean.find(THero.class, getId());
+        THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         if (tHero == null) return;
         tHero.setHealth(getHealth());
         tHero.setSelectedProfession(getSelectedProfession().getName());
 
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
-            Database.save(tHero);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(tHero);
         }
 
         getOptions().save();
@@ -415,13 +415,13 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void saveLevelProgress(AttachedLevel<Hero> attachedLevel) {
 
-        THero heroTable = Ebean.find(THero.class, getId());
+        THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         heroTable.setExp(getAttachedLevel().getExp());
         heroTable.setLevel(getAttachedLevel().getLevel());
 
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
-            Database.save(heroTable);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
         }
     }
 
@@ -449,7 +449,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
                 }
             }
         } else {
-            List<THeroSkill> skills = Ebean.find(THero.class, getId()).getSkills();
+            List<THeroSkill> skills = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getSkills();
             for (THeroSkill skill : skills) {
                 if (skill.getName().equalsIgnoreCase(id)) {
                     hasSkill = true;

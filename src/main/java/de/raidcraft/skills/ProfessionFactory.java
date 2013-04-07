@@ -1,7 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
-import de.raidcraft.api.database.Database;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.path.Path;
@@ -41,7 +41,7 @@ public final class ProfessionFactory {
     private THeroProfession loadDatabase(Hero hero, String name) {
 
         // then load the hero stats from the database
-        THeroProfession database = Ebean.find(THeroProfession.class).where()
+        THeroProfession database = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class).where()
                 .eq("name", name)
                 .eq("hero_id", hero.getId()).findUnique();
 
@@ -49,11 +49,11 @@ public final class ProfessionFactory {
             // create a new entry
             database = new THeroProfession();
             database.setName(getProfessionName());
-            database.setHero(Ebean.find(THero.class, hero.getId()));
+            database.setHero(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId()));
             database.setLevel(1);
             database.setExp(0);
             database.setActive(false);
-            Database.save(database);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(database);
         }
         return database;
     }

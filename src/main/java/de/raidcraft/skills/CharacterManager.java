@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -69,7 +70,7 @@ public final class CharacterManager implements Listener {
             name = player.getName();
         } else {
             // try to find a match in the db
-            heroTable = Ebean.find(THero.class).where().like("player", name).findUnique();
+            heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().like("player", name).findUnique();
             if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
         }
         name = name.toLowerCase();
@@ -77,7 +78,7 @@ public final class CharacterManager implements Listener {
         Hero hero;
         if (!heroes.containsKey(name)) {
 
-            if (heroTable == null) heroTable = Ebean.find(THero.class).where().eq("player", name).findUnique();
+            if (heroTable == null) heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().eq("player", name).findUnique();
             if (heroTable == null) {
                 // create a new entry
                 heroTable = new THero();
@@ -85,17 +86,17 @@ public final class CharacterManager implements Listener {
                 heroTable.setHealth(20);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                Database.save(heroTable);
+                RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
                 // also create a new exp pool for the hero
-                THeroExpPool pool = Ebean.find(THeroExpPool.class).where().eq("player", name).findUnique();
+                THeroExpPool pool = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class).where().eq("player", name).findUnique();
                 if (pool == null) {
                     pool = new THeroExpPool();
                     pool.setPlayer(name);
                     pool.setHeroId(heroTable.getId());
-                    Database.save(pool);
+                    RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
                 }
                 heroTable.setExpPool(pool);
-                Database.save(heroTable);
+                RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
             }
             hero = new SimpleHero(player, heroTable);
             if (cache) {

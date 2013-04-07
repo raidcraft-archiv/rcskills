@@ -1,7 +1,8 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.Ebean;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Bean;
+import de.raidcraft.skills.SkillsPlugin;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -64,6 +65,6 @@ public class TSkillData implements Bean {
 
     public void delete() {
 
-        Ebean.delete(this);
+        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }

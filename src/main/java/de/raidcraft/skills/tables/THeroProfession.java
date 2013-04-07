@@ -1,8 +1,9 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Bean;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.LevelData;
 
 import javax.persistence.CascadeType;
@@ -125,6 +126,6 @@ public class THeroProfession implements Bean, LevelData {
 
     public void delete() {
 
-        Ebean.delete(this);
+        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }

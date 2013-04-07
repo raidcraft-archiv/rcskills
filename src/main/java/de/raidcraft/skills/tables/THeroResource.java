@@ -1,7 +1,8 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.ResourceData;
 
 import javax.persistence.Entity;
@@ -68,6 +69,6 @@ public class THeroResource implements ResourceData {
 
     public void delete() {
 
-        Ebean.delete(this);
+        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }
