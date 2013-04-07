@@ -39,11 +39,15 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void reset();
 
-    public Resource getResource(String type);
+    public Resource getResource(String name);
+
+    public boolean hasResource(String name);
+
+    public void attachResource(Resource resource);
+
+    public Resource detachResource(String name);
 
     public Set<Resource> getResources();
-
-    public Set<Resource> getResources(Profession profession);
 
     public Profession getSelectedProfession();
 

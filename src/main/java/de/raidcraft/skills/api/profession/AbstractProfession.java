@@ -72,6 +72,7 @@ public abstract class AbstractProfession implements Profession {
             }
             ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
             resources.put(key, resource);
+            getHero().attachResource(resource);
         }
     }
 
@@ -185,12 +186,6 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public Resource getResource(String type) {
-
-        return resources.get(type);
-    }
-
-    @Override
     public List<Requirement> getRequirements() {
 
         if (requirements.size() < 1) {
@@ -254,10 +249,6 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void save() {
 
-        // save all resources
-        for (Resource resource : getResources()) {
-            resource.save();
-        }
         saveLevelProgress(getAttachedLevel());
 
         THeroProfession profession = Ebean.find(THeroProfession.class, getId());

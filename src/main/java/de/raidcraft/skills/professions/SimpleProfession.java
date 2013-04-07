@@ -27,15 +27,15 @@ public class SimpleProfession extends AbstractProfession {
     @Override
     public void onExpGain(int exp) {
 
-        getHero().getUserInterface().refresh();
         ExpLogger.log(this, exp);
+        getHero().getUserInterface().refresh();
     }
 
     @Override
     public void onExpLoss(int exp) {
 
-        getHero().getUserInterface().refresh();
         ExpLogger.log(this, -exp);
+        getHero().getUserInterface().refresh();
     }
 
     @Override
@@ -47,6 +47,7 @@ public class SimpleProfession extends AbstractProfession {
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         checkSkillsForUnlock();
+        getHero().getUserInterface().refresh();
     }
 
     @Override
@@ -56,6 +57,7 @@ public class SimpleProfession extends AbstractProfession {
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         checkSkillsForUnlock();
+        getHero().getUserInterface().refresh();
     }
 
 }

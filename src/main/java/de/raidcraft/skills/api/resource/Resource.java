@@ -57,9 +57,9 @@ public interface Resource {
 
     public void setRegenInterval(long interval);
 
-    public double getRegenPercent();
+    public double getRegenValue();
 
-    public void setRegenPercent(double percent);
+    public void setRegenValue(double percent);
 
     public void regen();
 

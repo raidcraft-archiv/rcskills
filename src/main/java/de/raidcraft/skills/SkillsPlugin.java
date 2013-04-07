@@ -169,7 +169,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.damageManager.reload();
         this.armorManager.reload();
         this.weaponManager.reload();
-        this.characterManager.startTasks();
 
         this.permissionsProvider.reload();
     }
@@ -232,6 +231,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public WeaponManager getWeaponManager() {
 
         return weaponManager;
+    }
+
+    public ExperienceManager getExperienceManager() {
+
+        return experienceManager;
     }
 
     public BukkitEnvironmentManager getBukkitEnvironmentManager() {

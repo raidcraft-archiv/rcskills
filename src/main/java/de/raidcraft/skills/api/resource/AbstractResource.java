@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.persistance.ResourceData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.ResourceChangeTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,10 +26,11 @@ public abstract class AbstractResource implements Resource {
     private final ConfigurationSection config;
     private final VisualResourceType type;
     private BukkitTask task;
-    private long regenInterval = 20;
-    private double regenPercent = 0.03;
+    private long regenInterval;
+    private double regenValue;
     private int current;
     private boolean enabled = true;
+    private boolean inPercent = true;
 
     public AbstractResource(ResourceData data, Profession profession, ConfigurationSection config) {
 
@@ -41,14 +43,18 @@ public abstract class AbstractResource implements Resource {
         // lets set the current value
         setCurrent((data.getValue() == 0 ? getDefault() : data.getValue()));
         // lets get some default values from the config
-        regenPercent = config.getDouble("regen.base", 0.03);
-        regenInterval = config.getInt("regen.interval", 1) * 20;
+        regenValue = ConfigUtil.getTotalValue(profession, config.getConfigurationSection("regen"));
+        regenInterval = (long) (ConfigUtil.getTotalValue(profession, config.getConfigurationSection("interval")) * 20);
+        inPercent = config.getBoolean("in-percent", true);
         // lets start the task
         startTask();
     }
 
     private void startTask() {
 
+        if (getRegenInterval() < 1) {
+            return;
+        }
         task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
             @Override
             public void run() {
@@ -148,28 +154,21 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public double getRegenPercent() {
+    public double getRegenValue() {
 
-        return regenPercent;
+        return regenValue;
     }
 
     @Override
-    public void setRegenPercent(double percent) {
+    public void setRegenValue(double percent) {
 
-        this.regenPercent = percent;
+        this.regenValue = percent;
     }
 
     @Override
     public int getMax() {
 
-        int max = config.getInt("max.base", 100);
-        if (getProfession().getAttachedLevel() != null) {
-            max += config.getDouble("max.level-modifier", 0.0) * getHero().getAttachedLevel().getLevel();
-        }
-        if (getProfession() != null && getProfession().getAttachedLevel() != null) {
-            max += config.getDouble("max.prof-level-modifier", 0.0) * getProfession().getAttachedLevel().getLevel();
-        }
-        return max;
+        return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("max"));
     }
 
     @Override
@@ -222,14 +221,20 @@ public abstract class AbstractResource implements Resource {
         if (!isEnabled() || !profession.isActive()) {
             return;
         }
-        if (isMax() && getRegenPercent() > 0) {
+        if (isMax() && getRegenValue() > 0) {
             return;
         }
-        if (isMin() && getRegenPercent() < 0) {
+        if (isMin() && getRegenValue() < 0) {
             return;
         }
 
-        setCurrent((int) (getCurrent() + getMax() * getRegenPercent()));
+        int newValue = getCurrent();
+        if (inPercent) {
+            newValue += getMax() * getRegenValue();
+        } else {
+            newValue += getRegenValue();
+        }
+        setCurrent(newValue);
     }
 
     @Override

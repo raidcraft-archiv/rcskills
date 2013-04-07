@@ -9,9 +9,5 @@ public interface UserInterface {
 
     public Hero getHero();
 
-    public boolean isEnabled();
-
-    public void setEnabled(boolean enabled);
-
     public void refresh();
 }

@@ -4,9 +4,11 @@ import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ConnectionSide;
+import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.injector.GamePhase;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
@@ -24,7 +26,6 @@ public class BukkitUserInterface implements UserInterface {
     private final ProtocolManager protocolManager;
     private final Hero hero;
     private final Player player;
-    private boolean enabled = true;
 
     public BukkitUserInterface(final Hero hero) {
 
@@ -35,6 +36,8 @@ public class BukkitUserInterface implements UserInterface {
         protocolManager.addPacketListener(new PacketAdapter(
                 RaidCraft.getComponent(SkillsPlugin.class),
                 ConnectionSide.SERVER_SIDE,
+                ListenerPriority.HIGHEST,
+                GamePhase.PLAYING,
                 Packets.Server.SET_EXPERIENCE) {
             @Override
             public void onPacketSending(PacketEvent event) {
@@ -51,21 +54,9 @@ public class BukkitUserInterface implements UserInterface {
     }
 
     @Override
-    public boolean isEnabled() {
-
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
-        this.enabled = enabled;
-    }
-
-    @Override
     public void refresh() {
 
-        if (player == null || !isEnabled() || player.getGameMode() == GameMode.CREATIVE || player.isDead() || player.getHealth() < 1) {
+        if (player == null || player.getGameMode() == GameMode.CREATIVE || player.isDead() || player.getHealth() < 1) {
             return;
         }
 

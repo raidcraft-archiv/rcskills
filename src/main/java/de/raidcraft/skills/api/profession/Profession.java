@@ -31,8 +31,6 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
 
     public boolean isMastered();
 
-    public Resource getResource(String type);
-
     public Set<Resource> getResources();
 
     public ProfessionProperties getProperties();

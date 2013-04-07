@@ -19,12 +19,13 @@ import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.ui.BukkitUserInterface;
+import de.raidcraft.skills.api.ui.UserInterface;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -47,10 +48,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final int id;
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
-    private int maxLevel;
+    private final UserInterface userInterface;
     private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
+    private final Map<String, Resource> resources = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
+    private int maxLevel;
     private AttachedLevel<Hero> attachedLevel;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
@@ -63,6 +66,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         this.id = data.getId();
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
+        this.userInterface = new BukkitUserInterface(this);
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
@@ -75,11 +79,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // keep this last because we need to professions to load first
         setMaxHealth(getDefaultHealth());
         setHealth(data.getHealth());
-    }
-
-    protected AbstractHero(HeroData data) {
-
-        this(Bukkit.getPlayer(data.getName()), data);
     }
 
     @SuppressWarnings("unchecked")
@@ -184,7 +183,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void damage(Attack attack) {
 
         super.damage(attack);
-        getUserInterface().refresh();
     }
 
     @Override
@@ -232,32 +230,33 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public Resource getResource(String type) {
+    public Resource getResource(String name) {
 
-        for (Profession profession : professions.values()) {
-            if (profession.isActive() && profession.getResource(type) != null) {
-                return profession.getResource(type);
-            }
-        }
-        return null;
+        return resources.get(name);
+    }
+
+    @Override
+    public boolean hasResource(String name) {
+
+        return resources.containsKey(name.toLowerCase());
+    }
+
+    @Override
+    public void attachResource(Resource resource) {
+
+        resources.put(resource.getName().toLowerCase(), resource);
+    }
+
+    @Override
+    public Resource detachResource(String name) {
+
+        return resources.remove(name.toLowerCase());
     }
 
     @Override
     public Set<Resource> getResources() {
 
-        Set<Resource> resources = new HashSet<>();
-        for (Profession profession : professions.values()) {
-            if (profession.isActive()) {
-                resources.addAll(profession.getResources());
-            }
-        }
-        return resources;
-    }
-
-    @Override
-    public Set<Resource> getResources(Profession profession) {
-
-        return profession.getResources();
+        return new HashSet<>(resources.values());
     }
 
     @Override
@@ -275,6 +274,9 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();
+        for (Resource resource : getResources()) {
+            resource.setCurrent(resource.getDefault());
+        }
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
     }
@@ -296,6 +298,12 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public AttachedLevel<Hero> getExpPool() {
 
         return expPool;
+    }
+
+    @Override
+    public UserInterface getUserInterface() {
+
+        return userInterface;
     }
 
     @Override
@@ -490,9 +498,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         this.selectedProfession = profession;
         setMaxHealth(getDefaultHealth());
-        if (getUserInterface() != null) {
-            getUserInterface().refresh();
-        }
+        getUserInterface().refresh();
     }
 
     @Override

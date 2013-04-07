@@ -20,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -46,7 +47,6 @@ public final class CharacterManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
-        startTasks();
     }
 
     public void reload() {
@@ -60,24 +60,6 @@ public final class CharacterManager implements Listener {
             character.clearEffects();
         }
         characters.clear();
-    }
-
-    public void startTasks() {
-
-        startUserInterfaceRefreshTask();
-    }
-
-    private void startUserInterfaceRefreshTask() {
-
-        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    getHero(player).getUserInterface().refresh();
-                }
-            }
-        }, plugin.getCommonConfig().interface_update_interval, plugin.getCommonConfig().interface_update_interval);
     }
 
     public Hero getHero(Player player, String name, boolean cache) throws UnknownPlayerException {
@@ -307,8 +289,7 @@ public final class CharacterManager implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // init once to set the health from the db and so on
-        Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
-        hero.getUserInterface().refresh();
+        plugin.getCharacterManager().getHero(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -316,5 +297,12 @@ public final class CharacterManager implements Listener {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
         // event.setAmount(0);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPlayerFoodGain(FoodLevelChangeEvent event) {
+
+        // always cancel the food gain event because we handle that extra
+        event.setCancelled(true);
     }
 }
