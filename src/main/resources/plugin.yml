@@ -6,6 +6,7 @@ author: Silthus
 website: http://www.raid-craft.de
 depend: [RaidCraft-API]
 softdepend: [RCPermissions, RCConversations]
+database: true
 permissions:
   rcskills.player:
     description: Gives access to all relevant player commands.
