@@ -113,7 +113,7 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
 
         Map<String, Integer> map = new HashMap<>();
         for (String type : getConfigurationSection(key).getKeys(false)) {
-            map.put(type, getInt(type));
+            map.put(type, getInt(key + "." + type));
         }
         return map;
     }
