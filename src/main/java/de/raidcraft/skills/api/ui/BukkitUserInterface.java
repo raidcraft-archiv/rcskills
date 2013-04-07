@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
+import com.comphenix.protocol.injector.PlayerLoggedOutException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
@@ -56,7 +57,11 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void refresh() {
 
-        if (player == null || player.getGameMode() == GameMode.CREATIVE || player.isDead() || player.getHealth() < 1) {
+        if (player == null
+                || !player.isOnline()
+                || player.getGameMode() == GameMode.CREATIVE
+                || player.isDead()
+                || player.getHealth() < 1) {
             return;
         }
 
@@ -69,7 +74,7 @@ public class BukkitUserInterface implements UserInterface {
         try {
             // we only need to create a default packet - it will be modified in our listener
             protocolManager.sendServerPacket(getHero().getPlayer(), protocolManager.createPacket(Packets.Server.SET_EXPERIENCE));
-        } catch (InvocationTargetException ignored) {
+        } catch (InvocationTargetException | PlayerLoggedOutException ignored) {
         }
     }
 
