@@ -46,6 +46,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +95,17 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         new BukkitEventDispatcher(this);
         // lets start our logging tasks
         ExpLogger.startTask(this);
+    }
+
+    private void setupDatabase() {
+        try {
+            for (Class<?> clazz : getDatabaseClasses()) {
+                getDatabase().find(clazz).findRowCount();
+            }
+        } catch (PersistenceException ex) {
+            System.out.println("Installing database for " + getDescription().getName() + " due to first time usage");
+            installDDL();
+        }
     }
 
     private void loadEngine() {
