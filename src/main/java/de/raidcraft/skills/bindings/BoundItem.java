@@ -3,7 +3,6 @@ package de.raidcraft.skills.bindings;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
@@ -14,11 +13,11 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
+public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
 
     private final Hero hero;
     private final Material item;
-    private final List<Skill> skills = new ArrayList<>();
+    private final List<Binding> bindings = new ArrayList<>();
     private int index = 0;
 
     public BoundItem(Hero hero, Material item) {
@@ -27,21 +26,24 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         this.item = item;
     }
 
-    public boolean contains(Skill skill) {
-        for(Skill currentSkill : skills) {
-            if(currentSkill.getName().equalsIgnoreCase(skill.getName())) {
+    public boolean contains(Binding binding) {
+
+        for (Binding currentBinding : bindings) {
+            if (currentBinding.getSkill().getName().equalsIgnoreCase(binding.getSkill().getName())) {
                 return true;
             }
         }
         return false;
     }
 
-    public void add(Skill skill) {
-        skills.add(skill);
+    public void add(Binding skill) {
+
+        bindings.add(skill);
     }
 
-    public List<Skill> getSkills() {
-        return skills;
+    public List<Binding> getBindings() {
+
+        return bindings;
     }
 
     public Hero getHero() {
@@ -56,10 +58,10 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
 
     public void use() {
 
-        Skill skill = skills.get(index);
+        Binding binding = bindings.get(index);
         try {
-            new SkillAction(skill).run();
-            getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + getCurrent().getFriendlyName());
+            new SkillAction(binding.getSkill(), binding.getArgs()).run();
+            getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + binding.getSkill().getFriendlyName());
         } catch (CombatException e) {
             // dont spam the player with global cooldown
             if (e.getType() == CombatException.Type.ON_GLOBAL_COOLDOWN) {
@@ -69,24 +71,25 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
         }
     }
 
-    public Skill getCurrent() {
-        return skills.get(index);
+    public Binding getCurrent() {
+
+        return bindings.get(index);
     }
 
     @Override
     public boolean hasNext() {
 
-        return skills.size() > 0;
+        return bindings.size() > 0;
     }
 
     @Override
-    public Skill next() {
+    public Binding next() {
 
-        if (skills.size() < 1) {
+        if (bindings.size() < 1) {
             return null;
         }
-        Skill skill = skills.get(index);
-        if (index < skills.size() - 1) {
+        Binding skill = bindings.get(index);
+        if (index < bindings.size() - 1) {
             index++;
         } else {
             index = 0;
@@ -97,11 +100,11 @@ public class BoundItem implements Iterator<Skill>, Iterable<Skill> {
     @Override
     public void remove() {
 
-        skills.remove(index);
+        bindings.remove(index);
     }
 
     @Override
-    public Iterator<Skill> iterator() {
+    public Iterator<Binding> iterator() {
 
         return this;
     }

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class BindCommands {
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
-        if(hero.getPlayer().getItemInHand() == null) {
+        if (hero.getPlayer().getItemInHand() == null) {
             throw new CommandException("Kein Item in der Hand.");
         }
 
@@ -57,7 +58,7 @@ public class BindCommands {
             throw new CommandException("Du kannst diesen Skill nicht binden.");
         }
 
-        if(BindManager.INST.addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill)) {
+        if (BindManager.INST.addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill, new CommandContext(args.getSlice(1)))) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Der Skill " + skill.getFriendlyName() + " wurde an dieses Item gebunden!");
             return;
         }
@@ -68,8 +69,8 @@ public class BindCommands {
             aliases = "unbind",
             desc = "Unbind all skills on an item"
     )
-         @CommandPermissions("rcskills.player.unbind")
-         public void unbind(CommandContext args, CommandSender sender) throws CommandException {
+    @CommandPermissions("rcskills.player.unbind")
+    public void unbind(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {
             return;
@@ -78,11 +79,11 @@ public class BindCommands {
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
-        if(hero.getPlayer().getItemInHand() == null) {
+        if (hero.getPlayer().getItemInHand() == null) {
             throw new CommandException("Kein Item in der Hand.");
         }
 
-        if(BindManager.INST.removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
+        if (BindManager.INST.removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Alle Skills auf diesem Item wurden entfernt!");
             return;
         }
@@ -100,88 +101,62 @@ public class BindCommands {
             return;
         }
 
-        Hero hero;
-        hero = plugin.getCharacterManager().getHero((Player) sender);
+        int usedSlots = 0;
         boolean noItem = false;
-        Map<Material, List<Skill>> assignments = new HashMap<>();
-        for(Skill skill : hero.getSkills()) {
-            if (!(skill instanceof CommandTriggered)) {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Map <Material, List<Skill>> assignments = new HashMap<>();
+        Map<EffectType, Integer> slots = new EnumMap<>(EffectType.class);
+
+        for (Skill skill : hero.getSkills()) {
+            // lets check if the player has this skill unlocked
+            if (!(skill instanceof CommandTriggered) || !skill.isUnlocked() || !skill.isActive()) {
                 continue;
             }
 
-            ItemStack item;
-            for(EffectType type : skill.getTypes()) {
-                // damage spells (item in slot 0)
-                if(type == EffectType.DAMAGING || type == EffectType.HARMFUL) {
-                    item = hero.getPlayer().getInventory().getItem(0);
-                    if(item != null && item.getType() != Material.AIR) {
-                        if(!assignments.containsKey(item.getType())) {
-                            assignments.put(item.getType(), new ArrayList<Skill>());
-                        }
-                        assignments.get(item.getType()).add(skill);
+            for (EffectType type : skill.getTypes()) {
+
+                int slot = -1;
+                if (slots.containsKey(type)) {
+                    slot = slots.get(type);
+                } else {
+                    if (usedSlots < 9) {
+                        slot = usedSlots;
+                        slots.put(type, slot);
                     }
-                    else {
-                        noItem = true;
-                    }
-                    break;
                 }
 
-                // protection spells (item in slot 1)
-                if(type == EffectType.PROTECTION) {
-                    item = hero.getPlayer().getInventory().getItem(1);
-                    if(item != null && item.getType() != Material.AIR) {
-                        if(!assignments.containsKey(item.getType())) {
-                            assignments.put(item.getType(), new ArrayList<Skill>());
-                        }
-                        assignments.get(item.getType()).add(skill);
-                    }
-                    else {
-                        noItem = true;
-                    }
-                    break;
-                }
-
-                // helpful spells (item in slot 2)
-                if(type == EffectType.HELPFUL) {
-                    item = hero.getPlayer().getInventory().getItem(2);
-                    if(item != null && item.getType() != Material.AIR) {
-                        if(!assignments.containsKey(item.getType())) {
-                            assignments.put(item.getType(), new ArrayList<Skill>());
-                        }
-                        assignments.get(item.getType()).add(skill);
-                    }
-                    else {
-                        noItem = true;
-                    }
+                if (slot > -1) {
+                    noItem = bindSkill(slot, skill, assignments);
+                    usedSlots++;
                     break;
                 }
             }
         }
 
-        if(noItem) {
+        if (noItem) {
             hero.sendMessage(ChatColor.RED + "Du hast nicht genug Items in der Inventarleiste um alle Skilltypen zu binden!");
         }
-        if(assignments.size() == 0) {
+        if (assignments.size() == 0) {
             throw new CommandException("Du hast keine Skills zum binden!");
         }
 
         hero.sendMessage(ChatColor.DARK_GREEN + "Es wurden folgende Skills an Items gebunden:");
 
         String bindingText = "";
-        for(Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
+        for (Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
             // remove old bindings
             BindManager.INST.removeBindings(hero, entry.getKey());
             bindingText = ChatColor.GOLD + ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN) + ChatColor.WHITE + ": ";
 
             // add new binding
             boolean colorToggle = true;
-            for(Skill sk : entry.getValue()) {
+            for (Skill sk : entry.getValue()) {
                 BindManager.INST.addBinding(hero, entry.getKey(), sk);
-                if(colorToggle) {
+                if (colorToggle) {
                     bindingText += ChatColor.WHITE;
                     colorToggle = false;
-                }
-                else {
+                } else {
                     bindingText += ChatColor.DARK_GRAY;
                     colorToggle = true;
                 }
@@ -189,5 +164,18 @@ public class BindCommands {
             }
             hero.sendMessage(bindingText);
         }
+    }
+
+    private boolean bindSkill(int slot, Skill skill, Map<Material, List<Skill>> boundSkills) {
+
+        ItemStack item = skill.getHero().getPlayer().getInventory().getItem(slot);
+        if (item == null || item.getTypeId() == 0) {
+            return true;
+        }
+        if (!boundSkills.containsKey(item.getType())) {
+            boundSkills.put(item.getType(), new ArrayList<Skill>());
+        }
+        boundSkills.get(item.getType()).add(skill);
+        return false;
     }
 }

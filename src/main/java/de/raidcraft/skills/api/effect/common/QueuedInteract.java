@@ -18,7 +18,7 @@ import org.bukkit.event.block.Action;
  * @author Silthus
  */
 @EffectInformation(
-        name = "QueuedInteract",
+        name = "Queued Interact",
         description = "Löst den gegebenen Skill bei einem Interact aus."
 )
 public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered {
