@@ -39,6 +39,8 @@ import java.util.Set;
  */
 public final class CombatManager implements Listener {
 
+    public static final Set<EntityDamageByEntityEvent> FAKED_EVENTS = new HashSet<>();
+
     public static EntityDamageByEntityEvent fakeDamageEvent(Attack<CharacterTemplate, CharacterTemplate> action) {
 
         return fakeDamageEvent(action.getSource(), action);
@@ -60,7 +62,10 @@ public final class CombatManager implements Listener {
                 action.getTarget().getEntity(),
                 cause,
                 action.getDamage());
+        // we need to check for our own faked events to avoid loops
+        FAKED_EVENTS.add(event);
         RaidCraft.callEvent(event);
+        FAKED_EVENTS.remove(event);
         return event;
     }
     private final SkillsPlugin plugin;
@@ -165,6 +170,9 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onFriendlyAttack(EntityDamageByEntityEvent event) {
 
+        if (FAKED_EVENTS.contains(event)) {
+            return;
+        }
         if (!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof LivingEntity)) {
             return;
         }
@@ -180,6 +188,9 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onAttack(EntityDamageByEntityEvent event) {
 
+        if (FAKED_EVENTS.contains(event)) {
+            return;
+        }
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
             return;
         }
@@ -257,6 +268,9 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void enterCombat(EntityDamageByEntityEvent event) {
 
+        if (FAKED_EVENTS.contains(event)) {
+            return;
+        }
         if (event.getEntity() instanceof LivingEntity) {
             CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             CharacterTemplate attacker;
@@ -310,6 +324,9 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
+        if (FAKED_EVENTS.contains(event)) {
+            return;
+        }
         if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
