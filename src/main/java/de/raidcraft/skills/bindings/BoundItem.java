@@ -3,6 +3,7 @@ package de.raidcraft.skills.bindings;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
@@ -26,10 +27,20 @@ public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
         this.item = item;
     }
 
+    public boolean containsSkill(Skill skill) {
+
+        for (Binding currentBinding : bindings) {
+            if (currentBinding.getSkill().getName().equalsIgnoreCase(skill.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean contains(Binding binding) {
 
         for (Binding currentBinding : bindings) {
-            if (currentBinding.getSkill().getName().equalsIgnoreCase(binding.getSkill().getName())) {
+            if (currentBinding.equals(binding)) {
                 return true;
             }
         }

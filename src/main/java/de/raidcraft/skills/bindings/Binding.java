@@ -42,4 +42,25 @@ public class Binding {
 
         return args;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Binding binding = (Binding) o;
+
+        return hero.equals(binding.hero) && material == binding.material && skill.equals(binding.skill);
+
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = hero.hashCode();
+        result = 31 * result + material.hashCode();
+        result = 31 * result + skill.hashCode();
+        return result;
+    }
 }

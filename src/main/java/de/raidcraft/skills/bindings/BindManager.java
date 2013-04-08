@@ -58,7 +58,7 @@ public class BindManager {
 
     public boolean addBinding(Hero hero, Material item, Skill skill, CommandContext args) {
 
-        return addBinding(hero, item, skill, args);
+        return addBinding(hero, item, skill, args, true);
     }
 
     public boolean addBinding(Hero hero, Material item, Skill skill, CommandContext args, boolean save) {
@@ -68,22 +68,23 @@ public class BindManager {
         }
 
         boolean found = false;
+        Binding binding = new Binding(hero, item, skill, args);
         for (BoundItem boundItem : boundItems.get(hero.getName())) {
             if (boundItem.getItem() == item) {
-                if (boundItem.contains(skill)) {
+                if (boundItem.contains(binding)) {
                     return false;
                 }
-                boundItem.add(skill);
+                boundItem.add(binding);
                 found = true;
             }
         }
         if (!found) {
             BoundItem boundItem = new BoundItem(hero, item);
-            boundItem.add(skill);
+            boundItem.add(binding);
             boundItems.get(hero.getName()).add(boundItem);
         }
         if (save) {
-            Database.getTable(BindingsTable.class).saveBinding(new Binding(hero, item, skill, args));
+            Database.getTable(BindingsTable.class).saveBinding(binding);
         }
         return true;
     }
@@ -93,8 +94,8 @@ public class BindManager {
         if (boundItems.containsKey(hero.getName())) {
             for (BoundItem boundItem : boundItems.get(hero.getName())) {
                 if (boundItem.getItem() == item) {
-                    for (Skill skill : boundItem.getBindings()) {
-                        Database.getTable(BindingsTable.class).deleteBinding(hero, item, skill);
+                    for (Binding binding : boundItem.getBindings()) {
+                        Database.getTable(BindingsTable.class).deleteBinding(binding);
                     }
                     boundItems.get(hero.getName()).remove(boundItem);
                     return true;
