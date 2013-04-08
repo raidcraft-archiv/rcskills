@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.CombatManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -54,12 +55,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     @Override
     public void run() throws CombatException {
 
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-                getSource().getEntity(),
-                getTarget().getEntity(),
-                (getAttackTypes().contains(EffectType.MAGICAL)
-                        ? EntityDamageEvent.DamageCause.MAGIC : EntityDamageEvent.DamageCause.ENTITY_ATTACK),
-                0);
+        EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             if (getSource() instanceof Hero) {

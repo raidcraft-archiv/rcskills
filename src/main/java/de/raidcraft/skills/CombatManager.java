@@ -1,7 +1,9 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
@@ -37,9 +39,34 @@ import java.util.Set;
  */
 public final class CombatManager implements Listener {
 
+    public static EntityDamageByEntityEvent fakeDamageEvent(Attack<CharacterTemplate, CharacterTemplate> action) {
+
+        return fakeDamageEvent(action.getSource(), action);
+    }
+
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack <?, CharacterTemplate> action) {
+
+        if (action.isOfAttackType(EffectType.MAGICAL)) {
+            return fakeDamageEvent(attacker, action, EntityDamageEvent.DamageCause.MAGIC);
+        } else {
+            return fakeDamageEvent(attacker, action, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        }
+    }
+
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack <?, CharacterTemplate> action, EntityDamageByEntityEvent.DamageCause cause) {
+
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
+                attacker.getEntity(),
+                action.getTarget().getEntity(),
+                cause,
+                action.getDamage());
+        RaidCraft.callEvent(event);
+        return event;
+    }
     private final SkillsPlugin plugin;
     private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
     private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
+
     private final Map<Integer, SourcedRangeCallback> rangedAttacks = new HashMap<>();
 
     protected CombatManager(SkillsPlugin plugin) {

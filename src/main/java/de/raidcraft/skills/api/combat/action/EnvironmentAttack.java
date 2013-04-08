@@ -36,7 +36,6 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
             return;
         }
 
-
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         if (getTarget() instanceof Hero) {
             DamageTrigger trigger = new DamageTrigger(getTarget(), this, event.getCause());
