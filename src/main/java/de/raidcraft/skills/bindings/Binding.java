@@ -1,6 +1,7 @@
 package de.raidcraft.skills.bindings;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Material;
@@ -13,7 +14,7 @@ public class Binding {
     private final Hero hero;
     private final Material material;
     private final Skill skill;
-    private final CommandContext args;
+    private CommandContext args;
 
     public Binding(Hero hero, Material material, Skill skill, CommandContext args) {
 
@@ -40,6 +41,12 @@ public class Binding {
 
     public CommandContext getArgs() {
 
+        if (args == null) {
+            try {
+                args = new CommandContext("");
+            } catch (CommandException ignored) {
+            }
+        }
         return args;
     }
 

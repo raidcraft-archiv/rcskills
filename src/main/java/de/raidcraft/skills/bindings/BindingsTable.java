@@ -87,7 +87,7 @@ public class BindingsTable extends Table {
                     "'" + binding.getHero().getName() + "'" + "," +
                     "'" + binding.getMaterial().name() + "'" + "," +
                     "'" + binding.getSkill().getName() + "'" + "," +
-                    "'" + binding.getArgs().getJoinedStrings(0) + "'" +
+                    "'" + (binding.getArgs() == null ? "" : binding.getArgs().getJoinedStrings(0)) + "'" +
                     ")").executeUpdate();
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
