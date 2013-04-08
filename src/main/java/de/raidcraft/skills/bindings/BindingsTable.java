@@ -82,12 +82,16 @@ public class BindingsTable extends Table {
                             "player = '" + binding.getHero().getName() + "' AND " +
                             "item = '" + binding.getMaterial().name() + "' AND " +
                             "skill = '" + binding.getSkill().getName() + "';").execute();
+            String args = "";
+            if (binding.getArgs() != null && binding.getArgs().argsLength() > 0) {
+                args = binding.getArgs().getJoinedStrings(0);
+            }
             getConnection().prepareStatement("INSERT INTO " + getTableName() + " (player, item, skill, args) " +
                     "VALUES (" +
                     "'" + binding.getHero().getName() + "'" + "," +
                     "'" + binding.getMaterial().name() + "'" + "," +
                     "'" + binding.getSkill().getName() + "'" + "," +
-                    "'" + (binding.getArgs() == null ? "" : binding.getArgs().getJoinedStrings(0)) + "'" +
+                    "'" + args + "'" +
                     ")").executeUpdate();
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
