@@ -101,11 +101,11 @@ public class PlayerComands {
             if (!(expPool.getExp() > 0)) {
                 throw new CommandException("Dein EXP Pool ist leer und du kannst keine EXP verteilen.");
             }
-            int exp = args.getInteger(0);
+            int exp = args.getInteger(1);
             if (exp > expPool.getExp()) {
                 throw new CommandException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
             }
-            AttachedLevel attachedLevel = ProfessionUtil.getProfessionFromArgs(hero, args.getString(1)).getAttachedLevel();
+            AttachedLevel attachedLevel = ProfessionUtil.getProfessionFromArgs(hero, args.getString(0)).getAttachedLevel();
             if (attachedLevel == null) {
                 throw new CommandException("Bitte gebe eine Spezialisierung an, der du EXP geben willst.");
             }
