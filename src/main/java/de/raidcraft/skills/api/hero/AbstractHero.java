@@ -280,7 +280,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         setHealth(getMaxHealth());
         clearEffects();
         for (Resource resource : getResources()) {
-            resource.setCurrent(resource.getDefault());
+            resource.setCurrent(resource.getMax());
         }
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
