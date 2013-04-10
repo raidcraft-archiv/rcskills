@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
@@ -30,6 +31,8 @@ public interface SkillProperties {
     public String[] getUsage();
 
     public ItemStack[] getReagents();
+
+    public Set<Skill> getLinkedSkills(Hero hero);
 
     public boolean isHidden();
 

@@ -5,8 +5,12 @@ import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -125,6 +129,23 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
             reagents[i] = new ItemStack(material, section.getInt(key));
         }
         return reagents;
+    }
+
+    @Override
+    public Set<Skill> getLinkedSkills(Hero hero) {
+
+        Set<Skill> skills = new HashSet<>();
+        ConfigurationSection section = getSafeConfigSection("linked-skills");
+        Profession profession;
+        for (String key : section.getKeys(false)) {
+            try {
+                profession = getPlugin().getProfessionManager().getProfession(hero, section.getString(key));
+                skills.add(getPlugin().getSkillManager().getSkill(hero, profession, key));
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                getPlugin().getLogger().warning(e.getMessage());
+            }
+        }
+        return skills;
     }
 
     @Override

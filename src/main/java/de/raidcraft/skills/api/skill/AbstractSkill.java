@@ -1,9 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
-import com.avaje.ebean.Ebean;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.ProfessionManager;
@@ -677,6 +675,10 @@ public abstract class AbstractSkill implements Skill {
         unlocked = true;
         unlockTime = new Timestamp(System.currentTimeMillis());
         save();
+        // lets unlock all linked skills without checking the requirements
+        for (Skill skill : getProperties().getLinkedSkills(getHero())) {
+            skill.unlock();
+        }
         // apply the skill
         apply();
     }
@@ -687,6 +689,10 @@ public abstract class AbstractSkill implements Skill {
         getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
         unlocked = false;
         save();
+        // lock all linked skills without asking questions
+        for (Skill skill : getProperties().getLinkedSkills(getHero())) {
+            skill.lock();
+        }
         // remove the skill
         remove();
     }
