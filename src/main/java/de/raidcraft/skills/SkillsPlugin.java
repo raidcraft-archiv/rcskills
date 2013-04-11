@@ -299,6 +299,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int fist_attack_damage = 1;
         @Setting("defaults.permission-group")
         public String default_permission_group = "default";
+        @Setting("defaults.skeleton-knockback")
+        public double skeletons_knockback_chance = 1.0;
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")

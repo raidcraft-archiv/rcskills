@@ -18,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -373,6 +374,13 @@ public final class CombatManager implements Listener {
                     }
                 }
                 if (!damaged) {
+                    // nerf skeletons
+                    if (plugin.getCommonConfig().skeletons_knockback_chance < 1.0
+                            && source.getEntity() instanceof Skeleton) {
+                        if (Math.random() > plugin.getCommonConfig().skeletons_knockback_chance) {
+                            event.setCancelled(true);
+                        }
+                    }
                     // lets issue a new physical attack for the event
                     try {
                         new PhysicalAttack(source, target, source.getDamage()).run();
