@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-public class Stamina implements VisualResource {
+public class StaminaVisual implements VisualResource {
 
     @Override
     public void update(Resource resource) {

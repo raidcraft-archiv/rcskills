@@ -388,8 +388,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     @Override
     public void save() {
 
-
-
         THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         if (tHero == null) return;
         tHero.setHealth(getHealth());

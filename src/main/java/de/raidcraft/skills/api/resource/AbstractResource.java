@@ -9,9 +9,11 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.ResourceChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -23,7 +25,7 @@ public abstract class AbstractResource implements Resource {
     private final ResourceData data;
     private final Profession profession;
     private final ConfigurationSection config;
-    private final VisualResourceType type;
+    private final Set<VisualResourceType> types = new HashSet<>();
     private BukkitTask task;
     private long regenInterval;
     private double regenValue;
@@ -38,7 +40,9 @@ public abstract class AbstractResource implements Resource {
         this.data = data;
         this.profession = profession;
         this.config = config;
-        this.type = VisualResourceType.fromString(config.getString("type", "text"));
+        for (String type : config.getStringList("types")) {
+            types.add(VisualResourceType.fromString(type));
+        }
         // lets set the current value
         setCurrent((data.getValue() == 0 ? getDefault() : data.getValue()));
         // lets get some default values from the config
@@ -63,7 +67,7 @@ public abstract class AbstractResource implements Resource {
         }, getRegenInterval(), getRegenInterval());
     }
 
-    protected ConfigurationSection getConfig() {
+    public ConfigurationSection getConfig() {
 
         return config;
     }
@@ -93,9 +97,9 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public VisualResourceType getType() {
+    public Set<VisualResourceType> getTypes() {
 
-        return type;
+        return types;
     }
 
     @Override
@@ -121,7 +125,9 @@ public abstract class AbstractResource implements Resource {
         this.current = current;
 
         if (update) {
-            getType().update(this);
+            for (VisualResourceType type : getTypes()) {
+                type.update(this);
+            }
         }
     }
 
@@ -191,26 +197,6 @@ public abstract class AbstractResource implements Resource {
     public int getMin() {
 
         return config.getInt("min", 0);
-    }
-
-    @Override
-    public ChatColor getFilledColor() {
-
-        String string = config.getString("color.filled", "BLUE");
-        ChatColor color = ChatColor.valueOf(string);
-        if (color == null) color = ChatColor.getByChar(string);
-        if (color == null) color = ChatColor.BLUE;
-        return color;
-    }
-
-    @Override
-    public ChatColor getUnfilledColor() {
-
-        String string = config.getString("color.unfilled", "DARK_RED");
-        ChatColor color = ChatColor.valueOf(string);
-        if (color == null) color = ChatColor.getByChar(string);
-        if (color == null) color = ChatColor.DARK_RED;
-        return color;
     }
 
     @Override

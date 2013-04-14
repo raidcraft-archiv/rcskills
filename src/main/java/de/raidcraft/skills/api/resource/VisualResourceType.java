@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.resource;
 
-import de.raidcraft.skills.api.resource.visual.Health;
-import de.raidcraft.skills.api.resource.visual.Stamina;
-import de.raidcraft.skills.api.resource.visual.Text;
+import de.raidcraft.skills.api.resource.visual.ScoreboardVisual;
+import de.raidcraft.skills.api.resource.visual.StaminaVisual;
+import de.raidcraft.skills.api.resource.visual.TextVisual;
 import de.raidcraft.util.EnumUtils;
 
 /**
@@ -10,9 +10,9 @@ import de.raidcraft.util.EnumUtils;
  */
 public enum VisualResourceType {
 
-    STAMINA(new Stamina()),
-    TEXT(new Text()),
-    HEALTH(new Health());
+    STAMINA(new StaminaVisual()),
+    TEXT(new TextVisual()),
+    SCOREBOARD(new ScoreboardVisual());
 
     private final VisualResource visualResource;
 

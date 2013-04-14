@@ -3,7 +3,9 @@ package de.raidcraft.skills.api.resource;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.util.EnumUtils;
-import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -25,15 +27,13 @@ public interface Resource {
 
     public Profession getProfession();
 
-    public VisualResourceType getType();
+    public ConfigurationSection getConfig();
+
+    public Set<VisualResourceType> getTypes();
 
     public String getName();
 
     public String getFriendlyName();
-
-    public ChatColor getFilledColor();
-
-    public ChatColor getUnfilledColor();
 
     public int getDefault();
 
