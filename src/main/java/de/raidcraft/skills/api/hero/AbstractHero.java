@@ -360,6 +360,15 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
+    public void setHealth(int health) {
+
+        super.setHealth(health);
+        if (getUserInterface() != null) {
+            getUserInterface().refresh();
+        }
+    }
+
+    @Override
     public void onExpGain(int exp) {
 
         ExpLogger.log(this, exp);
