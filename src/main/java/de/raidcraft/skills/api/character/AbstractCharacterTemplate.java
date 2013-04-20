@@ -18,6 +18,7 @@ import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.items.Weapon;
 import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.ChatColor;
@@ -282,6 +283,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
             getEntity().setNoDamageTicks(1);
             setHealth(newHealth);
+            // lets fake some wolf hearts for visuals
+            EffectUtil.fakeWolfHearts(getEntity().getLocation().add(0, 1, 0));
             if (this instanceof Hero) {
                 ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
             }
