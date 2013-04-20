@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,12 +19,13 @@ public final class BukkitEnvironmentManager implements Listener {
         plugin.registerEvents(this);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onFoodGain(FoodLevelChangeEvent event) {
 
         // make sure we are never above 19 to allow eating
         if (event.getFoodLevel() > 19) {
-            event.setFoodLevel(19);
+            ((Player)event.getEntity()).setFoodLevel(19);
         }
+        event.setCancelled(true);
     }
 }

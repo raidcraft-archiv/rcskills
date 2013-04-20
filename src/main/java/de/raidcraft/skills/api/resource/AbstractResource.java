@@ -45,6 +45,9 @@ public abstract class AbstractResource implements Resource {
         }
         // lets set the current value
         setCurrent((data.getValue() == 0 ? getDefault() : data.getValue()));
+        for (VisualResourceType type : getTypes()) {
+            type.update(this);
+        }
         // lets get some default values from the config
         regenValue = ConfigUtil.getTotalValue(profession, config.getConfigurationSection("regen"));
         regenInterval = (long) (ConfigUtil.getTotalValue(profession, config.getConfigurationSection("interval")) * 20);
