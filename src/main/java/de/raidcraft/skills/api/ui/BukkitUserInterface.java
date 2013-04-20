@@ -76,7 +76,7 @@ public class BukkitUserInterface implements UserInterface {
 
         // lets update the scoreboard
         Objective objective = getScoreboardHealthObjective();
-        objective.setDisplayName("/ " + getHero().getMaxHealth());
+        objective.setDisplayName("HP");
         objective.getScore(player).setScore(getHero().getHealth());
 
         // make sure the food level is never at 20 to allow eating
