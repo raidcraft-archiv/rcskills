@@ -279,6 +279,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
             amount = trigger.getAmount();
 
+            if (amount < 1) {
+                return;
+            }
+
             int newHealth = getHealth() + amount;
             if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
             getEntity().setNoDamageTicks(1);

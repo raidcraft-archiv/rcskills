@@ -5,7 +5,6 @@ import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -175,12 +174,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public HeroOptions getOptions() {
 
         return options;
-    }
-
-    @Override
-    public void damage(Attack attack) {
-
-        super.damage(attack);
     }
 
     @Override
