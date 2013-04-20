@@ -72,7 +72,6 @@ public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
         Binding binding = bindings.get(index);
         try {
             new SkillAction(binding.getSkill(), binding.getArgs()).run();
-            getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + binding.getSkill().getFriendlyName());
         } catch (CombatException e) {
             // dont spam the player with global cooldown
             if (e.getType() == CombatException.Type.ON_GLOBAL_COOLDOWN) {

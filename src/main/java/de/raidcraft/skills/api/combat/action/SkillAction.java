@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,5 +130,8 @@ public class SkillAction extends AbstractAction<Hero> {
 
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);
+
+        // lets inform the player that his skill was executed
+        skill.getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
     }
 }
