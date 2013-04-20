@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -276,5 +277,12 @@ public final class CharacterManager implements Listener {
 
         // TODO: somehow manage the minecraft exp for enchanting and stuff
         event.setAmount(0);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onHealthChange(EntityRegainHealthEvent event) {
+
+        // lets always cancel this on the lowest level to allow other handles to overwrite
+        event.setCancelled(true);
     }
 }
