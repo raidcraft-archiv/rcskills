@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class BukkitUserInterface implements UserInterface {
 
-    private static final String HEALTH_OBJECTIVE = "hero_health";
+    private static final String HEALTH_OBJECTIVE = "health";
 
     private final ProtocolManager protocolManager;
     private final Hero hero;
@@ -39,7 +39,7 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        getScoreboardHealthObjective().setDisplayName("/ " + hero.getMaxHealth());
+        getScoreboardHealthObjective().setDisplayName("HP");
 
         // lets intercept server packets that tell the player the experience
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -75,9 +75,8 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // lets update the scoreboard
-        Objective objective = getScoreboardHealthObjective();
-        objective.setDisplayName("HP");
-        objective.getScore(player).setScore(getHero().getHealth());
+        // Objective objective = getScoreboardHealthObjective();
+        // objective.getScore(player).setScore(getHero().getHealth());
 
         // make sure the food level is never at 20 to allow eating
         if (player.getFoodLevel() > 19) {
