@@ -10,29 +10,36 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Silthus
  */
 public class ScoreboardVisual implements VisualResource {
 
-    public static final String SCOREBOARD_NAME = "resources";
+    public static final String OBJECTIVE_BASE_NAME = "resources";
     private static final String DISPLAY_NAME = "Resourcen";
+
+    private final Map<String, Scoreboard> scoreboards = new HashMap<>();
 
     @Override
     public void update(Resource resource) {
 
         Player player = resource.getHero().getPlayer();
+        String playerName = player.getName().toLowerCase();
 
-        Scoreboard scoreboard = player.getScoreboard();
-        if (scoreboard == null) {
+        Scoreboard scoreboard;
+        Objective objective;
+        if (scoreboards.containsKey(playerName)) {
+            scoreboard = scoreboards.get(playerName);
+            objective = scoreboard.getObjective(OBJECTIVE_BASE_NAME + "_" + playerName);
+        } else {
             scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        }
-
-        Objective objective = scoreboard.getObjective(SCOREBOARD_NAME);
-        if (objective == null) {
-            objective = scoreboard.registerNewObjective(SCOREBOARD_NAME, "dummy");
+            scoreboards.put(playerName, scoreboard);
+            objective = scoreboard.registerNewObjective(OBJECTIVE_BASE_NAME + "_" + playerName, "dummy");
+            objective.setDisplayName("Resourcen");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            objective.setDisplayName(DISPLAY_NAME);
         }
 
         // now lets actually set the resource
@@ -41,5 +48,15 @@ public class ScoreboardVisual implements VisualResource {
         score.setScore(resource.getCurrent());
 
         player.setScoreboard(scoreboard);
+    }
+
+    public void disable(Resource resource) {
+
+        String playerName = resource.getHero().getName().toLowerCase();
+        if (scoreboards.containsKey(playerName)) {
+            Scoreboard scoreboard = scoreboards.get(playerName);
+            Objective objective = scoreboard.getObjective(OBJECTIVE_BASE_NAME + "_" + playerName);
+            objective.unregister();
+        }
     }
 }
