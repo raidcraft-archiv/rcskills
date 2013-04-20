@@ -28,16 +28,17 @@ public class ScoreboardVisual implements VisualResource {
 
         Player player = resource.getHero().getPlayer();
         String playerName = player.getName().toLowerCase();
+        String objectiveName = OBJECTIVE_BASE_NAME + resource.getHero().getId();
 
         Scoreboard scoreboard;
         Objective objective;
         if (scoreboards.containsKey(playerName)) {
             scoreboard = scoreboards.get(playerName);
-            objective = scoreboard.getObjective(OBJECTIVE_BASE_NAME + "_" + playerName);
+            objective = scoreboard.getObjective(objectiveName);
         } else {
             scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
             scoreboards.put(playerName, scoreboard);
-            objective = scoreboard.registerNewObjective(OBJECTIVE_BASE_NAME + "_" + playerName, "dummy");
+            objective = scoreboard.registerNewObjective(objectiveName, "dummy");
             objective.setDisplayName("Resourcen");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
@@ -55,7 +56,7 @@ public class ScoreboardVisual implements VisualResource {
         String playerName = resource.getHero().getName().toLowerCase();
         if (scoreboards.containsKey(playerName)) {
             Scoreboard scoreboard = scoreboards.get(playerName);
-            Objective objective = scoreboard.getObjective(OBJECTIVE_BASE_NAME + "_" + playerName);
+            Objective objective = scoreboard.getObjective(OBJECTIVE_BASE_NAME + resource.getHero().getId());
             objective.unregister();
         }
     }
