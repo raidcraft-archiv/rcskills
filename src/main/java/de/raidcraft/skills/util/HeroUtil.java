@@ -3,6 +3,7 @@ package de.raidcraft.skills.util;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.CharacterManager;
+import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
@@ -49,6 +50,8 @@ public final class HeroUtil {
                 TriggerManager.unregisterListeners((Triggered) skill);
             }
         }
+
+        Scoreboards.removeScoreboard(hero.getPlayer());
 
         // we clear the cache later to avoid events beeing triggered
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
