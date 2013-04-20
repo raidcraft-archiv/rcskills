@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.ProfessionManager;
+import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -269,6 +270,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
+        Scoreboards.removeScoreboard(getPlayer());
         setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();

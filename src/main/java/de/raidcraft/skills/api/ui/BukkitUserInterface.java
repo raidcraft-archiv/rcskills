@@ -11,14 +11,15 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.injector.PlayerLoggedOutException;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class BukkitUserInterface implements UserInterface {
 
-    private static final String HEALTH_OBJECTIVE = "hero_health";
+    private static final String HEALTH_OBJECTIVE = "rcsh";
 
     private final ProtocolManager protocolManager;
     private final Hero hero;
@@ -39,7 +40,7 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        getScoreboardHealthObjective().setDisplayName("HP");
+        // getHealthScore().setScore(hero.getHealth());
 
         // lets intercept server packets that tell the player the experience
         protocolManager = ProtocolLibrary.getProtocolManager();
@@ -75,8 +76,7 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // lets update the scoreboard
-        Objective objective = getScoreboardHealthObjective();
-        objective.getScore(player).setScore(getHero().getHealth());
+        // getHealthScore().setScore(getHero().getHealth());
 
         // make sure the food level is never at 20 to allow eating
         if (player.getFoodLevel() > 19) {
@@ -113,16 +113,19 @@ public class BukkitUserInterface implements UserInterface {
     private Objective getScoreboardHealthObjective() {
 
         // lets also set the scoreboard to display the health of this player to all online players
-        Scoreboard scoreboard = player.getScoreboard();
-        if (scoreboard == null) {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-            player.setScoreboard(scoreboard);
-        }
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
+        Scoreboard scoreboard = Scoreboards.getScoreboard(player);
+
+        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + getHero().getId());
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "dummy");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + getHero().getId(), "dummy");
+            objective.setDisplayName("HP");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
         return objective;
+    }
+
+    public Score getHealthScore() {
+
+        return getScoreboardHealthObjective().getScore(player);
     }
 }
