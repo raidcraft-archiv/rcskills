@@ -127,7 +127,7 @@ public final class DamageManager implements Listener {
 
                         case FALL:
                             // the minecraft fall damage is caluclate like so: fall_damage = number of blocks - 3
-                            int height = damage + 3;
+                            int height = damage;
                             damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
                             break;
                         case BLOCK_EXPLOSION:
