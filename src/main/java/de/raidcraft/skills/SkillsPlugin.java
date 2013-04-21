@@ -37,6 +37,7 @@ import de.raidcraft.skills.requirement.WeaponTypeRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.skills.TestSkill;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroAttribute;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.tables.THeroOption;
 import de.raidcraft.skills.tables.THeroProfession;
@@ -218,6 +219,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         classes.add(TSkillData.class);
         classes.add(THeroResource.class);
         classes.add(ExpLogger.class);
+        classes.add(THeroAttribute.class);
         return classes;
     }
 
