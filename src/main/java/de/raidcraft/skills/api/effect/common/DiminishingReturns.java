@@ -55,12 +55,15 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
 
     public int getStacks(DiminishingReturnType type) {
 
+        if (!stacks.containsKey(type)) {
+            return 0;
+        }
         return stacks.get(type);
     }
 
     public void increase(DiminishingReturnType type) {
 
-        if (stacks.get(type) == null) {
+        if (!stacks.containsKey(type)) {
             stacks.put(type, 1);
         } else {
             stacks.put(type, stacks.get(type) + 1);
