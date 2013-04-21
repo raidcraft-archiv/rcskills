@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.rcconversations.api.action.AbstractAction;
 import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
+import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -15,6 +16,7 @@ import org.bukkit.ChatColor;
 /**
  * @author Silthus
  */
+@ActionInformation(name = "CHOOSE_PROFESSION")
 public class ChooseProfessionAction extends AbstractAction {
 
     @Override
