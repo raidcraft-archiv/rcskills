@@ -265,7 +265,7 @@ public final class CharacterManager implements Listener {
         getHero(event.getPlayer()).reset();
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // init once to set the health from the db and so on
