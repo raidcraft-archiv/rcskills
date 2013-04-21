@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Bean;
@@ -183,8 +182,6 @@ public class THero implements LevelData, HeroData, Bean {
 
     public void delete() {
 
-        int expPool = getExpPool().getId();
         RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
-        RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class, expPool).delete();
     }
 }
