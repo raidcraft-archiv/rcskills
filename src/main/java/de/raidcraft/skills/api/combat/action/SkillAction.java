@@ -36,6 +36,7 @@ public class SkillAction extends AbstractAction<Hero> {
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();
+        this.delayed = castTime > 0;
         for (Resource resource : skill.getHero().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
         }
