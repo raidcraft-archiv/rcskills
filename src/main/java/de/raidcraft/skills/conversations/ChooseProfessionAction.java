@@ -38,7 +38,7 @@ public class ChooseProfessionAction extends AbstractAction {
             } else {
                 conversation.triggerStage(createConfirmStage(
                         "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                + profession.getFriendlyName() + " wählen willst?", args));
+                                + profession.getFriendlyName() + " wählen willst?"));
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
