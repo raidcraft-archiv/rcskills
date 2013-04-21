@@ -1,5 +1,7 @@
 package de.raidcraft.skills.bindings;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +23,7 @@ public class BindListener implements Listener {
 
         Player player = event.getPlayer();
 
-        List<BoundItem> boundItems = BindManager.INST.getBoundItems(player.getName());
+        List<BoundItem> boundItems = RaidCraft.getComponent(SkillsPlugin.class).getBindManager().getBoundItems(player.getName());
         if (boundItems == null || boundItems.size() == 0) {
             return;
         }
@@ -50,12 +52,12 @@ public class BindListener implements Listener {
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
 
-        BindManager.INST.loadBoundItems(event.getPlayer());
+        RaidCraft.getComponent(SkillsPlugin.class).getBindManager().loadBoundItems(event.getPlayer());
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
 
-        BindManager.INST.unloadBoundItems(event.getPlayer().getName());
+        RaidCraft.getComponent(SkillsPlugin.class).getBindManager().unloadBoundItems(event.getPlayer().getName());
     }
 }

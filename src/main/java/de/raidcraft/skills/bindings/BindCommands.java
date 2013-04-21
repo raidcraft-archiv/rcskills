@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
@@ -58,7 +59,7 @@ public class BindCommands {
             throw new CommandException("Du kannst diesen Skill nicht binden.");
         }
 
-        if (BindManager.INST.addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill, new CommandContext(args.getSlice(1)))) {
+        if (RaidCraft.getComponent(SkillsPlugin.class).getBindManager().addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill, new CommandContext(args.getSlice(1)))) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Der Skill " + skill.getFriendlyName() + " wurde an dieses Item gebunden!");
             return;
         }
@@ -83,7 +84,7 @@ public class BindCommands {
             throw new CommandException("Kein Item in der Hand.");
         }
 
-        if (BindManager.INST.removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
+        if (RaidCraft.getComponent(SkillsPlugin.class).getBindManager().removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Alle Skills auf diesem Item wurden entfernt!");
             return;
         }
@@ -146,13 +147,13 @@ public class BindCommands {
         String bindingText = "";
         for (Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
             // remove old bindings
-            BindManager.INST.removeBindings(hero, entry.getKey());
+            RaidCraft.getComponent(SkillsPlugin.class).getBindManager().removeBindings(hero, entry.getKey());
             bindingText = ChatColor.GOLD + ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN) + ChatColor.WHITE + ": ";
 
             // add new binding
             boolean colorToggle = true;
             for (Skill sk : entry.getValue()) {
-                BindManager.INST.addBinding(hero, entry.getKey(), sk);
+                RaidCraft.getComponent(SkillsPlugin.class).getBindManager().addBinding(hero, entry.getKey(), sk);
                 if (colorToggle) {
                     bindingText += ChatColor.WHITE;
                     colorToggle = false;

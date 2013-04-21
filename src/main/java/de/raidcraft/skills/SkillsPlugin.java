@@ -73,6 +73,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private LevelConfig levelConfig;
     private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
+    private BindManager bindManager;
 
     @Override
     public void enable() {
@@ -91,7 +92,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
         registerCommands(BaseCommands.class);
-        new BindManager(this);
+
+        this.bindManager = new BindManager(this);
         new BukkitEventDispatcher(this);
         // lets start our logging tasks
         ExpLogger.startTask(this);
@@ -274,6 +276,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public ExperienceConfig getExperienceConfig() {
 
         return experienceConfig;
+    }
+
+    public BindManager getBindManager() {
+
+        return bindManager;
     }
 
     public boolean isSavingWorld(String world) {

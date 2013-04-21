@@ -18,14 +18,11 @@ import java.util.Map;
  */
 public class BindManager {
 
-    public static BindManager INST = null;
-
     private SkillsPlugin plugin;
     private Map<String, List<BoundItem>> boundItems = new HashMap<>();
 
     public BindManager(SkillsPlugin plugin) {
 
-        INST = this;
         this.plugin = plugin;
         plugin.registerCommands(BindCommands.class);
         plugin.registerEvents(new BindListener());
