@@ -50,6 +50,10 @@ public class THero implements LevelData, HeroData, Bean {
     @JoinColumn(name = "hero_id")
     private List<THeroOption> options;
 
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "hero_id")
+    private List<THeroAttribute> attributes;
+
     @Override
     public List<String> getProfessionNames() {
 
@@ -138,6 +142,16 @@ public class THero implements LevelData, HeroData, Bean {
     public void setSkills(List<THeroSkill> skills) {
 
         this.skills = skills;
+    }
+
+    public List<THeroAttribute> getAttributes() {
+
+        return attributes;
+    }
+
+    public void setAttributes(List<THeroAttribute> attributes) {
+
+        this.attributes = attributes;
     }
 
     public String getSelectedProfession() {

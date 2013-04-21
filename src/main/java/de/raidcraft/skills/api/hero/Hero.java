@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.ui.UserInterface;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,14 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public AttachedLevel<Hero> getExpPool();
 
     public UserInterface getUserInterface();
+
+    public Collection<Attribute> getAttributes();
+
+    public Attribute getAttribute(String attribute);
+
+    public int getAttributeValue(String attribute);
+
+    public void setAttributeValue(String attribute, int value);
 
     public HeroOptions getOptions();
 

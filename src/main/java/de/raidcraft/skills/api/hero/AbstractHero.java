@@ -24,6 +24,7 @@ import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -32,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +52,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final Map<String, Skill> virtualSkills = new HashMap<>();
     private final Map<String, Profession> professions = new HashMap<>();
     private final Map<String, Resource> resources = new HashMap<>();
+    private final Map<String, Attribute> attributes = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
     private int maxLevel;
     private AttachedLevel<Hero> attachedLevel;
@@ -219,6 +222,30 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
             return Material.AIR;
         }
         return itemInHand.getType();
+    }
+
+    @Override
+    public Collection<Attribute> getAttributes() {
+
+        return attributes.values();
+    }
+
+    @Override
+    public Attribute getAttribute(String attribute) {
+
+        return attributes.get(StringUtils.formatName(attribute));
+    }
+
+    @Override
+    public int getAttributeValue(String attribute) {
+
+        return getAttribute(attribute).getValue();
+    }
+
+    @Override
+    public void setAttributeValue(String attribute, int value) {
+
+        getAttribute(attribute).setValue(value);
     }
 
     @Override
