@@ -2,7 +2,7 @@ package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.SkillAction;
-import de.raidcraft.skills.api.effect.DelayedEffect;
+import de.raidcraft.skills.api.effect.types.DelayedEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;

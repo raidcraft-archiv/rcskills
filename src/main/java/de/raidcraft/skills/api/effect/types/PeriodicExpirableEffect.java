@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.effect;
+package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;

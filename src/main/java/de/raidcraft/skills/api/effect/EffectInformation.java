@@ -23,5 +23,7 @@ public @interface EffectInformation {
 
     public EffectElement[] elements() default {};
 
+    public DiminishingReturnType[] diminishingReturns() default {};
+
     public double priority() default 0.0;
 }

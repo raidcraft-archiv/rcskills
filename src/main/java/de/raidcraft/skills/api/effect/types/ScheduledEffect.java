@@ -1,6 +1,8 @@
-package de.raidcraft.skills.api.effect;
+package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.AbstractEffect;
+import de.raidcraft.skills.api.effect.Scheduled;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.scheduler.BukkitTask;
 
