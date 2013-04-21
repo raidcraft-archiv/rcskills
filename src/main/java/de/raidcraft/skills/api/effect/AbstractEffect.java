@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.effect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.common.DiminishingReturns;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -12,6 +13,8 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.lang.reflect.Field;
 
 /**
  * @author Silthus
@@ -113,6 +116,11 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         return info.elements();
     }
 
+    public DiminishingReturnType getDiminishingReturnType() {
+
+        return info.diminishingReturn();
+    }
+
     @Override
     public boolean isEnabled() {
 
@@ -169,6 +177,25 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     @Override
     public void apply() throws CombatException {
 
+        if (getDiminishingReturnType() != DiminishingReturnType.NULL) {
+            DiminishingReturns effect = target.addEffect(this, DiminishingReturns.class);
+            if (effect.getReduction(getDiminishingReturnType()) > 0) {
+                // lets check via reflection if we are a duration effect and apply diminishing returns
+                try {
+                    Field duration = getField(getClass(), "duration");
+                    duration.setAccessible(true);
+                    long oldDuration = duration.getLong(this);
+                    long newDuration = oldDuration - (long) (oldDuration * effect.getReduction(getDiminishingReturnType()));
+                    if (newDuration <= 0) {
+                        throw new CombatException("Ziel ist immun gegen diesen Effekt!");
+                    }
+                    duration.setLong(this, newDuration);
+                } catch (NoSuchFieldException | IllegalAccessException ignored) {
+                    // do nothing
+                }
+            }
+            effect.increase(getDiminishingReturnType());
+        }
         // lets add ourself to the trigger listener
         if (this instanceof Triggered) {
             TriggerManager.registerListeners((Triggered) this);
@@ -176,6 +203,19 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         apply(getTarget());
         debug("applied effect");
         info(activateMessage);
+    }
+
+    private Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
+
+        try {
+            return clazz.getDeclaredField(name);
+        } catch (NoSuchFieldException e) {
+            Class<?> superclass = clazz.getSuperclass();
+            if (superclass == null) {
+                throw e;
+            }
+            return getField(superclass, name);
+        }
     }
 
     @Override

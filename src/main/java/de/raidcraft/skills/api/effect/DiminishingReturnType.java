@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.util.EnumUtils;
+
 /**
  * @author Silthus
  */
@@ -16,5 +18,11 @@ public enum DiminishingReturnType {
     RANDOM_STUN,
     SILENCE,
     TAUNT,
-    SCATTER
+    SCATTER,
+    NULL;
+
+    public static DiminishingReturnType fromString(String name) {
+
+        return EnumUtils.getEnumFromString(DiminishingReturnType.class, name);
+    }
 }

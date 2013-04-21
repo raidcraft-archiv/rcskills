@@ -2,6 +2,7 @@ package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -20,7 +21,8 @@ import org.bukkit.inventory.ItemStack;
 @EffectInformation(
         name = "Disarm",
         description = "Entwaffnet den Gegner",
-        types = {EffectType.DEBUFF, EffectType.PHYSICAL, EffectType.HARMFUL}
+        types = {EffectType.DEBUFF, EffectType.PHYSICAL, EffectType.HARMFUL},
+        diminishingReturn = DiminishingReturnType.DISARM
 )
 public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
 

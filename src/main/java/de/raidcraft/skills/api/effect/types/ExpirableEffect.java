@@ -50,8 +50,6 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
     @Override
     public void apply() throws CombatException {
 
-        // lets apply diminshing returns
-
         startTask();
         super.apply();
     }

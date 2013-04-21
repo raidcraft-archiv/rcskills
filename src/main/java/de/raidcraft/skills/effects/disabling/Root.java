@@ -2,6 +2,7 @@ package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -14,7 +15,8 @@ import org.bukkit.Location;
 @EffectInformation(
         name = "Root",
         description = "Hält das Ziel am unbeweglich am Boden fest.",
-        types = {EffectType.HARMFUL, EffectType.MOVEMENT}
+        types = {EffectType.HARMFUL, EffectType.MOVEMENT},
+        diminishingReturn = DiminishingReturnType.CONTROLLED_ROOT
 )
 public class Root<S> extends PeriodicExpirableEffect<S> {
 

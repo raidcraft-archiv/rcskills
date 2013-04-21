@@ -2,6 +2,7 @@ package de.raidcraft.skills.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -21,7 +22,8 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Stun",
         description = "Stunnt den Gegegner und verhindert alle Aktionen",
-        types = {EffectType.DISABLEING, EffectType.HARMFUL}
+        types = {EffectType.DISABLEING, EffectType.HARMFUL},
+        diminishingReturn = DiminishingReturnType.CONTROLLED_STUN
 )
 public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
 
