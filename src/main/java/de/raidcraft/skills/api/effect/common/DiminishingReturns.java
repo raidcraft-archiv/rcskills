@@ -60,7 +60,11 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
 
     public void increase(DiminishingReturnType type) {
 
-        stacks.put(type, stacks.get(type) + 1);
+        if (stacks.get(type) == null) {
+            stacks.put(type, 1);
+        } else {
+            stacks.put(type, stacks.get(type) + 1);
+        }
     }
 
     public int remove(DiminishingReturnType type) {
