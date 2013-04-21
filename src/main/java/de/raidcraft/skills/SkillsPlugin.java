@@ -12,6 +12,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
+import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
@@ -26,6 +27,7 @@ import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
+import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
@@ -97,6 +99,17 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         new BukkitEventDispatcher(this);
         // lets start our logging tasks
         ExpLogger.startTask(this);
+        // register conv actions when all plugins loaded
+        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+            @Override
+            public void run() {
+
+                if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
+                    // lets register our conversation actions
+                    registerConversationActions();
+                }
+            }
+        }, 1L);
     }
 
     private void setupDatabase() {
@@ -108,6 +121,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             System.out.println("Installing database for " + getDescription().getName() + " due to first time usage");
             installDDL();
         }
+    }
+
+    private void registerConversationActions() {
+
+        ActionManager.registerAction(new ChooseProfessionAction());
     }
 
     private void loadEngine() {
