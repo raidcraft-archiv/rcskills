@@ -43,7 +43,7 @@ public class CastTime extends DelayedEffect<SkillAction> {
                 "Wirke Zauber " + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
                 + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDelay()) + "s");
 
-        final long endTime = System.currentTimeMillis() + TimeUtil.secondsToMillis(TimeUtil.ticksToSeconds(delay));
+        final long endTime = System.currentTimeMillis() + (long)((delay / 20.0) * 1000);
 
         if (getTarget().getEntity() instanceof Player) {
             castBarTask = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
