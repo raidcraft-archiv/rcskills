@@ -43,20 +43,21 @@ public class CastTime extends DelayedEffect<SkillAction> {
                 "Wirke Zauber " + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
                 + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDelay()) + "s");
 
-        final long endTime = System.currentTimeMillis() + TimeUtil.ticksToMillis(delay);
 
         if (getTarget().getEntity() instanceof Player) {
+
+            final float fillPerTick = 1.0F / delay;
+            ((Player) getTarget().getEntity()).setExp(0.0F);
             castBarTask = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
                 @Override
                 public void run() {
 
                     try {
-                        long currentTime = System.currentTimeMillis();
-                        if (currentTime >= endTime) {
+                        if (((Player) getTarget().getEntity()).getExp() >= 1.0F) {
                             remove();
                             return;
                         }
-                        ((Player) getTarget().getEntity()).setExp(((float)currentTime / (float)endTime));
+                        ((Player) getTarget().getEntity()).setExp(((Player) getTarget().getEntity()).getExp() + fillPerTick);
                     } catch (CombatException e) {
                         castBarTask.cancel();
                     }
@@ -85,6 +86,9 @@ public class CastTime extends DelayedEffect<SkillAction> {
         if (castBarTask != null) {
             castBarTask.cancel();
             castBarTask = null;
+        }
+        if (target.getEntity() instanceof Player) {
+            ((Player) target.getEntity()).setExp(0.0F);
         }
         if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
