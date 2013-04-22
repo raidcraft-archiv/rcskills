@@ -428,7 +428,7 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final int getTotalCastTime() {
 
-        return (int) ConfigUtil.getTotalValue(this, properties.getCastTime()) * 20;
+        return (int) (ConfigUtil.getTotalValue(this, properties.getCastTime()) * 20.0);
     }
 
     @Override
