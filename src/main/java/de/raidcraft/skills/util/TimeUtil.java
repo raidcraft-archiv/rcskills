@@ -16,7 +16,7 @@ public final class TimeUtil {
 
     public static double millisToSeconds(long millis) {
 
-        return ((int) ((millis / 1000.0) * 100.0)) / 100.0;
+        return ((int) (((double)millis / 1000.0) * 100.0)) / 100.0;
     }
 
     public static long secondsToTicks(double seconds) {
@@ -27,5 +27,10 @@ public final class TimeUtil {
     public static long secondsToMillis(double seconds) {
 
         return (long) (seconds * 1000);
+    }
+
+    public static long ticksToMillis(long ticks) {
+
+        return secondsToMillis(ticksToSeconds(ticks));
     }
 }
