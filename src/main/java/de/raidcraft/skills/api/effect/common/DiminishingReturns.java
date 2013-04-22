@@ -80,6 +80,9 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
         if (!reduction.containsKey(type)) {
             return 0;
         }
+        if (!reduction.get(type).containsKey(getStacks(type))) {
+            return 0;
+        }
         return reduction.get(type).get(getStacks(type));
     }
 
