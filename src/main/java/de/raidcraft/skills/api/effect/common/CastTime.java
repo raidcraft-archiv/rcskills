@@ -82,8 +82,10 @@ public class CastTime extends DelayedEffect<SkillAction> {
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        castBarTask.cancel();
-        castBarTask = null;
+        if (castBarTask != null) {
+            castBarTask.cancel();
+            castBarTask = null;
+        }
         if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
         }
