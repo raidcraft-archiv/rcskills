@@ -56,7 +56,7 @@ public class CastTime extends DelayedEffect<SkillAction> {
                             remove();
                             return;
                         }
-                        ((Player) getTarget().getEntity()).setExp((currentTime / endTime));
+                        ((Player) getTarget().getEntity()).setExp(((float)currentTime / (float)endTime));
                     } catch (CombatException e) {
                         castBarTask.cancel();
                     }
