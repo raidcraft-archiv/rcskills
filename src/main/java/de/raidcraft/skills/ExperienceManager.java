@@ -1,5 +1,9 @@
 package de.raidcraft.skills;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
@@ -12,6 +16,11 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,17 +30,55 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author Silthus
  */
 public final class ExperienceManager implements Listener {
 
+    private final ProtocolManager protocolManager;
     private final SkillsPlugin plugin;
+    private final WrappedDataWatcher batWatcher;
 
     protected ExperienceManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+        this.protocolManager = ProtocolLibrary.getProtocolManager();
+        this.batWatcher = getDefaultWatcher(plugin.getServer().getWorlds().get(0), EntityType.BAT);
         plugin.registerEvents(this);
+    }
+
+    public void sendPacket(Player p, Entity dead, int exp) {
+
+        PacketContainer newPacket = new PacketContainer(24);
+
+        newPacket.getIntegers().
+                write(0, 500).
+                write(1, (int) EntityType.BAT.getTypeId()).
+                write(2, (int) (p.getLocation().getX() * 32)).
+                write(3, (int) (p.getLocation().getY() * 32)).
+                write(4, (int) (p.getLocation().getZ() * 32));
+
+        // batWatcher.setObject(0, (byte) 0x20);
+        batWatcher.setObject(5, ChatColor.GREEN + "+" + String.valueOf(exp));
+        batWatcher.setObject(6, (byte) 1);
+        newPacket.getDataWatcherModifier().write(0, batWatcher);
+
+        try {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(p, newPacket);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public WrappedDataWatcher getDefaultWatcher(World world, EntityType type) {
+
+        Entity entity = world.spawnEntity(new Location(world, 0, 256, 0), type);
+        WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(entity).deepClone();
+
+        entity.remove();
+        return watcher;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -45,14 +92,20 @@ public final class ExperienceManager implements Listener {
         }
 
         AttachedLevel<Hero> expPool;
+        Hero hero;
         if (attack.getSource() instanceof Hero) {
-            expPool = ((Hero) attack.getSource()).getExpPool();
+            hero = ((Hero) attack.getSource());
+            expPool = hero.getExpPool();
         } else if (attack.getSource() instanceof Skill) {
-            expPool = ((Skill) attack.getSource()).getHero().getExpPool();
+            hero = ((Skill) attack.getSource()).getHero();
+            expPool = hero.getExpPool();
         } else {
             return;
         }
-        expPool.addExp(plugin.getExperienceConfig().getEntityExperienceFor(event.getEntityType()));
+        int exp = plugin.getExperienceConfig().getEntityExperienceFor(event.getEntityType());
+        expPool.addExp(exp);
+        // lets do some visual magic tricks and let the player see the exp
+        sendPacket(hero.getPlayer(), event.getEntity(), exp);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
