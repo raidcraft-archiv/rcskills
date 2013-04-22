@@ -674,7 +674,9 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final void unlock() {
 
-        getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
+        if (!isHidden()) {
+            getHero().sendMessage(ChatColor.GREEN + "Skill freigeschaltet: " + ChatColor.AQUA + getFriendlyName());
+        }
         unlocked = true;
         unlockTime = new Timestamp(System.currentTimeMillis());
         save();
@@ -689,7 +691,9 @@ public abstract class AbstractSkill implements Skill {
     @Override
     public final void lock() {
 
-        getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
+        if (!isHidden()) {
+            getHero().sendMessage(ChatColor.RED + "Skill wurde entfernt: " + ChatColor.AQUA + getFriendlyName());
+        }
         unlocked = false;
         save();
         // lock all linked skills without asking questions
