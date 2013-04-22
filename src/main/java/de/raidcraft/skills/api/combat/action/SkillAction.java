@@ -36,13 +36,14 @@ public class SkillAction extends AbstractAction<Hero> {
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();
-        this.delayed = castTime > 0;
+
         for (Resource resource : skill.getHero().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
         }
-
         // lets issue a trigger that can be modified by other skills
         this.trigger = TriggerManager.callSafeTrigger(new PlayerCastSkillTrigger(this));
+        // set the variable after the trigger call
+        this.delayed = castTime > 0;
     }
 
     public SkillAction(Skill skill) {
@@ -103,8 +104,7 @@ public class SkillAction extends AbstractAction<Hero> {
         getSkill().checkUsage(this);
 
         if (delayed) {
-            CastTime castTime = getSource().addEffect(skill, this, CastTime.class);
-            castTime.setCastTime(getCastTime());
+            getSource().addEffect(skill, this, CastTime.class);
             this.delayed = false;
             return;
         }

@@ -53,7 +53,7 @@ public class BukkitUserInterface implements UserInterface {
             @Override
             public void onPacketSending(PacketEvent event) {
 
-                modifyExperiencePacket(event.getPacket());
+                // modifyExperiencePacket(event.getPacket());
             }
         });
     }

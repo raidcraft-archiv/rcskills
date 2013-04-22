@@ -24,4 +24,8 @@ public final class TimeUtil {
         return Math.round(seconds * 20);
     }
 
+    public static long secondsToMillis(double seconds) {
+
+        return (long) (seconds * 1000);
+    }
 }

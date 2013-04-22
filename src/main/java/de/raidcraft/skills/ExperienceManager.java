@@ -56,9 +56,9 @@ public final class ExperienceManager implements Listener {
         newPacket.getIntegers().
                 write(0, 500).
                 write(1, (int) EntityType.BAT.getTypeId()).
-                write(2, (int) (p.getLocation().getX() * 32)).
-                write(3, (int) (p.getLocation().getY() * 32)).
-                write(4, (int) (p.getLocation().getZ() * 32));
+                write(2, (int) (dead.getLocation().getX() * 32)).
+                write(3, (int) (dead.getLocation().getY() * 32)).
+                write(4, (int) (dead.getLocation().getZ() * 32));
 
         // batWatcher.setObject(0, (byte) 0x20);
         batWatcher.setObject(5, ChatColor.GREEN + "+" + String.valueOf(exp));
