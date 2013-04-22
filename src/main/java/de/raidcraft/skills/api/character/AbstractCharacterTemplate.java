@@ -255,6 +255,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             getEntity().setLastDamage(attack.getDamage());
             // set the last attack variable to track death
             lastAttack = attack;
+            // lets do some USK18+ gore effects
+            // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
+            // 152 = redstone block
+            EffectUtil.playEffect(getEntity().getLocation(), org.bukkit.Effect.SMOKE, 152, attack.getDamage() > 100 ? 5 : 1);
             if (attack.getSource() instanceof Hero) {
                 ((Hero) attack.getSource()).debug(
                         "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
