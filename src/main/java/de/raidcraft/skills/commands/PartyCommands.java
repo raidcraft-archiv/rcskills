@@ -124,6 +124,9 @@ public class PartyCommands {
             if (hero.equals(owner)) {
                 throw new CommandException("Du kannst dich nicht selbst aus der Gruppe kicken.");
             }
+            if (!owner.getParty().getOwner().equals(owner)) {
+                throw new CommandException("Nur der Gruppenleiter kann Spieler aus der Gruppe kicken.");
+            }
             if (!owner.getParty().isInGroup(hero)) {
                 throw new CommandException("Der Spieler " + hero.getName() + " ist nicht in deiner Gruppe.");
             }
