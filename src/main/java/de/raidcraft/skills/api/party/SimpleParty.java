@@ -83,7 +83,7 @@ public class SimpleParty implements Party {
         member.joinParty(this);
         if (member instanceof Hero) {
             ((Hero) member).setPendingPartyInvite(null);
-            BukkitTask bukkitTask = invitedMembers.get(member);
+            BukkitTask bukkitTask = invitedMembers.remove(member);
             if (bukkitTask != null) bukkitTask.cancel();
         }
     }
