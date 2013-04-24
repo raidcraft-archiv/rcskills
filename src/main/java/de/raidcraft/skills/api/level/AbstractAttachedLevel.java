@@ -138,6 +138,7 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
             if (event.isCancelled()) {
                 return;
             }
+            exp = this.exp + event.getGainedExp();
             getLevelObject().onExpGain((this.exp + event.getGainedExp()) - this.exp);
         } else {
             getLevelObject().onExpLoss(this.exp - exp);

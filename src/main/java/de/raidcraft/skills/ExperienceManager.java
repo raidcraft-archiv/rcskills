@@ -134,7 +134,6 @@ public final class ExperienceManager implements Listener {
         if (expBoost == 0.0) {
             return;
         }
-
         // modify the gained exp by the boost factor
         event.setGainedExp((int) (event.getGainedExp() * expBoost));
     }
