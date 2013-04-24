@@ -1,6 +1,8 @@
 package de.raidcraft.skills.bindings;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
@@ -16,7 +18,7 @@ import java.util.Map;
 /**
  * @author Philip
  */
-public class BindManager {
+public class BindManager implements Component {
 
     private SkillsPlugin plugin;
     private Map<String, List<BoundItem>> boundItems = new HashMap<>();
@@ -27,6 +29,7 @@ public class BindManager {
         plugin.registerCommands(BindCommands.class);
         plugin.registerEvents(new BindListener());
         plugin.registerTable(BindingsTable.class, new BindingsTable());
+        RaidCraft.registerComponent(BindManager.class, this);
     }
 
     public void loadBoundItems(Player player) {
@@ -41,6 +44,12 @@ public class BindManager {
     public void unloadBoundItems(String player) {
 
         boundItems.remove(player);
+    }
+
+    public void reloadBoundItems(Player player) {
+
+        unloadBoundItems(player.getName());
+        loadBoundItems(player);
     }
 
     public List<BoundItem> getBoundItems(String player) {

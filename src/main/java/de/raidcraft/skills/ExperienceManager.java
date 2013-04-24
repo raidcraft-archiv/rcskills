@@ -7,6 +7,8 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.combat.action.EffectDamage;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.events.RCExpGainEvent;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -81,6 +83,7 @@ public final class ExperienceManager implements Listener {
         return watcher;
     }
 
+    @SuppressWarnings("unchecked")
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
 
@@ -91,17 +94,17 @@ public final class ExperienceManager implements Listener {
             return;
         }
 
-        AttachedLevel<Hero> expPool;
         Hero hero;
         if (attack.getSource() instanceof Hero) {
             hero = ((Hero) attack.getSource());
-            expPool = hero.getExpPool();
         } else if (attack.getSource() instanceof Skill) {
             hero = ((Skill) attack.getSource()).getHero();
-            expPool = hero.getExpPool();
+        } else if (attack instanceof EffectDamage) {
+            hero = ((Effect<Skill>) attack.getSource()).getSource().getHero();
         } else {
             return;
         }
+        AttachedLevel<Hero> expPool = hero.getExpPool();
         int exp = plugin.getExperienceConfig().getEntityExperienceFor(event.getEntityType());
         expPool.addExp(exp);
         // lets do some visual magic tricks and let the player see the exp

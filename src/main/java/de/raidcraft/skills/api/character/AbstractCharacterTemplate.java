@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -253,8 +254,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             damage(attack.getDamage());
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
-            // set the last attack variable to track death
-            lastAttack = attack;
+            if (!(attack instanceof EnvironmentAttack)) {
+                // set the last attack variable to track death
+                lastAttack = attack;
+            }
             // lets do some USK18+ gore effects
             // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
             // 152 = redstone block

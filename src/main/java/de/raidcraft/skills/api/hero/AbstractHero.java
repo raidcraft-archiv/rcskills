@@ -19,6 +19,7 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.api.ui.UserInterface;
+import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.logging.ExpLogger;
@@ -170,6 +171,8 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
+        // reload the bound items
+        RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
         reset();
         save();
     }
