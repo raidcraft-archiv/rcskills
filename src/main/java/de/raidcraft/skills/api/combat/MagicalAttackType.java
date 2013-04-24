@@ -33,7 +33,7 @@ public enum MagicalAttackType {
 
         LivingEntity attacker = attack.getSource().getEntity();
         List<Block> lineOfSight = attacker.getLineOfSight(null, 100);
-        EffectUtil.playSound(attacker.getLocation(), Sound.GHAST_FIREBALL, 5F, 1F);
+        EffectUtil.playSound(attacker.getLocation(), Sound.GHAST_FIREBALL, 1F, 1F);
         for (Block block : lineOfSight) {
             EffectUtil.playEffect(block.getLocation(), effect, 1);
         }
