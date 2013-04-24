@@ -40,8 +40,14 @@ public class PartyCommands {
         }
         Hero hero = plugin.getCharacterManager().getHero(player);
         Hero owner = plugin.getCharacterManager().getHero((Player) sender);
+        if (owner.equals(hero)) {
+            throw new CommandException("Du kannst dich nicht selbst in eine Gruppe einladen.");
+        }
         if (!owner.getParty().getOwner().equals(owner)) {
             throw new CommandException("Nur der Gruppenleiter (" + hero.getParty().getOwner() + ") kann neue Spieler einladen.");
+        }
+        if (hero.getParty().getHeroes().size() > 1) {
+            throw new CommandException(hero.getName() + " befindet sich bereits in einer Gruppe.");
         }
         if (hero.getPendingPartyInvite() != null) {
             throw new CommandException(hero.getName() + " wurde bereits in eine Gruppe eingeladen.");
@@ -85,6 +91,23 @@ public class PartyCommands {
     }
 
     @Command(
+            aliases = {"leave"},
+            desc = "Leaves the current party."
+    )
+    @CommandPermissions("rcskills.party.leave")
+    public void leave(CommandContext args, CommandSender sender) throws CommandException {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Party party = hero.getParty();
+        if (party.getHeroes().size() <= 1) {
+            throw new CommandException("Du bist in keiner Gruppe.");
+        }
+        hero.leaveParty();
+        sender.sendMessage(ChatColor.YELLOW + "Du hast die Gruppe von " + party.getOwner().getName() + " verlassen.");
+    }
+
+
+    @Command(
             aliases = {"kick", "k"},
             desc = "Kicks the given member from the group.",
             min = 1
@@ -95,6 +118,9 @@ public class PartyCommands {
         try {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             Hero owner = plugin.getCharacterManager().getHero((Player) sender);
+            if (hero.equals(owner)) {
+                throw new CommandException("Du kannst dich nicht selber aus der Gruppe kicken.");
+            }
             if (!owner.getParty().isInGroup(hero)) {
                 throw new CommandException("Der Spieler " + hero.getName() + " ist nicht in deiner Gruppe.");
             }
@@ -109,9 +135,12 @@ public class PartyCommands {
             desc = "Lists all party members."
     )
     @CommandPermissions("rcskills.party.list")
-    public void list(CommandContext args, CommandSender sender) {
+    public void list(CommandContext args, CommandSender sender) throws CommandException {
 
         Party party = plugin.getCharacterManager().getHero((Player) sender).getParty();
+        if (party.getHeroes().size() <= 1) {
+            throw new CommandException("Du bist in keiner Gruppe.");
+        }
         sender.sendMessage(ChatColor.YELLOW + "Gruppenmitglieder: " + StringUtil.joinString(party.getHeroes(), ", ", 0));
     }
 }
