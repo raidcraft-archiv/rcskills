@@ -118,8 +118,11 @@ public class PartyCommands {
         try {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             Hero owner = plugin.getCharacterManager().getHero((Player) sender);
+            if (owner.getParty().getHeroes().size() <= 1) {
+                throw new CommandException("Du bist in keiner Gruppe.");
+            }
             if (hero.equals(owner)) {
-                throw new CommandException("Du kannst dich nicht selber aus der Gruppe kicken.");
+                throw new CommandException("Du kannst dich nicht selbst aus der Gruppe kicken.");
             }
             if (!owner.getParty().isInGroup(hero)) {
                 throw new CommandException("Der Spieler " + hero.getName() + " ist nicht in deiner Gruppe.");
