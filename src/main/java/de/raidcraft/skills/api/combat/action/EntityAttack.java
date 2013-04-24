@@ -75,6 +75,10 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             if (callback != null && callback instanceof EntityAttackCallback) {
                 callback.run(this);
             }
+            if (!isOfAttackType(EffectType.DEFAULT_ATTACK)) {
+                // if this is a special attack add weapon damage
+                setDamage(getDamage() + getSource().getDamage());
+            }
             // now actually damage the target
             getTarget().damage(this);
             // set the last damage source
