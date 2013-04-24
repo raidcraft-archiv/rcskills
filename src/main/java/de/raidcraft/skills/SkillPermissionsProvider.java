@@ -100,6 +100,9 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
             Hero hero = plugin.getCharacterManager().getHero(player);
             List<THeroSkill> skills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
             for (THeroSkill skill : skills) {
+                if (skill == null) {
+                    continue;
+                }
                 if (plugin.getSkillManager().getFactory(skill.getName()).getSkillClass() == PermissionSkill.class) {
                     groups.add(skill.getName());
                 }
