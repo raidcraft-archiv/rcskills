@@ -20,6 +20,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.commands.AdminCommands;
 import de.raidcraft.skills.commands.CastCommand;
+import de.raidcraft.skills.commands.PartyCommands;
 import de.raidcraft.skills.commands.PlayerComands;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.SkillCommands;
@@ -348,6 +349,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String effect_jar_path = "effects/";
         @Setting("paths.profession-configs")
         public String profession_config_path = "professions/";
+        @Setting("defaults.party-timeout")
+        public double invite_timeout = 30.0;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
@@ -369,7 +372,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(value = ProfessionCommands.class)
         public void profession(CommandContext args, CommandSender sender) throws CommandException {
 
-                getCommand("profession info").execute(sender, "profession info", args.getSlice(0));
         }
 
         @Command(
@@ -379,7 +381,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(value = PlayerComands.class)
         public void player(CommandContext args, CommandSender sender) {
 
-            getCommand("rcs info").execute(sender, "rcs info", args.getSlice(0));
+        }
+
+        @Command(
+                aliases = {"party", "p"},
+                desc = "Base Command for Players"
+        )
+        @NestedCommand(value = PartyCommands.class)
+        public void party(CommandContext args, CommandSender sender) {
+
         }
 
         @Command(

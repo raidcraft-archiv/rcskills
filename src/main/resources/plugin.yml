@@ -25,6 +25,11 @@ permissions:
       rcskills.player.bind: true
       rcskills.player.autobind: true
       rcskills.player.unbind: true
+      rcskills.party.invite: true
+      rcskills.party.accept: true
+      rcskills.party.deny: true
+      rcskills.party.kick: true
+      rcskills.party.list: true
   rcskills.mod:
     description: Grants aditional command permissions for moderators
     default: false

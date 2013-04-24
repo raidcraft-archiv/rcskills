@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
@@ -33,6 +34,10 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
     public Collection<Attribute> getAttributes();
 
     public Attribute getAttribute(String attribute);
+
+    public Party getPendingPartyInvite();
+
+    public void setPendingPartyInvite(Party partyInvite);
 
     public int getAttributeValue(String attribute);
 

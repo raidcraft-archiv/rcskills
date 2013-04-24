@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.party;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.hero.Hero;
 
 import java.util.Set;
 
@@ -11,15 +12,25 @@ public interface Party {
 
     public CharacterTemplate getOwner();
 
+    public boolean isOwner(CharacterTemplate character);
+
     public void setOwner(CharacterTemplate owner);
 
     public void sendMessage(String... msg);
 
     public Set<CharacterTemplate> getMembers();
 
+    public Set<Hero> getHeroes();
+
     public void addMember(CharacterTemplate member);
 
+    public void inviteMember(Hero hero);
+
+    public boolean isInvited(Hero hero);
+
     public void removeMember(CharacterTemplate member);
+
+    public void kickMember(Hero hero);
 
     public boolean isInGroup(CharacterTemplate member);
 

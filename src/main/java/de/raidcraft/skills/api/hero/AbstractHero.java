@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.ConfigurableAttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
+import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.profession.AbstractProfession;
@@ -56,6 +57,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final Map<String, Attribute> attributes = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
     private int maxLevel;
+    private Party pendingPartyInvite;
     private AttachedLevel<Hero> attachedLevel;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
@@ -249,6 +251,18 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public void setAttributeValue(String attribute, int value) {
 
         getAttribute(attribute).setValue(value);
+    }
+
+    @Override
+    public Party getPendingPartyInvite() {
+
+        return pendingPartyInvite;
+    }
+
+    @Override
+    public void setPendingPartyInvite(Party partyInvite) {
+
+        this.pendingPartyInvite = partyInvite;
     }
 
     @Override

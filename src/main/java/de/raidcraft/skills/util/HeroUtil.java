@@ -40,6 +40,7 @@ public final class HeroUtil {
         // save the hero first
         hero.save();
         hero.clearEffects();
+        hero.leaveParty();
         // destroy all resources
         for (Resource resource : hero.getResources()) {
             resource.destroy();
