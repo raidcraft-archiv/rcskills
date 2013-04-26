@@ -36,9 +36,9 @@ public class SkillRequirement extends AbstractRequirement<SkillRequirementResolv
             if (professionName == null && getResolver() instanceof Skill) {
                 profession = ((Skill) getResolver()).getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getHero(), professionName);
+                profession = component.getProfessionManager().getProfession(getResolver().getObject(), professionName);
             }
-            requiredSkill = component.getSkillManager().getSkill(getResolver().getHero(), profession, skillName);
+            requiredSkill = component.getSkillManager().getSkill(getResolver().getObject(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
@@ -47,8 +47,7 @@ public class SkillRequirement extends AbstractRequirement<SkillRequirementResolv
     @Override
     public boolean isMet() {
 
-        if (requiredSkill == null) return false;
-        return getResolver().getHero().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
+        return requiredSkill != null && getResolver().getObject().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
     }
 
     @Override

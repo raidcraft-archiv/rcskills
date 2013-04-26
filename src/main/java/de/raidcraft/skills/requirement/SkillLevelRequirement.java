@@ -36,9 +36,9 @@ public class SkillLevelRequirement extends LevelRequirement {
             if (professionName == null && getResolver() instanceof Skill) {
                 profession = ((Skill) getResolver()).getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getHero(), professionName);
+                profession = component.getProfessionManager().getProfession(getResolver().getObject(), professionName);
             }
-            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getHero(), profession, skillName);
+            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getObject(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         } catch (ClassCastException e) {

@@ -6,7 +6,6 @@ import de.raidcraft.skills.api.hero.Hero;
 /**
  * @author Silthus
  */
-public interface SkillRequirementResolver extends RequirementResolver {
+public interface SkillRequirementResolver extends RequirementResolver<Hero> {
 
-    public Hero getHero();
 }

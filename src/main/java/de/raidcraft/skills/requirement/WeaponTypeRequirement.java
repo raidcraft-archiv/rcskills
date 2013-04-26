@@ -31,7 +31,7 @@ public class WeaponTypeRequirement extends AbstractRequirement<SkillRequirementR
     @Override
     public boolean isMet() {
 
-        return type != null && WeaponType.fromMaterial(getResolver().getHero().getItemTypeInHand()) == type;
+        return type != null && WeaponType.fromMaterial(getResolver().getObject().getItemTypeInHand()) == type;
     }
 
     @Override

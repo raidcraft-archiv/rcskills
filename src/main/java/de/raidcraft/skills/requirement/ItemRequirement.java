@@ -34,7 +34,7 @@ public class ItemRequirement extends AbstractRequirement<SkillRequirementResolve
     @Override
     public boolean isMet() {
 
-        return getResolver().getHero().getItemTypeInHand().getId() == itemId;
+        return getResolver().getObject().getItemTypeInHand().getId() == itemId;
     }
 
     @Override

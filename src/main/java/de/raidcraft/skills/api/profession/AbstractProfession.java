@@ -130,6 +130,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public Hero getObject() {
+
+        return hero;
+    }
+
+    @Override
     public boolean isActive() {
 
         return active;

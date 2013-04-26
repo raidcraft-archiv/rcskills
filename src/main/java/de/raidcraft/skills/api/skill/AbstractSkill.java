@@ -648,6 +648,12 @@ public abstract class AbstractSkill implements Skill {
     }
 
     @Override
+    public Hero getObject() {
+
+        return hero;
+    }
+
+    @Override
     public final SkillProperties getProperties() {
 
         return properties;
