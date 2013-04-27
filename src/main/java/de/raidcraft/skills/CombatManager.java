@@ -383,7 +383,7 @@ public final class CombatManager implements Listener {
                     }
                     // lets issue a new physical attack for the event
                     try {
-                        new PhysicalAttack(source, target, source.getDamage()).run();
+                        new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK).run();
                     } catch (CombatException ignored) {
                     }
                 }
