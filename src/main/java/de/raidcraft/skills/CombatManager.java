@@ -27,7 +27,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,14 +217,7 @@ public final class CombatManager implements Listener {
 
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                // fisting is defined in the common config
-                ItemStack itemInHand = attacker.getEntity().getEquipment().getItemInHand();
-                if (attacker instanceof Hero && (itemInHand == null || itemInHand.getTypeId() == 0)) {
-                    int damage = plugin.getCommonConfig().fist_attack_damage;
-                    event.setCancelled(true);
-                    new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
-                    return;
-                }
+
                 if (attacker instanceof Hero) {
                     // lets check all weapon slots of the char
                     Set<Weapon.Slot> attackingWeapons = new HashSet<>();
@@ -236,7 +228,14 @@ public final class CombatManager implements Listener {
                         }
                     }
                     if (attackingWeapons.size() < 1) {
-                        event.setCancelled(true);
+                        if (!attacker.canSwing(Weapon.Slot.MAIN_HAND)) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                        // lets issue a default fist attack
+                        int damage = plugin.getCommonConfig().fist_attack_damage;
+                        attacker.setLastSwing(Weapon.Slot.MAIN_HAND);
+                        new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
                         return;
                     }
                     // now lets issue an attack for each weapon
