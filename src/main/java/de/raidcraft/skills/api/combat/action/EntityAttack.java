@@ -84,7 +84,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
         } else {
-            setCancelled(true);
+            throw new CombatException("Du kannst dieses Ziel nicht angreifen!");
         }
     }
 }
