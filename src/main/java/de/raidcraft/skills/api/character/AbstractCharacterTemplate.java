@@ -23,6 +23,7 @@ import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -32,6 +33,7 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +58,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private int damage;
     private boolean inCombat = false;
     private Attack lastAttack;
+    private BukkitTask deathTask;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -334,6 +337,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         setHealth(0);
+        clearEffects();
         // play the death sound
         getEntity().getWorld().playSound(
                 getEntity().getLocation(),
@@ -343,7 +347,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         );
         // play the death effect
         getEntity().playEffect(EntityEffect.DEATH);
-        getEntity().remove();
+        if (deathTask == null) {
+            deathTask = Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                @Override
+                public void run() {
+
+                    getEntity().remove();
+                }
+            }, 60L);
+        }
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
