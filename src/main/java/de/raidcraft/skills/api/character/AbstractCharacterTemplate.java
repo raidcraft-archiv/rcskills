@@ -347,14 +347,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         );
         // play the death effect
         getEntity().playEffect(EntityEffect.DEATH);
-        if (deathTask == null) {
-            deathTask = Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                @Override
-                public void run() {
+        if (!(this instanceof Hero)) {
+            if (deathTask == null) {
+                deathTask = Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                    @Override
+                    public void run() {
 
-                    getEntity().remove();
-                }
-            }, 60L);
+                        getEntity().remove();
+                    }
+                }, 60L);
+            }
         }
     }
 
