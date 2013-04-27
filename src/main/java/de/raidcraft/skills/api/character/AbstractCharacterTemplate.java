@@ -23,7 +23,6 @@ import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -344,13 +343,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         );
         // play the death effect
         getEntity().playEffect(EntityEffect.DEATH);
-        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-            @Override
-            public void run() {
-
-                getEntity().remove();
-            }
-        }, 20L);
+        getEntity().remove();
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
