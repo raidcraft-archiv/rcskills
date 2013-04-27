@@ -114,7 +114,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         if (this instanceof Hero) {
             int itemSlot = ((Hero) this).getPlayer().getInventory().getHeldItemSlot();
-            if (itemSlot != getWeapon(slot).getTaskBarSlot()) {
+            Weapon weapon = getWeapon(slot);
+            if (weapon != null && itemSlot != weapon.getTaskBarSlot()) {
                 return false;
             }
         }
