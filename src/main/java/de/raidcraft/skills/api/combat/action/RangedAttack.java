@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.Location;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -19,6 +20,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     private T callback;
     private Projectile projectile;
     private Vector velocity;
+    private float force = 1.0F;
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage) {
 
@@ -41,6 +43,17 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
 
         this(source, projectileType, damage);
         this.callback = callback;
+    }
+
+    public RangedAttack(CharacterTemplate source, EntityShootBowEvent event, T callback) {
+
+        this(source, ProjectileType.ARROW, callback);
+        this.force = event.getForce();
+    }
+
+    public RangedAttack(CharacterTemplate source, EntityShootBowEvent event) {
+
+        this(source, event, null);
     }
 
     public void addCallback(T callback) {
@@ -81,6 +94,22 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     public void setVelocity(Vector velocity) {
 
         this.velocity = velocity;
+    }
+
+    public float getForce() {
+
+        return force;
+    }
+
+    public void setForce(float force) {
+
+        this.force = force;
+    }
+
+    @Override
+    public int getDamage() {
+
+        return (int) (super.getDamage() * getForce());
     }
 
     @Override

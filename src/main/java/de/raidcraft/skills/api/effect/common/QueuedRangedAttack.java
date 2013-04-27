@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
@@ -48,8 +47,7 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // lets replace the fired projectile with ours so we can track the impact and callback
-        RangedAttack<T> attack =
-                new RangedAttack<>(getSource().getHero(), ProjectileType.ARROW, getSource().getTotalDamage(), callback);
+        RangedAttack<T> attack = new RangedAttack<>(getSource().getHero(), trigger.getEvent(), callback);
         attack.setProjectile((Projectile) trigger.getEvent().getProjectile());
         // since we dont "run" the attack we need to queue for callbacks
         new SourcedRangeCallback<>(attack).queueCallback();
