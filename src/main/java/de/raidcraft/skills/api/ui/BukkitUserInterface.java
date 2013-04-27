@@ -1,28 +1,18 @@
 package de.raidcraft.skills.api.ui;
 
-import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ConnectionSide;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.injector.GamePhase;
-import com.comphenix.protocol.injector.PlayerLoggedOutException;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Silthus
@@ -40,11 +30,18 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        // getHealthScore().setScore(hero.getHealth());
+        Scoreboard scoreboard = player.getScoreboard();
+        if (scoreboard == null) {
+            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            player.setScoreboard(scoreboard);
+        }
+        Objective objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
+        objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+        objective.setDisplayName("❤");
 
         // lets intercept server packets that tell the player the experience
         protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(new PacketAdapter(
+/*        protocolManager.addPacketListener(new PacketAdapter(
                 RaidCraft.getComponent(SkillsPlugin.class),
                 ConnectionSide.SERVER_SIDE,
                 ListenerPriority.HIGHEST,
@@ -55,7 +52,7 @@ public class BukkitUserInterface implements UserInterface {
 
                 // modifyExperiencePacket(event.getPacket());
             }
-        });
+        });*/
     }
 
     @Override
@@ -83,12 +80,12 @@ public class BukkitUserInterface implements UserInterface {
             player.setFoodLevel(19);
         }
 
-        // lets also send an exp update packet to the client
+/*        // lets also send an exp update packet to the client
         try {
             // we only need to create a default packet - it will be modified in our listener
             protocolManager.sendServerPacket(getHero().getPlayer(), protocolManager.createPacket(Packets.Server.SET_EXPERIENCE));
         } catch (InvocationTargetException | PlayerLoggedOutException ignored) {
-        }
+        }*/
     }
 
     private void modifyExperiencePacket(PacketContainer packet) {
