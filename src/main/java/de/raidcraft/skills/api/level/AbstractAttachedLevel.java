@@ -113,7 +113,12 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         if (getLevelObject().isMastered() || exp == 0) {
             return;
         }
-        this.exp += exp;
+        RCExpGainEvent event = new RCExpGainEvent(this, exp);
+        RaidCraft.callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        this.exp += event.getGainedExp();
         getLevelObject().onExpGain(exp);
         checkProgress();
     }
