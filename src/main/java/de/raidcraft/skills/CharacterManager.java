@@ -283,6 +283,13 @@ public final class CharacterManager implements Listener {
     public void onHealthChange(EntityRegainHealthEvent event) {
 
         // lets always cancel this on the lowest level to allow other handles to overwrite
-        event.setCancelled(true);
+        switch (event.getRegainReason()) {
+
+            case EATING:
+            case REGEN:
+            case SATIATED:
+                event.setCancelled(true);
+                break;
+        }
     }
 }
