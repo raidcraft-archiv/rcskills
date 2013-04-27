@@ -236,6 +236,7 @@ public final class CombatManager implements Listener {
                         int damage = plugin.getCommonConfig().fist_attack_damage;
                         attacker.setLastSwing(Weapon.Slot.MAIN_HAND);
                         new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
+                        event.setDamage(0);
                         return;
                     }
                     // now lets issue an attack for each weapon
