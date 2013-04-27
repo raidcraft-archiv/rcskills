@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EffectDamage;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.events.RCExpGainEvent;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -28,7 +29,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,7 +59,7 @@ public final class ExperienceManager implements Listener {
                 write(0, 500).
                 write(1, (int) EntityType.BAT.getTypeId()).
                 write(2, (int) (dead.getLocation().getX() * 32)).
-                write(3, (int) ((dead.getLocation().getY() + 1) * 32)).
+                write(3, (int) ((dead.getLocation().getY() + 0.5) * 32)).
                 write(4, (int) (dead.getLocation().getZ() * 32));
 
         // batWatcher.setObject(0, (byte) 0x20);
@@ -68,7 +68,7 @@ public final class ExperienceManager implements Listener {
         newPacket.getDataWatcherModifier().write(0, batWatcher);
 
         try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(p, newPacket);
+            protocolManager.sendServerPacket(p, newPacket);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -84,10 +84,10 @@ public final class ExperienceManager implements Listener {
     }
 
     @SuppressWarnings("unchecked")
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDeath(EntityDeathEvent event) {
+    @EventHandler
+    public void onEntityDeath(RCEntityDeathEvent event) {
 
-        CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
+        CharacterTemplate character = event.getCharacter();
         Attack attack = character.getLastDamageCause();
 
         if (attack == null) {
@@ -105,10 +105,10 @@ public final class ExperienceManager implements Listener {
             return;
         }
         AttachedLevel<Hero> expPool = hero.getExpPool();
-        int exp = plugin.getExperienceConfig().getEntityExperienceFor(event.getEntityType());
+        int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType());
         expPool.addExp(exp);
         // lets do some visual magic tricks and let the player see the exp
-        sendPacket(hero.getPlayer(), event.getEntity(), exp);
+        sendPacket(hero.getPlayer(), character.getEntity(), exp);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

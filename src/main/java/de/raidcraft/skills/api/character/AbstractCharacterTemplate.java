@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.party.Party;
@@ -223,6 +224,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (health > getMaxHealth()) {
             health = getMaxHealth();
         }
+        if (health < 0) {
+            health = 0;
+        }
         getEntity().setHealth(health);
     }
 
@@ -246,10 +250,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             kill();
         } else {
             setHealth(newHealth);
+            getEntity().playEffect(EntityEffect.HURT);
+            getEntity().getWorld().playSound(
+                    getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
         }
-        getEntity().playEffect(EntityEffect.HURT);
-        getEntity().getWorld().playSound(
-                getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
         if (this instanceof Hero) {
             ((Hero) this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
         }
@@ -259,13 +263,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void damage(Attack attack) {
 
         if (!attack.isCancelled() && attack.getDamage() > 0) {
-            damage(attack.getDamage());
-            // lets set some bukkit properties
-            getEntity().setLastDamage(attack.getDamage());
+            // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
                 // set the last attack variable to track death
                 lastAttack = attack;
             }
+            // lets set some bukkit properties
+            getEntity().setLastDamage(attack.getDamage());
+            damage(attack.getDamage());
             // lets do some USK18+ gore effects
             // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
             // 152 = redstone block
@@ -327,6 +332,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill() {
 
+        RaidCraft.callEvent(new RCEntityDeathEvent(this));
         setHealth(0);
         // play the death sound
         getEntity().getWorld().playSound(
