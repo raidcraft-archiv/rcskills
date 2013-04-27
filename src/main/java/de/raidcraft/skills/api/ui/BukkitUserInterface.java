@@ -1,12 +1,9 @@
 package de.raidcraft.skills.api.ui;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -19,9 +16,8 @@ import org.bukkit.scoreboard.Scoreboard;
  */
 public class BukkitUserInterface implements UserInterface {
 
-    private static final String HEALTH_OBJECTIVE = "rcsh";
+    private static final String HEALTH_OBJECTIVE = "rcshealth";
 
-    private final ProtocolManager protocolManager;
     private final Hero hero;
     private final Player player;
 
@@ -30,29 +26,7 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        Scoreboard scoreboard = player.getScoreboard();
-        if (scoreboard == null) {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-            player.setScoreboard(scoreboard);
-        }
-        Objective objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
-        objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        objective.setDisplayName("❤");
-
-        // lets intercept server packets that tell the player the experience
-        protocolManager = ProtocolLibrary.getProtocolManager();
-/*        protocolManager.addPacketListener(new PacketAdapter(
-                RaidCraft.getComponent(SkillsPlugin.class),
-                ConnectionSide.SERVER_SIDE,
-                ListenerPriority.HIGHEST,
-                GamePhase.PLAYING,
-                Packets.Server.SET_EXPERIENCE) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-
-                // modifyExperiencePacket(event.getPacket());
-            }
-        });*/
+        // getHealthScore().setScore(hero.getHealth());
     }
 
     @Override
@@ -79,13 +53,6 @@ public class BukkitUserInterface implements UserInterface {
         if (player.getFoodLevel() > 19) {
             player.setFoodLevel(19);
         }
-
-/*        // lets also send an exp update packet to the client
-        try {
-            // we only need to create a default packet - it will be modified in our listener
-            protocolManager.sendServerPacket(getHero().getPlayer(), protocolManager.createPacket(Packets.Server.SET_EXPERIENCE));
-        } catch (InvocationTargetException | PlayerLoggedOutException ignored) {
-        }*/
     }
 
     private void modifyExperiencePacket(PacketContainer packet) {
@@ -112,10 +79,10 @@ public class BukkitUserInterface implements UserInterface {
         // lets also set the scoreboard to display the health of this player to all online players
         Scoreboard scoreboard = Scoreboards.getScoreboard(player);
 
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + getHero().getId());
+        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + getHero().getId(), "dummy");
-            objective.setDisplayName("HP");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "dummy");
+            objective.setDisplayName("❤");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
         return objective;
