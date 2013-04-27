@@ -317,8 +317,8 @@ public abstract class AbstractSkill implements Skill {
     protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack attack = new MagicalAttack(getHero(), target, damage, callback);
-        type.run(attack);
         attack.run();
+        type.run(attack);
         return attack;
     }
 
