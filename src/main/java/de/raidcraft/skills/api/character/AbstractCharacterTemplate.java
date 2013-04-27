@@ -134,7 +134,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setLastSwing(Weapon.Slot slot) {
 
-        long lastSwing = System.currentTimeMillis() + (long)(getWeapon(slot).getSwingTime() * 1000);
+        Weapon weapon = getWeapon(slot);
+        long swingTime = 1000;
+        if (weapon != null) {
+            swingTime *= weapon.getSwingTime();
+        } else {
+            swingTime *= RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().default_swing_time;
+        }
+        long lastSwing = System.currentTimeMillis() + swingTime;
         this.lastSwing.put(slot, lastSwing);
     }
 

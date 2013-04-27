@@ -351,6 +351,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String profession_config_path = "professions/";
         @Setting("defaults.party-timeout")
         public double invite_timeout = 30.0;
+        @Setting("defaults.swing-time")
+        public double default_swing_time = 1.0;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
