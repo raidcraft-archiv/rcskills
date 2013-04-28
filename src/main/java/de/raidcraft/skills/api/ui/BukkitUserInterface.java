@@ -43,11 +43,15 @@ public class BukkitUserInterface implements UserInterface {
 
         Objective objective = getScoreboardExperienceObjective();
         for (Profession profession : hero.getProfessions()) {
-            if (profession.isActive()) {
-                Score score = objective.getScore(
-                        Bukkit.getOfflinePlayer(ChatColor.GREEN + profession.getFriendlyName()));
-                score.setScore(profession.getAttachedLevel().getExp());
-            }
+            objective.getScore(
+                    Bukkit.getOfflinePlayer(ChatColor.GREEN + profession.getFriendlyName())
+            ).setScore(profession.getAttachedLevel().getExp());
+            objective.getScore(
+                    Bukkit.getOfflinePlayer("" + profession.getAttachedLevel().getExp())
+            ).setScore(profession.getAttachedLevel().getExp());
+            objective.getScore(
+                    Bukkit.getOfflinePlayer("" + profession.getAttachedLevel().getMaxExp())
+            ).setScore(profession.getAttachedLevel().getMaxExp());
         }
     }
 
@@ -118,7 +122,7 @@ public class BukkitUserInterface implements UserInterface {
         if (objective == null) {
             objective = scoreboard.registerNewObjective(EXP_OBJECTIVE + hero.getId(), "dummy");
             objective.setDisplayName("Erfahrung");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
         }
         return objective;
     }

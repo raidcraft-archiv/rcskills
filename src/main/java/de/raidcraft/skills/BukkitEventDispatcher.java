@@ -180,6 +180,9 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onProjectileHit(ProjectileHitEvent event) {
 
+        if (event.getEntity().getShooter() == null) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
                 new ProjectileHitTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );
