@@ -619,6 +619,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
+        if (!inCombat) {
+            getThreatTable().reset();
+        }
     }
 
     @Override
