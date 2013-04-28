@@ -5,6 +5,7 @@ import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -44,7 +45,7 @@ public class BukkitUserInterface implements UserInterface {
         for (Profession profession : hero.getProfessions()) {
             if (profession.isActive()) {
                 Score score = objective.getScore(
-                        Bukkit.getOfflinePlayer(profession.getFriendlyName()));
+                        Bukkit.getOfflinePlayer(ChatColor.GREEN + profession.getFriendlyName()));
                 score.setScore(profession.getAttachedLevel().getExp());
             }
         }

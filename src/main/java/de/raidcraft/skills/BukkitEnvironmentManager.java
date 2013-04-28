@@ -31,10 +31,10 @@ public final class BukkitEnvironmentManager implements Listener {
             @Override
             public void onPacketSending(PacketEvent event) {
 
-                PacketContainer packet = event.getPacket().deepClone();
+                PacketContainer packet = event.getPacket();
                 Player player = event.getPlayer();
-                int health = (player.getHealth() / player.getMaxHealth()) * 20;
-                packet.getIntegers().write(0, health);
+                float health = (int) Math.round(((double)player.getHealth() / (double)player.getMaxHealth()) * 20.0);
+                packet.getFloat().write(0, health);
                 event.setPacket(packet);
             }
         });
