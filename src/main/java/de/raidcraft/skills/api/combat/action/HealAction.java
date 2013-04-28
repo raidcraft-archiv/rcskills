@@ -18,6 +18,12 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
         this.amount = amount;
     }
 
+    @Override
+    public int getThreat() {
+
+        return (int) (getAmount() * 0.5);
+    }
+
     public int getAmount() {
 
         return amount;

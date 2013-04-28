@@ -37,6 +37,12 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
     }
 
     @Override
+    public int getThreat() {
+
+        return getDamage();
+    }
+
+    @Override
     public int getDamage() {
 
         return damage;

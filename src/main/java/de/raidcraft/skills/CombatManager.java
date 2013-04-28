@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.action.WeaponAttack;
@@ -165,6 +166,13 @@ public final class CombatManager implements Listener {
         if (!creature.isInCombat() || target.isFriendly(creature)) {
             event.setCancelled(true);
         }
+
+        // lets target the target with the highest threat
+        ThreatTable.ThreatLevel threat = creature.getThreatTable().getHighestThreat();
+        if (threat == null) {
+            return;
+        }
+        event.setTarget(threat.getTarget().getEntity());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

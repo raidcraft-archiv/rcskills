@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.character;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -50,11 +51,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final String name;
     private final LivingEntity entity;
+    private final ThreatTable threatTable;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
     private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
     private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
     private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
-    private final Map<CharacterTemplate, Integer> threadLevels = new HashMap<>();
     // every player is member of his own party by default
     private Party party;
     private int damage;
@@ -65,6 +66,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public AbstractCharacterTemplate(LivingEntity entity) {
 
         this.entity = entity;
+        this.threatTable = new ThreatTable(this);
         if (entity != null) {
             if (entity.getCustomName() != null && !entity.getCustomName().equals("")) {
                 this.name = entity.getCustomName();
@@ -92,12 +94,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public int getThread(CharacterTemplate character) {
+    public ThreatTable getThreatTable() {
 
-        if (!threadLevels.containsKey(character)) {
-            return 0;
-        }
-        return threadLevels.get(character);
+        return threatTable;
     }
 
     @Override
@@ -281,6 +280,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (!(attack instanceof EnvironmentAttack)) {
                 // set the last attack variable to track death
                 lastAttack = attack;
+                // lets increase the thread against the attacker
+                if (attack.getSource() instanceof CharacterTemplate) {
+                    getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
+                }
             }
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
@@ -305,6 +308,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         int newHealth = getHealth() + action.getAmount();
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
+        // lets increase the threat
+        if (action.getSource() instanceof CharacterTemplate) {
+            getThreatTable().getThreatLevel((CharacterTemplate) action.getSource()).increaseThreat(action.getThreat());
+        }
         getEntity().setNoDamageTicks(1);
         setHealth(newHealth);
         // lets fake some wolf hearts for visuals
@@ -612,9 +619,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
-        if (!inCombat) {
-            threadLevels.clear();
-        }
     }
 
     @Override
