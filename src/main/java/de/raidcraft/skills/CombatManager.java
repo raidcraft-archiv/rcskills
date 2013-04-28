@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.items.Weapon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Skeleton;
@@ -156,7 +157,7 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onTarget(EntityTargetLivingEntityEvent event) {
 
-        if (!(event.getEntity() instanceof LivingEntity)) {
+        if (!(event.getEntity() instanceof Creature)) {
             return;
         }
 
@@ -172,7 +173,9 @@ public final class CombatManager implements Listener {
         if (threat == null) {
             return;
         }
-        event.setTarget(threat.getTarget().getEntity());
+        LivingEntity entity = threat.getTarget().getEntity();
+        event.setTarget(entity);
+        ((Creature) creature.getEntity()).setTarget(entity);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
