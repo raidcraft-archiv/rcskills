@@ -34,5 +34,5 @@ public interface Party {
 
     public boolean isInGroup(CharacterTemplate member);
 
-    public void heal(int amount);
+    public <S> void heal(S source, int amount);
 }

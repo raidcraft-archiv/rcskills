@@ -2,16 +2,13 @@ package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
-import org.bukkit.event.Cancellable;
 
 import java.util.Set;
 
 /**
  * @author Silthus
  */
-public interface Attack<S, T> extends Action<S>, Cancellable {
-
-    public T getTarget();
+public interface Attack<S, T> extends TargetedAction<S, T> {
 
     public int getDamage();
 
@@ -27,5 +24,4 @@ public interface Attack<S, T> extends Action<S>, Cancellable {
 
     public boolean hasSource(AttackSource source);
 
-    public void combatLog(Object o, String message);
 }

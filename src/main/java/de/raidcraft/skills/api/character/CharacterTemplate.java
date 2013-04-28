@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.party.Party;
@@ -25,6 +26,8 @@ public interface CharacterTemplate {
     public LivingEntity getEntity();
 
     public Attack getLastDamageCause();
+
+    public int getThread(CharacterTemplate character);
 
     public Weapon getWeapon(Weapon.Slot slot);
 
@@ -76,7 +79,7 @@ public interface CharacterTemplate {
 
     public void damage(Attack attack);
 
-    public void heal(int amount);
+    public void heal(HealAction action);
 
     public void kill(CharacterTemplate killer);
 

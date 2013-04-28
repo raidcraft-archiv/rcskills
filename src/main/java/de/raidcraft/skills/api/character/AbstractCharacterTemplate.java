@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.effect.common.Combat;
@@ -19,7 +20,6 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.items.Weapon;
-import de.raidcraft.skills.trigger.HealTrigger;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
@@ -54,6 +54,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
     private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
     private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
+    private final Map<CharacterTemplate, Integer> threadLevels = new HashMap<>();
     // every player is member of his own party by default
     private Party party;
     private int damage;
@@ -88,6 +89,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public LivingEntity getEntity() {
 
         return entity;
+    }
+
+    @Override
+    public int getThread(CharacterTemplate character) {
+
+        if (!threadLevels.containsKey(character)) {
+            return 0;
+        }
+        return threadLevels.get(character);
     }
 
     @Override
@@ -291,36 +301,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void heal(int amount) {
+    public void heal(HealAction action) {
 
-        try {
-            HealTrigger trigger = TriggerManager.callTrigger(
-                    new HealTrigger(this, amount)
-            );
-
-            if (trigger.isCancelled()) {
-                return;
-            }
-
-            amount = trigger.getAmount();
-
-            if (amount < 1) {
-                return;
-            }
-
-            int newHealth = getHealth() + amount;
-            if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
-            getEntity().setNoDamageTicks(1);
-            setHealth(newHealth);
-            // lets fake some wolf hearts for visuals
-            EffectUtil.fakeWolfHearts(getEntity().getLocation());
-            if (this instanceof Hero) {
-                ((Hero)this).combatLog("Du wurdest um " + amount + "HP geheilt.");
-            }
-        } catch (CombatException e) {
-            if (this instanceof Hero) {
-                ((Hero)this).sendMessage(ChatColor.RED + e.getMessage());
-            }
+        int newHealth = getHealth() + action.getAmount();
+        if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
+        getEntity().setNoDamageTicks(1);
+        setHealth(newHealth);
+        // lets fake some wolf hearts for visuals
+        EffectUtil.fakeWolfHearts(getEntity().getLocation());
+        if (this instanceof Hero) {
+            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action + "HP geheilt.");
         }
     }
 
@@ -622,6 +612,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setInCombat(boolean inCombat) {
 
         this.inCombat = inCombat;
+        if (!inCombat) {
+            threadLevels.clear();
+        }
     }
 
     @Override

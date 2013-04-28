@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class Creature extends AbstractCharacterTemplate implements Levelable<Creature> {
 
+    private CharacterTemplate highestThread;
     private AttachedLevel<Creature> attachedLevel;
 
     public Creature(LivingEntity entity) {
@@ -45,6 +46,21 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
             // ignored
         }
         attachLevel(new CreatureAttachedLevel<>(this, averageLevel));
+    }
+
+    public CharacterTemplate getHighestThread() {
+
+        return highestThread;
+    }
+
+    public void setHighestThread(CharacterTemplate highestThread) {
+
+        this.highestThread = highestThread;
+    }
+
+    public void setAttachedLevel(AttachedLevel<Creature> attachedLevel) {
+
+        this.attachedLevel = attachedLevel;
     }
 
     @Override

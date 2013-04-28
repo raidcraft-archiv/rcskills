@@ -3,6 +3,8 @@ package de.raidcraft.skills.api.party;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.HealAction;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -151,10 +153,16 @@ public class SimpleParty implements Party {
     }
 
     @Override
-    public void heal(int amount) {
+    public <S> void heal(S source, int amount) {
 
         for (CharacterTemplate hero : getMembers()) {
-            hero.heal(amount);
+            try {
+                new HealAction<>(source, hero, amount).run();
+            } catch (CombatException e) {
+                if (source instanceof Hero) {
+                    ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
         }
     }
 }

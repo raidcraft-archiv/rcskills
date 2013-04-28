@@ -1,6 +1,7 @@
 package de.raidcraft.skills.trigger;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.trigger.HandlerList;
 import de.raidcraft.skills.api.trigger.Trigger;
 import org.bukkit.event.Cancellable;
@@ -13,9 +14,9 @@ public class HealTrigger extends Trigger implements Cancellable {
     private int amount;
     private boolean cancelled = false;
 
-    public HealTrigger(CharacterTemplate source, int amount) {
+    public HealTrigger(HealAction action, int amount) {
 
-        super(source);
+        super((CharacterTemplate) action.getTarget());
         this.amount = amount;
     }
 

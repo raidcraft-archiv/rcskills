@@ -13,6 +13,8 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.skills.api.combat.action.HealAction;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
@@ -435,7 +437,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                     resource.setCurrent(resource.getMax());
                 }
             }
-            hero.heal(hero.getMaxHealth());
+            try {
+                new HealAction<>("Server", hero, hero.getMaxHealth()).run();
+            } catch (CombatException e) {
+                throw new CommandException(e);
+            }
         }
     }
 }

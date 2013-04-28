@@ -74,4 +74,9 @@ public class Combat<S> extends ExpirableEffect<S> {
 
         involvedCharacters.add(character);
     }
+
+    public Set<CharacterTemplate> getInvolvedCharacters() {
+
+        return involvedCharacters;
+    }
 }
