@@ -30,7 +30,7 @@ public class BukkitUserInterface implements UserInterface {
         this.player = hero.getPlayer();
 
         // getHealthScore().setScore(hero.getHealth());
-        updateExperienceDisplay();
+        // updateExperienceDisplay();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BukkitUserInterface implements UserInterface {
             return;
         }
 
-        updateExperienceDisplay();
+        // updateExperienceDisplay();
         // lets update the scoreboard
         // getHealthScore().setScore(getHero().getHealth());
 
