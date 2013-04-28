@@ -317,7 +317,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         // lets fake some wolf hearts for visuals
         EffectUtil.fakeWolfHearts(getEntity().getLocation());
         if (this instanceof Hero) {
-            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action + "HP geheilt.");
+            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
         }
     }
 
