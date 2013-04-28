@@ -163,7 +163,7 @@ public final class CombatManager implements Listener {
         CharacterTemplate creature = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
         CharacterTemplate target = plugin.getCharacterManager().getCharacter(event.getTarget());
 
-        if (!creature.isInCombat() || target.isFriendly(creature)) {
+        if (target.isFriendly(creature)) {
             event.setCancelled(true);
         }
 
