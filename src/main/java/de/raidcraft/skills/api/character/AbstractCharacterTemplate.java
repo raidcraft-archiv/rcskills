@@ -124,6 +124,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void clearWeapons() {
+
+        weapons.clear();
+    }
+
+    @Override
     public boolean canSwing(Weapon.Slot slot) {
 
         if (this instanceof Hero) {

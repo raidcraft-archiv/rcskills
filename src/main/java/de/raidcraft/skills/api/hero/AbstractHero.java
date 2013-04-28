@@ -175,6 +175,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         loadSkills();
         // reload the bound items
         RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
+        clearWeapons();
         reset();
         save();
     }

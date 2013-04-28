@@ -62,9 +62,9 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
     public void damage(Attack attack) {
 
         super.damage(attack);
-        if (attack.getSource() instanceof CharacterTemplate && attack.getTarget() instanceof CharacterTemplate) {
+        if (attack.getSource() instanceof CharacterTemplate) {
             LivingEntity attacker = ((CharacterTemplate) attack.getSource()).getEntity();
-            LivingEntity target = ((CharacterTemplate) attack.getTarget()).getEntity();
+            LivingEntity target = getEntity();
             // make the creature angry if it is attacked
             if (target instanceof Wolf) {
                 Wolf wolf = (Wolf) target;

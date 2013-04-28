@@ -38,6 +38,8 @@ public interface CharacterTemplate {
 
     public void removeWeapon(Weapon.Slot slot);
 
+    public void clearWeapons();
+
     public boolean canSwing(Weapon.Slot slot);
 
     public long getLastSwing(Weapon.Slot slot);
