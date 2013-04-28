@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -405,6 +406,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
+        // special check for the combat effect
+        if (effect instanceof Combat && source instanceof CharacterTemplate) {
+            ((Combat) effect).addInvolvedCharacter((CharacterTemplate) source);
+        }
         return effect;
     }
 

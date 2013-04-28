@@ -9,6 +9,9 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Silthus
  */
@@ -18,6 +21,8 @@ import de.raidcraft.skills.api.persistance.EffectData;
         priority = 1.0
 )
 public class Combat<S> extends ExpirableEffect<S> {
+
+    private final Set<CharacterTemplate> involvedCharacters = new HashSet<>();
 
     public Combat(S source, CharacterTemplate target, EffectData data) {
 
@@ -36,6 +41,11 @@ public class Combat<S> extends ExpirableEffect<S> {
             RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.ENTER));
         }
         info("Du hast den Kampf betreten.");
+        if (getSource() instanceof CharacterTemplate) {
+            // als add the source to our list
+            addInvolvedCharacter((CharacterTemplate) getSource());
+        }
+        addInvolvedCharacter(target);
     }
 
     @Override
@@ -53,5 +63,15 @@ public class Combat<S> extends ExpirableEffect<S> {
 
         // silently set in combat again
         target.setInCombat(true);
+    }
+
+    public boolean isInvolved(CharacterTemplate character) {
+
+        return involvedCharacters.contains(character);
+    }
+
+    public void addInvolvedCharacter(CharacterTemplate character) {
+
+        involvedCharacters.add(character);
     }
 }

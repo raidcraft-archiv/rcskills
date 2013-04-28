@@ -4,6 +4,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -17,6 +18,7 @@ import org.bukkit.scoreboard.Scoreboard;
 public class BukkitUserInterface implements UserInterface {
 
     private static final String HEALTH_OBJECTIVE = "rcshealth";
+    private static final String EXP_OBJECTIVE = "rcsexp";
 
     private final Hero hero;
     private final Player player;
@@ -27,12 +29,25 @@ public class BukkitUserInterface implements UserInterface {
         this.player = hero.getPlayer();
 
         // getHealthScore().setScore(hero.getHealth());
+        updateExperienceDisplay();
     }
 
     @Override
     public Hero getHero() {
 
         return hero;
+    }
+
+    private void updateExperienceDisplay() {
+
+        Objective objective = getScoreboardExperienceObjective();
+        for (Profession profession : hero.getProfessions()) {
+            if (profession.isActive()) {
+                Score score = objective.getScore(
+                        Bukkit.getOfflinePlayer(profession.getFriendlyName()));
+                score.setScore(profession.getAttachedLevel().getExp());
+            }
+        }
     }
 
     @Override
@@ -46,6 +61,7 @@ public class BukkitUserInterface implements UserInterface {
             return;
         }
 
+        updateExperienceDisplay();
         // lets update the scoreboard
         // getHealthScore().setScore(getHero().getHealth());
 
@@ -91,5 +107,18 @@ public class BukkitUserInterface implements UserInterface {
     public Score getHealthScore() {
 
         return getScoreboardHealthObjective().getScore(player);
+    }
+
+    private Objective getScoreboardExperienceObjective() {
+
+        Scoreboard scoreboard = Scoreboards.getScoreboard(player);
+
+        Objective objective = scoreboard.getObjective(EXP_OBJECTIVE + hero.getId());
+        if (objective == null) {
+            objective = scoreboard.registerNewObjective(EXP_OBJECTIVE + hero.getId(), "dummy");
+            objective.setDisplayName("Erfahrung");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
+        return objective;
     }
 }
