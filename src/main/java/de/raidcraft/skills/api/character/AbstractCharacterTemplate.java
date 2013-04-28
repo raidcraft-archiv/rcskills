@@ -543,9 +543,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         List<LivingEntity> nearbyEntities = BukkitUtil.getNearbyEntities(getEntity(), range);
         if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
         for (LivingEntity target : nearbyEntities) {
-            if (target.equals(getEntity())) {
-                continue;
-            }
             targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
         }
         return targets;

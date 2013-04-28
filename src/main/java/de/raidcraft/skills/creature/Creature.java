@@ -5,16 +5,11 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
-import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.Levelable;
-import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Wolf;
-
-import java.util.List;
 
 /**
  * @author Silthus
@@ -28,7 +23,7 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
 
         super(entity);
         // lets calculate the average level based on the players around
-        int averageLevel = 1;
+/*        int averageLevel = 1;
         try {
             int totalLevel = 0;
             int totalHeroes = 0;
@@ -44,8 +39,8 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
             }
         } catch (CombatException ignored) {
             // ignored
-        }
-        attachLevel(new CreatureAttachedLevel<>(this, averageLevel));
+        }*/
+        attachLevel(new CreatureAttachedLevel<>(this, 1));
     }
 
     public CharacterTemplate getHighestThread() {
