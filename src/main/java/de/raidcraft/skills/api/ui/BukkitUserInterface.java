@@ -18,7 +18,7 @@ import org.bukkit.scoreboard.Scoreboard;
  */
 public class BukkitUserInterface implements UserInterface {
 
-    private static final String HEALTH_OBJECTIVE = "rcshealth";
+    public static final String HEALTH_OBJECTIVE = "hp";
     private static final String EXP_OBJECTIVE = "rcsexp";
 
     private final Hero hero;
@@ -29,14 +29,19 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        getScoreboardHealthObjective();
-        // updateExperienceDisplay();
+        updateHealthDisplay();
     }
 
     @Override
     public Hero getHero() {
 
         return hero;
+    }
+
+    private void updateHealthDisplay() {
+
+        getScoreboardHealthObjective();
+        Scoreboards.updateHealthDisplays();
     }
 
     private void updateExperienceDisplay() {
@@ -68,7 +73,7 @@ public class BukkitUserInterface implements UserInterface {
 
         // updateExperienceDisplay();
         // lets update the scoreboard
-        getScoreboardHealthObjective();
+        updateHealthDisplay();
 
         // make sure the food level is never at 20 to allow eating
         if (player.getFoodLevel() > 19) {
@@ -100,9 +105,9 @@ public class BukkitUserInterface implements UserInterface {
         // lets also set the scoreboard to display the health of this player to all online players
         Scoreboard scoreboard = Scoreboards.getScoreboard(player);
 
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
+        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + hero.getId());
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + hero.getId(), "dummy");
             objective.setDisplayName("❤");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }

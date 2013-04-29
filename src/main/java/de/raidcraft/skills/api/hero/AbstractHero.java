@@ -176,6 +176,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         // reload the bound items
         RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
         clearWeapons();
+        Scoreboards.removeScoreboard(getPlayer());
         reset();
         save();
     }
@@ -315,7 +316,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
-        Scoreboards.removeScoreboard(getPlayer());
         setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();

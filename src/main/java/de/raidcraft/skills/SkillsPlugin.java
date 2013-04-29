@@ -370,7 +370,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public class BaseCommands {
 
         @Command(
-                aliases = {"profession", "prof"},
+                aliases = {"profession", "prof", "path"},
                 desc = "Base Command for Profession and Classes"
         )
         @NestedCommand(value = ProfessionCommands.class)
