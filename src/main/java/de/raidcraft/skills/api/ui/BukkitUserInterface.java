@@ -29,7 +29,7 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        // getHealthScore().setScore(hero.getHealth());
+        getScoreboardHealthObjective();
         // updateExperienceDisplay();
     }
 
@@ -68,7 +68,7 @@ public class BukkitUserInterface implements UserInterface {
 
         // updateExperienceDisplay();
         // lets update the scoreboard
-        // getHealthScore().setScore(getHero().getHealth());
+        getScoreboardHealthObjective();
 
         // make sure the food level is never at 20 to allow eating
         if (player.getFoodLevel() > 19) {
@@ -102,7 +102,7 @@ public class BukkitUserInterface implements UserInterface {
 
         Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "dummy");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
             objective.setDisplayName("❤");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
