@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -162,6 +163,8 @@ public class TriggerManager {
                 eventSet.add(new RegisteredSkillTrigger(listener, executor, annotation));
             } else if (Effect.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredEffectTrigger(listener, executor, annotation));
+            } else if (CharacterTemplate.class.isAssignableFrom(listener.getClass())) {
+                eventSet.add(new RegisteredCharacterTrigger(listener, executor, annotation));
             } else {
                 // if it is not a skill or effect pass it on like a bukkit event without any checks
                 eventSet.add(new RegisteredTrigger(listener, executor, annotation) {
