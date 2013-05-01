@@ -83,7 +83,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             skillClasses.put(skillName, skillClass);
             // lets create the skill once to make a default config
             factory.createDefaults();
-            plugin.getLogger().info("Loaded Skill: " + factory.getSkillName());
+            plugin.getLogger().info("Loaded Skill: " + factory.getName());
         } else {
             plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
@@ -199,7 +199,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
 
         public CachedSkill(Skill skill) {
 
-            this.player = StringUtils.formatName(skill.getHero().getName());
+            this.player = StringUtils.formatName(skill.getHolder().getName());
             this.name = StringUtils.formatName(skill.getName());
             this.profession = StringUtils.formatName(skill.getProfession().getName());
         }

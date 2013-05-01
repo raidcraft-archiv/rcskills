@@ -56,7 +56,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         }
         // and now do some attack magic :)
         attacked = true;
-        if (weapon != null && weapon.isOfType(getSource().getHero().getItemTypeInHand())) {
+        if (weapon != null && weapon.isOfType(getSource().getHolder().getItemTypeInHand())) {
             trigger.setCancelled(true);
             trigger.getAttack().setCancelled(true);
             throw new CombatException(CombatException.Type.INVALID_WEAPON);

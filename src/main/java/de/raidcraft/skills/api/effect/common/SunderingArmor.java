@@ -39,7 +39,7 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
     public void load(ConfigurationSection data) {
 
         armorReductionPerStack = data.getDouble("reduction.base", 0.05);
-        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHero().getAttachedLevel().getLevel();
+        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHolder().getAttachedLevel().getLevel();
         armorReductionPerStack += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getAttachedLevel().getLevel();
 
         if (getSource() instanceof LevelableSkill) {

@@ -47,7 +47,7 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // lets replace the fired projectile with ours so we can track the impact and callback
-        RangedAttack<T> attack = new RangedAttack<>(getSource().getHero(), trigger.getEvent(), callback);
+        RangedAttack<T> attack = new RangedAttack<>(getSource().getHolder(), trigger.getEvent(), callback);
         attack.setProjectile((Projectile) trigger.getEvent().getProjectile());
         // since we dont "run" the attack we need to queue for callbacks
         new SourcedRangeCallback<>(attack).queueCallback();

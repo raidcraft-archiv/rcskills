@@ -3,7 +3,6 @@ package de.raidcraft.skills.config;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
-import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -16,6 +15,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.items.WeaponType;
+import de.raidcraft.skills.util.AbstractFactory;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -30,24 +30,22 @@ import java.util.Set;
  */
 public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements SkillProperties {
 
-    private final SkillFactory factory;
+    private final String name;
+    private final SkillInformation information;
 
-    public SkillConfig(SkillFactory factory) {
+    public SkillConfig(AbstractFactory factory) {
 
         super(factory.getPlugin(), new File(
                 new File(factory.getPlugin().getDataFolder(), factory.getPlugin().getCommonConfig().skill_config_path),
-                factory.getSkillName() + ".yml"));
-        this.factory = factory;
+                factory.getName() + ".yml"));
+        this.name = (factory.useAlias() ? factory.getAlias() : factory.getName());
+        this.information = factory.getInformation();
     }
 
     @Override
     public String getName() {
 
-        if (factory.useAlias()) {
-            return factory.getAlias();
-        } else {
-            return factory.getSkillName();
-        }
+        return name;
     }
 
     @Override
@@ -62,7 +60,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     @Override
     public SkillInformation getInformation() {
 
-        return factory.getInformation();
+        return information;
     }
 
     @Override

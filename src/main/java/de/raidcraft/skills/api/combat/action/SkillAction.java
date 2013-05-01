@@ -32,12 +32,12 @@ public class SkillAction extends AbstractAction<Hero> {
 
     public SkillAction(Skill skill, CommandContext args) {
 
-        super(skill.getHero());
+        super(skill.getHolder());
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();
 
-        for (Resource resource : skill.getHero().getResources()) {
+        for (Resource resource : skill.getHolder().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
         }
         // lets issue a trigger that can be modified by other skills
@@ -123,7 +123,7 @@ public class SkillAction extends AbstractAction<Hero> {
         // also trigger combat effect if not supressed
         if (skill.getProperties().getInformation().triggerCombat()) {
             try {
-                skill.getHero().addEffect(skill, Combat.class);
+                skill.getHolder().addEffect(skill, Combat.class);
             } catch (CombatException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }
@@ -133,6 +133,6 @@ public class SkillAction extends AbstractAction<Hero> {
         getSource().addEffect(skill, GlobalCooldown.class);
 
         // lets inform the player that his skill was executed
-        skill.getHero().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
+        skill.getHolder().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
     }
 }

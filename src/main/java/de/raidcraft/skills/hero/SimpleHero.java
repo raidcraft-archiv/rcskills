@@ -13,4 +13,10 @@ public class SimpleHero extends AbstractHero {
 
         super(player, data);
     }
+
+    @Override
+    protected void loadAbilities() {
+
+        // ignored
+    }
 }

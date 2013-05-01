@@ -13,8 +13,10 @@ import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.party.SimpleParty;
+import de.raidcraft.skills.api.skill.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -29,12 +31,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -56,12 +60,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
     private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
     private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
+    protected int maxLevel;
     // every player is member of his own party by default
     private Party party;
     private int damage;
     private boolean inCombat = false;
     private Attack lastAttack;
     private BukkitTask deathTask;
+    private AttachedLevel<CharacterTemplate> attachedLevel;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -394,9 +400,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final <E extends Effect<S>, S> E addEffect(Skill skill, S source, Class<E> eClass) throws CombatException {
+    public <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass) throws CombatException {
 
-        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, skill);
+        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, ability);
         addEffect(eClass, effect);
         return effect;
     }
@@ -720,5 +726,69 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public boolean isFriendly(CharacterTemplate source) {
 
         return getParty().isInGroup(source);
+    }
+
+    @Override
+    public Material getItemTypeInHand() {
+
+        ItemStack itemInHand = getEntity().getEquipment().getItemInHand();
+        if (itemInHand == null || itemInHand.getTypeId() == 0) {
+            return Material.AIR;
+        }
+        return itemInHand.getType();
+    }
+
+    @Override
+    public boolean isMastered() {
+
+        return getAttachedLevel().hasReachedMaxLevel();
+    }
+
+    @Override
+    public AttachedLevel<CharacterTemplate> getAttachedLevel() {
+
+        return attachedLevel;
+    }
+
+    @Override
+    public void attachLevel(AttachedLevel<CharacterTemplate> attachedLevel) {
+
+        this.attachedLevel = attachedLevel;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return maxLevel;
+    }
+
+    @Override
+    public void saveLevelProgress(AttachedLevel<CharacterTemplate> attachedLevel) {
+
+        // override if needed
+    }
+
+    @Override
+    public void onLevelLoss() {
+
+        // override if needed
+    }
+
+    @Override
+    public void onLevelGain() {
+
+        // override if needed
+    }
+
+    @Override
+    public void onExpLoss(int exp) {
+
+        // override if needed
+    }
+
+    @Override
+    public void onExpGain(int exp) {
+
+        // override if needed
     }
 }

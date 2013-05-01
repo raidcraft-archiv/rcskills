@@ -1,17 +1,15 @@
 package de.raidcraft.skills.api.hero;
 
-import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
-import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -21,7 +19,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Hero extends Levelable<Hero>, CharacterTemplate {
+public interface Hero extends SkilledCharacter<Skill> {
 
     public int getId();
 
@@ -101,5 +99,4 @@ public interface Hero extends Levelable<Hero>, CharacterTemplate {
 
     public void removeSkill(Skill skill);
 
-    public Material getItemTypeInHand();
 }

@@ -5,8 +5,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
-import de.raidcraft.skills.api.level.AttachedLevel;
-import de.raidcraft.skills.api.level.Levelable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Wolf;
@@ -14,10 +12,9 @@ import org.bukkit.entity.Wolf;
 /**
  * @author Silthus
  */
-public class Creature extends AbstractCharacterTemplate implements Levelable<Creature> {
+public class Creature extends AbstractCharacterTemplate {
 
     private CharacterTemplate highestThread;
-    private AttachedLevel<Creature> attachedLevel;
 
     public Creature(LivingEntity entity) {
 
@@ -40,7 +37,7 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
         } catch (CombatException ignored) {
             // ignored
         }*/
-        attachLevel(new CreatureAttachedLevel<>(this, 1));
+        attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 1));
     }
 
     public CharacterTemplate getHighestThread() {
@@ -51,11 +48,6 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
     public void setHighestThread(CharacterTemplate highestThread) {
 
         this.highestThread = highestThread;
-    }
-
-    public void setAttachedLevel(AttachedLevel<Creature> attachedLevel) {
-
-        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -84,18 +76,6 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
     public int getDefaultHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
-    }
-
-    @Override
-    public AttachedLevel<Creature> getAttachedLevel() {
-
-        return attachedLevel;
-    }
-
-    @Override
-    public void attachLevel(AttachedLevel<Creature> attachedLevel) {
-
-        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -128,11 +108,5 @@ public class Creature extends AbstractCharacterTemplate implements Levelable<Cre
     public boolean isMastered() {
 
         return true;
-    }
-
-    @Override
-    public void saveLevelProgress(AttachedLevel<Creature> attachedLevel) {
-
-
     }
 }

@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.skill.Ability;
 
 import java.io.File;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         return getEffect(source, target, eClass, null);
     }
 
-    public <E extends Effect, S> E getEffect(S source, CharacterTemplate target, Class<E> eClass, Skill skill) {
+    public <E extends Effect, S> E getEffect(S source, CharacterTemplate target, Class<E> eClass, Ability skill) {
 
         try {
             if (effectFactoryClasses.containsKey(eClass)) {

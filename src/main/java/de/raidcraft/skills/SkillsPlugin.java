@@ -64,6 +64,7 @@ import java.util.Set;
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
     private SkillManager skillManager;
+    private AbilityManager abilityManager;
     private EffectManager effectManager;
     private AliasManager aliasManager;
     private ProfessionManager professionManager;
@@ -137,6 +138,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         registerRequirements();
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
+        this.abilityManager = new AbilityManager(this);
         this.effectManager = new EffectManager(this);
         this.skillManager.loadFactories();
         this.effectManager.loadFactories();
@@ -196,6 +198,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         TriggerManager.unregisterAll();
 
         this.skillManager.reload();
+        this.abilityManager.reload();
         registerSkills();
         this.effectManager.reload();
         this.aliasManager.reload();
@@ -229,6 +232,11 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public SkillManager getSkillManager() {
 
         return skillManager;
+    }
+
+    public AbilityManager getAbilityManager() {
+
+        return abilityManager;
     }
 
     public EffectManager getEffectManager() {
@@ -317,6 +325,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public long log_interval = 60;
         @Setting("disable-error-skills")
         public boolean disable_error_skills = false;
+        @Setting("disable-error-abilities")
+        public boolean disable_error_abilities = false;
         @Setting("callback-purge-ticks")
         public long callback_purge_time = 1200;
         @Setting("defaults.environment-damage-in-percent")
@@ -349,6 +359,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String effect_config_path = "effect-configs/";
         @Setting("paths.effect-jars")
         public String effect_jar_path = "effects/";
+        @Setting("paths.abilities-jars")
+        public String ability_jar_path = "abilities/";
         @Setting("paths.profession-configs")
         public String profession_config_path = "professions/";
         @Setting("defaults.party-timeout")

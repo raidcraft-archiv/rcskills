@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -13,6 +12,7 @@ import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.AbstractFactory;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
@@ -22,13 +22,12 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public final class SkillFactory {
+public final class SkillFactory extends AbstractFactory {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     // every profession needs its own config instance
     private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
-    private final String skillName;
     private final AliasesConfig aliasConfig;
     private Constructor<? extends Skill> constructor;
 
@@ -39,9 +38,9 @@ public final class SkillFactory {
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, AliasesConfig aliasConfig) throws UnknownSkillException {
 
+        super(plugin, skillName);
         this.plugin = plugin;
         this.sClass = sClass;
-        this.skillName = skillName;
         this.aliasConfig = aliasConfig;
         // lets cache the constructor for faster skill generation
         try {
@@ -75,14 +74,14 @@ public final class SkillFactory {
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + skillName + " is not enabled!");
+            throw new UnknownSkillException("The skill " + getName() + " is not enabled!");
         }
 
         // its reflection time yay!
         try {
             Skill skill = constructor.newInstance(null, config, null, null);
             if (!skill.isEnabled()) {
-                throw new UnknownSkillException("The Skill " + skillName + " is disabled!");
+                throw new UnknownSkillException("The Skill " + getName() + " is disabled!");
             }
             skill.load(config.getData());
             return skill;
@@ -106,7 +105,7 @@ public final class SkillFactory {
             }
             ProfessionFactory factory = plugin.getProfessionManager().getFactory(profession);
             // set the config that overrides the default skill parameters with the profession config
-            config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getSkillName()));
+            config.merge(factory.getConfig(), "skills." + (useAlias() ? getAlias() : getName()));
 
             // also lets merge all aditional override configs
             for (ConfigurationSection section : overrides) {
@@ -119,7 +118,7 @@ public final class SkillFactory {
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + skillName + " is not enabled!");
+            throw new UnknownSkillException("The skill " + getName() + " is not enabled!");
         }
 
         // also save the profession to generate a db entry if none exists
@@ -132,7 +131,7 @@ public final class SkillFactory {
         try {
             Skill skill = constructor.newInstance(hero, config, profession, database);
             if (!skill.isEnabled()) {
-                throw new UnknownSkillException("The Skill " + skillName + " is disabled!");
+                throw new UnknownSkillException("The Skill " + getName() + " is disabled!");
             }
             // this is called after the skill is created in order
             // to give local variables of the skill a chance to init
@@ -151,12 +150,12 @@ public final class SkillFactory {
 
         THeroSkill database = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
-                .eq("name", (useAlias() ? getAlias() : getSkillName()))
+                .eq("name", (useAlias() ? getAlias() : getName()))
                 .eq("profession_id", profession.getId()).findUnique();
 
         if (database == null) {
             database = new THeroSkill();
-            database.setName((useAlias() ? getAlias() : getSkillName()));
+            database.setName((useAlias() ? getAlias() : getName()));
             database.setUnlocked(false);
             database.setExp(0);
             database.setLevel(1);
@@ -167,19 +166,9 @@ public final class SkillFactory {
         return database;
     }
 
-    public SkillsPlugin getPlugin() {
-
-        return plugin;
-    }
-
     public SkillInformation getInformation() {
 
         return sClass.getAnnotation(SkillInformation.class);
-    }
-
-    public String getSkillName() {
-
-        return skillName;
     }
 
     public String getAlias() {

@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
+import de.raidcraft.skills.api.character.AbstractSkilledCharacter;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -29,10 +29,8 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +43,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public abstract class AbstractHero extends AbstractCharacterTemplate implements Hero {
+public abstract class AbstractHero extends AbstractSkilledCharacter<Skill> implements Hero {
 
     private final int id;
     private final AttachedLevel<Hero> expPool;
@@ -56,9 +54,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     private final Map<String, Resource> resources = new HashMap<>();
     private final Map<String, Attribute> attributes = new HashMap<>();
     private final Set<Path<Profession>> paths = new HashSet<>();
-    private int maxLevel;
     private Party pendingPartyInvite;
-    private AttachedLevel<Hero> attachedLevel;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
@@ -76,7 +72,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
         FormulaType formulaType = FormulaType.fromName(levelConfig.getString("type", "wow"));
-        attachLevel(new ConfigurableAttachedLevel<Hero>(this, formulaType.create(levelConfig), data.getLevelData()));
+        attachLevel(new ConfigurableAttachedLevel<CharacterTemplate>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
         loadSkills();
@@ -222,16 +218,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public Material getItemTypeInHand() {
-
-        ItemStack itemInHand = getPlayer().getInventory().getItemInHand();
-        if (itemInHand == null || itemInHand.getTypeId() == 0) {
-            return Material.AIR;
-        }
-        return itemInHand.getType();
-    }
-
-    @Override
     public Collection<Attribute> getAttributes() {
 
         return attributes.values();
@@ -352,12 +338,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public boolean isMastered() {
-
-        return getAttachedLevel().hasReachedMaxLevel();
-    }
-
-    @Override
     public void debug(String message) {
 
         if (Option.DEBUGGING.getBoolean(this) && message != null && !message.equals("")) {
@@ -385,18 +365,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
 
         return (int) (getSelectedProfession().getProperties().getBaseHealth()
                 + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getAttachedLevel().getLevel());
-    }
-
-    @Override
-    public AttachedLevel<Hero> getAttachedLevel() {
-
-        return attachedLevel;
-    }
-
-    @Override
-    public void attachLevel(AttachedLevel<Hero> attachedLevel) {
-
-        this.attachedLevel = attachedLevel;
     }
 
     @Override
@@ -465,7 +433,7 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     }
 
     @Override
-    public void saveLevelProgress(AttachedLevel<Hero> attachedLevel) {
+    public void saveLevelProgress(AttachedLevel<CharacterTemplate> attachedLevel) {
 
         THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         heroTable.setExp(getAttachedLevel().getExp());
@@ -557,12 +525,6 @@ public abstract class AbstractHero extends AbstractCharacterTemplate implements 
     public Profession getVirtualProfession() {
 
         return virtualProfession;
-    }
-
-    @Override
-    public int getMaxLevel() {
-
-        return maxLevel;
     }
 
     @Override

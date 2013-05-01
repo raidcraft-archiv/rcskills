@@ -89,7 +89,7 @@ public final class SkillUtil {
             body.add(sb.toString());
         }
 
-        for (Resource resource : skill.getHero().getResources()) {
+        for (Resource resource : skill.getHolder().getResources()) {
             double resourceCost = skill.getTotalResourceCost(resource.getName());
 
             if (resourceCost == 0) {

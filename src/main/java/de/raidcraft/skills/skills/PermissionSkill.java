@@ -58,12 +58,12 @@ public class PermissionSkill extends AbstractSkill {
     @Override
     public void apply() {
 
-        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().addPlayerToGroup(getHero().getName(), getName());
+        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().addPlayerToGroup(getHolder().getName(), getName());
     }
 
     @Override
     public void remove() {
 
-        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().removePlayerFromGroup(getHero().getName(), getName());
+        RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().removePlayerFromGroup(getHolder().getName(), getName());
     }
 }

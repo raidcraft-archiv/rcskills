@@ -31,13 +31,13 @@ public class ExpLogger implements Bean {
         String player;
         ExpType type;
         if (levelable instanceof LevelableSkill) {
-            player = ((LevelableSkill) levelable).getHero().getName();
+            player = ((LevelableSkill) levelable).getHolder().getName();
             type = ExpType.SKILL;
         } else if (levelable instanceof Profession) {
             player = ((Profession) levelable).getHero().getName();
             type = ExpType.PROFESSION;
         } else if (levelable instanceof Hero) {
-            if (((Hero) levelable).getAttachedLevel() instanceof ExpPool) {
+            if (((Hero) levelable).getExpPool() instanceof ExpPool) {
                 type = ExpType.EXP_POOL;
             } else {
                 type = ExpType.HERO;

@@ -18,7 +18,7 @@ public class RCSkillLevelEvent extends RCLevelEvent<LevelableSkill> implements C
 
     public Hero getHero() {
 
-        return getSource().getHero();
+        return getSource().getHolder();
     }
 
     /*///////////////////////////////////////////////////

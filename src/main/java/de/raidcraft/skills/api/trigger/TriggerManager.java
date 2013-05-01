@@ -5,7 +5,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.skill.Ability;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventException;
@@ -159,8 +159,8 @@ public class TriggerManager {
                     }
                 }
             };
-            if (Skill.class.isAssignableFrom(listener.getClass())) {
-                eventSet.add(new RegisteredSkillTrigger(listener, executor, annotation));
+            if (Ability.class.isAssignableFrom(listener.getClass())) {
+                eventSet.add(new RegisteredAbilityTrigger(listener, executor, annotation));
             } else if (Effect.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredEffectTrigger(listener, executor, annotation));
             } else if (CharacterTemplate.class.isAssignableFrom(listener.getClass())) {

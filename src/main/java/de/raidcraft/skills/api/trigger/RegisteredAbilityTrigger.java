@@ -2,20 +2,21 @@ package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.skill.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.event.EventException;
 
 /**
  * Stores relevant information for plugin listeners
  */
-public class RegisteredSkillTrigger extends RegisteredTrigger {
+public class RegisteredAbilityTrigger extends RegisteredTrigger {
 
-    private final Skill skill;
+    private final Ability ability;
 
-    public RegisteredSkillTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
+    public RegisteredAbilityTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
         super(listener, executor, info);
-        this.skill = (listener instanceof Skill ? (Skill) listener : null);
+        this.ability = (listener instanceof Skill ? (Skill) listener : null);
     }
 
     /**
@@ -28,24 +29,30 @@ public class RegisteredSkillTrigger extends RegisteredTrigger {
     protected void call(final Trigger trigger) throws EventException, CombatException {
 
 
-        if (skill == null) {
+        if (ability == null) {
             return;
         }
 
-        if (!skill.isActive() || !skill.isUnlocked() || !trigger.getSource().equals(skill.getHero())) {
+        if (ability instanceof Skill) {
+            if (!((Skill) ability).isActive() || !((Skill) ability).isUnlocked()) {
+                return;
+            }
+        }
+
+        if (!trigger.getSource().equals(ability.getHolder())) {
             return;
         }
 
         // also abort if the skill is combat only or non combat
-        if (!skill.getProperties().canUseOutOfCombat() && !trigger.getSource().isInCombat()) {
+        if (!ability.getProperties().canUseOutOfCombat() && !trigger.getSource().isInCombat()) {
             return;
         }
-        if (!skill.getProperties().canUseInCombat() && trigger.getSource().isInCombat()) {
+        if (!ability.getProperties().canUseInCombat() && trigger.getSource().isInCombat()) {
             return;
         }
 
         // add a combat effect when a skill is beeing casted
-        if (skill.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(skill, Combat.class);
+        if (ability.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(ability, Combat.class);
 
         // and lets pass on the trigger
         executor.execute(listener, trigger);

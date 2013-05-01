@@ -169,7 +169,7 @@ public class BindCommands {
 
     private boolean bindSkill(int slot, Skill skill, Map<Material, List<Skill>> boundSkills) {
 
-        ItemStack item = skill.getHero().getPlayer().getInventory().getItem(slot);
+        ItemStack item = skill.getHolder().getPlayer().getInventory().getItem(slot);
         if (item == null || item.getTypeId() == 0) {
             return true;
         }

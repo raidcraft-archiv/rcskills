@@ -98,9 +98,9 @@ public final class ExperienceManager implements Listener {
         if (attack.getSource() instanceof Hero) {
             hero = ((Hero) attack.getSource());
         } else if (attack.getSource() instanceof Skill) {
-            hero = ((Skill) attack.getSource()).getHero();
+            hero = ((Skill) attack.getSource()).getHolder();
         } else if (attack instanceof EffectDamage) {
-            hero = ((Effect<Skill>) attack.getSource()).getSource().getHero();
+            hero = ((Effect<Skill>) attack.getSource()).getSource().getHolder();
         } else {
             return;
         }

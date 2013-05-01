@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.EffectConfig;
 import de.raidcraft.skills.config.SkillConfig;
@@ -24,7 +25,7 @@ public final class EffectFactory<E extends Effect> {
     private final Class<E> eClass;
     private final EffectInformation information;
     private final String effectName;
-    private final Map<Skill, EffectConfig> effectConfigs = new HashMap<>();
+    private final Map<Ability, EffectConfig> effectConfigs = new HashMap<>();
     private final EffectConfig defaultConfig;
     private Constructor<?> constructor = null;
 
@@ -81,24 +82,28 @@ public final class EffectFactory<E extends Effect> {
         return create(source, target, defaultConfig);
     }
 
-    public <S> E create(S source, CharacterTemplate target, Skill skill) throws UnknownEffectException {
+    public <S> E create(S source, CharacterTemplate target, Ability ability) throws UnknownEffectException {
 
-        if (skill == null) {
+        if (ability == null) {
             return create(source, target, defaultConfig);
         }
 
         EffectConfig config;
-        if (!effectConfigs.containsKey(skill)) {
+        if (!effectConfigs.containsKey(ability)) {
+
             // we need to create a new effect config instance for each skill to merge overrides
             config = plugin.configure(new EffectConfig(this), false);
 
-            // lets now merge the effect with the merged skill profession config
-            SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());
-            config.merge(skillConfig, "effects." + effectName);
+            if (ability instanceof Skill) {
+                Skill skill = (Skill) ability;
+                // lets now merge the effect with the merged skill profession config
+                SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());
+                config.merge(skillConfig, "effects." + effectName);
+            }
 
-            effectConfigs.put(skill, config);
+            effectConfigs.put(ability, config);
         } else {
-            config = effectConfigs.get(skill);
+            config = effectConfigs.get(ability);
         }
 
         return create(source, target, config);

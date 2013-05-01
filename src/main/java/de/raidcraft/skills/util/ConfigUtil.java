@@ -1,10 +1,13 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.Ability;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -73,16 +76,73 @@ public final class ConfigUtil {
         return map;
     }
 
-    private static double getSkillLevelModifier(Skill skill, ConfigurationSection section) {
+    private static double getSkillLevelModifier(Ability ability, ConfigurationSection section) {
 
+        if (ability == null) {
+            return 0.0;
+        }
         double value = 0.0;
-        if (skill instanceof LevelableSkill) {
-            value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) skill).getAttachedLevel().getLevel();
+        if (ability instanceof LevelableSkill) {
+            value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) ability).getAttachedLevel().getLevel();
         }
         return value;
     }
 
-    public static double getTotalValue(Profession profession, Skill skill, ConfigurationSection section, double defautValue) {
+    private static double getProfessionValue(Profession profession, ConfigurationSection section) {
+
+        if (profession == null) {
+            return 0.0;
+        }
+        return section.getDouble("prof-level-modifier", 0.0) * profession.getAttachedLevel().getLevel();
+    }
+
+    private static double getResourceValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifiers) {
+
+        if (!(holder instanceof Hero)) {
+            return 0.0;
+        }
+        double value = 0.0;
+        for (Resource resource : ((Hero) holder).getResources()) {
+            if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
+                value += section.getDouble(resource.getName() + "-modifier") * resource.getCurrent();
+                availableModifiers.remove(resource.getName() + "-modifier");
+            }
+        }
+        return value;
+    }
+
+    private static double getExtraValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifier) {
+
+        if (!(holder instanceof Hero)) {
+            return 0.0;
+        }
+        double value = 0.0;
+        Hero hero = (Hero) holder;
+        for (String key : availableModifier) {
+            if (key.endsWith("-skill-modifier")) {
+                key = key.replace("-skill-modifier", "").trim();
+                try {
+                    Skill extraSkill = hero.getSkill(key);
+                    if (extraSkill instanceof LevelableSkill) {
+                        value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getAttachedLevel().getLevel();
+                    }
+                } catch (UnknownSkillException e) {
+                    RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
+                }
+            } else if (key.endsWith("-prof-modifier")) {
+                key = key.replace("-prof-modifier", "").trim();
+                try {
+                    Profession extraProf = hero.getProfession(key);
+                    value += section.getDouble(key, 0.0) * extraProf.getAttachedLevel().getLevel();
+                } catch (UnknownSkillException | UnknownProfessionException e) {
+                    RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
+                }
+            }
+        }
+        return value;
+    }
+
+    public static double getTotalValue(CharacterTemplate holder, Ability ability, Profession profession, ConfigurationSection section, double defautValue) {
 
         if (section == null) {
             return 0.0;
@@ -91,48 +151,26 @@ public final class ConfigUtil {
         double value = section.getDouble("base", 0.0);
         double cap = section.getDouble("cap", 0);
         boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
-        if (profession != null) {
-            value += section.getDouble("level-modifier", 0.0) * profession.getHero().getAttachedLevel().getLevel();
-            availableModifier.remove("level-modifier");
-            value += section.getDouble("prof-level-modifier", 0.0) *profession.getAttachedLevel().getLevel();
-            availableModifier.remove("prof-level-modifier");
-            if (skill != null) {
-                value += getSkillLevelModifier(skill, section);
-                availableModifier.remove("skill-level-modifier");
-            }
-            // uses resources as value modifiers
-            for (Resource resource : profession.getHero().getResources()) {
-                if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
-                    value += section.getDouble(resource.getName() + "-modifier") * resource.getCurrent();
-                    availableModifier.remove(resource.getName() + "-modifier");
-                }
-            }
-            // makes it possible to to use skills dynamically as config values
-            for (String key : availableModifier) {
-                if (key.endsWith("-skill-modifier")) {
-                    key = key.replace("-skill-modifier", "").trim();
-                    try {
-                        Skill extraSkill = profession.getHero().getSkill(key);
-                        if (extraSkill instanceof LevelableSkill) {
-                            value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getAttachedLevel().getLevel();
-                        }
-                    } catch (UnknownSkillException e) {
-                        RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
-                    }
-                } else if (key.endsWith("-prof-modifier")) {
-                    key = key.replace("-prof-modifier", "").trim();
-                    try {
-                        Profession extraProf = profession.getHero().getProfession(key);
-                        value += section.getDouble(key, 0.0) * extraProf.getAttachedLevel().getLevel();
-                    } catch (UnknownSkillException | UnknownProfessionException e) {
-                        RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
-                    }
-                }
-            }
 
-            if (addWeaponDamage) {
-                value += profession.getHero().getDamage();
-            }
+        if (ability != null && profession == null && ability instanceof Skill) {
+            profession = ((Skill) ability).getProfession();
+        }
+
+        value += section.getDouble("level-modifier", 0.0) * holder.getAttachedLevel().getLevel();
+        availableModifier.remove("level-modifier");
+        // profession level
+        value += getProfessionValue(profession, section);
+        availableModifier.remove("prof-level-modifier");
+        // skill level
+        value += getSkillLevelModifier(ability, section);
+        availableModifier.remove("skill-level-modifier");
+        // uses resources as value modifiers
+        value += getResourceValues(holder, section, availableModifier);
+        // makes it possible to to use skills dynamically as config values
+        getExtraValues(holder, section, availableModifier);
+
+        if (addWeaponDamage) {
+            value += holder.getDamage();
         }
 
         if (cap > 0 && value > cap) {
@@ -144,23 +182,13 @@ public final class ConfigUtil {
         return value;
     }
 
-    public static double getTotalValue(Skill skill, ConfigurationSection section) {
+    public static double getTotalValue(Ability ability, ConfigurationSection section) {
 
-        return getTotalValue(skill.getProfession(), skill, section, 0.0);
+        return getTotalValue(ability.getHolder(), ability, null, section, 0.0);
     }
 
     public static double getTotalValue(Profession profession, ConfigurationSection section) {
 
-        return getTotalValue(profession, null, section, 0.0);
-    }
-
-    public static double getTotalValue(Skill skill, ConfigurationSection section, double defaultValue) {
-
-        return getTotalValue(skill.getProfession(), skill, section, defaultValue);
-    }
-
-    public static double getTotalValue(Profession profession, ConfigurationSection section, double defaultValue) {
-
-        return getTotalValue(profession, null, section, defaultValue);
+        return getTotalValue(profession.getHero(), null, profession, section, 0.0);
     }
 }

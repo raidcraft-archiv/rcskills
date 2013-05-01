@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
@@ -73,7 +71,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public void onLevelGain() {
 
-        getHero().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
+        getHolder().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         // lets check the skills of the profession if we need to unlock any
@@ -83,7 +81,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public void onLevelLoss() {
 
-        getHero().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
+        getHolder().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         getProfession().checkSkillsForUnlock();
@@ -105,7 +103,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
 
         // dont save when the player is in a blacklist world
         if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
             RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
         }
     }

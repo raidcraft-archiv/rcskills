@@ -25,7 +25,7 @@ public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplat
     @Override
     public void run() throws CombatException {
 
-        EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(getSource().getSource().getHero(), this);
+        EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(getSource().getSource().getHolder(), this);
         if (!event.isCancelled()) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             if (getSource() instanceof Hero) {
