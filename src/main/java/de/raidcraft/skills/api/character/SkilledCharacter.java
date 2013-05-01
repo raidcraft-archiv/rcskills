@@ -7,13 +7,13 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public interface SkilledCharacter<T extends Ability<? extends SkilledCharacter>> extends CharacterTemplate {
+public interface SkilledCharacter<T extends CharacterTemplate> extends CharacterTemplate {
 
-    public Collection<T> getAbilties();
+    public Collection<Ability<T>> getAbilties();
 
-    public void addAbility(T ability);
+    public void addAbility(Ability<T> ability);
 
-    public T removeAbility(String name);
+    public Ability<T> removeAbility(String name);
 
-    public T getAbility(String name);
+    public Ability<T> getAbility(String name);
 }

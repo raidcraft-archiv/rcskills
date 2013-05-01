@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Hero extends SkilledCharacter<Skill> {
+public interface Hero extends SkilledCharacter<Hero> {
 
     public int getId();
 

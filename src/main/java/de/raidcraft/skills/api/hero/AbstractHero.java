@@ -43,7 +43,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public abstract class AbstractHero extends AbstractSkilledCharacter<Skill> implements Hero {
+public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implements Hero {
 
     private final int id;
     private final AttachedLevel<Hero> expPool;
