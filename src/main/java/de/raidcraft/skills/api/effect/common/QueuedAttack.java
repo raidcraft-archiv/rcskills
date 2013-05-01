@@ -34,7 +34,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         super(source, target, data);
         if (duration == 0) duration = 20 * 5;
         // lets see if the attack is restricted to a weapon type
-        weapon = WeaponType.fromString(source.getProperties().getData().getString("weapon"));
+        weapon = WeaponType.fromString(source.getSkillProperties().getData().getString("weapon"));
         // we need to get the damage now because of the variable resource damage stuff
         damage = getSource().getTotalDamage();
     }
@@ -51,7 +51,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
             return;
         }
         // lets substract the usage cost if the skill is marked as a queued attack
-        if (getSource().getProperties().getInformation().queuedAttack()) {
+        if (getSource().getSkillProperties().getInformation().queuedAttack()) {
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // and now do some attack magic :)

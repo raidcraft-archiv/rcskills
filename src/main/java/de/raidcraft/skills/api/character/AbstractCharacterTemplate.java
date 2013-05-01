@@ -16,7 +16,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.party.SimpleParty;
-import de.raidcraft.skills.api.skill.Ability;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;

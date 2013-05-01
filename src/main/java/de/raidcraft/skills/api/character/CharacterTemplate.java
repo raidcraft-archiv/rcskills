@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
-import de.raidcraft.skills.api.skill.Ability;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.items.Weapon;

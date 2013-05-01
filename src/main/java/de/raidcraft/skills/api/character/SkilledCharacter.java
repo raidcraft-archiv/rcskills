@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.character;
 
-import de.raidcraft.skills.api.skill.Ability;
+import de.raidcraft.skills.api.ability.Ability;
 
 import java.util.Collection;
 

@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.ability.AbstractAbility;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -34,6 +35,7 @@ import java.util.Set;
 public abstract class AbstractSkill extends AbstractAbility<Hero> implements Skill {
 
     private final int id;
+    private final SkillProperties properties;
     private final Profession profession;
     private final List<Requirement> useRequirements = new ArrayList<>();
     private boolean unlocked = false;
@@ -44,6 +46,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         super(hero, data);
 
         this.id = (database == null ? 0 : database.getId());
+        this.properties = data;
         this.profession = profession;
         this.unlocked = (database != null && database.isUnlocked());
         this.effectTypes.addAll(Arrays.asList(data.getInformation().types()));
@@ -73,7 +76,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
                     " Noch: " + TimeUtil.millisToSeconds(getRemainingCooldown()) + "s");
         }
-        Set<WeaponType> requiredWeapons = getProperties().getRequiredWeapons();
+        Set<WeaponType> requiredWeapons = getSkillProperties().getRequiredWeapons();
         if (requiredWeapons.size() > 0) {
             if (getHolder().getWeapon(Weapon.Slot.MAIN_HAND) == null
                     || !requiredWeapons.contains(getHolder().getWeapon(Weapon.Slot.MAIN_HAND).getWeaponType())) {
@@ -104,7 +107,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
 
         }
         // lets check if the player has the required reagents
-        for (ItemStack itemStack : getProperties().getReagents()) {
+        for (ItemStack itemStack : getSkillProperties().getReagents()) {
             if (!getHolder().getPlayer().getInventory().contains(itemStack)) {
                 throw new CombatException(CombatException.Type.MISSING_REAGENT);
             }
@@ -143,7 +146,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
         // keep this last or items will be removed before casting
         // TODO: replace with working util method
-        holder.getPlayer().getInventory().removeItem(getProperties().getReagents());
+        holder.getPlayer().getInventory().removeItem(getSkillProperties().getReagents());
         // and lets set the cooldown because it is like a usage cost for further casting
         setLastCast(System.currentTimeMillis());
         // also give the player the defined amount of exp for using the skill
@@ -158,7 +161,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     private List<Requirement> getUseRequirements() {
 
         if (useRequirements.size() < 1) {
-            useRequirements.addAll(getProperties().loadUseRequirements(this));
+            useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
         }
         return useRequirements;
     }
@@ -213,7 +216,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     @Override
     public final boolean isHidden() {
 
-        return getProperties().isHidden();
+        return getSkillProperties().isHidden();
     }
 
     protected final <V> void setData(String key, V value) {
@@ -276,6 +279,12 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
+    public SkillProperties getSkillProperties() {
+
+        return properties;
+    }
+
+    @Override
     public final boolean isEnabled() {
 
         return properties.isEnabled();
@@ -321,7 +330,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         unlockTime = new Timestamp(System.currentTimeMillis());
         save();
         // lets unlock all linked skills without checking the requirements
-        for (Skill skill : getProperties().getLinkedSkills(getHolder())) {
+        for (Skill skill : getSkillProperties().getLinkedSkills(getHolder())) {
             skill.unlock();
         }
         // apply the skill
@@ -337,7 +346,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         unlocked = false;
         save();
         // lock all linked skills without asking questions
-        for (Skill skill : getProperties().getLinkedSkills(getHolder())) {
+        for (Skill skill : getSkillProperties().getLinkedSkills(getHolder())) {
             skill.lock();
         }
         // remove the skill
@@ -354,7 +363,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     public final List<Requirement> getRequirements() {
 
         if (requirements.size() < 1) {
-            requirements.addAll(getProperties().loadRequirements(this));
+            requirements.addAll(getSkillProperties().loadRequirements(this));
         }
         return requirements;
     }
@@ -367,7 +376,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
                 return false;
             }
         }
-        return getProperties().getRequiredLevel() <= getProfession().getAttachedLevel().getLevel();
+        return getSkillProperties().getRequiredLevel() <= getProfession().getAttachedLevel().getLevel();
     }
 
     @Override
@@ -378,7 +387,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
                 return requirement.getLongReason();
             }
         }
-        if (getProperties().getRequiredLevel() > getProfession().getAttachedLevel().getLevel()) {
+        if (getSkillProperties().getRequiredLevel() > getProfession().getAttachedLevel().getLevel()) {
             return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
@@ -403,5 +412,13 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         return obj instanceof Skill
                 && ((Skill) obj).getId() != 0 && getId() != 0
                 && ((Skill) obj).getId() == getId();
+    }
+
+    @Override
+    public final int compareTo(Skill o) {
+
+        if (getSkillProperties().getRequiredLevel() > o.getSkillProperties().getRequiredLevel()) return 1;
+        if (getSkillProperties().getRequiredLevel() == o.getSkillProperties().getRequiredLevel()) return 0;
+        return -1;
     }
 }

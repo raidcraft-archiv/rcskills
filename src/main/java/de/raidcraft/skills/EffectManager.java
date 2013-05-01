@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
-import de.raidcraft.skills.api.skill.Ability;
+import de.raidcraft.skills.api.ability.Ability;
 
 import java.io.File;
 import java.util.HashMap;

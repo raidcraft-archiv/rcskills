@@ -1,9 +1,9 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.api.ability;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.persistance.AbilityProperties;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Set;
@@ -11,9 +11,11 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Ability<T extends CharacterTemplate> extends Comparable<Ability> {
+public interface Ability<T extends CharacterTemplate> {
 
     public T getHolder();
+
+    public AbilityProperties getProperties();
 
     void load(ConfigurationSection data);
 
@@ -56,8 +58,6 @@ public interface Ability<T extends CharacterTemplate> extends Comparable<Ability
     boolean isOnCooldown();
 
     void setLastCast(long time);
-
-    SkillProperties getProperties();
 
     boolean matches(String name);
 

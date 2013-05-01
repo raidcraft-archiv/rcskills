@@ -2,12 +2,12 @@ package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.skills.api.ability.Ability;
+import de.raidcraft.skills.api.ability.AbilityInformation;
+import de.raidcraft.skills.api.ability.IgnoredAbility;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
-import de.raidcraft.skills.api.skill.Ability;
-import de.raidcraft.skills.api.skill.IgnoredSkill;
-import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
@@ -61,12 +61,12 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
      */
     public void registerClass(Class<? extends Ability> skillClass) throws UnknownSkillException {
 
-        if (skillClass.isAnnotationPresent(IgnoredSkill.class)) {
+        if (skillClass.isAnnotationPresent(IgnoredAbility.class)) {
             return;
         }
 
-        if (skillClass.isAnnotationPresent(SkillInformation.class)) {
-            String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
+        if (skillClass.isAnnotationPresent(AbilityInformation.class)) {
+            String skillName = StringUtils.formatName(skillClass.getAnnotation(AbilityInformation.class).name());
             // check for duplicate skills
             if (abilityFactories.containsKey(skillName)) {
                 plugin.getLogger().warning("Found duplicate Ability: " + skillName);
@@ -78,7 +78,7 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
             // lets create the skill once to make a default config
             plugin.getLogger().info("Loaded Ability: " + factory.getName());
         } else {
-            plugin.getLogger().warning("Found ability without SkillInformation: " + skillClass.getCanonicalName());
+            plugin.getLogger().warning("Found ability without AbilityInformation: " + skillClass.getCanonicalName());
         }
     }
 

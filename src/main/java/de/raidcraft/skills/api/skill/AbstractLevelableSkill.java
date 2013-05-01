@@ -40,14 +40,14 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final int getMaxLevel() {
 
-        return getProperties().getMaxLevel();
+        return getSkillProperties().getMaxLevel();
     }
 
     @Override
     public final double getTotalResourceCost(String resource) {
 
         return super.getTotalResourceCost(resource) +
-                (getProperties().getResourceCostSkillLevelModifier(resource) * getAttachedLevel().getLevel());
+                (getSkillProperties().getResourceCostSkillLevelModifier(resource) * getAttachedLevel().getLevel());
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public void onLevelGain() {
 
         getHolder().sendMessage(ChatColor.GREEN + "Du hast dein Skill Level gesteigert: " +
-                ChatColor.AQUA + getProperties().getFriendlyName() +
+                ChatColor.AQUA + getSkillProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         // lets check the skills of the profession if we need to unlock any
         getProfession().checkSkillsForUnlock();
@@ -82,7 +82,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public void onLevelLoss() {
 
         getHolder().sendMessage(ChatColor.RED + "Du hast ein Skill Level verloren: " +
-                ChatColor.AQUA + getProperties().getFriendlyName() +
+                ChatColor.AQUA + getSkillProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         getProfession().checkSkillsForUnlock();
     }

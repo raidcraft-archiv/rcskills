@@ -1,12 +1,11 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.skill.SkillInformation;
 
 /**
  * @author Silthus
  */
-public abstract class AbstractFactory {
+public abstract class AbstractFactory<T> {
 
     private final SkillsPlugin plugin;
     private final String name;
@@ -31,5 +30,5 @@ public abstract class AbstractFactory {
 
     public abstract String getAlias();
 
-    public abstract SkillInformation getInformation();
+    public abstract T getInformation();
 }

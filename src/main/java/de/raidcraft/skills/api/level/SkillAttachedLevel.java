@@ -12,7 +12,7 @@ public class SkillAttachedLevel extends ConfigurableAttachedLevel<LevelableSkill
 
     public SkillAttachedLevel(LevelableSkill levelObject, LevelData data) {
 
-        super(levelObject, levelObject.getProperties().getLevelFormula(), data);
+        super(levelObject, levelObject.getSkillProperties().getLevelFormula(), data);
     }
 
     @Override

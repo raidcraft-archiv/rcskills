@@ -66,7 +66,7 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
             return;
         }
         // lets substract the usage cost if the skill is marked as a queued attack
-        if (getSource().getProperties().getInformation().queuedAttack()) {
+        if (getSource().getSkillProperties().getInformation().queuedAttack()) {
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         if (callback != null) {

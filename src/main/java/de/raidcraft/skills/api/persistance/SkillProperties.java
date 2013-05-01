@@ -16,19 +16,11 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface SkillProperties {
+public interface SkillProperties extends AbilityProperties<SkillInformation> {
 
     public List<Requirement> loadRequirements(Skill skill);
 
     public List<Requirement> loadUseRequirements(Skill skill);
-
-    public String getName();
-
-    public String getFriendlyName();
-
-    public String getDescription();
-
-    public String[] getUsage();
 
     public ItemStack[] getReagents();
 
@@ -36,19 +28,7 @@ public interface SkillProperties {
 
     public boolean isHidden();
 
-    public boolean isEnabled();
-
-    public void setEnabled(boolean enabled);
-
-    public boolean canUseInCombat();
-
-    public boolean canUseOutOfCombat();
-
-    public ConfigurationSection getData();
-
     public LevelFormula getLevelFormula();
-
-    public SkillInformation getInformation();
 
     public int getMaxLevel();
 
@@ -66,15 +46,7 @@ public interface SkillProperties {
 
     public int getRequiredLevel();
 
-    public ConfigurationSection getDamage();
-
-    public ConfigurationSection getCastTime();
-
-    public ConfigurationSection getRange();
-
     public ConfigurationSection getUseExp();
-
-    public ConfigurationSection getCooldown();
 
     public Set<WeaponType> getRequiredWeapons();
 }

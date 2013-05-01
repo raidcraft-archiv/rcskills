@@ -1,8 +1,10 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.requirement.SkillRequirementResolver;
@@ -10,7 +12,7 @@ import de.raidcraft.skills.requirement.SkillRequirementResolver;
 /**
  * @author Silthus
  */
-public interface Skill extends SkillRequirementResolver, Ability<Hero> {
+public interface Skill extends SkillRequirementResolver, Ability<Hero>, Comparable<Skill> {
 
     public int getId();
 
@@ -43,6 +45,8 @@ public interface Skill extends SkillRequirementResolver, Ability<Hero> {
     public boolean isVariableResourceCost(String resource);
 
     public int getUseExp();
+
+    public SkillProperties getSkillProperties();
 
     public Profession getProfession();
 

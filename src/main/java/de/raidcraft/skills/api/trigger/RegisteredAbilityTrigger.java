@@ -1,8 +1,7 @@
 package de.raidcraft.skills.api.trigger;
 
-import de.raidcraft.skills.api.effect.common.Combat;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.skill.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.event.EventException;
 
@@ -50,10 +49,6 @@ public class RegisteredAbilityTrigger extends RegisteredTrigger {
         if (!ability.getProperties().canUseInCombat() && trigger.getSource().isInCombat()) {
             return;
         }
-
-        // add a combat effect when a skill is beeing casted
-        if (ability.getProperties().getInformation().triggerCombat()) trigger.getSource().addEffect(ability, Combat.class);
-
         // and lets pass on the trigger
         executor.execute(listener, trigger);
     }

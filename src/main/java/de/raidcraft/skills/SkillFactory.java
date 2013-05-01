@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public final class SkillFactory extends AbstractFactory {
+public final class SkillFactory extends AbstractFactory<SkillInformation> {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;

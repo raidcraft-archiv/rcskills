@@ -114,14 +114,14 @@ public class SkillAction extends AbstractAction<Hero> {
 
         // lets remove the costs
         // it is important to remove them after the skill usage in order to calculate all the variable properly
-        if (!skill.getProperties().getInformation().queuedAttack()) {
+        if (!skill.getSkillProperties().getInformation().queuedAttack()) {
             // dont substract usage cost on queued attacks
             // the queued effect will take care of that
             skill.substractUsageCost(this);
         }
 
         // also trigger combat effect if not supressed
-        if (skill.getProperties().getInformation().triggerCombat()) {
+        if (skill.getSkillProperties().getInformation().triggerCombat()) {
             try {
                 skill.getHolder().addEffect(skill, Combat.class);
             } catch (CombatException e) {

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.api.ability;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
@@ -18,7 +18,7 @@ import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.LocationUtil;
@@ -40,7 +40,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     private final String name;
     protected final T holder;
-    protected final SkillProperties properties;
+    protected final AbilityProperties properties;
     protected final List<Requirement> requirements = new ArrayList<>();
     protected final Set<EffectType> effectTypes = new HashSet<>();
     protected final Set<EffectElement> effectElements = new HashSet<>();
@@ -48,7 +48,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     protected String description;
     private long lastCast;
 
-    public AbstractAbility(T holder, SkillProperties data) {
+    public AbstractAbility(T holder, AbilityProperties data) {
 
         this.name = data.getName();
         this.description = data.getDescription();
@@ -311,6 +311,12 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
+    public AbilityProperties getProperties() {
+
+        return properties;
+    }
+
+    @Override
     public String getDescription() {
 
         return description
@@ -391,12 +397,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final SkillProperties getProperties() {
-
-        return properties;
-    }
-
-    @Override
     public void apply() {
 
         // override if needed
@@ -430,13 +430,5 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public int hashCode() {
 
         return name.hashCode();
-    }
-
-    @Override
-    public final int compareTo(Ability o) {
-
-        if (getProperties().getRequiredLevel() > o.getProperties().getRequiredLevel()) return 1;
-        if (getProperties().getRequiredLevel() == o.getProperties().getRequiredLevel()) return 0;
-        return -1;
     }
 }

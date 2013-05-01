@@ -1,12 +1,12 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.ability.Ability;
+import de.raidcraft.skills.api.ability.AbilityInformation;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.SkillProperties;
-import de.raidcraft.skills.api.skill.Ability;
-import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.config.AbilityConfig;
 import de.raidcraft.skills.config.AliasesConfig;
-import de.raidcraft.skills.config.SkillConfig;
 import de.raidcraft.skills.util.AbstractFactory;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
 /**
  * @author Silthus
  */
-public final class AbilityFactory extends AbstractFactory {
+public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Ability> sClass;
@@ -51,7 +51,7 @@ public final class AbilityFactory extends AbstractFactory {
 
     protected Ability create(CharacterTemplate character, ConfigurationSection... overrides) throws UnknownSkillException {
 
-        SkillConfig config = plugin.configure(new SkillConfig(this), false);
+        AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
         // we need to set all the overrides to null because they are used multiple times
         if (useAlias()) {
             config.merge(aliasConfig);
@@ -82,9 +82,9 @@ public final class AbilityFactory extends AbstractFactory {
         throw new UnknownSkillException("Error when loading ability for class: " + sClass.getCanonicalName());
     }
 
-    public SkillInformation getInformation() {
+    public AbilityInformation getInformation() {
 
-        return sClass.getAnnotation(SkillInformation.class);
+        return sClass.getAnnotation(AbilityInformation.class);
     }
 
     public String getAlias() {
@@ -97,9 +97,9 @@ public final class AbilityFactory extends AbstractFactory {
         return aliasConfig != null;
     }
 
-    protected SkillConfig getNewConfig() {
+    protected AbilityConfig getNewConfig() {
 
-        return plugin.configure(new SkillConfig(this), false);
+        return plugin.configure(new AbilityConfig(this), false);
     }
 
     protected Class<? extends Ability> getAbilityClass() {

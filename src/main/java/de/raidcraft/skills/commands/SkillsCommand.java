@@ -94,14 +94,14 @@ public class SkillsCommand {
 
                 StringBuilder sb = new StringBuilder();
 
-                int level = skill.getProperties().getRequiredLevel();
+                int level = skill.getSkillProperties().getRequiredLevel();
                 Profession profession = skill.getProfession();
 
                 sb.append(ChatColor.YELLOW).append("[").append(skill.isActive() ? ChatColor.GREEN : ChatColor.RED)
                         .append(profession.getProperties().getTag()).append(":")
                         .append((profession.getAttachedLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
                         .append(ChatColor.YELLOW).append("] ");
-                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED)).append(skill.getProperties().getFriendlyName());
+                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED)).append(skill.getSkillProperties().getFriendlyName());
                 if (skill instanceof LevelableSkill) {
                     sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getAttachedLevel().getLevel())
                             .append(ChatColor.YELLOW).append("] ");

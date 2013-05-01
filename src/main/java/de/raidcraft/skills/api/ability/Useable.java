@@ -1,4 +1,4 @@
-package de.raidcraft.skills.api.skill;
+package de.raidcraft.skills.api.ability;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
 

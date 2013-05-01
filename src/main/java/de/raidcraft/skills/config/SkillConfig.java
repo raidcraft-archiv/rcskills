@@ -3,6 +3,7 @@ package de.raidcraft.skills.config;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
+import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -15,7 +16,6 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.items.WeaponType;
-import de.raidcraft.skills.util.AbstractFactory;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +33,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     private final String name;
     private final SkillInformation information;
 
-    public SkillConfig(AbstractFactory factory) {
+    public SkillConfig(SkillFactory factory) {
 
         super(factory.getPlugin(), new File(
                 new File(factory.getPlugin().getDataFolder(), factory.getPlugin().getCommonConfig().skill_config_path),
