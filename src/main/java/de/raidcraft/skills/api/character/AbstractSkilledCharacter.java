@@ -1,10 +1,12 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.skills.api.ability.Ability;
+import de.raidcraft.skills.api.ability.Useable;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,9 +22,21 @@ public abstract class AbstractSkilledCharacter<T extends SkilledCharacter> exten
     }
 
     @Override
-    public Collection<Ability<T>> getAbilties() {
+    public List<Ability<T>> getAbilties() {
 
-        return abilities.values();
+        return new ArrayList<>(abilities.values());
+    }
+
+    @Override
+    public List<Ability<T>> getUseableAbilities() {
+
+        ArrayList<Ability<T>> useables = new ArrayList<>();
+        for (Ability<T> ability : abilities.values()) {
+            if (ability instanceof Useable) {
+                useables.add(ability);
+            }
+        }
+        return useables;
     }
 
     @Override

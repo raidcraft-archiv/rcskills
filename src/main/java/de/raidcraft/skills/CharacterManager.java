@@ -3,7 +3,10 @@ package de.raidcraft.skills;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
@@ -205,6 +208,13 @@ public final class CharacterManager implements Listener {
         LivingEntity entity = character.getEntity();
         if (entity != null) characters.remove(entity.getUniqueId());
         character.leaveParty();
+        if (character instanceof SkilledCharacter) {
+            for (Object ability : ((SkilledCharacter) character).getAbilties()) {
+                if (ability instanceof Triggered) {
+                    TriggerManager.unregisterListeners((Triggered) ability);
+                }
+            }
+        }
         heroes.remove(character.getName().toLowerCase());
         plugin.getSkillManager().clearSkillCache(character.getName());
     }

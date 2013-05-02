@@ -49,7 +49,8 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
         }
     }
 
-    protected Ability create(CharacterTemplate character, ConfigurationSection... overrides) throws UnknownSkillException {
+    @SuppressWarnings("unchecked")
+    protected <T extends CharacterTemplate> Ability<T> create(T character, ConfigurationSection... overrides) throws UnknownSkillException {
 
         AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
         // we need to set all the overrides to null because they are used multiple times
@@ -68,11 +69,11 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
 
         // its reflection time yay!
         try {
-            Ability skill = constructor.newInstance(character, config);
+            Ability<T> ability = (Ability<T>) constructor.newInstance(character, config);
             // this is called after the skill is created in order
             // to give local variables of the skill a chance to init
-            skill.load(config.getData());
-            return skill;
+            ability.load(config.getData());
+            return ability;
         } catch (Throwable e) {
             plugin.getLogger().warning(e.getMessage());
             e.printStackTrace();

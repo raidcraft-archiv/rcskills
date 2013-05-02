@@ -93,9 +93,9 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         }
     }
 
-    public Ability getAbility(CharacterTemplate character, String abilityName) throws UnknownSkillException {
+    public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName) throws UnknownSkillException {
 
-        Ability ability;
+        Ability<T> ability;
         abilityName = StringUtils.formatName(abilityName);
         if (!abilityFactories.containsKey(abilityName)) {
             throw new UnknownSkillException("Es gibt keine Fähigkeit mit dem Namen: " + abilityName);
