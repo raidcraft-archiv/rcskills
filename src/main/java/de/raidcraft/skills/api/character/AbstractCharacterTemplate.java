@@ -521,7 +521,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         List<CharacterTemplate> targets = new ArrayList<>();
         List<LivingEntity> nearbyEntities = BukkitUtil.getLivingEntitiesInCone(getEntity(), range, degrees);
 
-        if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
+        if (nearbyEntities.size() < 1) throw new CombatException("Keine Ziele in Reichweite von " + range + "m.");
 
         for (LivingEntity target : nearbyEntities) {
             targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
@@ -553,7 +553,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         List<CharacterTemplate> targets = new ArrayList<>();
         List<LivingEntity> nearbyEntities = BukkitUtil.getNearbyEntities(getEntity(), range);
-        if (nearbyEntities.size() < 1) throw new CombatException("Keine Zeile in Reichweite von " + range + "m.");
+        if (nearbyEntities.size() < 1) throw new CombatException("Keine Ziele in Reichweite von " + range + "m.");
         for (LivingEntity target : nearbyEntities) {
             targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
         }
