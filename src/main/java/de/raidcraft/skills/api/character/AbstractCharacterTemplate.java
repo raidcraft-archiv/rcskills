@@ -53,13 +53,13 @@ import java.util.Map;
  */
 public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
-    private final String name;
     private final LivingEntity entity;
     private final ThreatTable threatTable;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
     private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
     private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
     private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
+    private String name;
     protected int maxLevel;
     // every player is member of his own party by default
     private Party party;
@@ -91,6 +91,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public String getName() {
 
         return name;
+    }
+
+    protected void setName(String name) {
+
+        getEntity().setCustomName(name);
+        this.name = ChatColor.stripColor(name);
     }
 
     @Override
