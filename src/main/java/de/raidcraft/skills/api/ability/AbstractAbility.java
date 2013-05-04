@@ -73,32 +73,32 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return target.addEffect(this, source, eClass);
     }
 
-    protected final List<CharacterTemplate> getNearbyTargets() throws CombatException {
+    protected List<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getNearbyTargets(true);
     }
 
-    protected final List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
+    protected List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
 
         return getHolder().getNearbyTargets(getTotalRange(), friendly);
     }
 
-    protected final List<CharacterTemplate> getTargetsInFront() throws CombatException {
+    protected List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
         return getHolder().getTargetsInFront(getTotalRange());
     }
 
-    protected final List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
+    protected List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
 
         return getHolder().getTargetsInFront(getTotalRange(), degrees);
     }
 
-    protected final CharacterTemplate getTarget() throws CombatException {
+    protected CharacterTemplate getTarget() throws CombatException {
 
         return getHolder().getTarget(getTotalRange());
     }
 
-    protected final CharacterTemplate getTarget(CommandContext args, boolean self) throws CombatException {
+    protected CharacterTemplate getTarget(CommandContext args, boolean self) throws CombatException {
 
         CharacterTemplate target;
         if (args.argsLength() > 0) {
