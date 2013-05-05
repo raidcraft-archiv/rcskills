@@ -1,7 +1,5 @@
 package de.raidcraft.skills.api.hero;
 
-import de.raidcraft.skills.api.hero.Hero;
-
 /**
  * @author Silthus
  */
@@ -15,9 +13,17 @@ public interface Attribute {
 
     public Hero getHero();
 
-    public int getValue();
+    public void setBaseValue(int value);
 
-    public void setValue(int value);
+    public int getBaseValue();
+
+    public int getCurrentValue();
+
+    public void setCurrentValue(int value);
+
+    public double getDamageModifier();
+
+    public double getHealthModifier();
 
     public void save();
 }

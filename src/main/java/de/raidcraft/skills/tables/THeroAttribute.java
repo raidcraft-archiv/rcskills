@@ -19,7 +19,8 @@ public class THeroAttribute implements Bean {
     @ManyToOne
     private THero hero;
     private String attribute;
-    private int value;
+    private int baseValue;
+    private int currentValue;
 
     public int getId() {
 
@@ -51,13 +52,23 @@ public class THeroAttribute implements Bean {
         this.attribute = attribute;
     }
 
-    public int getValue() {
+    public int getBaseValue() {
 
-        return value;
+        return baseValue;
     }
 
-    public void setValue(int value) {
+    public void setBaseValue(int baseValue) {
 
-        this.value = value;
+        this.baseValue = baseValue;
+    }
+
+    public int getCurrentValue() {
+
+        return currentValue;
+    }
+
+    public void setCurrentValue(int currentValue) {
+
+        this.currentValue = currentValue;
     }
 }

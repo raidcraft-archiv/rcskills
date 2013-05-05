@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -32,6 +33,8 @@ public interface Hero extends SkilledCharacter<Hero> {
     public Collection<Attribute> getAttributes();
 
     public Attribute getAttribute(String attribute);
+
+    public Attribute getAttribute(ItemAttribute attribute);
 
     public Party getPendingPartyInvite();
 

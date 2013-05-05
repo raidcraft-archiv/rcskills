@@ -17,13 +17,18 @@ public class ConfigurableAttribute implements Attribute {
     private final Hero hero;
     private final String name;
     private final String friendlyName;
-    private int value;
+    private final double damageModifier;
+    private final double healthModifier;
+    private int baseValue;
+    private int currentValue;
 
     public ConfigurableAttribute(Hero hero, String name, ConfigurationSection config) {
 
         this.hero = hero;
         this.name = StringUtils.formatName(name);
         this.friendlyName = config.getString("name", this.name);
+        this.damageModifier = config.getDouble("damage-modifier", 0.0);
+        this.healthModifier = config.getDouble("health-modifier", 0.0);
         EbeanServer ebeanServer = RaidCraft.getDatabase(SkillsPlugin.class);
         THeroAttribute database = ebeanServer.find(THeroAttribute.class)
                 .where()
@@ -34,11 +39,13 @@ public class ConfigurableAttribute implements Attribute {
             database = new THeroAttribute();
             database.setHero(ebeanServer.find(THero.class, hero.getId()));
             database.setAttribute(this.name);
-            database.setValue(0);
+            database.setBaseValue(config.getInt("base-value", 1));
+            database.setCurrentValue(baseValue);
             ebeanServer.save(database);
         }
         this.id = database.getId();
-        this.value = database.getValue();
+        this.baseValue = database.getBaseValue();
+        this.currentValue = database.getCurrentValue();
     }
 
     @Override
@@ -60,21 +67,48 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
+    public double getDamageModifier() {
+
+        return damageModifier;
+    }
+
+    @Override
+    public double getHealthModifier() {
+
+        return healthModifier;
+    }
+
+    @Override
     public Hero getHero() {
 
         return hero;
     }
 
     @Override
-    public int getValue() {
+    public int getBaseValue() {
 
-        return value;
+        return baseValue;
     }
 
     @Override
-    public void setValue(int value) {
+    public void setBaseValue(int value) {
 
-        this.value = value;
+        this.baseValue = value;
+    }
+
+    @Override
+    public int getCurrentValue() {
+
+        return currentValue;
+    }
+
+    @Override
+    public void setCurrentValue(int currentValue) {
+
+        if (currentValue < baseValue) {
+            currentValue = baseValue;
+        }
+        this.currentValue = currentValue;
     }
 
     @Override
@@ -82,7 +116,8 @@ public class ConfigurableAttribute implements Attribute {
 
         EbeanServer ebeanServer = RaidCraft.getDatabase(SkillsPlugin.class);
         THeroAttribute database = ebeanServer.find(THeroAttribute.class, getId());
-        database.setValue(getValue());
+        database.setBaseValue(getBaseValue());
+        database.setCurrentValue(getCurrentValue());
         ebeanServer.save(database);
     }
 

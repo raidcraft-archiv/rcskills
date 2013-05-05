@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
@@ -22,6 +23,7 @@ import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.api.ui.UserInterface;
 import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.config.LevelConfig;
+import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
@@ -76,6 +78,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
         loadSkills();
+        loadAttributes();
         // keep this last because we need to professions to load first
         setMaxHealth(getDefaultHealth());
         setHealth(data.getHealth());
@@ -133,6 +136,23 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
                 virtualSkills.put(skill.getName(), skill);
+            }
+        }
+    }
+
+    private void loadAttributes() {
+
+        for (Profession profession : getProfessions()) {
+            if (profession.isActive()) {
+                ProfessionConfig config = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getFactory(profession).getConfig();
+                ConfigurationSection section = config.getConfigurationSection("attributes");
+                if (section == null) {
+                    continue;
+                }
+                for (String key : section.getKeys(false)) {
+                    ConfigurableAttribute attribute = new ConfigurableAttribute(this, key, section.getConfigurationSection(key));
+                    attributes.put(attribute.getName(), attribute);
+                }
             }
         }
     }
@@ -230,15 +250,21 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public Attribute getAttribute(ItemAttribute attribute) {
+
+        return attributes.get(attribute.getName());
+    }
+
+    @Override
     public int getAttributeValue(String attribute) {
 
-        return getAttribute(attribute).getValue();
+        return getAttribute(attribute).getCurrentValue();
     }
 
     @Override
     public void setAttributeValue(String attribute, int value) {
 
-        getAttribute(attribute).setValue(value);
+        getAttribute(attribute).setCurrentValue(value);
     }
 
     @Override
@@ -361,10 +387,28 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public int getDamage() {
+
+        int damage = super.getDamage();
+        for (Attribute attribute : getAttributes()) {
+            if (attribute.getDamageModifier() > 0.0) {
+                damage += attribute.getCurrentValue() * attribute.getDamageModifier();
+            }
+        }
+        return damage;
+    }
+
+    @Override
     public int getDefaultHealth() {
 
-        return (int) (getSelectedProfession().getProperties().getBaseHealth()
+        int health = (int) (getSelectedProfession().getProperties().getBaseHealth()
                 + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getAttachedLevel().getLevel());
+        for (Attribute attribute : getAttributes()) {
+            if (attribute.getHealthModifier() > 0.0) {
+                health += attribute.getCurrentValue() * attribute.getHealthModifier();
+            }
+        }
+        return health;
     }
 
     @Override
