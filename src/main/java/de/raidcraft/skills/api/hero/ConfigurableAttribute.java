@@ -22,7 +22,7 @@ public class ConfigurableAttribute implements Attribute {
     private int baseValue;
     private int currentValue;
 
-    public ConfigurableAttribute(Hero hero, String name, ConfigurationSection config) {
+    public ConfigurableAttribute(Hero hero, String name, int baseValue, ConfigurationSection config) {
 
         this.hero = hero;
         this.name = StringUtils.formatName(name);
@@ -39,7 +39,7 @@ public class ConfigurableAttribute implements Attribute {
             database = new THeroAttribute();
             database.setHero(ebeanServer.find(THero.class, hero.getId()));
             database.setAttribute(this.name);
-            database.setBaseValue(config.getInt("base-value", 1));
+            database.setBaseValue(baseValue);
             database.setCurrentValue(baseValue);
             ebeanServer.save(database);
         }

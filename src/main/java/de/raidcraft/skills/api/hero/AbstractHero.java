@@ -28,6 +28,7 @@ import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -142,6 +143,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
     private void loadAttributes() {
 
+        attributes.clear();
         for (Profession profession : getProfessions()) {
             if (profession.isActive()) {
                 ProfessionConfig config = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getFactory(profession).getConfig();
@@ -150,7 +152,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     continue;
                 }
                 for (String key : section.getKeys(false)) {
-                    ConfigurableAttribute attribute = new ConfigurableAttribute(this, key, section.getConfigurationSection(key));
+                    ConfigurationSection attributeSection = section.getConfigurationSection(key);
+                    double baseValue = ConfigUtil.getTotalValue(profession, attributeSection.getConfigurationSection("base-value"));
+                    ConfigurableAttribute attribute = new ConfigurableAttribute(this, key, (int) baseValue, attributeSection);
                     attributes.put(attribute.getName(), attribute);
                 }
             }
@@ -189,6 +193,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
+        loadAttributes();
         // reload the bound items
         RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
         clearWeapons();
