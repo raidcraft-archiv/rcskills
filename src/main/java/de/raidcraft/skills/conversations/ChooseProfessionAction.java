@@ -28,17 +28,27 @@ public class ChooseProfessionAction extends AbstractAction {
         Profession profession;
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
+            if(hero.getProfession(profession.getName()) != null) {
+                hero.sendMessage(ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
+                        + profession.getFriendlyName() + "' bereits!");
+                conversation.endConversation();
+                return;
+            }
             if (!profession.isMeetingAllRequirements()) {
                 hero.sendMessage(ChatColor.RED + profession.getResolveReason());
                 conversation.triggerCurrentStage();
+                conversation.endConversation();
                 return;
             }
             if (args.getBoolean("confirmed")) {
+
+                hero.sendMessage("");
                 hero.changeProfession(profession);
+                hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
             } else {
                 conversation.triggerStage(createConfirmStage(
                         "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                + profession.getFriendlyName() + " wählen willst?", args));
+                                + profession.getFriendlyName() + " wählen willst? Dies kostet dich " + plugin.getCommonConfig().profession_change_cost + "c.", args));
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
