@@ -38,6 +38,7 @@ public class ChooseProfessionAction extends AbstractAction {
                 hero.sendMessage(ChatColor.RED + profession.getResolveReason());
                 conversation.triggerCurrentStage();
                 conversation.endConversation();
+                args.set("confirmed", false);
                 return;
             }
             if (args.getBoolean("confirmed")) {
