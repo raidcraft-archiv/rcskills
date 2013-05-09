@@ -31,7 +31,7 @@ public class ListProfessionSkills extends AbstractAction {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
 
             hero.sendMessage("", ChatColor.AQUA + "Mit der " + profession.getPath().getFriendlyName() + " Spezialisierung '"
-                    + profession.getFriendlyName() + " besitzt man folgende Fähigkeiten: ");
+                    + profession.getFriendlyName() + "' besitzt man folgende Fähigkeiten: ");
 
             String output = "";
             int i = 0;
