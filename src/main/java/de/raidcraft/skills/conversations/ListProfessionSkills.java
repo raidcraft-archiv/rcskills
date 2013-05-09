@@ -44,7 +44,7 @@ public class ListProfessionSkills extends AbstractAction {
                 else {
                     color = ChatColor.WHITE;
                 }
-                output += color + skill.getName() + ", ";
+                output += color + skill.getFriendlyName() + ", ";
             }
 
             hero.sendMessage(output);
