@@ -31,6 +31,7 @@ import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.conversations.ChooseProfessionAction;
+import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
@@ -131,6 +132,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private void registerConversationActions() {
 
         ActionManager.registerAction(new ChooseProfessionAction());
+        ActionManager.registerAction(new ListProfessionSkills());
     }
 
     private void loadEngine() {
