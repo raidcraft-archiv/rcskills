@@ -38,7 +38,6 @@ import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
-import de.raidcraft.skills.requirement.WeaponTypeRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.skills.TestSkill;
 import de.raidcraft.skills.tables.THero;
@@ -169,7 +168,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         RequirementManager.registerRequirementType(ProfessionLevelRequirement.class);
         RequirementManager.registerRequirementType(SkillLevelRequirement.class);
         RequirementManager.registerRequirementType(SkillRequirement.class);
-        RequirementManager.registerRequirementType(WeaponTypeRequirement.class);
     }
 
     private void registerSkills() {

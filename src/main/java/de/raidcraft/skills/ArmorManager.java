@@ -1,5 +1,7 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
@@ -11,11 +13,18 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
-import de.raidcraft.skills.items.ArmorPiece;
-import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +33,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class ArmorManager implements Triggered {
+public final class ArmorManager implements Triggered, Listener {
 
     private final SkillsPlugin plugin;
     private final Map<Integer, Integer> defaultArmorValue = new HashMap<>();
@@ -33,6 +42,7 @@ public final class ArmorManager implements Triggered {
 
         this.plugin = plugin;
         TriggerManager.registerListeners(this);
+        plugin.registerEvents(this);
         load();
     }
 
@@ -47,7 +57,7 @@ public final class ArmorManager implements Triggered {
         }
         for (String key : keys) {
             Material item = ItemUtils.getItem(key);
-            if (item != null && ArmorType.fromItemId(item.getId()) != null) {
+            if (item != null) {
                 defaultArmorValue.put(item.getId(), config.getInt(key, 0));
             } else {
                 plugin.getLogger().warning("Wrong armor item configured in custom config: " + config.getName() + " - " + key);
@@ -60,6 +70,30 @@ public final class ArmorManager implements Triggered {
         load();
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInventoryClose(InventoryCloseEvent event) {
+
+        checkForArmor((Player) event.getPlayer(), (PlayerInventory) event.getInventory());
+    }
+
+    private void checkForArmor(Player player, PlayerInventory inventory) {
+
+        // lets check all equiped weapons and adjust the player accordingly
+        Hero hero = plugin.getCharacterManager().getHero(player);
+        hero.clearArmor();
+        for (ItemStack item : inventory.getArmorContents()) {
+            if (ItemUtil.isArmor(item)) {
+                CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
+                if (!armor.isMeetingAllRequirements()) {
+                    player.sendMessage(ChatColor.RED + armor.getResolveReason());
+                    ItemUtil.moveItem(hero, -1, item);
+                } else {
+                    hero.setArmor(armor);
+                }
+            }
+        }
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) {
 
@@ -69,7 +103,7 @@ public final class ArmorManager implements Triggered {
         }
 
         int totalArmor = 0;
-        for (ArmorPiece armorPiece : attack.getTarget().getArmor()) {
+        for (CustomArmor armorPiece : attack.getTarget().getArmor()) {
 
             totalArmor += armorPiece.getArmorValue();
         }

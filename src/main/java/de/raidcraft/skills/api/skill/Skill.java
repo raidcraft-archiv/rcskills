@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -7,12 +8,11 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
-import de.raidcraft.skills.requirement.SkillRequirementResolver;
 
 /**
  * @author Silthus
  */
-public interface Skill extends SkillRequirementResolver, Ability<Hero>, Comparable<Skill> {
+public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver {
 
     public int getId();
 

@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.LevelableSkill;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -16,11 +15,11 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("skill-level")
-public class SkillLevelRequirement extends LevelRequirement {
+public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
 
     private LevelableSkill requiredSkill;
 
-    public SkillLevelRequirement(SkillRequirementResolver type, ConfigurationSection config) {
+    public SkillLevelRequirement(LevelableSkill type, ConfigurationSection config) {
 
         super(type, config);
     }
@@ -33,12 +32,12 @@ public class SkillLevelRequirement extends LevelRequirement {
         SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
         try {
             Profession profession;
-            if (professionName == null && getResolver() instanceof Skill) {
-                profession = ((Skill) getResolver()).getProfession();
+            if (professionName == null) {
+                profession = getResolver().getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getObject(), professionName);
+                profession = component.getProfessionManager().getProfession(getResolver().getHolder(), professionName);
             }
-            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getObject(), profession, skillName);
+            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getHolder(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         } catch (ClassCastException e) {

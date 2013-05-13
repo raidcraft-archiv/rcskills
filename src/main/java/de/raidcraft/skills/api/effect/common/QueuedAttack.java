@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.effect.common;
 
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
@@ -11,7 +12,6 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.trigger.AttackTrigger;
 
 /**
@@ -56,11 +56,6 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         }
         // and now do some attack magic :)
         attacked = true;
-        if (weapon != null && weapon.isOfType(getSource().getHolder().getItemTypeInHand())) {
-            trigger.setCancelled(true);
-            trigger.getAttack().setCancelled(true);
-            throw new CombatException(CombatException.Type.INVALID_WEAPON);
-        }
         trigger.getAttack().setDamage(damage);
         trigger.getAttack().addAttackTypes(getSource().getTypes().toArray(new EffectType[getSource().getTypes().size()]));
         trigger.getAttack().addAttackTypes(getTypes());

@@ -1,6 +1,10 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemManager;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
@@ -14,8 +18,6 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
-import de.raidcraft.skills.items.Weapon;
-import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -78,8 +80,9 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
         Set<WeaponType> requiredWeapons = getSkillProperties().getRequiredWeapons();
         if (requiredWeapons.size() > 0) {
-            if (getHolder().getWeapon(Weapon.Slot.MAIN_HAND) == null
-                    || !requiredWeapons.contains(getHolder().getWeapon(Weapon.Slot.MAIN_HAND).getWeaponType())) {
+            CustomItem item = RaidCraft.getComponent(CustomItemManager.class)
+                    .getCustomItem(getHolder().getEntity().getEquipment().getItemInHand()).getItem();
+            if (!(item instanceof CustomWeapon) || !requiredWeapons.contains(((CustomWeapon) item).getWeaponType())) {
                 throw new CombatException("Du kannst diesen Skill nicht mit dieser Waffe ausführen.");
             }
         }
@@ -294,12 +297,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     public final void setEnabled(boolean enabled) {
 
         properties.setEnabled(enabled);
-    }
-
-    @Override
-    public Hero getObject() {
-
-        return holder;
     }
 
     @SuppressWarnings("unused")
