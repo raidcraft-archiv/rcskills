@@ -1,6 +1,7 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.SkillFactory;
@@ -15,7 +16,6 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
-import de.raidcraft.skills.items.WeaponType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;

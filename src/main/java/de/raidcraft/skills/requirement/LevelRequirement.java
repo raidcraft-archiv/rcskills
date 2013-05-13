@@ -1,17 +1,18 @@
 package de.raidcraft.skills.requirement;
 
 import de.raidcraft.api.requirement.AbstractRequirement;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.api.level.Levelable;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
-public abstract class LevelRequirement extends AbstractRequirement<SkillRequirementResolver> {
+public abstract class LevelRequirement<T extends RequirementResolver> extends AbstractRequirement<T> {
 
     private int requiredLevel;
 
-    public LevelRequirement(SkillRequirementResolver resolver, ConfigurationSection config) {
+    public LevelRequirement(T resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

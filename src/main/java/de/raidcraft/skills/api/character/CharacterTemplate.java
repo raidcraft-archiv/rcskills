@@ -1,5 +1,9 @@
 package de.raidcraft.skills.api.character;
 
+import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
@@ -8,10 +12,6 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
-import de.raidcraft.skills.api.ability.Ability;
-import de.raidcraft.skills.items.ArmorPiece;
-import de.raidcraft.skills.items.ArmorType;
-import de.raidcraft.skills.items.Weapon;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -32,33 +32,39 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public Attack getLastDamageCause();
 
-    public Weapon getWeapon(Weapon.Slot slot);
+    public CustomWeapon getWeapon(EquipmentSlot slot);
 
-    public boolean hasWeapon(Weapon.Slot slot);
+    public Collection<CustomWeapon> getWeapons();
 
-    public void setWeapon(Weapon weapon);
+    public boolean hasWeapon(EquipmentSlot slot);
 
-    public void removeWeapon(Weapon.Slot slot);
+    public void setWeapon(CustomWeapon weapon);
+
+    public CustomWeapon removeWeapon(EquipmentSlot slot);
 
     public void clearWeapons();
 
-    public boolean canSwing(Weapon.Slot slot);
+    boolean canAttack();
 
-    public long getLastSwing(Weapon.Slot slot);
+    public boolean canSwing(EquipmentSlot slot);
 
-    public void setLastSwing(Weapon.Slot slot);
+    public int swingWeapon(EquipmentSlot slot);
 
-    Collection<ArmorPiece> getArmor();
+    public long getLastSwing(EquipmentSlot slot);
 
-    ArmorPiece getArmor(ArmorType slot);
+    public void setLastSwing(EquipmentSlot slot);
 
-    void setArmor(ArmorPiece armorPiece);
+    Collection<CustomArmor> getArmor();
 
-    void removeArmor(ArmorType type);
+    CustomArmor getArmor(EquipmentSlot slot);
+
+    void setArmor(CustomArmor armorPiece);
+
+    CustomArmor removeArmor(EquipmentSlot type);
 
     void clearArmor();
 
-    boolean hasArmor(ArmorType slot);
+    boolean hasArmor(EquipmentSlot slot);
 
     Party getParty();
 

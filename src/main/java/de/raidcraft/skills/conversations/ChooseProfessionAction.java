@@ -28,7 +28,7 @@ public class ChooseProfessionAction extends AbstractAction {
         Profession profession;
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
-            if(hero.hasProfession(profession)) {
+            if(hero.hasProfession(profession) && profession.isActive()) {
                 hero.sendMessage("", ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
                         + profession.getFriendlyName() + "' bereits!");
                 conversation.endConversation();

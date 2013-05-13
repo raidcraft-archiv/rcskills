@@ -1,7 +1,11 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
@@ -16,13 +20,9 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.party.SimpleParty;
-import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.ArmorPiece;
-import de.raidcraft.skills.items.ArmorType;
-import de.raidcraft.skills.items.Weapon;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
@@ -56,9 +56,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final LivingEntity entity;
     private final ThreatTable threatTable;
     private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
-    private final Map<Weapon.Slot, Weapon> weapons = new EnumMap<>(Weapon.Slot.class);
-    private final Map<Weapon.Slot, Long> lastSwing = new EnumMap<>(Weapon.Slot.class);
-    private final Map<ArmorType, ArmorPiece> armorPieces = new EnumMap<>(ArmorType.class);
+    private final Map<EquipmentSlot, CustomWeapon> weapons = new EnumMap<>(EquipmentSlot.class);
+    private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
+    private final Map<EquipmentSlot, CustomArmor> armorPieces = new EnumMap<>(EquipmentSlot.class);
     private String name;
     protected int maxLevel;
     // every player is member of his own party by default
@@ -112,42 +112,39 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Weapon getWeapon(Weapon.Slot slot) {
+    public CustomWeapon getWeapon(EquipmentSlot slot) {
 
         return weapons.get(slot);
     }
 
     @Override
-    public boolean hasWeapon(Weapon.Slot slot) {
+    public CustomWeapon removeWeapon(EquipmentSlot slot) {
+
+        return weapons.remove(slot);
+    }
+
+    @Override
+    public boolean hasWeapon(EquipmentSlot slot) {
 
         return weapons.containsKey(slot);
     }
 
     @Override
-    public void setWeapon(Weapon weapon) {
+    public void setWeapon(CustomWeapon weapon) {
 
-        weapons.put(weapon.getSlot(), weapon);
+        if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+            weapons.remove(EquipmentSlot.ONE_HANDED);
+            weapons.remove(EquipmentSlot.SHIELD_HAND);
+        }
+        weapons.put(weapon.getEquipmentSlot(), weapon);
     }
 
     @Override
-    public void removeWeapon(Weapon.Slot slot) {
-
-        weapons.remove(slot);
-    }
-
-    @Override
-    public void clearWeapons() {
-
-        weapons.clear();
-    }
-
-    @Override
-    public boolean canSwing(Weapon.Slot slot) {
+    public boolean canSwing(EquipmentSlot slot) {
 
         if (this instanceof Hero) {
-            int itemSlot = ((Hero) this).getPlayer().getInventory().getHeldItemSlot();
-            Weapon weapon = getWeapon(slot);
-            if (weapon != null && itemSlot != weapon.getTaskBarSlot()) {
+            CustomWeapon weapon = getWeapon(slot);
+            if (weapon != null && !weapon.matches(getEntity().getEquipment().getItemInHand())) {
                 return false;
             }
         }
@@ -155,7 +152,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public long getLastSwing(Weapon.Slot slot) {
+    public int swingWeapon(EquipmentSlot slot) {
+
+        if (!hasWeapon(slot) || !canSwing(slot)) {
+            return 0;
+        }
+        setLastSwing(slot);
+        CustomWeapon weapon = getWeapon(slot);
+        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
+    }
+
+    @Override
+    public long getLastSwing(EquipmentSlot slot) {
 
         if (!lastSwing.containsKey(slot)) {
             return 0;
@@ -164,9 +172,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setLastSwing(Weapon.Slot slot) {
+    public void setLastSwing(EquipmentSlot slot) {
 
-        Weapon weapon = getWeapon(slot);
+        CustomWeapon weapon = getWeapon(slot);
         long swingTime = 1000;
         if (weapon != null) {
             swingTime *= weapon.getSwingTime();
@@ -178,33 +186,27 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Attack getLastDamageCause() {
+    public void setArmor(CustomArmor armor) {
 
-        return lastAttack;
+        armorPieces.put(armor.getEquipmentSlot(), armor);
     }
 
     @Override
-    public Collection<ArmorPiece> getArmor() {
-
-        return armorPieces.values();
-    }
-
-    @Override
-    public ArmorPiece getArmor(ArmorType slot) {
+    public CustomArmor getArmor(EquipmentSlot slot) {
 
         return armorPieces.get(slot);
     }
 
     @Override
-    public void setArmor(ArmorPiece armorPiece) {
+    public Collection<CustomArmor> getArmor() {
 
-        armorPieces.put(armorPiece.getType(), armorPiece);
+        return armorPieces.values();
     }
 
     @Override
-    public void removeArmor(ArmorType type) {
+    public CustomArmor removeArmor(EquipmentSlot slot) {
 
-        armorPieces.remove(type);
+        return armorPieces.remove(slot);
     }
 
     @Override
@@ -214,20 +216,47 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public boolean hasArmor(ArmorType slot) {
+    public boolean hasArmor(EquipmentSlot slot) {
 
         return armorPieces.containsKey(slot);
+    }
+
+    @Override
+    public void clearWeapons() {
+
+        weapons.clear();
+    }
+
+    @Override
+    public Attack getLastDamageCause() {
+
+        return lastAttack;
+    }
+
+    @Override
+    public Collection<CustomWeapon> getWeapons() {
+
+        return weapons.values();
+    }
+
+    @Override
+    public boolean canAttack() {
+
+        if (getWeapons().isEmpty()) return true;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (canSwing(slot)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public int getDamage() {
 
         int damage = this.damage;
-        for (Weapon.Slot slot : Weapon.Slot.values()) {
-            Weapon weapon = getWeapon(slot);
-            if (weapon != null) {
-                damage += weapon.getDamage();
-            }
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            damage += swingWeapon(slot);
         }
         return damage;
     }

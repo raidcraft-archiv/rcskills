@@ -36,7 +36,7 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
 
         if (getTarget() instanceof Hero) {
             ItemStack inHand = ((Hero) getTarget()).getPlayer().getItemInHand();
-            if (inHand != null && inHand.getTypeId() != 0 && ItemUtil.isWeapon(inHand.getType())) {
+            if (inHand != null && inHand.getTypeId() != 0 && ItemUtil.isWeapon(inHand)) {
                 ItemUtil.moveItem((Hero) getTarget(),
                         ((Hero) getTarget()).getPlayer().getInventory().getHeldItemSlot(),
                         inHand);

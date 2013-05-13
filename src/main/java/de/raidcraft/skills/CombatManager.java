@@ -6,7 +6,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
-import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
@@ -14,7 +13,6 @@ import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.items.Weapon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
@@ -229,43 +227,14 @@ public final class CombatManager implements Listener {
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 
-                if (attacker instanceof Hero) {
-                    // lets check all weapon slots of the char
-                    Set<Weapon.Slot> attackingWeapons = new HashSet<>();
-
-                    for (Weapon.Slot slot : Weapon.Slot.values()) {
-                        if (attacker.hasWeapon(slot) && attacker.canSwing(slot)) {
-                            attackingWeapons.add(slot);
-                        }
-                    }
-                    if (attackingWeapons.size() < 1) {
-                        if (!attacker.canSwing(Weapon.Slot.MAIN_HAND)) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                        // lets issue a default fist attack
-                        int damage = plugin.getCommonConfig().fist_attack_damage;
-                        attacker.setLastSwing(Weapon.Slot.MAIN_HAND);
-                        new PhysicalAttack(attacker, target, damage, EffectType.DEFAULT_ATTACK).run();
-                        event.setDamage(0);
-                        return;
-                    }
-                    // now lets issue an attack for each weapon
-                    for (Weapon.Slot slot : attackingWeapons) {
-                        Weapon weapon = attacker.getWeapon(slot);
-                        WeaponAttack attack = new WeaponAttack(event, weapon, weapon.getDamage());
-                        attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
-                        attack.run();
-                        attacker.setLastSwing(slot);
-                    }
-                } else {
-                    // this is for entity attacks
-                    PhysicalAttack attack = new PhysicalAttack(event, attacker.getDamage());
-                    attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
-                    // cancel event because we are handling stuff
-                    attack.run();
+                if (!attacker.canAttack()) {
+                    event.setCancelled(true);
+                    return;
                 }
+                PhysicalAttack physicalAttack = new PhysicalAttack(event, attacker.getDamage());
+                physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 event.setDamage(0);
+                physicalAttack.run();
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {

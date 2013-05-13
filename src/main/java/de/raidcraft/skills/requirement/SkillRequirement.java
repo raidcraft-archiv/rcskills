@@ -15,11 +15,11 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("skills")
-public class SkillRequirement extends AbstractRequirement<SkillRequirementResolver> {
+public class SkillRequirement extends AbstractRequirement<Skill> {
 
     private Skill requiredSkill;
 
-    public SkillRequirement(SkillRequirementResolver type, ConfigurationSection config) {
+    public SkillRequirement(Skill type, ConfigurationSection config) {
 
         super(type, config);
     }
@@ -33,12 +33,12 @@ public class SkillRequirement extends AbstractRequirement<SkillRequirementResolv
             SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
 
             Profession profession;
-            if (professionName == null && getResolver() instanceof Skill) {
-                profession = ((Skill) getResolver()).getProfession();
+            if (professionName == null) {
+                profession = getResolver().getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getObject(), professionName);
+                profession = component.getProfessionManager().getProfession(getResolver().getHolder(), professionName);
             }
-            requiredSkill = component.getSkillManager().getSkill(getResolver().getObject(), profession, skillName);
+            requiredSkill = component.getSkillManager().getSkill(getResolver().getHolder(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
@@ -47,7 +47,7 @@ public class SkillRequirement extends AbstractRequirement<SkillRequirementResolv
     @Override
     public boolean isMet() {
 
-        return requiredSkill != null && getResolver().getObject().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
+        return requiredSkill != null && getResolver().getHolder().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
     }
 
     @Override

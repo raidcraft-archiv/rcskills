@@ -1,9 +1,9 @@
 package de.raidcraft.skills.api.combat.action;
 
+import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
-import de.raidcraft.skills.items.Weapon;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 /**
@@ -11,33 +11,33 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
  */
 public class WeaponAttack extends PhysicalAttack {
 
-    private final Weapon weapon;
+    private final CustomWeapon weapon;
 
-    public WeaponAttack(CharacterTemplate source, CharacterTemplate target, Weapon weapon, int damage, EffectType... types) {
+    public WeaponAttack(CharacterTemplate source, CharacterTemplate target, CustomWeapon weapon, int damage, EffectType... types) {
 
         super(source, target, damage, types);
         this.weapon = weapon;
     }
 
-    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, Weapon weapon, EntityAttackCallback callback, EffectType... types) {
+    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, CustomWeapon weapon, EntityAttackCallback callback, EffectType... types) {
 
         super(attacker, target, callback, types);
         this.weapon = weapon;
     }
 
-    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, Weapon weapon, int damage, EntityAttackCallback callback, EffectType... types) {
+    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, CustomWeapon weapon, int damage, EntityAttackCallback callback, EffectType... types) {
 
         super(attacker, target, damage, callback, types);
         this.weapon = weapon;
     }
 
-    public WeaponAttack(EntityDamageByEntityEvent event, Weapon weapon, int damage) {
+    public WeaponAttack(EntityDamageByEntityEvent event, CustomWeapon weapon, int damage) {
 
         super(event, damage);
         this.weapon = weapon;
     }
 
-    public Weapon getWeapon() {
+    public CustomWeapon getWeapon() {
 
         return weapon;
     }

@@ -1,12 +1,12 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
-import de.raidcraft.skills.items.WeaponType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
