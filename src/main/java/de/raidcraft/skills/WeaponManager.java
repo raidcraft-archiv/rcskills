@@ -37,7 +37,7 @@ public final class WeaponManager implements Listener {
     private static final String CONFIG_NAME = "weapons";
     private final SkillsPlugin plugin;
     // maps the weapon (itemId) to the min/max damage (key/value)
-    private final Map<Integer, DefaultWeaponConfig> defaultWeaponMinMaxDamage = new HashMap<>();
+    private final Map<Integer, DefaultWeaponConfig> defaultWeapons = new HashMap<>();
 
     protected WeaponManager(SkillsPlugin plugin) {
 
@@ -48,7 +48,7 @@ public final class WeaponManager implements Listener {
 
     private void load() {
 
-        defaultWeaponMinMaxDamage.clear();
+        defaultWeapons.clear();
         ConfigurationSection config = CustomConfig.getConfig(CONFIG_NAME).getSafeConfigSection("weapons");
         Set<String> keys = config.getKeys(false);
         if (keys == null || keys.size() < 1) {
@@ -61,7 +61,7 @@ public final class WeaponManager implements Listener {
                 int minDamage = config.getInt(key + ".min", 0);
                 int maxDamage = config.getInt(key + ".max", 0);
                 double swingTime = config.getDouble(key + ".swing-time", 1.5);
-                defaultWeaponMinMaxDamage.put(item.getId(), new DefaultWeaponConfig(minDamage, maxDamage, swingTime));
+                defaultWeapons.put(item.getId(), new DefaultWeaponConfig(minDamage, maxDamage, swingTime));
             } else {
                 plugin.getLogger().warning("Wrong weapon item configured in custom config: " + config.getName() + " - " + key);
             }
@@ -77,14 +77,14 @@ public final class WeaponManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        PlayerInventory inventory = (PlayerInventory) event.getInventory();
+        PlayerInventory inventory = event.getPlayer().getInventory();
         checkForWeapons((Player) event.getPlayer(), inventory, inventory.getHeldItemSlot());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-         public void onItemHeldChange(PlayerItemHeldEvent event) {
+    public void onItemHeldChange(PlayerItemHeldEvent event) {
 
-        event.setCancelled(!checkForWeapons(event.getPlayer(), event.getPlayer().getInventory(), event.getNewSlot()));
+        checkForWeapons(event.getPlayer(), event.getPlayer().getInventory(), event.getNewSlot());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -108,12 +108,17 @@ public final class WeaponManager implements Listener {
         ItemStack itemInHand = inventory.getItemInHand();
         hero.clearWeapons();
         if (!ItemUtil.isWeapon(itemInHand)) {
+            if (itemInHand != null && itemInHand.getTypeId() != 0 && defaultWeapons.containsKey(itemInHand.getTypeId())) {
+
+            } else {
+                return false;
+            }
+        }
+        CustomItemStack customItem = RaidCraft.getCustomItem(itemInHand);
+        if (customItem == null) {
             return false;
         }
-        CustomWeapon weapon = (CustomWeapon) RaidCraft.getCustomItem(itemInHand).getItem();
-        if (weapon == null) {
-            return false;
-        }
+        CustomWeapon weapon = (CustomWeapon) customItem.getItem();
         if (weapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
             hero.sendMessage(ChatColor.RED + "Du kannst diese Waffe nur in deiner Schildhand tragen.");
             ItemUtil.moveItem(hero, heldItemSlot, itemInHand);
@@ -171,7 +176,7 @@ public final class WeaponManager implements Listener {
 
     public DefaultWeaponConfig getDefaultMinMaxDamage(int itemid) {
 
-        return defaultWeaponMinMaxDamage.get(itemid);
+        return defaultWeapons.get(itemid);
     }
 
     public static class DefaultWeaponConfig {

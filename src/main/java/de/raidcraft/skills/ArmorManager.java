@@ -73,7 +73,7 @@ public final class ArmorManager implements Triggered, Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        checkForArmor((Player) event.getPlayer(), (PlayerInventory) event.getInventory());
+        checkForArmor((Player) event.getPlayer(), event.getPlayer().getInventory());
     }
 
     private void checkForArmor(Player player, PlayerInventory inventory) {
@@ -104,7 +104,6 @@ public final class ArmorManager implements Triggered, Listener {
 
         int totalArmor = 0;
         for (CustomArmor armorPiece : attack.getTarget().getArmor()) {
-
             totalArmor += armorPiece.getArmorValue();
         }
         // lets check if sunder armor effect is active
