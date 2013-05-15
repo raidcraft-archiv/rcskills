@@ -57,7 +57,7 @@ public class ProfessionCommands {
         if (!args.hasFlag('a')) {
             List<Profession> temp = new ArrayList<>(professions);
             for (Profession profession : temp) {
-                if (!profession.isMeetingAllRequirements()) {
+                if (!profession.isMeetingAllRequirements(hero)) {
                     professions.remove(profession);
                 }
             }
@@ -103,8 +103,8 @@ public class ProfessionCommands {
             if (hero.hasProfession(profession) && profession.isActive()) {
                 throw new CommandException("Du hast diese " + profession.getPath().getFriendlyName() + " Spezialisierung bereits ausgewählt.");
             }
-            if (!profession.isMeetingAllRequirements()) {
-                throw new CommandException("Du kannst diese " + profession.getPath().getFriendlyName() + " Spezialisierung nicht auswählen: \n" + profession.getResolveReason());
+            if (!profession.isMeetingAllRequirements(hero)) {
+                throw new CommandException("Du kannst diese " + profession.getPath().getFriendlyName() + " Spezialisierung nicht auswählen: \n" + profession.getResolveReason(hero));
             }
 
             if (force) {
@@ -162,7 +162,7 @@ public class ProfessionCommands {
 
     public void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
 
-        if (!profession.isMeetingAllRequirements()) {
+        if (!profession.isMeetingAllRequirements(hero)) {
             return;
         }
 

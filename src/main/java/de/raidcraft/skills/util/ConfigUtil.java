@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
@@ -111,6 +112,21 @@ public final class ConfigUtil {
         return value;
     }
 
+    private static double getAttributeValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifiers) {
+
+        if (!(holder instanceof Hero)) {
+            return 0.0;
+        }
+        double value = 0.0;
+        for (Attribute attribute : ((Hero) holder).getAttributes()) {
+            if (section.isSet(attribute.getName() + "-attr-modifier")) {
+                value += section.getDouble(attribute.getName() + "-attr-modifier") * attribute.getCurrentValue();
+                availableModifiers.remove(attribute.getName() + "-attr-modifier");
+            }
+        }
+        return value;
+    }
+
     private static double getExtraValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifier) {
 
         if (!(holder instanceof Hero)) {
@@ -166,6 +182,8 @@ public final class ConfigUtil {
         availableModifier.remove("skill-level-modifier");
         // uses resources as value modifiers
         value += getResourceValues(holder, section, availableModifier);
+        // also add attributes values
+        value += getAttributeValues(holder, section, availableModifier);
         // makes it possible to to use skills dynamically as config values
         getExtraValues(holder, section, availableModifier);
 

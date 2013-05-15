@@ -42,7 +42,7 @@ public interface ProfessionProperties {
 
     public Map<String, Skill> loadSkills(Profession profession);
 
-    public List<Requirement> loadRequirements(Profession profession);
+    public List<Requirement<Hero>> loadRequirements(Profession profession);
 
     public List<Profession> loadChildren(Profession profession);
 }

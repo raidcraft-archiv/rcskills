@@ -15,7 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("skill-level")
-public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
+public class SkillLevelRequirement extends LevelRequirement {
 
     private LevelableSkill requiredSkill;
 
@@ -31,13 +31,14 @@ public class SkillLevelRequirement extends LevelRequirement<LevelableSkill> {
         String professionName = data.getString("profession");
         SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
         try {
+            LevelableSkill skill = (LevelableSkill) getResolver();
             Profession profession;
             if (professionName == null) {
-                profession = getResolver().getProfession();
+                profession = skill.getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getHolder(), professionName);
+                profession = component.getProfessionManager().getProfession(skill.getHolder(), professionName);
             }
-            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(getResolver().getHolder(), profession, skillName);
+            requiredSkill = (LevelableSkill) component.getSkillManager().getSkill(skill.getHolder(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         } catch (ClassCastException e) {

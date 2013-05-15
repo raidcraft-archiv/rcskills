@@ -3,6 +3,7 @@ package de.raidcraft.skills.requirement;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.AbstractRequirement;
 import de.raidcraft.api.requirement.RequirementInformation;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
@@ -16,7 +17,7 @@ public class ItemRequirement extends AbstractRequirement<Skill> {
 
     private int itemId;
 
-    public ItemRequirement(Skill resolver, ConfigurationSection config) {
+    public ItemRequirement(RequirementResolver<Skill> resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }
@@ -33,9 +34,9 @@ public class ItemRequirement extends AbstractRequirement<Skill> {
     }
 
     @Override
-    public boolean isMet() {
+    public boolean isMet(Skill object) {
 
-        return getResolver().getHolder().getItemTypeInHand().getId() == itemId;
+        return object.getHolder().getItemTypeInHand().getId() == itemId;
     }
 
     @Override

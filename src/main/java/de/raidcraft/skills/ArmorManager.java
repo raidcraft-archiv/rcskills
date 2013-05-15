@@ -73,7 +73,7 @@ public final class ArmorManager implements Triggered, Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        checkForArmor((Player) event.getPlayer(), (PlayerInventory) event.getInventory());
+        checkForArmor((Player) event.getPlayer(), event.getPlayer().getInventory());
     }
 
     private void checkForArmor(Player player, PlayerInventory inventory) {
@@ -84,8 +84,8 @@ public final class ArmorManager implements Triggered, Listener {
         for (ItemStack item : inventory.getArmorContents()) {
             if (ItemUtil.isArmor(item)) {
                 CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
-                if (!armor.isMeetingAllRequirements()) {
-                    player.sendMessage(ChatColor.RED + armor.getResolveReason());
+                if (!armor.isMeetingAllRequirements(player)) {
+                    player.sendMessage(ChatColor.RED + armor.getResolveReason(hero.getPlayer()));
                     ItemUtil.moveItem(hero, -1, item);
                 } else {
                     hero.setArmor(armor);
@@ -104,7 +104,6 @@ public final class ArmorManager implements Triggered, Listener {
 
         int totalArmor = 0;
         for (CustomArmor armorPiece : attack.getTarget().getArmor()) {
-
             totalArmor += armorPiece.getArmorValue();
         }
         // lets check if sunder armor effect is active

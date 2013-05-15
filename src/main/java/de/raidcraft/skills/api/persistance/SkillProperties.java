@@ -18,9 +18,9 @@ import java.util.Set;
  */
 public interface SkillProperties extends AbilityProperties<SkillInformation> {
 
-    public List<Requirement> loadRequirements(Skill skill);
+    public List<Requirement<Hero>> loadRequirements(Skill skill);
 
-    public List<Requirement> loadUseRequirements(Skill skill);
+    public List<Requirement<Hero>> loadUseRequirements(Skill skill);
 
     public ItemStack[] getReagents();
 

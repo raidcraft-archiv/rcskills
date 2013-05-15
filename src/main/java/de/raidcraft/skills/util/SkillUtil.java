@@ -125,9 +125,9 @@ public final class SkillUtil {
         if (skill.getRequirements().size() > 0) {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
-            for (Requirement requirement : skill.getRequirements()) {
+            for (Requirement<Hero> requirement : skill.getRequirements()) {
                 sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet() ? ChatColor.GREEN : ChatColor.RED));
+                sb.append((requirement.isMet(skill.getHolder()) ? ChatColor.GREEN : ChatColor.RED));
                 sb.append(requirement.getShortReason());
                 sb.append("\n");
             }

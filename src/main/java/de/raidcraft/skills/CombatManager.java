@@ -235,6 +235,9 @@ public final class CombatManager implements Listener {
                 physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 event.setDamage(0);
                 physicalAttack.run();
+                if (physicalAttack.getDamage() == 0) {
+                    event.setCancelled(true);
+                }
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {

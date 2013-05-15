@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.resource.Resource;
 /**
  * @author Silthus
  */
-public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver {
+public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver<Hero> {
 
     public int getId();
 

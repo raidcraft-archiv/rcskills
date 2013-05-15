@@ -30,7 +30,7 @@ public class CanChooseProfessionAction extends AbstractAction {
 
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
-            if (profession.isMeetingAllRequirements()) {
+            if (profession.isMeetingAllRequirements(hero)) {
                 if (success != null) {
                     conversation.setCurrentStage(success);
                     conversation.triggerCurrentStage();

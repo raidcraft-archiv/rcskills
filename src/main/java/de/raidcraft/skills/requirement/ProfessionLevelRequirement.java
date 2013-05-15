@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("profession-level")
-public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
+public class ProfessionLevelRequirement extends LevelRequirement {
 
     private Profession profession;
 
@@ -33,7 +33,7 @@ public class ProfessionLevelRequirement extends LevelRequirement<Profession> {
     protected void load(ConfigurationSection data) {
 
         try {
-            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getResolver(), data.getString("profession"));
+            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession((Profession)getResolver(), data.getString("profession"));
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }

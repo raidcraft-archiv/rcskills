@@ -35,7 +35,7 @@ public abstract class AbstractProfession implements Profession {
     private final Path<Profession> path;
     private final List<Profession> children;
     // list of requirements to unlock this profession
-    private final List<Requirement> requirements = new ArrayList<>();
+    private final List<Requirement<Hero>> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new HashMap<>();
     protected final Map<String, Skill> skills = new HashMap<>();
 
@@ -191,7 +191,7 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public List<Requirement> getRequirements() {
+    public List<Requirement<Hero>> getRequirements() {
 
         if (requirements.size() < 1) {
             requirements.addAll(getProperties().loadRequirements(this));
@@ -200,10 +200,10 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public boolean isMeetingAllRequirements() {
+    public boolean isMeetingAllRequirements(Hero object) {
 
-        for (Requirement requirement : getRequirements()) {
-            if (!requirement.isMet()) {
+        for (Requirement<Hero> requirement : getRequirements()) {
+            if (!requirement.isMet(object)) {
                 return false;
             }
         }
@@ -211,10 +211,10 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public String getResolveReason() {
+    public String getResolveReason(Hero object) {
 
-        for (Requirement requirement : requirements) {
-            if (!requirement.isMet()) {
+        for (Requirement<Hero> requirement : requirements) {
+            if (!requirement.isMet(getHero())) {
                 return requirement.getLongReason();
             }
         }
@@ -306,11 +306,11 @@ public abstract class AbstractProfession implements Profession {
 
         for (Skill skill : getSkills()) {
             // check all skills and if we need to unlock any
-            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements()) {
+            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero())) {
                 skill.unlock();
             }
             // check if we need to lock any skills
-            if (skill.isUnlocked() && !skill.isMeetingAllRequirements()) {
+            if (skill.isUnlocked() && !skill.isMeetingAllRequirements(getHero())) {
                 skill.lock();
             }
         }

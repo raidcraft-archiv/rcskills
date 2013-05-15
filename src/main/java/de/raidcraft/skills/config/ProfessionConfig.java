@@ -87,7 +87,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Requirement> loadRequirements(Profession profession) {
+    public List<Requirement<Hero>> loadRequirements(Profession profession) {
 
         return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
     }

@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.ability;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -27,7 +26,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +39,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     private final String name;
     protected final T holder;
     protected final AbilityProperties properties;
-    protected final List<Requirement> requirements = new ArrayList<>();
     protected final Set<EffectType> effectTypes = new HashSet<>();
     protected final Set<EffectElement> effectElements = new HashSet<>();
     // protected final THeroSkill database;

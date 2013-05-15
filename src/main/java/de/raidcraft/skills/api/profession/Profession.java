@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface Profession extends Levelable<Profession>, Comparable<Profession>, Parent<Profession>, Child<Profession>, RequirementResolver {
+public interface Profession extends Levelable<Profession>, Comparable<Profession>, Parent<Profession>, Child<Profession>, RequirementResolver<Hero> {
 
     public int getId();
 
