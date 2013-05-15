@@ -28,14 +28,6 @@ public class MaxOutHeroAction extends AbstractAction {
             conversation.endConversation();
             return;
         }
-        if (args.getBoolean("confirmed")) {
-
-            hero.sendMessage("");
-            HeroUtil.maxOutAll(hero);
-            hero.sendMessage(ChatColor.GREEN + "Alle deine Skills, Berufe und Klassen wurden auf max gesetzt.");
-        } else {
-            conversation.triggerStage(createConfirmStage(
-                    "Bist du dir sicher dass du alle deine Spezialisierungen auf das max. Level setzen möchtest?", args));
-        }
+        HeroUtil.maxOutAll(hero);
     }
 }
