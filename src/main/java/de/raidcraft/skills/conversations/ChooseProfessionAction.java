@@ -40,15 +40,21 @@ public class ChooseProfessionAction extends AbstractAction {
                 conversation.endConversation();
                 return;
             }
-            if (args.getBoolean("confirmed")) {
-
-                hero.sendMessage("");
+            if(args.getBoolean("forced", false)) {
                 hero.changeProfession(profession);
-                hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
-            } else {
-                conversation.triggerStage(createConfirmStage(
-                        "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                + profession.getFriendlyName() + " wählen willst? Dies kostet dich " + plugin.getCommonConfig().profession_change_cost + "c.", args));
+                hero.sendMessage("", ChatColor.GREEN + "Du besitzt nun die " + profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName() + "!");
+            }
+            else {
+                if (args.getBoolean("confirmed")) {
+
+                    hero.sendMessage("");
+                    hero.changeProfession(profession);
+                    hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
+                } else {
+                    conversation.triggerStage(createConfirmStage(
+                            "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
+                                    + profession.getFriendlyName() + " wählen willst? Dies kostet dich " + plugin.getCommonConfig().profession_change_cost + "c.", args));
+                }
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
