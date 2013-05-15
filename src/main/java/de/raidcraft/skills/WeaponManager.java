@@ -160,8 +160,8 @@ public final class WeaponManager implements Listener {
         if (weapon == null) {
             return false;
         }
-        if (!weapon.isMeetingAllRequirements()) {
-            throw new CombatException(weapon.getResolveReason());
+        if (!weapon.isMeetingAllRequirements(hero.getPlayer())) {
+            throw new CombatException(weapon.getResolveReason(hero.getPlayer()));
         }
         return true;
     }

@@ -84,8 +84,8 @@ public final class ArmorManager implements Triggered, Listener {
         for (ItemStack item : inventory.getArmorContents()) {
             if (ItemUtil.isArmor(item)) {
                 CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
-                if (!armor.isMeetingAllRequirements()) {
-                    player.sendMessage(ChatColor.RED + armor.getResolveReason());
+                if (!armor.isMeetingAllRequirements(player)) {
+                    player.sendMessage(ChatColor.RED + armor.getResolveReason(hero.getPlayer()));
                     ItemUtil.moveItem(hero, -1, item);
                 } else {
                     hero.setArmor(armor);

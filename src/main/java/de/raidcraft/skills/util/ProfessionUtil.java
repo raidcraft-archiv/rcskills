@@ -106,9 +106,9 @@ public final class ProfessionUtil {
         if (profession.getRequirements().size() > 0) {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
-            for (Requirement requirement : profession.getRequirements()) {
+            for (Requirement<Hero> requirement : profession.getRequirements()) {
                 sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet() ? ChatColor.GREEN : ChatColor.RED));
+                sb.append((requirement.isMet(profession.getHero()) ? ChatColor.GREEN : ChatColor.RED));
                 sb.append(requirement.getShortReason());
                 sb.append("\n");
             }

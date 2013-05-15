@@ -39,7 +39,8 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     private final int id;
     private final SkillProperties properties;
     private final Profession profession;
-    private final List<Requirement> useRequirements = new ArrayList<>();
+    private final List<Requirement<Hero>> requirements = new ArrayList<>();
+    private final List<Requirement<Hero>> useRequirements = new ArrayList<>();
     private boolean unlocked = false;
     private Timestamp unlockTime;
 
@@ -116,8 +117,8 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             }
         }
         // lets check the players use requirements
-        for (Requirement requirement : getUseRequirements()) {
-            if (!requirement.isMet()) {
+        for (Requirement<Hero> requirement : getUseRequirements()) {
+            if (!requirement.isMet(getHolder())) {
                 throw new CombatException(requirement.getLongReason());
             }
         }
@@ -161,7 +162,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
     }
 
-    private List<Requirement> getUseRequirements() {
+    private List<Requirement<Hero>> getUseRequirements() {
 
         if (useRequirements.size() < 1) {
             useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
@@ -357,7 +358,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final List<Requirement> getRequirements() {
+    public final List<Requirement<Hero>> getRequirements() {
 
         if (requirements.size() < 1) {
             requirements.addAll(getSkillProperties().loadRequirements(this));
@@ -366,10 +367,10 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final boolean isMeetingAllRequirements() {
+    public final boolean isMeetingAllRequirements(Hero object) {
 
-        for (Requirement requirement : getRequirements()) {
-            if (!requirement.isMet()) {
+        for (Requirement<Hero> requirement : getRequirements()) {
+            if (!requirement.isMet(object)) {
                 return false;
             }
         }
@@ -377,10 +378,10 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final String getResolveReason() {
+    public final String getResolveReason(Hero object) {
 
-        for (Requirement requirement : requirements) {
-            if (!requirement.isMet()) {
+        for (Requirement<Hero> requirement : getRequirements()) {
+            if (!requirement.isMet(getHolder())) {
                 return requirement.getLongReason();
             }
         }

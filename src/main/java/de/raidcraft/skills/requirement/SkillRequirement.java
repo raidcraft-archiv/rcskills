@@ -6,6 +6,7 @@ import de.raidcraft.api.requirement.RequirementInformation;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
@@ -15,7 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @RequirementInformation("skills")
-public class SkillRequirement extends AbstractRequirement<Skill> {
+public class SkillRequirement extends AbstractRequirement<Hero> {
 
     private Skill requiredSkill;
 
@@ -32,22 +33,23 @@ public class SkillRequirement extends AbstractRequirement<Skill> {
             String professionName = data.getString("profession");
             SkillsPlugin component = RaidCraft.getComponent(SkillsPlugin.class);
 
+            Skill skill = (Skill) getResolver();
             Profession profession;
             if (professionName == null) {
-                profession = getResolver().getProfession();
+                profession = skill.getProfession();
             } else {
-                profession = component.getProfessionManager().getProfession(getResolver().getHolder(), professionName);
+                profession = component.getProfessionManager().getProfession(skill.getHolder(), professionName);
             }
-            requiredSkill = component.getSkillManager().getSkill(getResolver().getHolder(), profession, skillName);
+            requiredSkill = component.getSkillManager().getSkill(skill.getHolder(), profession, skillName);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
     }
 
     @Override
-    public boolean isMet() {
+    public boolean isMet(Hero object) {
 
-        return requiredSkill != null && getResolver().getHolder().hasSkill(requiredSkill) && requiredSkill.isUnlocked();
+        return requiredSkill != null && object.hasSkill(requiredSkill) && requiredSkill.isUnlocked();
     }
 
     @Override
