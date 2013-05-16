@@ -21,14 +21,17 @@ public class MaxOutHeroAction extends AbstractAction {
     public void run(Conversation conversation, ActionArgumentList args) throws ActionArgumentException {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+        boolean forced = args.getBoolean("forced", false);
         Hero hero = plugin.getCharacterManager().getHero(conversation.getPlayer());
 
         if (!conversation.getPlayer().hasPermission("rcskills.conv.maxout")) {
-            hero.sendMessage(ChatColor.RED + "Du darfst diese Funktion hier nicht nutzen!");
+            if(!forced) {
+                hero.sendMessage(ChatColor.RED + "Du darfst diese Funktion hier nicht nutzen!");
+            }
             conversation.endConversation();
             return;
         }
-        if(args.getBoolean("forced", false)) {
+        if(forced) {
             HeroUtil.maxOutAll(hero);
         }
         else {
