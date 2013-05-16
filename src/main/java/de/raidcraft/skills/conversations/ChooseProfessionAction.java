@@ -23,16 +23,21 @@ public class ChooseProfessionAction extends AbstractAction {
     public void run(Conversation conversation, ActionArgumentList args) throws ActionArgumentException {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
+        boolean forced = args.getBoolean("forced", false);
+        boolean quite = args.getBoolean("quite", false);
 
         Hero hero = plugin.getCharacterManager().getHero(conversation.getPlayer());
         Profession profession;
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
-            if(hero.hasProfession(profession) && profession.isActive()) {
-                hero.sendMessage("", ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
-                        + profession.getFriendlyName() + "' bereits!");
-                conversation.endConversation();
-                return;
+
+            if(!forced) {
+                if(hero.hasProfession(profession) && profession.isActive()) {
+                    hero.sendMessage("", ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
+                            + profession.getFriendlyName() + "' bereits!");
+                    conversation.endConversation();
+                    return;
+                }
             }
             if (!profession.isMeetingAllRequirements(hero)) {
                 hero.sendMessage(ChatColor.RED + profession.getResolveReason(hero));
@@ -40,9 +45,12 @@ public class ChooseProfessionAction extends AbstractAction {
                 conversation.endConversation();
                 return;
             }
-            if(args.getBoolean("forced", false)) {
+            if(forced) {
                 hero.changeProfession(profession);
-                hero.sendMessage("", ChatColor.GREEN + "Du besitzt nun die " + profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName() + "!");
+                if(!quite) {
+                    hero.sendMessage("", ChatColor.GREEN + "Du besitzt nun die " + profession.getPath().getFriendlyName()
+                            + " Spezialisierung " + profession.getFriendlyName() + "!");
+                }
             }
             else {
                 if (args.getBoolean("confirmed")) {
