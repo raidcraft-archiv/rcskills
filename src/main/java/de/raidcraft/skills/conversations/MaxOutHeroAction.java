@@ -24,7 +24,7 @@ public class MaxOutHeroAction extends AbstractAction {
         boolean forced = args.getBoolean("forced", false);
         Hero hero = plugin.getCharacterManager().getHero(conversation.getPlayer());
 
-        if (!conversation.getPlayer().hasPermission("rcskills.conv.maxout")) {
+        if (!conversation.getPlayer().hasPermission("rcskills.conversation.maxout")) {
             if(!forced) {
                 hero.sendMessage(ChatColor.RED + "Du darfst diese Funktion hier nicht nutzen!");
             }
