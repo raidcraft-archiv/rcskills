@@ -23,6 +23,7 @@ import org.bukkit.metadata.MetadataValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -136,11 +137,20 @@ public final class HeroUtil {
 
     public static void maxOutAll(Hero hero) {
 
-        hero.getAttachedLevel().setLevel(hero.getMaxLevel());
+        SkillsPlugin.LocalConfiguration config = RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig();
+        Set<String> excludedProfessions = config.getExcludedProfessions();
+        Set<String> excludedSkills = config.getExcludedSkills();
         for (Profession profession : hero.getProfessions()) {
+            if (excludedProfessions.contains(profession.getName().toLowerCase())) {
+                continue;
+            }
             profession.getAttachedLevel().setLevel(profession.getMaxLevel());
         }
         for (Skill skill : hero.getSkills()) {
+            if (excludedProfessions.contains(skill.getProfession().getName().toLowerCase())
+                    || excludedSkills.contains(skill.getName().toLowerCase())) {
+                continue;
+            }
             if (skill instanceof Levelable) {
                 ((Levelable) skill).getAttachedLevel().setLevel(((Levelable) skill).getMaxLevel());
             }

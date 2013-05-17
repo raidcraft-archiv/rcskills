@@ -381,6 +381,16 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
             return new HashSet<>(getStringList("ignored-worlds"));
         }
+
+        public Set<String> getExcludedProfessions() {
+
+            return new HashSet<>(getStringList("excluded-max-out-professions"));
+        }
+
+        public Set<String> getExcludedSkills() {
+
+            return new HashSet<>(getStringList("excluded-max-out-skills"));
+        }
     }
 
     public class BaseCommands {
