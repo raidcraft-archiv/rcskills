@@ -2,9 +2,11 @@ package de.raidcraft.skills.requirement;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.RequirementInformation;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.LevelableSkill;
@@ -19,9 +21,9 @@ public class SkillLevelRequirement extends LevelRequirement {
 
     private LevelableSkill requiredSkill;
 
-    public SkillLevelRequirement(LevelableSkill type, ConfigurationSection config) {
+    public SkillLevelRequirement(RequirementResolver<Hero> resolver, ConfigurationSection config) {
 
-        super(type, config);
+        super(resolver, config);
     }
 
     @Override

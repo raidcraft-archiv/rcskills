@@ -2,9 +2,11 @@ package de.raidcraft.skills.requirement;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.RequirementInformation;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.ChatColor;
@@ -18,7 +20,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
 
     private Profession profession;
 
-    public ProfessionLevelRequirement(Profession resolver, ConfigurationSection config) {
+    public ProfessionLevelRequirement(RequirementResolver<Hero> resolver, ConfigurationSection config) {
 
         super(resolver, config);
     }

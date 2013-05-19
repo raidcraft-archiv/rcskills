@@ -3,6 +3,7 @@ package de.raidcraft.skills.requirement;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.AbstractRequirement;
 import de.raidcraft.api.requirement.RequirementInformation;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -20,9 +21,9 @@ public class SkillRequirement extends AbstractRequirement<Hero> {
 
     private Skill requiredSkill;
 
-    public SkillRequirement(Skill type, ConfigurationSection config) {
+    public SkillRequirement(RequirementResolver<Hero> resolver, ConfigurationSection config) {
 
-        super(type, config);
+        super(resolver, config);
     }
 
     @Override
