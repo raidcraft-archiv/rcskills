@@ -1,7 +1,6 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
@@ -141,11 +140,10 @@ public final class WeaponManager implements Listener {
                 }
             }
         } else if (heldItemSlot + 1 < 9) {
-            CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(inventory.getItem(heldItemSlot + 1)).getItem();
-            if (armor != null && ItemUtil.isArmor(inventory.getItem(heldItemSlot + 1))
-                    && armor.getArmorType() == ArmorType.SHIELD) {
+            CustomItemStack itemStack = RaidCraft.getCustomItem(inventory.getItem(heldItemSlot + 1));
+            if (itemStack != null && ItemUtil.isArmor(inventory.getItem(heldItemSlot + 1))) {
                 // check for a equiped shield
-                hero.setArmor(armor);
+                hero.setArmor((CustomArmor) itemStack.getItem());
             }
         } else {
             hero.removeArmor(EquipmentSlot.SHIELD_HAND);
