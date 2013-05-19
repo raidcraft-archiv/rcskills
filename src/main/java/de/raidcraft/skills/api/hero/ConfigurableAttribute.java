@@ -2,10 +2,10 @@ package de.raidcraft.skills.api.hero;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.AttributeType;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
-import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -15,8 +15,7 @@ public class ConfigurableAttribute implements Attribute {
 
     private final int id;
     private final Hero hero;
-    private final String name;
-    private final String friendlyName;
+    private final AttributeType type;
     private final double damageModifier;
     private final double healthModifier;
     private int baseValue;
@@ -25,20 +24,19 @@ public class ConfigurableAttribute implements Attribute {
     public ConfigurableAttribute(Hero hero, String name, int baseValue, ConfigurationSection config) {
 
         this.hero = hero;
-        this.name = StringUtils.formatName(name);
-        this.friendlyName = config.getString("name", this.name);
+        this.type = AttributeType.fromString(name);
         this.damageModifier = config.getDouble("damage-modifier", 0.0);
         this.healthModifier = config.getDouble("health-modifier", 0.0);
         EbeanServer ebeanServer = RaidCraft.getDatabase(SkillsPlugin.class);
         THeroAttribute database = ebeanServer.find(THeroAttribute.class)
                 .where()
                 .eq("hero_id", hero.getId())
-                .eq("attribute", this.name)
+                .eq("attribute", type)
                 .findUnique();
         if (database == null) {
             database = new THeroAttribute();
             database.setHero(ebeanServer.find(THero.class, hero.getId()));
-            database.setAttribute(this.name);
+            database.setAttribute(type);
             database.setBaseValue(baseValue);
             database.setCurrentValue(baseValue);
             ebeanServer.save(database);
@@ -57,13 +55,19 @@ public class ConfigurableAttribute implements Attribute {
     @Override
     public String getName() {
 
-        return name;
+        return getType().name();
     }
 
     @Override
     public String getFriendlyName() {
 
-        return friendlyName;
+        return getType().getGermanName();
+    }
+
+    @Override
+    public AttributeType getType() {
+
+        return type;
     }
 
     @Override

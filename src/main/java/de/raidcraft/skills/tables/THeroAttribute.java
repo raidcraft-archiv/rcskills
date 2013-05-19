@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import de.raidcraft.api.database.Bean;
+import de.raidcraft.api.items.AttributeType;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class THeroAttribute implements Bean {
     private int id;
     @ManyToOne
     private THero hero;
-    private String attribute;
+    private AttributeType attribute;
     private int baseValue;
     private int currentValue;
 
@@ -42,12 +43,12 @@ public class THeroAttribute implements Bean {
         this.hero = hero;
     }
 
-    public String getAttribute() {
+    public AttributeType getAttribute() {
 
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(AttributeType attribute) {
 
         this.attribute = attribute;
     }
