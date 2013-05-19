@@ -352,6 +352,12 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
+    public Hero getObject() {
+
+        return getHolder();
+    }
+
+    @Override
     public final Profession getProfession() {
 
         return profession;

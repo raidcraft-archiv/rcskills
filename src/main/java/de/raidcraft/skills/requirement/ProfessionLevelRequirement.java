@@ -35,7 +35,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     protected void load(ConfigurationSection data) {
 
         try {
-            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession((Profession)getResolver(), data.getString("profession"));
+            profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getResolver().getObject(), data.getString("profession"));
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }

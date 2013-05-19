@@ -200,6 +200,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public Hero getObject() {
+
+        return getHero();
+    }
+
+    @Override
     public boolean isMeetingAllRequirements(Hero object) {
 
         for (Requirement<Hero> requirement : getRequirements()) {
