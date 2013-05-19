@@ -97,7 +97,7 @@ public final class WeaponManager implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         PlayerInventory inventory = event.getPlayer().getInventory();
-        event.setCancelled(!checkForWeapons(event.getPlayer(), inventory, inventory.getHeldItemSlot()));
+        checkForWeapons(event.getPlayer(), inventory, inventory.getHeldItemSlot());
     }
 
     private boolean checkForWeapons(Player player, PlayerInventory inventory, int heldItemSlot) {
