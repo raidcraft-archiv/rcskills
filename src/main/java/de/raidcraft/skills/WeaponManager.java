@@ -107,11 +107,7 @@ public final class WeaponManager implements Listener {
         ItemStack itemInHand = inventory.getItemInHand();
         hero.clearWeapons();
         if (!ItemUtil.isWeapon(itemInHand)) {
-            if (itemInHand != null && itemInHand.getTypeId() != 0 && defaultWeapons.containsKey(itemInHand.getTypeId())) {
-
-            } else {
-                return false;
-            }
+            return false;
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(itemInHand);
         if (customItem == null) {
