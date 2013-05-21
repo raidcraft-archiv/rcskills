@@ -49,7 +49,7 @@ public class SkillsCommand {
         Collection<Skill> skills = new HashSet<>();
         // get the profession
         if (args.argsLength() > 0) {
-            skills.addAll(ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0)).getSkills());
+            skills.addAll(ProfessionUtil.getProfessionFromArgs(hero, args.getString(0)).getSkills());
         } else if (args.hasFlag('s')) {
             skills.addAll(hero.getSelectedProfession().getSkills());
         } else if (args.hasFlag('a')) {
