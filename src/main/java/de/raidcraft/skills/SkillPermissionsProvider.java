@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.tables.THeroSkill;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -98,13 +97,8 @@ public final class SkillPermissionsProvider implements PermissionsProvider<Skill
         Set<String> groups = new HashSet<>();
         try {
             Hero hero = plugin.getCharacterManager().getHero(player);
-            List<THeroSkill> skills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where().eq("hero_id", hero.getId()).eq("unlocked", true).findList();
-            for (THeroSkill skill : skills) {
-                SkillFactory factory = plugin.getSkillManager().getFactory(skill.getName());
-                if (factory == null) {
-                    continue;
-                }
-                if (factory.getSkillClass() == PermissionSkill.class) {
+            for (Skill skill : hero.getSkills()) {
+                if (skill.isActive() && skill.isUnlocked() && skill instanceof PermissionSkill) {
                     groups.add(skill.getName());
                 }
             }
