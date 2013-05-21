@@ -20,6 +20,7 @@ import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -114,6 +115,9 @@ public final class ExperienceManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
         Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
         hero.getExpPool().addExp(plugin.getExperienceConfig().getBlockExperienceFor(event.getBlock().getTypeId()));
     }
@@ -121,6 +125,9 @@ public final class ExperienceManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onCraftItem(CraftItemEvent event) {
 
+        if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
         Hero hero = plugin.getCharacterManager().getHero((Player) event.getWhoClicked());
         ItemStack result = event.getRecipe().getResult();
         int exp = plugin.getExperienceConfig().getCraftingExperienceFor(result.getTypeId()) * result.getAmount();
