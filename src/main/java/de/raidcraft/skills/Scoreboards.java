@@ -30,6 +30,9 @@ public final class Scoreboards {
 
     public static Scoreboard removeScoreboard(Player player) {
 
+        if (player == null) {
+            return null;
+        }
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         return scoreboards.remove(player.getName().toLowerCase());
     }
