@@ -137,7 +137,7 @@ public final class WeaponManager implements Listener {
             }
         } else if (heldItemSlot + 1 < 9) {
             CustomItemStack itemStack = RaidCraft.getCustomItem(inventory.getItem(heldItemSlot + 1));
-            if (itemStack != null && ItemUtil.isArmor(inventory.getItem(heldItemSlot + 1))) {
+            if (itemStack != null && ItemUtil.isShield(inventory.getItem(heldItemSlot + 1))) {
                 // check for a equiped shield
                 hero.setArmor((CustomArmor) itemStack.getItem());
             }
