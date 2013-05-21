@@ -29,7 +29,9 @@ public class BukkitUserInterface implements UserInterface {
         this.hero = hero;
         this.player = hero.getPlayer();
 
-        updateHealthDisplay();
+        if (player != null && player.isOnline()) {
+            updateHealthDisplay();
+        }
     }
 
     @Override
