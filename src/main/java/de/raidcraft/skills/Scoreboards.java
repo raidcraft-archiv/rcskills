@@ -28,13 +28,13 @@ public final class Scoreboards {
         return scoreboard;
     }
 
-    public static Scoreboard removeScoreboard(Player player) {
+    public static void removeScoreboard(Player player) {
 
         if (player == null) {
-            return null;
+            return;
         }
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        return scoreboards.remove(player.getName().toLowerCase());
+        scoreboards.remove(player.getName().toLowerCase());
     }
 
     public static void updateHealthDisplays() {
