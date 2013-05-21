@@ -53,9 +53,15 @@ public interface AttachedLevel<T extends Levelable> {
 
     public void addExp(int exp);
 
+    public void addExp(int exp, boolean callEvent);
+
     public void removeExp(int exp);
 
+    public void removeExp(int exp, boolean callEvent);
+
     public void setExp(int exp);
+
+    public void setExp(int exp, boolean callEvent);
 
     public void setLevel(int level);
 

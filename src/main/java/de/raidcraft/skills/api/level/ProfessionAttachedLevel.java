@@ -21,7 +21,7 @@ public class ProfessionAttachedLevel extends ConfigurableAttachedLevel<Professio
         super.addExp(exp);
         // lets add some exp to the profession of the skill
         exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getProfessionHeroExpRate());
-        getLevelObject().getHero().getAttachedLevel().addExp(exp);
+        getLevelObject().getHero().getAttachedLevel().addExp(exp, false);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class ProfessionAttachedLevel extends ConfigurableAttachedLevel<Professio
         super.removeExp(exp);
         // lets remove the same amount of exp from the profession
         exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getProfessionHeroExpRate());
-        getLevelObject().getHero().getAttachedLevel().removeExp(exp);
+        getLevelObject().getHero().getAttachedLevel().removeExp(exp, false);
     }
 }

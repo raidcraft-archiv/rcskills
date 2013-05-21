@@ -110,11 +110,17 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     @Override
     public void addExp(int exp) {
 
+        addExp(exp, true);
+    }
+
+    @Override
+    public void addExp(int exp, boolean callEvent) {
+
         if (getLevelObject().isMastered() || exp == 0) {
             return;
         }
         RCExpGainEvent event = new RCExpGainEvent(this, exp);
-        RaidCraft.callEvent(event);
+        if (callEvent) RaidCraft.callEvent(event);
         if (event.isCancelled()) {
             return;
         }
@@ -125,6 +131,12 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
 
     @Override
     public void removeExp(int exp) {
+
+        removeExp(exp, true);
+    }
+
+    @Override
+    public void removeExp(int exp, boolean callEvent) {
 
         if (exp == 0) {
             return;
@@ -137,9 +149,15 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     @Override
     public void setExp(int exp) {
 
+        setExp(exp, true);
+    }
+
+    @Override
+    public void setExp(int exp, boolean callEvent) {
+
         if (this.exp < exp) {
             RCExpGainEvent event = new RCExpGainEvent(this, exp - this.exp);
-            RaidCraft.callEvent(event);
+            if (callEvent) RaidCraft.callEvent(event);
             if (event.isCancelled()) {
                 return;
             }

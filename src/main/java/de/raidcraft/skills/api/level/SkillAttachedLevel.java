@@ -21,7 +21,7 @@ public class SkillAttachedLevel extends ConfigurableAttachedLevel<LevelableSkill
         super.addExp(exp);
         // lets add some exp to the profession of the skill
         exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getSkillProfessionExpRate());
-        getLevelObject().getProfession().getAttachedLevel().addExp(exp);
+        getLevelObject().getProfession().getAttachedLevel().addExp(exp, false);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class SkillAttachedLevel extends ConfigurableAttachedLevel<LevelableSkill
         super.removeExp(exp);
         // lets remove the same amount of exp from the profession
         exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getSkillProfessionExpRate());
-        getLevelObject().getProfession().getAttachedLevel().removeExp(exp);
+        getLevelObject().getProfession().getAttachedLevel().removeExp(exp, false);
     }
 }
