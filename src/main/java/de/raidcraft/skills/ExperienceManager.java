@@ -19,6 +19,7 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.effects.Summoned;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -91,7 +92,7 @@ public final class ExperienceManager implements Listener {
         CharacterTemplate character = event.getCharacter();
         Attack attack = character.getLastDamageCause();
 
-        if (attack == null) {
+        if (attack == null || character.hasEffect(Summoned.class)) {
             return;
         }
 
