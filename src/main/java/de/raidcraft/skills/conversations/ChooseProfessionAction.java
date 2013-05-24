@@ -6,6 +6,7 @@ import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
 import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
+import de.raidcraft.rcconversations.conversations.EndReason;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -35,14 +36,13 @@ public class ChooseProfessionAction extends AbstractAction {
                 if(hero.hasProfession(profession) && profession.isActive()) {
                     hero.sendMessage("", ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
                             + profession.getFriendlyName() + "' bereits!");
-                    conversation.endConversation();
+                    conversation.endConversation(EndReason.INFORM);
                     return;
                 }
             }
             if (!profession.isMeetingAllRequirements(hero)) {
                 hero.sendMessage(ChatColor.RED + profession.getResolveReason(hero));
-                conversation.triggerCurrentStage();
-                conversation.endConversation();
+                conversation.endConversation(EndReason.INFORM);
                 return;
             }
             if(forced) {

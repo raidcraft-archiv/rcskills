@@ -6,6 +6,7 @@ import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
 import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
+import de.raidcraft.rcconversations.conversations.EndReason;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.util.HeroUtil;
@@ -28,7 +29,7 @@ public class MaxOutHeroAction extends AbstractAction {
             if(!forced) {
                 hero.sendMessage(ChatColor.RED + "Du darfst diese Funktion hier nicht nutzen!");
             }
-            conversation.endConversation();
+            conversation.endConversation(EndReason.INFORM);
             return;
         }
         if(forced) {
