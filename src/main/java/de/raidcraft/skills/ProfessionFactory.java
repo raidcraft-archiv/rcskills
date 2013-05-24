@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -12,6 +11,8 @@ import de.raidcraft.skills.professions.VirtualProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 
+import java.io.File;
+
 /**
  * @author Silthus
  */
@@ -22,12 +23,12 @@ public final class ProfessionFactory {
     private final String professionName;
     private final ProfessionConfig config;
 
-    protected ProfessionFactory(SkillsPlugin plugin, Path<Profession> path, String professionName) {
+    protected ProfessionFactory(SkillsPlugin plugin, Path<Profession> path, String professionName, File file) {
 
         this.plugin = plugin;
         this.path = path;
         this.professionName = professionName;
-        this.config = plugin.configure(new ProfessionConfig(this), false);
+        this.config = plugin.configure(new ProfessionConfig(this, file), false);
     }
 
     protected Profession create(Hero hero, Profession profession) throws UnknownSkillException {

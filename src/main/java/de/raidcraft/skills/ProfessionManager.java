@@ -23,10 +23,12 @@ public final class ProfessionManager {
     private final SkillsPlugin plugin;
     private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
     private final Map<String, Map<String, Profession>> cachedProfessions = new HashMap<>();
+    private final File configBaseDir;
 
     protected ProfessionManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+        this.configBaseDir = new File(plugin.getDataFolder(), plugin.getCommonConfig().profession_config_path);
         loadProfessions();
     }
 
@@ -38,35 +40,62 @@ public final class ProfessionManager {
 
     private void loadProfessions() {
 
-        File dir = new File(plugin.getDataFolder(), plugin.getCommonConfig().profession_config_path);
-        dir.mkdirs();
+        Map<String, File> fileMap = loadProfessions(configBaseDir);
         // get all registered paths from the path config
         for (Path<Profession> path : plugin.getPathConfig().getPaths()) {
             // and now create factories for all the professions defined in this path
             for (String profName : path.getParents()) {
-                loadProfessionFactory(path, profName);
+                if (!fileMap.containsKey(profName.toLowerCase())) {
+                    plugin.getLogger().warning("Profession in paths.yml defined but not found in config folder: " + profName);
+                    continue;
+                }
+                ProfessionFactory factory = loadProfessionFactory(path, profName, fileMap.get(profName.toLowerCase()));
+                if (factory == null) {
+                    continue;
+                }
+                // now we need to load all childs
+                for (String child : factory.getConfig().getChildren()) {
+                    if (!fileMap.containsKey(child.toLowerCase())) {
+                        plugin.getLogger().warning("Tried to load non existant child profession in " + factory.getProfessionName());
+                        continue;
+                    }
+                    loadProfessionFactory(path, child, fileMap.get(child.toLowerCase()));
+                }
             }
             plugin.getLogger().info("Loaded all Professions for the path: " + path.getName());
         }
-
         // lets create the factory for the virtual profession
-        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, new VirtualPath(), VIRTUAL_PROFESSION));
+        professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, new VirtualPath(), VIRTUAL_PROFESSION, new File(configBaseDir, "virtual.yml")));
     }
 
-    private void loadProfessionFactory(Path<Profession> path, String profName) {
+    private Map<String, File> loadProfessions(File dir) {
 
-        ProfessionFactory factory = new ProfessionFactory(plugin, path, profName);
+        Map<String, File> files = new HashMap<>();
+        dir.mkdirs();
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                files.putAll(loadProfessions(file));
+                continue;
+            }
+            if (!file.getName().endsWith(".yml") || file.getName().equalsIgnoreCase("virtual.yml")) {
+                continue;
+            }
+            files.put(file.getName().replace(".yml", "").toLowerCase(), file);
+        }
+        return files;
+    }
+
+    private ProfessionFactory loadProfessionFactory(Path<Profession> path, String profName, File file) {
+
+        ProfessionFactory factory = new ProfessionFactory(plugin, path, profName, file);
         // check if the profession is enabled
         if (!factory.getConfig().isEnabled()) {
             plugin.getLogger().info("Not loading profession: " + factory.getProfessionName() + " because it is not enabled.");
-            return;
+            return null;
         }
         professionFactories.put(factory.getProfessionName(), factory);
         plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
-        // now we need to load all childs
-        for (String child : factory.getConfig().getChildren()) {
-            loadProfessionFactory(path, child);
-        }
+        return factory;
     }
 
     public Profession getVirtualProfession(Hero hero) {

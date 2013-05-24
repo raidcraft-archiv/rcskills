@@ -31,12 +31,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     private final Set<String> undefinedSkills = new HashSet<>();
     private final ProfessionFactory factory;
 
-    public ProfessionConfig(ProfessionFactory factory) {
+    public ProfessionConfig(ProfessionFactory factory, File file) {
 
-        super(factory.getPlugin(), new File(
-                new File(factory.getPlugin().getDataFolder(), factory.getPlugin().getCommonConfig().profession_config_path),
-                factory.getProfessionName() + ".yml"
-        ));
+        super(factory.getPlugin(), file);
         this.factory = factory;
     }
 

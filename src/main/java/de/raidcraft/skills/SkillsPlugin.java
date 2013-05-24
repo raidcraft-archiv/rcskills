@@ -40,7 +40,6 @@ import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.skills.TestSkill;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -176,7 +175,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         try {
             getSkillManager().registerClass(PermissionSkill.class);
-            getSkillManager().registerClass(TestSkill.class);
         } catch (UnknownSkillException e) {
             getLogger().warning(e.getMessage());
         }
