@@ -33,6 +33,18 @@ public class VirtualPath implements Path<Profession> {
     }
 
     @Override
+    public boolean isSelectedInCombat() {
+
+        return false;
+    }
+
+    @Override
+    public boolean isSelectedOutOfCombat() {
+
+        return false;
+    }
+
+    @Override
     public List<Profession> getParents(Hero hero) {
 
         ArrayList<Profession> professions = new ArrayList<>();

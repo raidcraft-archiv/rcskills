@@ -62,6 +62,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     CustomArmor removeArmor(EquipmentSlot type);
 
+    int getTotalArmorValue();
+
     void clearArmor();
 
     boolean hasArmor(EquipmentSlot slot);

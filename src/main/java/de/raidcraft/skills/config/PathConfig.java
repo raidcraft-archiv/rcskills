@@ -43,4 +43,14 @@ public class PathConfig extends ConfigurationBase<SkillsPlugin> {
 
         return getInt(path + ".priority", 1);
     }
+
+    public boolean isSelectedInCombat(String path) {
+
+        return getBoolean(path + ".select-in-combat", true);
+    }
+
+    public boolean isSelectedOutOfCombat(String path) {
+
+        return getBoolean(path + ".select-out-of-combat", true);
+    }
 }

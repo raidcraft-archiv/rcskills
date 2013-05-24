@@ -61,6 +61,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
+    private Profession highestRankedProfession;
 
     protected AbstractHero(Player player, HeroData data) {
 
@@ -69,7 +70,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.id = data.getId();
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
-        this.userInterface = new BukkitUserInterface(this);
         this.maxLevel = data.getMaxLevel();
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
@@ -83,6 +83,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // keep this last because we need to professions to load first
         setMaxHealth(getDefaultHealth());
         setHealth(data.getHealth());
+        // it is important to load the user interface last or lese it will run in an endless loop
+        this.userInterface = new BukkitUserInterface(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -95,10 +97,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 professions.put(profession.getProperties().getName(), profession);
                 paths.add(profession.getPath());
                 // set selected profession
-                if (selectedProfession == null || getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()
-                        && profession.isActive()) {
-                    setSelectedProfession(profession);
-                }
+                updateHighestRankedProfession();
                 // also add the parent if one exists
                 if (profession.getParent() != null) {
                     professions.put(profession.getParent().getName(), profession.getParent());
@@ -176,9 +175,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             }
         }
         // lets set the selected profession before we go all wanky in the while loop
-        if (getSelectedProfession().getPath().getPriority() <= profession.getPath().getPriority()) {
-            setSelectedProfession(profession);
-        }
+        updateHighestRankedProfession();
 
         // now lets go thru all of the professions parents add them and activate them
         do {
@@ -396,9 +393,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         int damage = super.getDamage();
         for (Attribute attribute : getAttributes()) {
-            if (attribute.getDamageModifier() > 0.0) {
-                damage += attribute.getCurrentValue() * attribute.getDamageModifier();
-            }
+            damage += attribute.getCurrentValue() * attribute.getDamageModifier();
         }
         return damage;
     }
@@ -406,8 +401,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public int getDefaultHealth() {
 
-        int health = (int) (getSelectedProfession().getProperties().getBaseHealth()
-                + getSelectedProfession().getProperties().getBaseHealthModifier() * getSelectedProfession().getAttachedLevel().getLevel());
+        int health = (int) (getHighestRankedProfession().getProperties().getBaseHealth()
+                + getHighestRankedProfession().getProperties().getBaseHealthModifier() * getHighestRankedProfession().getAttachedLevel().getLevel());
         for (Attribute attribute : getAttributes()) {
             if (attribute.getHealthModifier() > 0.0) {
                 health += attribute.getCurrentValue() * attribute.getHealthModifier();
@@ -553,6 +548,28 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         return new ArrayList<>(professions.values());
     }
 
+    public void updateHighestRankedProfession() {
+
+        for (Profession profession : getProfessions()) {
+            if (profession.isActive()) {
+                if (highestRankedProfession == null) {
+                    highestRankedProfession = profession;
+                } else if (highestRankedProfession.getPath().getPriority() < profession.getPath().getPriority()) {
+                    highestRankedProfession = profession;
+                }
+            }
+        }
+    }
+
+    @Override
+    public Profession getHighestRankedProfession() {
+
+        if (highestRankedProfession == null) {
+            updateHighestRankedProfession();
+        }
+        return highestRankedProfession;
+    }
+
     @Override
     public Profession getSelectedProfession() {
 
@@ -562,12 +579,41 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         return selectedProfession;
     }
 
-    @Override
     public void setSelectedProfession(Profession profession) {
 
         this.selectedProfession = profession;
-        setMaxHealth(getDefaultHealth());
-        getUserInterface().refresh();
+        if (getUserInterface() != null) {
+            getUserInterface().refresh();
+        }
+    }
+
+    @Override
+    public void setInCombat(boolean inCombat) {
+
+        if (inCombat != isInCombat()) {
+            super.setInCombat(inCombat);
+            updateSelectedProfession();
+        }
+    }
+
+    private void updateSelectedProfession() {
+
+        Profession newProfession = null;
+        for (Profession profession : getProfessions()) {
+            if (!profession.isActive()) {
+                continue;
+            }
+            if (profession.getPath().isSelectedInCombat() && isInCombat()
+                    || profession.getPath().isSelectedOutOfCombat() && !isInCombat()) {
+                if (newProfession == null
+                        || newProfession.getPath().getPriority() < profession.getPath().getPriority()) {
+                    newProfession = profession;
+                }
+            }
+        }
+        if (newProfession != null) {
+            setSelectedProfession(newProfession);
+        }
     }
 
     @Override

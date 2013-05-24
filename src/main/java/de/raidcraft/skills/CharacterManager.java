@@ -1,5 +1,11 @@
 package de.raidcraft.skills;
 
+import com.comphenix.protocol.Packets;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ConnectionSide;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -7,6 +13,7 @@ import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
@@ -23,7 +30,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -49,6 +55,22 @@ public final class CharacterManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
+                RaidCraft.getComponent(SkillsPlugin.class),
+                ConnectionSide.SERVER_SIDE,
+                Packets.Server.SET_EXPERIENCE
+        ) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+
+                Hero hero = getHero(event.getPlayer());
+                if (hero.getUserInterface() instanceof BukkitUserInterface) {
+                    PacketContainer packetContainer = event.getPacket().deepClone();
+                    ((BukkitUserInterface) hero.getUserInterface()).modifyExperiencePacket(packetContainer);
+                    event.setPacket(packetContainer);
+                }
+            }
+        });
     }
 
     public void reload() {
@@ -280,13 +302,6 @@ public final class CharacterManager implements Listener {
 
         // init once to set the health from the db and so on
         plugin.getCharacterManager().getHero(event.getPlayer());
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onPlayerGainExp(PlayerExpChangeEvent event) {
-
-        // TODO: somehow manage the minecraft exp for enchanting and stuff
-        // event.setAmount(0);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

@@ -16,6 +16,10 @@ public interface Path<T extends Parent> {
 
     public int getPriority();
 
+    public boolean isSelectedInCombat();
+
+    public boolean isSelectedOutOfCombat();
+
     /**
      * Will return a list of the very first parents.
      * The parent/child inheritance will take over from there.

@@ -1,17 +1,22 @@
 package de.raidcraft.skills.api.ui;
 
+import com.comphenix.protocol.Packets;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Silthus
@@ -19,7 +24,6 @@ import org.bukkit.scoreboard.Scoreboard;
 public class BukkitUserInterface implements UserInterface {
 
     public static final String HEALTH_OBJECTIVE = "hp";
-    private static final String EXP_OBJECTIVE = "rcsexp";
 
     private final Hero hero;
     private final Player player;
@@ -28,16 +32,26 @@ public class BukkitUserInterface implements UserInterface {
 
         this.hero = hero;
         this.player = hero.getPlayer();
-
-        if (player != null && player.isOnline()) {
-            updateHealthDisplay();
-        }
     }
 
     @Override
     public Hero getHero() {
 
         return hero;
+    }
+
+    private void updateSidebar() {
+
+        Objective objective = Scoreboards.getPlayerSidebarObjective(getHero());
+        for (Attribute attribute : getHero().getAttributes()) {
+            int currentValue = attribute.getCurrentValue();
+            if (currentValue == 0) {
+                continue;
+            }
+            objective.getScore(Bukkit.getOfflinePlayer(ChatColor.YELLOW + attribute.getFriendlyName())).setScore(currentValue);
+        }
+        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_GRAY + "Rüstung")).setScore(getHero().getTotalArmorValue());
+        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
     }
 
     private void updateHealthDisplay() {
@@ -48,17 +62,15 @@ public class BukkitUserInterface implements UserInterface {
 
     private void updateExperienceDisplay() {
 
-        Objective objective = getScoreboardExperienceObjective();
-        for (Profession profession : hero.getProfessions()) {
-            objective.getScore(
-                    Bukkit.getOfflinePlayer(ChatColor.GREEN + profession.getFriendlyName())
-            ).setScore(profession.getAttachedLevel().getExp());
-            objective.getScore(
-                    Bukkit.getOfflinePlayer("" + profession.getAttachedLevel().getExp())
-            ).setScore(profession.getAttachedLevel().getExp());
-            objective.getScore(
-                    Bukkit.getOfflinePlayer("" + profession.getAttachedLevel().getMaxExp())
-            ).setScore(profession.getAttachedLevel().getMaxExp());
+        try {
+            hero.getPlayer().setLevel(0);
+            hero.getPlayer().setExp(0.0F);
+            hero.getPlayer().setTotalExperience(0);
+            PacketContainer packet = new PacketContainer(Packets.Server.SET_EXPERIENCE);
+            modifyExperiencePacket(packet);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(hero.getPlayer(), packet);
+        } catch (InvocationTargetException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
         }
     }
 
@@ -67,13 +79,13 @@ public class BukkitUserInterface implements UserInterface {
 
         if (player == null
                 || !player.isOnline()
-                || player.getGameMode() == GameMode.CREATIVE
                 || player.isDead()
                 || player.getHealth() < 1) {
             return;
         }
 
-        // updateExperienceDisplay();
+        updateSidebar();
+        updateExperienceDisplay();
         // lets update the scoreboard
         updateHealthDisplay();
 
@@ -83,7 +95,7 @@ public class BukkitUserInterface implements UserInterface {
         }
     }
 
-    private void modifyExperiencePacket(PacketContainer packet) {
+    public void modifyExperiencePacket(PacketContainer packet) {
 
         Profession prof = hero.getSelectedProfession();
         float exp;
@@ -100,6 +112,7 @@ public class BukkitUserInterface implements UserInterface {
         // lets modify the actual paket
         packet.getFloat().write(0, exp);
         packet.getIntegers().write(1, level);
+        packet.getIntegers().write(0, 0);
     }
 
     private Objective getScoreboardHealthObjective() {
@@ -119,18 +132,5 @@ public class BukkitUserInterface implements UserInterface {
     public Score getHealthScore() {
 
         return getScoreboardHealthObjective().getScore(player);
-    }
-
-    private Objective getScoreboardExperienceObjective() {
-
-        Scoreboard scoreboard = Scoreboards.getScoreboard(player);
-
-        Objective objective = scoreboard.getObjective(EXP_OBJECTIVE + hero.getId());
-        if (objective == null) {
-            objective = scoreboard.registerNewObjective(EXP_OBJECTIVE + hero.getId(), "dummy");
-            objective.setDisplayName("Erfahrung");
-            objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-        }
-        return objective;
     }
 }

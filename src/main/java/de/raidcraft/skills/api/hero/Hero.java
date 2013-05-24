@@ -64,9 +64,9 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Set<Resource> getResources();
 
-    public Profession getSelectedProfession();
+    public Profession getHighestRankedProfession();
 
-    public void setSelectedProfession(Profession profession);
+    public Profession getSelectedProfession();
 
     public Profession getVirtualProfession();
 

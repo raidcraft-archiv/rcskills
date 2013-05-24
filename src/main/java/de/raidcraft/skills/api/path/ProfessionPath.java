@@ -42,6 +42,18 @@ public class ProfessionPath implements Path<Profession> {
     }
 
     @Override
+    public boolean isSelectedInCombat() {
+
+        return config.isSelectedInCombat(getName());
+    }
+
+    @Override
+    public boolean isSelectedOutOfCombat() {
+
+        return config.isSelectedOutOfCombat(getName());
+    }
+
+    @Override
     public List<Profession> getParents(Hero hero) {
 
         ArrayList<Profession> professions = new ArrayList<>();

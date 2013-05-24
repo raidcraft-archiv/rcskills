@@ -142,7 +142,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean canSwing(EquipmentSlot slot) {
 
-        if (this instanceof Hero) {
+        if (slot != EquipmentSlot.HANDS && this instanceof Hero) {
             CustomWeapon weapon = getWeapon(slot);
             if (weapon != null && !weapon.matches(getEntity().getEquipment().getItemInHand())) {
                 return false;
@@ -154,11 +154,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public int swingWeapon(EquipmentSlot slot) {
 
-        if (!hasWeapon(slot) || !canSwing(slot)) {
+        if (slot != EquipmentSlot.HANDS && (!hasWeapon(slot) || !canSwing(slot))) {
             return 0;
         }
         setLastSwing(slot);
         CustomWeapon weapon = getWeapon(slot);
+        if (weapon == null) {
+            return 0;
+        }
         return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
     }
 
@@ -189,6 +192,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setArmor(CustomArmor armor) {
 
         armorPieces.put(armor.getEquipmentSlot(), armor);
+        // if hero update the user interface
+        if (this instanceof Hero) {
+            ((Hero)this).getUserInterface().refresh();
+        }
     }
 
     @Override
@@ -206,13 +213,32 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
-        return armorPieces.remove(slot);
+        CustomArmor remove = armorPieces.remove(slot);
+        // if hero update the user interface
+        if (this instanceof Hero) {
+            ((Hero)this).getUserInterface().refresh();
+        }
+        return remove;
+    }
+
+    @Override
+    public int getTotalArmorValue() {
+
+        int armorValue = 0;
+        for (CustomArmor armor : getArmor()) {
+            armorValue += armor.getArmorValue();
+        }
+        return armorValue;
     }
 
     @Override
     public void clearArmor() {
 
         armorPieces.clear();
+        // if hero update the user interface
+        if (this instanceof Hero) {
+            ((Hero)this).getUserInterface().refresh();
+        }
     }
 
     @Override
@@ -242,7 +268,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean canAttack() {
 
-        if (getWeapons().isEmpty()) return true;
+        if (getWeapons().isEmpty()) return canSwing(EquipmentSlot.HANDS);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (canSwing(slot)) {
                 return true;

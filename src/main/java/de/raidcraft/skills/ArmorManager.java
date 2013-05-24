@@ -102,10 +102,7 @@ public final class ArmorManager implements Triggered, Listener {
             return;
         }
 
-        int totalArmor = 0;
-        for (CustomArmor armorPiece : attack.getTarget().getArmor()) {
-            totalArmor += armorPiece.getArmorValue();
-        }
+        int totalArmor = attack.getTarget().getTotalArmorValue();
         // lets check if sunder armor effect is active
         if (attack.getTarget().hasEffect(SunderingArmor.class)) {
             totalArmor = (int) (totalArmor - totalArmor * attack.getTarget().getEffect(SunderingArmor.class).getArmorReduction());
@@ -117,11 +114,6 @@ public final class ArmorManager implements Triggered, Listener {
         if (reducedDamage > 0) {
             attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int)(damageReduction * 10000)/100.0) + "%) verringert.");
         }
-    }
-
-    public int getDefaultArmorValue(int itemId) {
-
-        return defaultArmorValue.get(itemId);
     }
 
     /**

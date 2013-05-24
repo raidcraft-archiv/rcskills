@@ -1,8 +1,10 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -14,6 +16,10 @@ import java.util.Map;
  */
 public final class Scoreboards {
 
+    private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
+    private static final String OBJECTIVE_LIST_BASE_NAME = "list";
+    private static final String LIST_DISPLAY_NAME = "Stats";
+    private static final String SIDE_DISPLAY_NAME = "Charakterübersicht";
     private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
 
     public static Scoreboard getScoreboard(Player player) {
@@ -48,5 +54,37 @@ public final class Scoreboards {
                 }
             }
         }
+    }
+
+    public static Objective getPlayerTabListObjective(Hero hero) {
+
+        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
+
+        String objectiveName = OBJECTIVE_LIST_BASE_NAME + hero.getId();
+        Objective objective;
+        if (scoreboard.getObjective(objectiveName) == null) {
+            objective = scoreboard.registerNewObjective(objectiveName, "dummy");
+            objective.setDisplayName(LIST_DISPLAY_NAME);
+            objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+        } else {
+            objective = scoreboard.getObjective(objectiveName);
+        }
+        return objective;
+    }
+
+    public static Objective getPlayerSidebarObjective(Hero hero) {
+
+        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
+
+        String objectiveName = OBJECTIVE_SIDE_BASE_NAME + hero.getId();
+        Objective objective;
+        if (scoreboard.getObjective(objectiveName) == null) {
+            objective = scoreboard.registerNewObjective(objectiveName, "dummy");
+            objective.setDisplayName(SIDE_DISPLAY_NAME);
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        } else {
+            objective = scoreboard.getObjective(objectiveName);
+        }
+        return objective;
     }
 }
