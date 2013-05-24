@@ -149,7 +149,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             }
         }
         // keep this last or items will be removed before casting
-        // TODO: replace with working util method
         holder.getPlayer().getInventory().removeItem(getSkillProperties().getReagents());
         // and lets set the cooldown because it is like a usage cost for further casting
         setLastCast(System.currentTimeMillis());
