@@ -62,11 +62,15 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     protected void tick(CharacterTemplate target) throws CombatException {
 
         if (isPlayer) {
-            if (player.getExp() >= 1.0F) {
+            // when the spell is cast above 90% it is consired success
+            if (player.getExp() >= 0.9F) {
                 casted = true;
+            }
+            float newExp = player.getExp() + fillPerTick;
+            if (newExp > 1.0F) {
                 return;
             }
-            player.setExp(player.getExp() + fillPerTick);
+            player.setExp(newExp);
         }
         for (AmbientEffect effect : ambientEffects) {
             effect.run(getTarget().getEntity().getLocation());
@@ -88,6 +92,8 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
         }
         if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
+        } else {
+            getSource().run();
         }
     }
 
