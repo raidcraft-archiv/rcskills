@@ -64,7 +64,7 @@ public abstract class AbstractResource implements Resource {
 
     private boolean isInCombatRegenInPercent() {
 
-        return inCombatRegen.getBoolean("percent", true);
+        return inCombatRegen == null || inCombatRegen.getBoolean("percent", true);
     }
 
     private double getOutOfCombatRegenValue() {
@@ -74,7 +74,7 @@ public abstract class AbstractResource implements Resource {
 
     private boolean isOutOfCombatRegenInPercent() {
 
-        return outOfCombatRegen.getBoolean("percent", true);
+        return outOfCombatRegen == null || outOfCombatRegen.getBoolean("percent", true);
     }
 
     private void startTask() {
