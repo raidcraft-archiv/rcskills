@@ -9,7 +9,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.util.ParticleEffect;
+import de.raidcraft.api.ambient.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
