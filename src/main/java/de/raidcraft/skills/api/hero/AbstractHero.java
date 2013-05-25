@@ -333,6 +333,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
+        updateHighestRankedProfession();
+        updateSelectedProfession();
         setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();

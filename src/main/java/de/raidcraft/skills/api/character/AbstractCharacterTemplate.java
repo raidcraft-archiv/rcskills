@@ -652,6 +652,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (target == null) {
             throw new CombatException("Du hast kein Ziel anvisiert!");
         }
+        
         if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
             throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
         }
