@@ -191,6 +191,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
         loadAttributes();
+        // update the display stuff
+        updateHighestRankedProfession();
+        updateSelectedProfession();
         // reload the bound items
         RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
         clearWeapons();
