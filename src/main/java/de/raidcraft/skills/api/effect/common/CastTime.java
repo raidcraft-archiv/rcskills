@@ -38,7 +38,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
         setPriority(-1.0);
         duration = source.getCastTime();
         interval = 1;
-        fillPerTick = 1.0F / delay;
+        fillPerTick = 1.0F / duration;
     }
 
     @Override
