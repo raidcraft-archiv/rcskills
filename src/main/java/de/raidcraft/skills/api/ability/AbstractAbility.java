@@ -183,8 +183,8 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
-        magicalAttack().setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
-        magicalAttack().setLineEffects(getAmbientEffects(AbilityEffectStage.LINE));
+        magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
+        magicalAttack.setLineEffects(getAmbientEffects(AbilityEffectStage.LINE));
         magicalAttack.run();
         return magicalAttack;
     }
