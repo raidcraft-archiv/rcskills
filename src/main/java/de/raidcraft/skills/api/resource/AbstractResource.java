@@ -25,13 +25,14 @@ public abstract class AbstractResource implements Resource {
     private final ResourceData data;
     private final Profession profession;
     private final ConfigurationSection config;
+    private final ConfigurationSection inCombatRegen;
+    private final ConfigurationSection outOfCombatRegen;
     private final Set<VisualResourceType> types = new HashSet<>();
     private BukkitTask task;
     private long regenInterval;
     private double regenValue;
     private int current;
     private boolean enabled = false;
-    private boolean inPercent = true;
 
     public AbstractResource(ResourceData data, Profession profession, ConfigurationSection config) {
 
@@ -49,11 +50,31 @@ public abstract class AbstractResource implements Resource {
             type.update(this);
         }
         // lets get some default values from the config
-        regenValue = ConfigUtil.getTotalValue(profession, config.getConfigurationSection("regen"));
-        regenInterval = (long) (ConfigUtil.getTotalValue(profession, config.getConfigurationSection("interval")) * 20);
-        inPercent = config.getBoolean("in-percent", true);
+        this.inCombatRegen = config.getConfigurationSection("in-combat-regen");
+        this.outOfCombatRegen = config.getConfigurationSection("out-of-combat-regen");
+        regenInterval = (long) config.getDouble("interval", 3) * 20;
         // lets start the task
         startTask();
+    }
+
+    private double getCombatRegenValue() {
+
+        return ConfigUtil.getTotalValue(getProfession(), inCombatRegen);
+    }
+
+    private boolean isInCombatRegenInPercent() {
+
+        return inCombatRegen.getBoolean("percent", true);
+    }
+
+    private double getOutOfCombatRegenValue() {
+
+        return ConfigUtil.getTotalValue(getProfession(), outOfCombatRegen);
+    }
+
+    private boolean isOutOfCombatRegenInPercent() {
+
+        return outOfCombatRegen.getBoolean("percent", true);
     }
 
     private void startTask() {
@@ -222,10 +243,21 @@ public abstract class AbstractResource implements Resource {
         }
 
         int newValue = getCurrent();
-        if (inPercent) {
-            newValue += getMax() * getRegenValue();
+        if (getHero().isInCombat()) {
+            if (isInCombatRegenInPercent()) {
+                newValue += getMax() * getCombatRegenValue();
+            } else {
+                newValue += getCombatRegenValue();
+            }
         } else {
-            newValue += getRegenValue();
+            if (isOutOfCombatRegenInPercent()) {
+                newValue += getMax() * getOutOfCombatRegenValue();
+            } else {
+                newValue += getOutOfCombatRegenValue();
+            }
+        }
+        if (newValue == getCurrent()) {
+            return;
         }
         setCurrent(newValue);
     }
@@ -243,7 +275,6 @@ public abstract class AbstractResource implements Resource {
     public void save() {
 
         data.setValue(getCurrent());
-
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             RaidCraft.getDatabase(SkillsPlugin.class).save(data);
