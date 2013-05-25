@@ -559,6 +559,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 }
             }
         }
+        if (highestRankedProfession == null) {
+            highestRankedProfession = getVirtualProfession();
+        }
     }
 
     @Override
