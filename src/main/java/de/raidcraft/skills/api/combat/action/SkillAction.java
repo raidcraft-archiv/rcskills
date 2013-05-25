@@ -2,12 +2,14 @@ package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -111,6 +113,10 @@ public class SkillAction extends AbstractAction<Hero> {
 
         // and call the trigger
         ((CommandTriggered) skill).runCommand(args);
+        // run ambient stuff
+        for (AmbientEffect ambientEffect : getSkill().getAmbientEffects(AbilityEffectStage.CAST)) {
+            ambientEffect.run(getSource().getEntity().getLocation());
+        }
 
         // lets remove the costs
         // it is important to remove them after the skill usage in order to calculate all the variable properly

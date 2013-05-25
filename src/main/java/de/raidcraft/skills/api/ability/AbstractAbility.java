@@ -2,12 +2,12 @@ package de.raidcraft.skills.api.ability;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
@@ -18,6 +18,7 @@ import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.LocationUtil;
@@ -26,6 +27,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +53,17 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         this.description = data.getDescription();
         this.properties = data;
         this.holder = holder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
+
+        Object effects = getProperties().getAmbientEffects().get(stage);
+        if (effects == null) {
+            return new ArrayList<>();
+        }
+        return (List<AmbientEffect>) effects;
     }
 
     public final boolean matches(String name) {
@@ -167,42 +180,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack;
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage, EntityAttackCallback callback) throws CombatException {
-
-        MagicalAttack attack = new MagicalAttack(getHolder(), target, damage, callback);
-        attack.run();
-        type.run(attack);
-        return attack;
-    }
-
-    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage, EntityAttackCallback callback) throws CombatException {
-
-        return magicalAttack(getTarget(), type, damage, callback);
-    }
-
-    protected final MagicalAttack magicalAttack(MagicalAttackType type, int damage) throws CombatException {
-
-        return magicalAttack(type, damage, null);
-    }
-
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, MagicalAttackType type, int damage) throws CombatException {
-
-        return magicalAttack(target, type, damage, null);
-    }
-
-    protected final MagicalAttack magicalAttack(MagicalAttackType type, EntityAttackCallback callback) throws CombatException {
-
-        return magicalAttack(type, getTotalDamage(), callback);
-    }
-
-    protected final MagicalAttack magicalAttack(MagicalAttackType type) throws CombatException {
-
-        return magicalAttack(type, getTotalDamage(), null);
-    }
-
     protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
+        magicalAttack().setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
+        magicalAttack().setLineEffects(getAmbientEffects(AbilityEffectStage.LINE));
         magicalAttack.run();
         return magicalAttack;
     }

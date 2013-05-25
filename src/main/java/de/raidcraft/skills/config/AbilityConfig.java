@@ -1,14 +1,23 @@
 package de.raidcraft.skills.config;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.api.ambient.AmbientManager;
+import de.raidcraft.api.ambient.UnknownAmbientEffect;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.AbilityFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.AbilityInformation;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -82,6 +91,32 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
 
         return getOverrideBool("use-out-of-combat", true);
     }
+
+    @Override
+    public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects() {
+
+        HashMap<AbilityEffectStage, List<AmbientEffect>> effects = new HashMap<>();
+        ConfigurationSection root = getOverrideSection("ambient-effects");
+        for (AbilityEffectStage stage : AbilityEffectStage.values()) {
+            ConfigurationSection section = root.getConfigurationSection(stage.name());
+            if (section == null) {
+                continue;
+            }
+            if (!effects.containsKey(stage)) {
+                effects.put(stage, new ArrayList<AmbientEffect>());
+            }
+            Set<String> keys = section.getKeys(false);
+            for (String key : keys) {
+                try {
+                    effects.get(stage).add(AmbientManager.getEffect(section.getConfigurationSection(key)));
+                } catch (UnknownAmbientEffect e) {
+                    RaidCraft.LOGGER.warning(e.getMessage());
+                }
+            }
+        }
+        return effects;
+    }
+
     @Override
     public ConfigurationSection getData() {
 

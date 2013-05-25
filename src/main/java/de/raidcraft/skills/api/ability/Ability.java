@@ -1,11 +1,14 @@
 package de.raidcraft.skills.api.ability;
 
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -60,6 +63,8 @@ public interface Ability<T extends CharacterTemplate> {
     void setLastCast(long time);
 
     boolean matches(String name);
+
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage);
 
     /**
      * Applies the skill to the {@link de.raidcraft.skills.api.hero.Hero}. Is called when the skill is first added to the hero.

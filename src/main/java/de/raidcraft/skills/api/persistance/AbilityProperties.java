@@ -1,6 +1,11 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -22,6 +27,8 @@ public interface AbilityProperties<T> {
     boolean canUseInCombat();
 
     boolean canUseOutOfCombat();
+
+    public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects();
 
     ConfigurationSection getData();
 

@@ -1,5 +1,9 @@
 package de.raidcraft.skills.config;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.api.ambient.AmbientManager;
+import de.raidcraft.api.ambient.UnknownAmbientEffect;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
@@ -13,6 +17,7 @@ import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
@@ -21,8 +26,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -105,6 +113,31 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public boolean canUseOutOfCombat() {
 
         return getOverrideBool("use-out-of-combat", true);
+    }
+
+    @Override
+    public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects() {
+
+        HashMap<AbilityEffectStage, List<AmbientEffect>> effects = new HashMap<>();
+        ConfigurationSection root = getOverrideSection("ambient-effects");
+        for (AbilityEffectStage stage : AbilityEffectStage.values()) {
+            ConfigurationSection section = root.getConfigurationSection(stage.name());
+            if (section == null) {
+                continue;
+            }
+            if (!effects.containsKey(stage)) {
+                effects.put(stage, new ArrayList<AmbientEffect>());
+            }
+            Set<String> keys = section.getKeys(false);
+            for (String key : keys) {
+                try {
+                    effects.get(stage).add(AmbientManager.getEffect(section.getConfigurationSection(key)));
+                } catch (UnknownAmbientEffect e) {
+                    RaidCraft.LOGGER.warning(e.getMessage());
+                }
+            }
+        }
+        return effects;
     }
 
     @Override

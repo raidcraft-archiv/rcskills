@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.CombatManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -12,9 +13,14 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.util.BlockUtil;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This attack is issued by a skill or the damage event itself.
@@ -25,6 +31,8 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
 
     private Callback<EntityAttack> callback;
     private EntityDamageEvent.DamageCause cause = null;
+    private List<AmbientEffect> lineEffects = new ArrayList<>();
+    private List<AmbientEffect> impactEffects = new ArrayList<>();
 
     public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
 
@@ -50,6 +58,16 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
                 damage,
                 EffectType.fromEvent(event.getCause()));
         cause = event.getCause();
+    }
+
+    public void setLineEffects(List<AmbientEffect> lineEffects) {
+
+        this.lineEffects = lineEffects;
+    }
+
+    public void setImpactEffects(List<AmbientEffect> impactEffects) {
+
+        this.impactEffects = impactEffects;
     }
 
     @Override
@@ -79,10 +97,20 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
                 // if this is a special attack add weapon damage
                 setDamage(getDamage() + getSource().getDamage());
             }
+            // player some ambient effects
+            for (Block block : getSource().getEntity().getLineOfSight(BlockUtil.TRANSPARENT_BLOCKS, 100)) {
+                for (AmbientEffect effect : lineEffects) {
+                    effect.run(block.getLocation());
+                }
+            }
             // now actually damage the target
             getTarget().damage(this);
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
+            // play the impact effects
+            for (AmbientEffect effect : impactEffects) {
+                effect.run(getTarget().getEntity().getLocation());
+            }
         } else {
             throw new CombatException("Du kannst dieses Ziel nicht angreifen!");
         }

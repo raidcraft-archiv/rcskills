@@ -38,7 +38,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -50,6 +52,7 @@ public final class CharacterManager implements Listener {
     private final Map<String, Hero> heroes = new HashMap<>();
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
+    private final Set<String> pausedExpPlayers = new HashSet<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -63,6 +66,9 @@ public final class CharacterManager implements Listener {
             @Override
             public void onPacketSending(PacketEvent event) {
 
+                if (pausedExpPlayers.contains(event.getPlayer().getName())) {
+                    return;
+                }
                 Hero hero = getHero(event.getPlayer());
                 if (hero.getUserInterface() instanceof BukkitUserInterface) {
                     PacketContainer packetContainer = event.getPacket().deepClone();
@@ -71,6 +77,16 @@ public final class CharacterManager implements Listener {
                 }
             }
         });
+    }
+
+    public void pausePlayerExpUpdate(Player player) {
+
+        pausedExpPlayers.add(player.getName().toLowerCase());
+    }
+
+    public void unpausePlayerExpUpdate(Player player) {
+
+        pausedExpPlayers.remove(player.getName().toLowerCase());
     }
 
     public void reload() {
