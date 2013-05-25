@@ -55,7 +55,7 @@ public class ConfigurableAttribute implements Attribute {
     @Override
     public String getName() {
 
-        return getType().name();
+        return getType().name().toLowerCase();
     }
 
     @Override
