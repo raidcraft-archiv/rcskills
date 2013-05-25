@@ -30,6 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -66,7 +67,7 @@ public final class CharacterManager implements Listener {
             @Override
             public void onPacketSending(PacketEvent event) {
 
-                if (pausedExpPlayers.contains(event.getPlayer().getName())) {
+                if (pausedExpPlayers.contains(event.getPlayer().getName().toLowerCase())) {
                     return;
                 }
                 Hero hero = getHero(event.getPlayer());
@@ -331,6 +332,14 @@ public final class CharacterManager implements Listener {
             case SATIATED:
                 event.setCancelled(true);
                 break;
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onExpGain(PlayerExpChangeEvent event) {
+
+        if (!pausedExpPlayers.contains(event.getPlayer().getName().toLowerCase())) {
+            event.setAmount(0);
         }
     }
 }

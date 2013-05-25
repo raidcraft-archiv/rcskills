@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 
 /**
  * @author Silthus
@@ -48,11 +47,5 @@ public final class BukkitEnvironmentManager implements Listener {
         if (event.getFoodLevel() > 19) {
             event.setFoodLevel(19);
         }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onExpGain(PlayerExpChangeEvent event) {
-
-        event.setAmount(0);
     }
 }

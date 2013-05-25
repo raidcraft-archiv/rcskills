@@ -36,7 +36,6 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
         super(source, target, data);
         setPriority(-1.0);
-        delay = 0;
         duration = source.getCastTime();
         interval = 1;
         fillPerTick = 1.0F / delay;
@@ -47,7 +46,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
         getSource().getSource().sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC +
                 "Wirke Zauber " + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
-                + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDelay()) + "s");
+                + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDuration()) + "s");
 
         isPlayer = getTarget().getEntity() instanceof Player;
         if (isPlayer) {
