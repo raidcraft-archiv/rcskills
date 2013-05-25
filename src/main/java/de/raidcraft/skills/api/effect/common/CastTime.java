@@ -53,6 +53,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
             player = (Player) getTarget().getEntity();
             RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().pausePlayerExpUpdate(player);
             nullExp();
+            player.setExp(fillPerTick);
         }
         ambientEffects = getSource().getSkill().getAmbientEffects(AbilityEffectStage.CASTING);
     }
