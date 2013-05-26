@@ -28,6 +28,11 @@ public class EnvironmentAttack extends AbstractAttack<EntityDamageByEntityEvent.
         this.event = event;
     }
 
+    public EntityDamageEvent.DamageCause getDamageCause() {
+
+        return event.getCause();
+    }
+
     @Override
     public void run() throws CombatException {
 
