@@ -40,7 +40,15 @@ public final class Scoreboards {
             return;
         }
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        scoreboards.remove(player.getName().toLowerCase());
+        Scoreboard scoreboard = scoreboards.remove(player.getName().toLowerCase());
+        if (scoreboard != null) {
+            for (Objective objective : scoreboard.getObjectives()) {
+                objective.unregister();
+            }
+            for (DisplaySlot slot : DisplaySlot.values()) {
+                scoreboard.clearSlot(slot);
+            }
+        }
     }
 
     public static void updateHealthDisplays() {
