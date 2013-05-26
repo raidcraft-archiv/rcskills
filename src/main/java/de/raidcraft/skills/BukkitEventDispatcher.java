@@ -11,6 +11,7 @@ import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skills.trigger.CraftTrigger;
 import de.raidcraft.skills.trigger.EnchantTrigger;
 import de.raidcraft.skills.trigger.EntityTargetTrigger;
+import de.raidcraft.skills.trigger.FurnaceExtractTrigger;
 import de.raidcraft.skills.trigger.InventoryClickTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.InventoryOpenTrigger;
@@ -40,6 +41,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -129,6 +131,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new EnchantTrigger(plugin.getCharacterManager().getHero(event.getEnchanter()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onFurnaceExtract(FurnaceExtractEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new FurnaceExtractTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
 
