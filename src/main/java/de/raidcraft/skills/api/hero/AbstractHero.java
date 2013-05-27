@@ -322,6 +322,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public boolean hasPath(Path path) {
+
+        return getPaths().contains(path);
+    }
+
+    @Override
     public Set<Path<Profession>> getPaths() {
 
         return paths;

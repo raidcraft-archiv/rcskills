@@ -110,15 +110,15 @@ public class ProfessionCommands {
             if (force) {
                 chooseProfession(hero, profession);
             } else {
-                int cost = 0;
-                if (hero.getProfessions().size() > 0) {
-                    cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel()));
+                double cost = 0.0;
+                if (hero.hasPath(profession.getPath())) {
+                    cost = plugin.getCommonConfig().profession_change_cost +
+                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel());
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
                         + ChatColor.GREEN + " Spezialisierung wechseln willst?");
-                if (cost > 0 && plugin.getEconomy() != null) {
+                if (cost > 0.0 && plugin.getEconomy() != null) {
                     sender.sendMessage(ChatColor.RED +
                             "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
                             " Spezialisierung zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
@@ -166,17 +166,17 @@ public class ProfessionCommands {
             return;
         }
 
-        int cost = 0;
-        if (hero.getProfessions().size() > 0) {
-            cost = (int) (plugin.getCommonConfig().profession_change_cost +
-                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel()));
+        double cost = 0.0;
+        if (hero.hasPath(profession.getPath())) {
+            cost = plugin.getCommonConfig().profession_change_cost +
+                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel());
         }
         hero.changeProfession(profession);
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
                 ChatColor.YELLOW + " Spezialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
 
         Economy economy = plugin.getEconomy();
-        if (economy != null && cost > 0) {
+        if (economy != null && cost > 0.0) {
             hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + economy.currencyNamePlural()
                     + ChatColor.RED + " vom Konto abgezogen.");
         }

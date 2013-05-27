@@ -70,6 +70,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Profession getVirtualProfession();
 
+    public boolean hasPath(Path path);
+
     public Set<Path<Profession>> getPaths();
 
     public void changeProfession(Profession profession);
