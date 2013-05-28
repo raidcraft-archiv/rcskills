@@ -68,10 +68,16 @@ public class ChooseProfessionAction extends AbstractAction {
                     }
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {
-                    conversation.triggerStage(createConfirmStage(
-                            "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                    + profession.getFriendlyName() + " wählen willst?" +
-                                    (cost > 0.0 ? "\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""), args));
+                    if(RaidCraft.getEconomy().hasEnough(hero.getName(), cost)) {
+                        conversation.triggerStage(createConfirmStage(
+                                "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
+                                        + profession.getFriendlyName() + " wählen willst?" +
+                                        (cost > 0.0 ? "\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""), args));
+                    }
+                    else {
+                        hero.sendMessage(ChatColor.RED + "Du benötigst hierfür mindestens " + RaidCraft.getEconomy().getFormattedAmount(cost));
+                        conversation.endConversation(EndReason.INFORM);
+                    }
                 }
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {
