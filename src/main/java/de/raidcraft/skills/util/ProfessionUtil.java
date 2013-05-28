@@ -122,4 +122,11 @@ public final class ProfessionUtil {
 
         return body;
     }
+
+    public static double getProfessionChangeCost(Profession profession) {
+
+        SkillsPlugin.LocalConfiguration commonConfig = RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig();
+        return commonConfig.profession_change_cost +
+                (commonConfig.profession_change_level_modifier * profession.getAttachedLevel().getLevel());
+    }
 }

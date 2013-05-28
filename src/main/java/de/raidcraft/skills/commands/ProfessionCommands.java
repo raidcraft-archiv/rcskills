@@ -113,8 +113,7 @@ public class ProfessionCommands {
             } else {
                 double cost = 0.0;
                 if (hero.hasPath(profession.getPath())) {
-                    cost = plugin.getCommonConfig().profession_change_cost +
-                            (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel());
+                    cost = ProfessionUtil.getProfessionChangeCost(profession);
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
@@ -169,8 +168,7 @@ public class ProfessionCommands {
 
         double cost = 0.0;
         if (hero.hasPath(profession.getPath())) {
-            cost = plugin.getCommonConfig().profession_change_cost +
-                    (plugin.getCommonConfig().profession_change_level_modifier * profession.getAttachedLevel().getLevel());
+            cost = ProfessionUtil.getProfessionChangeCost(profession);
         }
         hero.changeProfession(profession);
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
