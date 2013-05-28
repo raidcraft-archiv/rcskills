@@ -1,6 +1,7 @@
 package de.raidcraft.skills.conversations;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.rcconversations.api.action.AbstractAction;
 import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
@@ -32,6 +33,10 @@ public class ChooseProfessionAction extends AbstractAction {
         Profession profession;
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
+            double cost = 0.0;
+            if (hero.hasPath(profession.getPath())) {
+                cost = ProfessionUtil.getProfessionChangeCost(profession);
+            }
 
             if(!forced) {
                 if(hero.hasProfession(profession) && profession.isActive()) {
@@ -58,11 +63,15 @@ public class ChooseProfessionAction extends AbstractAction {
 
                     hero.sendMessage("");
                     hero.changeProfession(profession);
+                    if (cost > 0.0) {
+                        RaidCraft.getEconomy().modify(hero.getName(), ProfessionUtil.getProfessionChangeCost(profession), BalanceSource.SKILL, "--> " + profession.getFriendlyName());
+                    }
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {
                     conversation.triggerStage(createConfirmStage(
                             "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                    + profession.getFriendlyName() + " wählen willst?\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)), args));
+                                    + profession.getFriendlyName() + " wählen willst?" +
+                                    (cost > 0.0 ? "\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""), args));
                 }
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {

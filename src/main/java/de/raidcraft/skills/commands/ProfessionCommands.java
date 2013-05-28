@@ -177,7 +177,7 @@ public class ProfessionCommands {
         if (RaidCraft.getEconomy() != null && cost > 0.0) {
             hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
                     + ChatColor.RED + " vom Konto abgezogen.");
-            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "Choose Profession: " + profession.getFriendlyName());
+            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
         }
     }
 }
