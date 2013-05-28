@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
@@ -12,7 +13,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -118,11 +118,11 @@ public class ProfessionCommands {
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
                         + ChatColor.GREEN + " Spezialisierung wechseln willst?");
-                if (cost > 0.0 && plugin.getEconomy() != null) {
+                if (cost > 0.0 && RaidCraft.getEconomy() != null) {
                     sender.sendMessage(ChatColor.RED +
                             "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
                             " Spezialisierung zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
-                                    " kostet dich " + ChatColor.AQUA + cost + plugin.getEconomy().currencyNamePlural());
+                                    " kostet dich " + RaidCraft.getEconomy().getFormattedAmount(cost));
                 }
                 new QueuedCommand(sender, this, "chooseProfession", hero, profession);
             }
@@ -175,9 +175,8 @@ public class ProfessionCommands {
         hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
                 ChatColor.YELLOW + " Spezialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
 
-        Economy economy = plugin.getEconomy();
-        if (economy != null && cost > 0.0) {
-            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + ChatColor.AQUA + cost + economy.currencyNamePlural()
+        if (RaidCraft.getEconomy() != null && cost > 0.0) {
+            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
                     + ChatColor.RED + " vom Konto abgezogen.");
         }
     }
