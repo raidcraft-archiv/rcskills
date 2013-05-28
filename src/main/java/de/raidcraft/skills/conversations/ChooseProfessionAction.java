@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.util.ProfessionUtil;
 import org.bukkit.ChatColor;
 
 /**
@@ -61,7 +62,7 @@ public class ChooseProfessionAction extends AbstractAction {
                 } else {
                     conversation.triggerStage(createConfirmStage(
                             "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
-                                    + profession.getFriendlyName() + " wählen willst? Dies kostet dich " + plugin.getCommonConfig().profession_change_cost + "c.", args));
+                                    + profession.getFriendlyName() + " wählen willst?\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)), args));
                 }
             }
         } catch (UnknownSkillException | UnknownProfessionException e) {
