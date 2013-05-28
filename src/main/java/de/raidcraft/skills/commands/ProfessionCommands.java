@@ -6,6 +6,7 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCommand;
+import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
@@ -178,6 +179,7 @@ public class ProfessionCommands {
         if (RaidCraft.getEconomy() != null && cost > 0.0) {
             hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
                     + ChatColor.RED + " vom Konto abgezogen.");
+            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "Choose Profession: " + profession.getFriendlyName());
         }
     }
 }
