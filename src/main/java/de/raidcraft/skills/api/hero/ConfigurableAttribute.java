@@ -1,11 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
-import com.avaje.ebean.EbeanServer;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.AttributeType;
-import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroAttribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -13,7 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class ConfigurableAttribute implements Attribute {
 
-    private final int id;
     private final Hero hero;
     private final AttributeType type;
     private final double damageModifier;
@@ -27,29 +21,8 @@ public class ConfigurableAttribute implements Attribute {
         this.type = AttributeType.fromString(name);
         this.damageModifier = config.getDouble("damage-modifier", 0.0);
         this.healthModifier = config.getDouble("health-modifier", 0.0);
-        EbeanServer ebeanServer = RaidCraft.getDatabase(SkillsPlugin.class);
-        THeroAttribute database = ebeanServer.find(THeroAttribute.class)
-                .where()
-                .eq("hero_id", hero.getId())
-                .eq("attribute", type)
-                .findUnique();
-        if (database == null) {
-            database = new THeroAttribute();
-            database.setHero(ebeanServer.find(THero.class, hero.getId()));
-            database.setAttribute(type);
-            database.setBaseValue(baseValue);
-            database.setCurrentValue(baseValue);
-            ebeanServer.save(database);
-        }
-        this.id = database.getId();
-        this.baseValue = database.getBaseValue();
-        this.currentValue = database.getCurrentValue();
-    }
-
-    @Override
-    public int getId() {
-
-        return id;
+        this.baseValue = baseValue;
+        this.currentValue = baseValue;
     }
 
     @Override
@@ -116,16 +89,6 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
-    public void save() {
-
-        EbeanServer ebeanServer = RaidCraft.getDatabase(SkillsPlugin.class);
-        THeroAttribute database = ebeanServer.find(THeroAttribute.class, getId());
-        database.setBaseValue(getBaseValue());
-        database.setCurrentValue(getCurrentValue());
-        ebeanServer.save(database);
-    }
-
-    @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;
@@ -133,12 +96,13 @@ public class ConfigurableAttribute implements Attribute {
 
         ConfigurableAttribute that = (ConfigurableAttribute) o;
 
-        return id == that.id;
+        return type == that.type;
+
     }
 
     @Override
     public int hashCode() {
 
-        return id;
+        return type.hashCode();
     }
 }

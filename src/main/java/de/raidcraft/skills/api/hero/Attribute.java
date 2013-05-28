@@ -7,8 +7,6 @@ import de.raidcraft.api.items.AttributeType;
  */
 public interface Attribute {
 
-    public int getId();
-
     public String getName();
 
     public String getFriendlyName();
@@ -28,6 +26,4 @@ public interface Attribute {
     public double getDamageModifier();
 
     public double getHealthModifier();
-
-    public void save();
 }
