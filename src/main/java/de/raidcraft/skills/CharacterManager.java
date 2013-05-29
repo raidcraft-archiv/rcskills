@@ -252,14 +252,18 @@ public final class CharacterManager implements Listener {
         if (task != null) {
             task.cancel();
         }
-        task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
+        if (plugin.getCommonConfig().hero_cache_timeout > 0) {
+            task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
 
-                clearCacheOf(hero);
-            }
-        }, plugin.getCommonConfig().hero_cache_timeout * 20);
-        queuedLoggedOutHeroes.put(hero.getName().toLowerCase(), task);
+                    clearCacheOf(hero);
+                }
+            }, plugin.getCommonConfig().hero_cache_timeout * 20);
+            queuedLoggedOutHeroes.put(hero.getName().toLowerCase(), task);
+        } else {
+            clearCacheOf(hero);
+        }
     }
 
     /**
