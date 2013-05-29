@@ -36,7 +36,7 @@ public final class Scoreboards {
 
     public static void removeScoreboard(Player player) {
 
-        if (player == null) {
+        if (player == null || !player.isOnline()) {
             return;
         }
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
