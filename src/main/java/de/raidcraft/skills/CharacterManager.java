@@ -360,7 +360,7 @@ public final class CharacterManager implements Listener {
         getHero(event.getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onWorldChange(PlayerChangedWorldEvent event) {
 
         getHero(event.getPlayer()).save();
