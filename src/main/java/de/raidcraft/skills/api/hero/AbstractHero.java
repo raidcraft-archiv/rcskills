@@ -409,7 +409,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public int swingWeapon(EquipmentSlot slot) {
 
-        int damage = super.getDamage();
+        int damage = super.swingWeapon(slot);
         if (slot == EquipmentSlot.HANDS) {
             for (Attribute attribute : getAttributes()) {
                 damage += attribute.getCurrentValue() * attribute.getDamageModifier();
