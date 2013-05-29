@@ -130,6 +130,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // check all the profession skills for unlock
         for (Profession profession : professions.values()) {
             if (profession.isActive()) {
+                // apply all skills that are already unlocked
+                for (Skill skill : profession.getSkills()) {
+                    if (skill.isUnlocked()) {
+                        skill.apply();
+                    }
+                }
                 profession.checkSkillsForUnlock();
             }
         }
@@ -137,6 +143,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // make sure all virtual skills are added last and override normal skills
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
+                skill.apply();
                 virtualSkills.put(skill.getName(), skill);
             }
         }

@@ -309,7 +309,6 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void checkSkillsForUnlock() {
 
-
         for (Skill skill : getSkills()) {
             // check all skills and if we need to unlock any
             if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero())) {
