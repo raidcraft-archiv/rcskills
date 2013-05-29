@@ -30,6 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -246,6 +247,7 @@ public final class CharacterManager implements Listener {
 
     public void queueHeroLogout(final Hero hero) {
 
+        hero.save();
         BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
         if (task != null) {
             task.cancel();
@@ -355,7 +357,13 @@ public final class CharacterManager implements Listener {
             task.cancel();
         }
         // init once to set the health from the db and so on
-        plugin.getCharacterManager().getHero(event.getPlayer());
+        getHero(event.getPlayer()).getUserInterface().refresh();
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+
+        getHero(event.getPlayer()).save();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
