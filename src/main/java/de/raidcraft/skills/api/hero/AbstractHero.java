@@ -369,7 +369,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public Player getPlayer() {
 
-        return Bukkit.getPlayerExact(getName().toLowerCase());
+        return Bukkit.getPlayerExact(getName());
     }
 
     @Override
