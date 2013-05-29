@@ -31,6 +31,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -362,7 +363,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public Player getPlayer() {
 
-        return (Player) getEntity();
+        return Bukkit.getPlayerExact(getName().toLowerCase());
     }
 
     @Override

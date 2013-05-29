@@ -332,13 +332,13 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        clearCacheOf(getHero(event.getPlayer()));
+        queueHeroLogout(getHero(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent event) {
 
-        clearCacheOf(getHero(event.getPlayer()));
+        queueHeroLogout(getHero(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -350,6 +350,10 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        BukkitTask task = queuedLoggedOutHeroes.remove(event.getPlayer().getName().toLowerCase());
+        if (task != null) {
+            task.cancel();
+        }
         // init once to set the health from the db and so on
         plugin.getCharacterManager().getHero(event.getPlayer());
     }
