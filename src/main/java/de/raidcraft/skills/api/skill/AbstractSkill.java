@@ -400,6 +400,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     public void save() {
 
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
+        if (skill == null) return;
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
         // dont save when the player is in a blacklist world
