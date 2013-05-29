@@ -108,7 +108,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getHolder().getTarget(getTotalRange());
     }
 
-    protected CharacterTemplate getTarget(CommandContext args, boolean self) throws CombatException {
+    protected CharacterTemplate getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
 
         CharacterTemplate target;
         if (args.argsLength() > 0) {
@@ -127,6 +127,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             target = getHolder();
         } else {
             target = getTarget();
+        }
+        if (friendlyOnly && !target.isFriendly(getHolder())) {
+            throw new CombatException("Du kannst nur dich selbst oder Gruppenmitglieder anvisieren.");
         }
         return target;
     }
