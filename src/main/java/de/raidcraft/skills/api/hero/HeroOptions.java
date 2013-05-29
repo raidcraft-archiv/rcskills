@@ -52,11 +52,7 @@ class HeroOptions {
                 option.setOptionKey(entry.getKey());
             }
             option.setOptionValue(entry.getValue());
-
-            // dont save when the player is in a blacklist world
-            if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(hero.getPlayer().getWorld().getName())) {
-                RaidCraft.getDatabase(SkillsPlugin.class).save(option);
-            }
+            RaidCraft.getDatabase(SkillsPlugin.class).save(option);
         }
     }
 }
