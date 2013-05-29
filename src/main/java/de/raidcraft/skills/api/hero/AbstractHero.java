@@ -686,7 +686,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void sendMessage(String... messages) {
 
-        getPlayer().sendMessage(messages);
+        if (isOnline()) {
+            getPlayer().sendMessage(messages);
+        }
     }
 
     @Override
