@@ -23,6 +23,7 @@ import de.raidcraft.skills.api.party.SimpleParty;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
@@ -652,9 +653,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (target == null) {
             throw new CombatException("Du hast kein Ziel anvisiert!");
         }
-        
         if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
             throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
+        }
+        if (!getEntity().hasLineOfSight(target)) {
+            throw new CombatException("Ziel nicht im Sichtfeld.");
         }
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
     }
@@ -668,7 +671,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public Location getBlockTarget(int range) throws CombatException {
 
-        Block block = getEntity().getTargetBlock(null, range);
+        Block block = getEntity().getTargetBlock(BlockUtil.TRANSPARENT_BLOCKS, range);
         if (block == null
                 || LocationUtil.getBlockDistance(block.getLocation(), getEntity().getLocation()) > range) {
             throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
