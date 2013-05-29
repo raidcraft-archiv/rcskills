@@ -48,8 +48,8 @@ public class BindCommands {
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
-        if (hero.getPlayer().getItemInHand() == null) {
-            throw new CommandException("Kein Item in der Hand.");
+        if (hero.getPlayer().getItemInHand() == null || hero.getPlayer().getItemInHand().getTypeId() == 0) {
+            throw new CommandException("Du kannst Skills nur an Items binden.");
         }
 
         // lets parse the argument for a valid spell
