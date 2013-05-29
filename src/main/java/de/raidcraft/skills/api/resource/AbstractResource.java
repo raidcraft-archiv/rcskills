@@ -52,7 +52,7 @@ public abstract class AbstractResource implements Resource {
         // lets get some default values from the config
         this.inCombatRegen = config.getConfigurationSection("in-combat-regen");
         this.outOfCombatRegen = config.getConfigurationSection("out-of-combat-regen");
-        regenInterval = (long) config.getDouble("interval", 3) * 20;
+        regenInterval = (long) (config.getDouble("interval", 3.0) * 20.0);
         // lets start the task
         startTask();
     }
