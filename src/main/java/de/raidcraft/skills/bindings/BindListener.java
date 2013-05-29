@@ -41,6 +41,7 @@ public class BindListener implements Listener {
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
             boundItem.use();
+            event.setCancelled(true);
             return;
         }
 
