@@ -12,9 +12,7 @@ public enum AttackSource {
 
     HERO,
     CREATURE,
-    ENVIRONMENT,
-    EFFECT,
-    SKILL;
+    ENVIRONMENT;
 
     public static <S> AttackSource fromObject(S source) {
 
@@ -25,10 +23,10 @@ public enum AttackSource {
             return CREATURE;
         }
         if (source instanceof Skill) {
-            return SKILL;
+            return fromObject(((Skill) source).getHolder());
         }
         if (source instanceof Effect) {
-            return EFFECT;
+            return fromObject(((Effect) source).getSource());
         }
         // default return environment
         return ENVIRONMENT;
