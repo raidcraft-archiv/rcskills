@@ -790,7 +790,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean isFriendly(CharacterTemplate source) {
 
-        return getParty().isInGroup(source);
+        return source.equals(this) || getParty().isInGroup(source);
     }
 
     @Override
