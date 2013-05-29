@@ -345,7 +345,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void reset() {
 
-        if (getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (!isOnline() || getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
         updateHighestRankedProfession();
