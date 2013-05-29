@@ -427,7 +427,7 @@ public class AdminCommands {
         if (hero.getPlayer() != null) {
             hero.getPlayer().kickPlayer("Dein RPG Profil wird zurück gesetzt bitte warte kurz.");
         } else {
-            HeroUtil.clearCache(hero);
+            plugin.getCharacterManager().clearCacheOf(hero);
         }
         // this will delete all references to the object
         THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId());

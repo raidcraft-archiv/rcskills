@@ -26,6 +26,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Player getPlayer();
 
+    public boolean isOnline();
+
     public AttachedLevel<Hero> getExpPool();
 
     public UserInterface getUserInterface();

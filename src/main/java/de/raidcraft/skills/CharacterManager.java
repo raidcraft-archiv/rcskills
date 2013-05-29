@@ -35,9 +35,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -54,6 +56,8 @@ public final class CharacterManager implements Listener {
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();
+
+    private final Map<String, BukkitTask> queuedLoggedOutHeroes = new HashMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -94,13 +98,18 @@ public final class CharacterManager implements Listener {
 
         for (Hero hero : heroes.values()) {
             hero.clearEffects();
-            HeroUtil.clearCache(hero);
+            clearCacheOf(hero);
         }
         heroes.clear();
         for (CharacterTemplate character : characters.values()) {
             character.clearEffects();
         }
         characters.clear();
+    }
+
+    public Collection<Hero> getCachedHeroes() {
+
+        return heroes.values();
     }
 
     public Hero getHero(Player player, String name) throws UnknownPlayerException {
@@ -235,6 +244,22 @@ public final class CharacterManager implements Listener {
         return null;
     }
 
+    public void queueHeroLogout(final Hero hero) {
+
+        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
+        if (task != null) {
+            task.cancel();
+        }
+        task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                clearCacheOf(hero);
+            }
+        }, plugin.getCommonConfig().hero_cache_timeout * 20);
+        queuedLoggedOutHeroes.put(hero.getName().toLowerCase(), task);
+    }
+
     /**
      * This methods removes the character from the cache in this class.
      * Do NOT use this to clear heroes from the cache! Use the {@link HeroUtil#clearCache(de.raidcraft.skills.api.hero.Hero)}
@@ -244,6 +269,15 @@ public final class CharacterManager implements Listener {
      */
     public void clearCacheOf(CharacterTemplate character) {
 
+        if (character instanceof Hero) {
+            BukkitTask task = queuedLoggedOutHeroes.remove(character.getName().toLowerCase());
+            if (task != null) {
+                task.cancel();
+            }
+            HeroUtil.clearCache((Hero) character);
+            heroes.remove(character.getName().toLowerCase());
+            return;
+        }
         LivingEntity entity = character.getEntity();
         if (entity != null) characters.remove(entity.getUniqueId());
         character.leaveParty();
@@ -254,7 +288,6 @@ public final class CharacterManager implements Listener {
                 }
             }
         }
-        heroes.remove(character.getName().toLowerCase());
         plugin.getSkillManager().clearSkillCache(character.getName());
     }
 
@@ -299,13 +332,13 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        HeroUtil.clearCache(getHero(event.getPlayer()));
+        clearCacheOf(getHero(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent event) {
 
-        HeroUtil.clearCache(getHero(event.getPlayer()));
+        clearCacheOf(getHero(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

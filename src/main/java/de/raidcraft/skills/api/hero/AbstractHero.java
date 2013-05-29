@@ -366,6 +366,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public boolean isOnline() {
+
+        return getPlayer() != null && getPlayer().isOnline();
+    }
+
+    @Override
     public AttachedLevel<Hero> getExpPool() {
 
         return expPool;

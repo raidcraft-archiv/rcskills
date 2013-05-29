@@ -118,6 +118,15 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         }, 1L);
     }
 
+    @Override
+    public void disable() {
+
+        // clear the cache of all heroes, saving them to the database
+        for (Hero hero : getCharacterManager().getCachedHeroes()) {
+            getCharacterManager().clearCacheOf(hero);
+        }
+    }
+
     private void setupDatabase() {
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
@@ -178,12 +187,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         } catch (UnknownSkillException e) {
             getLogger().warning(e.getMessage());
         }
-    }
-
-    @Override
-    public void disable() {
-
-
     }
 
     @Override
@@ -337,8 +340,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double default_effect_priority = 1.0;
         @Setting("defaults.global-cooldown")
         public double global_cooldown = 1.5;
-        @Setting("defaults.fist-damage")
-        public int fist_attack_damage = 1;
         @Setting("defaults.permission-group")
         public String default_permission_group = "default";
         @Setting("defaults.skeleton-knockback")
@@ -347,8 +348,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
         public double profession_change_level_modifier = 1.0;
-        @Setting("interface.updateinterval")
-        public long interface_update_interval = 20;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
         @Setting("paths.skill-configs")
@@ -369,6 +368,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double invite_timeout = 30.0;
         @Setting("defaults.swing-time")
         public double default_swing_time = 1.0;
+        @Setting("hero-cache-timeout")
+        public int hero_cache_timeout = 300;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 

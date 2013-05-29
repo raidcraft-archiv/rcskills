@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroOption;
@@ -35,6 +33,11 @@ class HeroOptions {
     public String get(Option option) {
 
         return options.get(option.getKey());
+    }
+
+    public boolean isSet(Option option) {
+
+        return options.containsKey(option.getKey());
     }
 
     public void save() {
