@@ -173,7 +173,7 @@ public final class CharacterManager implements Listener {
 
     public CharacterTemplate getCharacter(LivingEntity entity) {
 
-        if (entity instanceof Player) {
+        if (!entity.hasMetadata("NPC") && entity instanceof Player) {
             return getHero((Player) entity);
         }
 
