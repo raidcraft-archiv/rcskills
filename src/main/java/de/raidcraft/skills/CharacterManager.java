@@ -357,7 +357,7 @@ public final class CharacterManager implements Listener {
             task.cancel();
         }
         // init once to set the health from the db and so on
-        getHero(event.getPlayer()).getUserInterface().refresh();
+        getHero(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
