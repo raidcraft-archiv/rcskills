@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -26,12 +25,10 @@ public class BukkitUserInterface implements UserInterface {
     public static final String HEALTH_OBJECTIVE = "hp";
 
     private final Hero hero;
-    private final Player player;
 
     public BukkitUserInterface(final Hero hero) {
 
         this.hero = hero;
-        this.player = hero.getPlayer();
     }
 
     @Override
@@ -77,10 +74,9 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void refresh() {
 
-        if (player == null
-                || !player.isOnline()
-                || player.isDead()
-                || player.getHealth() < 1) {
+        if (!hero.isOnline()
+                || hero.getPlayer().isDead()
+                || hero.getHealth() < 1) {
             return;
         }
 
@@ -90,8 +86,8 @@ public class BukkitUserInterface implements UserInterface {
         updateHealthDisplay();
 
         // make sure the food level is never at 20 to allow eating
-        if (player.getFoodLevel() > 19) {
-            player.setFoodLevel(19);
+        if (hero.getPlayer().getFoodLevel() > 19) {
+            hero.getPlayer().setFoodLevel(19);
         }
     }
 
@@ -118,7 +114,7 @@ public class BukkitUserInterface implements UserInterface {
     private Objective getScoreboardHealthObjective() {
 
         // lets also set the scoreboard to display the health of this player to all online players
-        Scoreboard scoreboard = Scoreboards.getScoreboard(player);
+        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
 
         Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + hero.getId());
         if (objective == null) {
@@ -131,6 +127,6 @@ public class BukkitUserInterface implements UserInterface {
 
     public Score getHealthScore() {
 
-        return getScoreboardHealthObjective().getScore(player);
+        return getScoreboardHealthObjective().getScore(hero.getPlayer());
     }
 }
