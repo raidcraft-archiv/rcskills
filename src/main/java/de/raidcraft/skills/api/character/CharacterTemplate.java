@@ -38,6 +38,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public boolean hasWeapon(EquipmentSlot slot);
 
+    public boolean hasWeaponsEquiped();
+
     public void setWeapon(CustomWeapon weapon);
 
     public CustomWeapon removeWeapon(EquipmentSlot slot);
@@ -46,7 +48,13 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     boolean canAttack();
 
+    public int getWeaponDamage(EquipmentSlot slot);
+
+    public int getTotalWeaponDamage();
+
     public boolean canSwing(EquipmentSlot slot);
+
+    public int swingWeapons();
 
     public int swingWeapon(EquipmentSlot slot);
 

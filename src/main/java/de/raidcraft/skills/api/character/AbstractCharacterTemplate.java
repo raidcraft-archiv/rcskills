@@ -131,6 +131,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public boolean hasWeaponsEquiped() {
+
+        return !weapons.isEmpty();
+    }
+
+    @Override
     public void setWeapon(CustomWeapon weapon) {
 
         if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
@@ -153,17 +159,40 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public int swingWeapons() {
+
+        int damage = 0;
+        if (!hasWeaponsEquiped()) {
+            damage += swingWeapon(EquipmentSlot.HANDS);
+        } else {
+            for (EquipmentSlot slot : weapons.keySet()) {
+                damage += swingWeapon(slot);
+            }
+        }
+        return damage;
+    }
+
+    @Override
+    public int getWeaponDamage(EquipmentSlot slot) {
+
+        if (!hasWeapon(slot)) {
+            return 0;
+        }
+        CustomWeapon weapon = getWeapon(slot);
+        if (weapon == null) {
+            return 0;
+        }
+        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
+    }
+
+    @Override
     public int swingWeapon(EquipmentSlot slot) {
 
         if (slot != EquipmentSlot.HANDS && (!hasWeapon(slot) || !canSwing(slot))) {
             return 0;
         }
         setLastSwing(slot);
-        CustomWeapon weapon = getWeapon(slot);
-        if (weapon == null) {
-            return 0;
-        }
-        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
+        return getWeaponDamage(slot);
     }
 
     @Override
@@ -267,10 +296,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public int getTotalWeaponDamage() {
+
+        int damage = 0;
+        for (EquipmentSlot slot : weapons.keySet()) {
+            damage += getWeaponDamage(slot);
+        }
+        return damage;
+    }
+
+    @Override
     public boolean canAttack() {
 
-        if (getWeapons().isEmpty()) return canSwing(EquipmentSlot.HANDS);
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
+        if (!hasWeaponsEquiped()) return canSwing(EquipmentSlot.HANDS);
+        for (EquipmentSlot slot : weapons.keySet()) {
             if (canSwing(slot)) {
                 return true;
             }
@@ -281,11 +320,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public int getDamage() {
 
-        int damage = this.damage;
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            damage += swingWeapon(slot);
-        }
-        return damage;
+        return this.damage;
     }
 
     @Override

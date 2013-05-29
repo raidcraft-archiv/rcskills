@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
@@ -415,13 +414,11 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public int swingWeapon(EquipmentSlot slot) {
+    public int getDamage() {
 
-        int damage = super.swingWeapon(slot);
-        if (slot == EquipmentSlot.HANDS) {
-            for (Attribute attribute : getAttributes()) {
-                damage += attribute.getCurrentValue() * attribute.getDamageModifier();
-            }
+        int damage = super.getDamage();
+        for (Attribute attribute : getAttributes()) {
+            damage += attribute.getCurrentValue() * attribute.getDamageModifier();
         }
         return damage;
     }
