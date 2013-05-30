@@ -90,7 +90,7 @@ public final class SkillUtil {
         }
 
         for (Resource resource : skill.getHolder().getResources()) {
-            double resourceCost = skill.getTotalResourceCost(resource.getName());
+            double resourceCost = ((int)(skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
 
             if (resourceCost == 0) {
                 continue;
@@ -100,24 +100,13 @@ public final class SkillUtil {
             sb.append(ChatColor.YELLOW).append("  - ");
             sb.append(ChatColor.AQUA);
 
-            switch (skill.getResourceCostType(resource.getName())) {
-
-                case PERCENTAGE:
-                    if (resourceCost < 0 && !skill.isVariableResourceCost(resource.getName())) sb.append("+");
-                    if (skill.isVariableResourceCost(resource.getName())) {
-                        sb.append("0%-");
-                    }
-                    sb.append((int)resourceCost * 100);
-                    sb.append("%");
-                    break;
-                case FLAT:
-                    if (resourceCost < 0) sb.append("+");
-                    if (skill.isVariableResourceCost(resource.getName())) {
-                        sb.append("0-");
-                    }
-                    sb.append(resourceCost);
-                    break;
+            if (resourceCost < 0) {
+                sb.append(ChatColor.GREEN).append("+");
+            } else {
+                sb.append(ChatColor.RED).append("-");
             }
+            sb.append(resourceCost);
+
             sb.append(ChatColor.YELLOW).append(" ").append(resource.getFriendlyName());
             body.add(sb.toString());
         }

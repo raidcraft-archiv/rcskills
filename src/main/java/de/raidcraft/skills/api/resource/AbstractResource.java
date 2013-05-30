@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.resource;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ResourceData;
@@ -135,26 +136,35 @@ public abstract class AbstractResource implements Resource {
         return current;
     }
 
-    @Override
-    public void setCurrent(int current) {
+    protected int fireResourceChangeEvent(int current) throws RaidCraftException {
 
-        if (current < getMin()) current = getMin();
-        if (current > getMax()) current = getMax();
         // lets fire the trigger
         ResourceChangeTrigger trigger = TriggerManager.callSafeTrigger(new ResourceChangeTrigger(getHero(), this, current));
         if (trigger.isCancelled()) {
-            return;
+            throw new RaidCraftException(trigger.getTriggerName() + " was cancelled!");
         }
         // update the value if it changed in the trigger
-        current = trigger.getNewValue();
+        return trigger.getNewValue();
+    }
 
-        boolean update = this.current != current && isEnabled();
-        this.current = current;
+    @Override
+    public void setCurrent(int current) {
 
-        if (update) {
-            for (VisualResourceType type : getTypes()) {
-                type.update(this);
+        try {
+            if (current < getMin()) current = getMin();
+            if (current > getMax()) current = getMax();
+
+            current = fireResourceChangeEvent(current);
+
+            boolean update = this.current != current && isEnabled();
+            this.current = current;
+
+            if (update) {
+                for (VisualResourceType type : getTypes()) {
+                    type.update(this);
+                }
             }
+        } catch (RaidCraftException ignored) {
         }
     }
 
@@ -272,6 +282,7 @@ public abstract class AbstractResource implements Resource {
             task.cancel();
             task = null;
         }
+        save();
     }
 
     @Override

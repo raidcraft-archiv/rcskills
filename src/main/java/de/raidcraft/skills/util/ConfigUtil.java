@@ -103,9 +103,11 @@ public final class ConfigUtil {
             return 0.0;
         }
         double value = 0.0;
+        boolean fromMax = section.getBoolean("from-max", false);
         for (Resource resource : ((Hero) holder).getResources()) {
             if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
-                value += section.getDouble(resource.getName() + "-modifier") * resource.getCurrent();
+                int base = fromMax ? resource.getMax() : resource.getCurrent();
+                value += section.getDouble(resource.getName() + "-modifier") * base;
                 availableModifiers.remove(resource.getName() + "-modifier");
             }
         }

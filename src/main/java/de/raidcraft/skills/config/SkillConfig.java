@@ -16,7 +16,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
@@ -226,39 +225,11 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
 
         return getOverrideSection("casttime");
     }
-    @Override
-    public Resource.Type getResourceType(String resource) {
-
-        return Resource.Type.fromString(getOverrideString("resources." + resource + ".type", "flat"));
-    }
-
-    public boolean isVariableResourceCost(String resource) {
-
-        return getOverrideBool("resources." + resource + ".variable", false);
-    }
 
     @Override
-    public double getResourceCost(String resource) {
+    public ConfigurationSection getResourceCost(String resource) {
 
-        return getOverrideDouble("resources." + resource + ".base", 0);
-    }
-
-    @Override
-    public double getResourceCostLevelModifier(String resource) {
-
-        return getOverrideDouble("resources." + resource + ".level-modifier", 0.0);
-    }
-
-    @Override
-    public double getResourceCostSkillLevelModifier(String resource) {
-
-        return getOverrideDouble("resources." + resource + ".skill-level-modifier", 0.0);
-    }
-
-    @Override
-    public double getResourceCostProfLevelModifier(String resource) {
-
-        return getOverrideDouble("resources." + resource + ".prof-level-modifier", 0.0);
+        return getOverrideSection("resources." + resource);
     }
 
     @Override

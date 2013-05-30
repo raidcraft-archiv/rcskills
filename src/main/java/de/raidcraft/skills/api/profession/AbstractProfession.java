@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.level.ProfessionAttachedLevel;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.resource.ConfigurableResource;
+import de.raidcraft.skills.api.resource.HealthResource;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
@@ -58,6 +59,7 @@ public abstract class AbstractProfession implements Profession {
         // first we need to get the defined resources out of the config
         for (String key : data.getResources()) {
             key = StringUtils.formatName(key);
+            boolean healthResource = key.equalsIgnoreCase("health");
             // query the database and check if we already have an entry for the player
             THeroResource tHeroResource = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroResource.class).where()
                     .eq("name", key)
@@ -68,7 +70,12 @@ public abstract class AbstractProfession implements Profession {
                 tHeroResource.setName(key);
                 tHeroResource.setProfession(database);
             }
-            ConfigurableResource resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
+            Resource resource;
+            if (healthResource) {
+                resource = new HealthResource(tHeroResource, this, data.getResourceConfig(key));
+            } else {
+                resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
+            }
             resources.put(key, resource);
             getHero().attachResource(resource);
         }

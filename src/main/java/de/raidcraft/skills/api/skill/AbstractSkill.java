@@ -88,27 +88,10 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             }
         }
         for (Resource resource : getHolder().getResources()) {
-
             double resourceCost = action.getResourceCost(resource.getName());
-            if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
-                resourceCost = resource.getCurrent();
+            if (resourceCost > 0.0 && resourceCost > resource.getCurrent()) {
+                throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
             }
-
-            switch (getResourceCostType(resource.getName())) {
-
-                case FLAT:
-                    if (resourceCost > 0 && resourceCost > resource.getCurrent()) {
-                        throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
-                    }
-                    break;
-                case PERCENTAGE:
-                    int cost = (int) (resource.getMax() * resourceCost);
-                    if (resourceCost > 0.0 && cost > resource.getCurrent()) {
-                        throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");
-                    }
-                    break;
-            }
-
         }
         // lets check if the player has the required reagents
         for (ItemStack itemStack : getSkillProperties().getReagents()) {
@@ -129,24 +112,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHolder().getResources()) {
-
-            double resourceCost = action.getResourceCost(resource.getName());
-            if (isVariableResourceCost(resource.getName()) && resourceCost > resource.getCurrent()) {
-                resourceCost = resource.getCurrent();
-            }
-
-            if (resourceCost != 0) {
-                switch (getResourceCostType(resource.getName())) {
-
-                    case FLAT:
-                        resource.setCurrent((int) (resource.getCurrent() - resourceCost));
-                        break;
-                    case PERCENTAGE:
-                        int newVal = (int) (resource.getCurrent() - resource.getMax() * resourceCost);
-                        resource.setCurrent(newVal);
-                        break;
-                }
-            }
+            resource.setCurrent((int) (resource.getCurrent() - action.getResourceCost(resource.getName())));
         }
         // keep this last or items will be removed before casting
         holder.getPlayer().getInventory().removeItem(getSkillProperties().getReagents());
@@ -191,23 +157,9 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final Resource.Type getResourceCostType(String resource) {
-
-        return properties.getResourceType(resource);
-    }
-
-    @Override
-    public final boolean isVariableResourceCost(String resource) {
-
-        return properties.isVariableResourceCost(resource);
-    }
-
-    @Override
     public double getTotalResourceCost(String resource) {
 
-        return properties.getResourceCost(resource)
-                + (properties.getResourceCostLevelModifier(resource) * holder.getAttachedLevel().getLevel())
-                + (properties.getResourceCostProfLevelModifier(resource) * getProfession().getAttachedLevel().getLevel());
+        return ConfigUtil.getTotalValue(this, getSkillProperties().getResourceCost(resource));
     }
 
     @Override

@@ -7,7 +7,6 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.resource.Resource;
 
 /**
  * @author Silthus
@@ -39,10 +38,6 @@ public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementReso
     public void lock();
 
     public double getTotalResourceCost(String resource);
-
-    public Resource.Type getResourceCostType(String resource);
-
-    public boolean isVariableResourceCost(String resource);
 
     public int getUseExp();
 
