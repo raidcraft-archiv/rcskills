@@ -68,7 +68,8 @@ public class BindCommands {
 
     @Command(
             aliases = "unbind",
-            desc = "Unbind all skills on an item"
+            desc = "Unbind all skills on an item",
+            flags = "a"
     )
     @CommandPermissions("rcskills.player.unbind")
     public void unbind(CommandContext args, CommandSender sender) throws CommandException {
@@ -80,12 +81,22 @@ public class BindCommands {
         Hero hero;
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
+        BindManager bindManager = plugin.getBindManager();
+        if (args.hasFlag('a')) {
+            // unbind all spells
+            for (BoundItem item : bindManager.getBoundItems(hero.getName())) {
+                bindManager.removeBindings(hero, item.getItem());
+            }
+            hero.sendMessage(ChatColor.DARK_GREEN + "Alle deine gebunden Skills wurden von den Items entfernt.");
+            return;
+        }
+
         if (hero.getPlayer().getItemInHand() == null) {
             throw new CommandException("Kein Item in der Hand.");
         }
 
-        if (RaidCraft.getComponent(SkillsPlugin.class).getBindManager().removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
-            hero.sendMessage(ChatColor.DARK_GREEN + "Alle Skills auf diesem Item wurden entfernt!");
+        if (bindManager.removeBindings(hero, hero.getPlayer().getItemInHand().getType())) {
+            hero.sendMessage(ChatColor.DARK_GREEN + "Alle Skills auf diesem Item wurden entfernt.");
             return;
         }
         throw new CommandException("An dieses Item sind keine Skills gebunden!");
