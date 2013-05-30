@@ -40,6 +40,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,7 +98,7 @@ public final class CharacterManager implements Listener {
 
     public void reload() {
 
-        for (Hero hero : heroes.values()) {
+        for (Hero hero : new ArrayList<>(heroes.values())) {
             hero.clearEffects();
             clearCacheOf(hero);
         }
