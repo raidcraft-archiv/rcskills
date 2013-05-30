@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.profession;
 
+import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.ProfessionManager;
@@ -56,25 +57,35 @@ public abstract class AbstractProfession implements Profession {
         this.active = database.isActive();
         // attach a level
         attachLevel(new ProfessionAttachedLevel(this, database));
+    }
+
+    public void loadResources() {
+
+        for (Resource resource : resources.values()) {
+            resource.destroy();
+        }
+        resources.clear();
         // first we need to get the defined resources out of the config
-        for (String key : data.getResources()) {
+        for (String key : getProperties().getResources()) {
             key = StringUtils.formatName(key);
             boolean healthResource = key.equalsIgnoreCase("health");
             // query the database and check if we already have an entry for the player
+            EbeanServer database = RaidCraft.getComponent(SkillsPlugin.class).getDatabase();
             THeroResource tHeroResource = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroResource.class).where()
                     .eq("name", key)
-                    .eq("profession_id", database.getId()).findUnique();
+                    .eq("profession_id", getId()).findUnique();
             // create a new entry if none exists
             if (tHeroResource == null) {
                 tHeroResource = new THeroResource();
                 tHeroResource.setName(key);
-                tHeroResource.setProfession(database);
+                tHeroResource.setProfession(database.find(THeroProfession.class, getId()));
+                database.save(tHeroResource);
             }
             Resource resource;
             if (healthResource) {
-                resource = new HealthResource(tHeroResource, this, data.getResourceConfig(key));
+                resource = new HealthResource(tHeroResource, this, getProperties().getResourceConfig(key));
             } else {
-                resource = new ConfigurableResource(tHeroResource, this, data.getResourceConfig(key));
+                resource = new ConfigurableResource(tHeroResource, this, getProperties().getResourceConfig(key));
             }
             resources.put(key, resource);
             getHero().attachResource(resource);

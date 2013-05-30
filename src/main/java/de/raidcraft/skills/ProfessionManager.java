@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.path.VirtualPath;
+import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -133,11 +134,15 @@ public final class ProfessionManager {
         Profession profession;
         if (hero.hasProfession(profId)) {
             profession = hero.getProfession(profId);
+            cachedProfessions.get(hero.getName()).put(profId, profession);
         } else {
             // create a new profession
             profession = professionFactories.get(profId).create(hero, parent);
+            cachedProfessions.get(hero.getName()).put(profId, profession);
+            if (profession instanceof AbstractProfession) {
+                ((AbstractProfession) profession).loadResources();
+            }
         }
-        cachedProfessions.get(hero.getName()).put(profId, profession);
         return profession;
     }
 

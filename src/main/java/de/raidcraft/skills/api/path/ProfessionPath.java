@@ -45,8 +45,8 @@ public class ProfessionPath implements Path<Profession> {
     public int getTotalPathLevel(Hero hero) {
 
         int level = 0;
-        for (Profession profession : getParents(hero)) {
-            if (profession.isActive()) {
+        for (Profession profession : hero.getProfessions()) {
+            if (profession.isActive() && profession.getPath().equals(this)) {
                 level += profession.getAttachedLevel().getLevel();
             }
         }

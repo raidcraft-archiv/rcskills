@@ -190,6 +190,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             professions.put(profession.getName(), profession);
             if (profession instanceof AbstractProfession) {
                 ((AbstractProfession) profession).loadSkills();
+                ((AbstractProfession) profession).loadResources();
             }
             profession.save();
             profession = profession.getParent();
