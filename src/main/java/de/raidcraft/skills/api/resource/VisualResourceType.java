@@ -21,6 +21,11 @@ public enum VisualResourceType {
         this.visualResource = visualResource;
     }
 
+    public VisualResource getVisualResource() {
+
+        return visualResource;
+    }
+
     public void update(Resource resource) {
 
         if (resource.getHero().getPlayer() == null) {
