@@ -97,6 +97,14 @@ public final class ConfigUtil {
         return section.getDouble("prof-level-modifier", 0.0) * profession.getAttachedLevel().getLevel();
     }
 
+    private static double getTotalPathValue(Profession profession, ConfigurationSection section) {
+
+        if (profession == null) {
+            return 0.0;
+        }
+        return section.getDouble("path-level-modifier", 0.0) * profession.getPath().getTotalPathLevel(profession.getHero());
+    }
+
     private static double getResourceValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifiers) {
 
         if (!(holder instanceof Hero)) {
@@ -179,6 +187,9 @@ public final class ConfigUtil {
         // profession level
         value += getProfessionValue(profession, section);
         availableModifier.remove("prof-level-modifier");
+        // path level
+        value += getTotalPathValue(profession, section);
+        availableModifier.remove("path-level-modifier");
         // skill level
         value += getSkillLevelModifier(ability, section);
         availableModifier.remove("skill-level-modifier");

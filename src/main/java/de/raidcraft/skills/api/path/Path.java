@@ -16,6 +16,14 @@ public interface Path<T extends Parent> {
 
     public int getPriority();
 
+    /**
+     * Counts together the current levels of all active professions in the path.
+     * Should be used as a total level of the hero, e.g. to adjust difficulty
+     *
+     * @return sum of levels for all active professions in the path
+     */
+    public int getTotalPathLevel(Hero hero);
+
     public boolean isSelectedInCombat();
 
     public boolean isSelectedOutOfCombat();

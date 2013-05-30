@@ -33,6 +33,12 @@ public class VirtualPath implements Path<Profession> {
     }
 
     @Override
+    public int getTotalPathLevel(Hero hero) {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getVirtualProfession(hero).getAttachedLevel().getLevel();
+    }
+
+    @Override
     public boolean isSelectedInCombat() {
 
         return false;

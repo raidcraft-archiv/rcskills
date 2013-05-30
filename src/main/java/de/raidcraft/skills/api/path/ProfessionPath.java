@@ -42,6 +42,18 @@ public class ProfessionPath implements Path<Profession> {
     }
 
     @Override
+    public int getTotalPathLevel(Hero hero) {
+
+        int level = 0;
+        for (Profession profession : getParents(hero)) {
+            if (profession.isActive()) {
+                level += profession.getAttachedLevel().getLevel();
+            }
+        }
+        return level;
+    }
+
+    @Override
     public boolean isSelectedInCombat() {
 
         return config.isSelectedInCombat(getName());
