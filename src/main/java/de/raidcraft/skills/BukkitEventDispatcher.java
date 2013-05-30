@@ -21,6 +21,8 @@ import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
 import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.trigger.PlayerItemBreakTrigger;
+import de.raidcraft.skills.trigger.PlayerLoginTrigger;
+import de.raidcraft.skills.trigger.PlayerQuitTrigger;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 import de.raidcraft.skills.trigger.ProjectileLaunchTrigger;
@@ -51,7 +53,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -251,6 +255,22 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerConsumeTrigger(plugin.getCharacterManager().getCharacter(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerLogin(PlayerJoinEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerLoginTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerQuitTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
 }
