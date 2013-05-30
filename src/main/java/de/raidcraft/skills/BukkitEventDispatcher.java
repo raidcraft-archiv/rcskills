@@ -77,6 +77,9 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
                 new BlockBreakTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
@@ -85,6 +88,9 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
                 new BlockPlaceTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
@@ -93,6 +99,9 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
                 new PlayerInteractTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
