@@ -403,7 +403,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.STEP_SOUND, 152, attack.getDamage() > 100 ? 5 : 1);
             CharacterTemplate attacker = null;
             if (attack.getSource() instanceof CharacterTemplate) {
-                attacker = (Hero) attack.getSource();
+                attacker = (CharacterTemplate) attack.getSource();
             } else if (attack.getSource() instanceof Ability) {
                 attacker = ((Ability) attack.getSource()).getHolder();
             } else if (attack.getSource() instanceof Effect) {
