@@ -401,13 +401,24 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
             // 152 = redstone block
             EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.STEP_SOUND, 152, attack.getDamage() > 100 ? 5 : 1);
-            if (attack.getSource() instanceof Hero) {
-                ((Hero) attack.getSource()).debug(
-                        "You->" + getName() + ": " + attack.getDamage() + "dmg - " + getName() + "[" + getHealth() + "]");
-                ((Hero) attack.getSource()).combatLog("Du hast " + getName() + " " + attack.getDamage() + " Schaden zugefügt.");
+            CharacterTemplate attacker = null;
+            if (attack.getSource() instanceof CharacterTemplate) {
+                attacker = (Hero) attack.getSource();
+            } else if (attack.getSource() instanceof Ability) {
+                attacker = ((Ability) attack.getSource()).getHolder();
+            } else if (attack.getSource() instanceof Effect) {
+                if (((Effect) attack.getSource()).getSource() instanceof Ability) {
+                    attacker = ((Ability) ((Effect) attack.getSource()).getSource()).getHolder();
+                } else if (((Effect) attack.getSource()).getSource() instanceof CharacterTemplate) {
+                    attacker = (CharacterTemplate) ((Effect) attack.getSource()).getSource();
+                }
+            }
+            if (attacker != null && attacker instanceof Hero) {
+                ((Hero) attacker).combatLog("Du hast " + getName() + " " + attack.getDamage() + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
-                ((Hero)this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() + " erhalten.");
+                ((Hero)this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
+                        (attacker != null ? "[" + attacker.getName() + "] " : " ") + "erhalten.");
             }
         }
     }
