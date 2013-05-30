@@ -254,7 +254,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public Set<WeaponType> getRequiredWeapons() {
 
         HashSet<WeaponType> weaponTypes = new HashSet<>();
-        List<String> weapons = getStringList("weapons");
+        List<String> weapons = getOverride("weapons", new ArrayList<String>());
         for (String weapon : weapons) {
             WeaponType weaponType = WeaponType.fromString(weapon);
             if (weaponType != null) {

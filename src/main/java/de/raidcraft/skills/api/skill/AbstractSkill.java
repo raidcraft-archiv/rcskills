@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.skill;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
@@ -81,8 +82,12 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
         Set<WeaponType> requiredWeapons = getSkillProperties().getRequiredWeapons();
         if (requiredWeapons.size() > 0) {
-            CustomItem item = RaidCraft.getComponent(CustomItemManager.class)
-                    .getCustomItem(getHolder().getEntity().getEquipment().getItemInHand()).getItem();
+            CustomItemStack customItem = RaidCraft.getComponent(CustomItemManager.class)
+                    .getCustomItem(getHolder().getEntity().getEquipment().getItemInHand());
+            if (customItem == null || customItem.getItem() == null) {
+                throw new CombatException("Du benötigst eine Waffe um diesen Skill auszuführen.");
+            }
+            CustomItem item = customItem.getItem();
             if (!(item instanceof CustomWeapon) || !requiredWeapons.contains(((CustomWeapon) item).getWeaponType())) {
                 throw new CombatException("Du kannst diesen Skill nicht mit dieser Waffe ausführen.");
             }
