@@ -62,7 +62,6 @@ public final class HeroUtil {
 
                 plugin.getProfessionManager().clearProfessionCache(hero.getName());
                 plugin.getSkillManager().clearSkillCache(hero.getName());
-                plugin.getCharacterManager().clearCacheOf(hero);
             }
         }, 5L);
     }

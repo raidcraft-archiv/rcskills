@@ -43,6 +43,11 @@ public final class ProfessionUtil {
         }
 
         if (professions.size() > 1) {
+            for (Profession profession : professions) {
+                if (profession.getFriendlyName().equalsIgnoreCase(input) || profession.getName().equalsIgnoreCase(input)) {
+                    return profession;
+                }
+            }
             throw new CommandException(
                     "Es gibt mehrere Spezialisierungen mit dem Namen " + input + ":" + StringUtil.joinString(professions, ", ", 0));
         }

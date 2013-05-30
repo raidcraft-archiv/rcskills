@@ -39,7 +39,6 @@ public final class Scoreboards {
         if (player == null || !player.isOnline()) {
             return;
         }
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         Scoreboard scoreboard = scoreboards.remove(player.getName().toLowerCase());
         if (scoreboard != null) {
             for (Objective objective : scoreboard.getObjectives()) {

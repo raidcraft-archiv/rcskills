@@ -118,9 +118,9 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects() {
 
         HashMap<AbilityEffectStage, List<AmbientEffect>> effects = new HashMap<>();
-        ConfigurationSection root = getOverrideSection("ambient-effects");
+        ConfigurationSection root = getOverrideSection("visual-effects");
         for (AbilityEffectStage stage : AbilityEffectStage.values()) {
-            ConfigurationSection section = root.getConfigurationSection(stage.name());
+            ConfigurationSection section = root.getConfigurationSection(stage.name().toLowerCase());
             if (section == null) {
                 continue;
             }
