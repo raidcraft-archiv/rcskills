@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import TCB.TabDeco.API.TabDecoRegistry;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -40,6 +41,8 @@ import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
+import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
+import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -51,7 +54,10 @@ import de.raidcraft.skills.tables.TSkillData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -63,6 +69,8 @@ import java.util.Set;
  * @author Silthus
  */
 public class SkillsPlugin extends BasePlugin implements Component, Listener {
+
+    private static boolean loadedTabDecoSettings = false;
 
     private SkillManager skillManager;
     private AbilityManager abilityManager;
@@ -136,6 +144,43 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
             System.out.println("Installing database for " + getDescription().getName() + " due to first time usage");
             installDDL();
         }
+    }
+
+    private void registerTabDecoSettings() {
+
+        registerEvents(new Listener() {
+
+            @EventHandler
+            public void onPluginEnable(PluginEnableEvent event) {
+
+                try {
+                    //Check if TabDeco has been loaded
+                    Plugin tabDeco = getServer().getPluginManager().getPlugin("TabDeco");
+                    if (tabDeco != null)
+                    {
+                        //Check if the settings already have been loaded
+                        //This event loads multiple times for each plugin
+                        if(!loadedTabDecoSettings){
+
+                            TabDecoRegistry.registerNewSetting("attribute\\(([a-zA-Z0-9]+)\\)",
+                                    new TabDecoAttributeSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
+                                    new TabDecoProfessionPathSettings(SkillsPlugin.this), SkillsPlugin.this);
+                            //Let the user of the plugin know that everything worked
+                            getLogger().info("Registered settings for TabDeco");
+
+                            //Set mySettingsLoaded to true to prevent multiple registrations of the settings
+                            loadedTabDecoSettings = true;
+                        }
+                    }
+                } catch(Exception ex) {
+                    //Let the user know that something didn't work as it should and
+                    //print out the error
+                    getLogger().severe("Couldn't load settings for TabDeco");
+                }
+            }
+        });
     }
 
     private void registerConversationActions() {
