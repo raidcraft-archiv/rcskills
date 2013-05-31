@@ -111,6 +111,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
         this.bindManager = new BindManager(this);
         new BukkitEventDispatcher(this);
+        // register the tab stuff
+        registerTabDecoSettings();
         // lets start our logging tasks
         ExpLogger.startTask(this);
         // register conv actions when all plugins loaded
