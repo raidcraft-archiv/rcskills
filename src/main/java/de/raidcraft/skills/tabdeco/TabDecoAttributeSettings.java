@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class TabDecoAttributeSettings extends TabDecoSetting {
 
-    private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("\\[attribute\\(([a-zA-Z0-9]+)\\)\\]");
+    private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(".*\\[attribute\\(([a-zA-Z0-9]+)\\)\\].*");
 
     private final SkillsPlugin plugin;
 

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class TabDecoProfessionPathSettings extends TabDecoSetting {
 
-    private static final Pattern PROFESSION_PATTERN = Pattern.compile("\\[profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)\\]");
+    private static final Pattern PROFESSION_PATTERN = Pattern.compile(".*\\[profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)\\].*");
 
     private final SkillsPlugin plugin;
 
