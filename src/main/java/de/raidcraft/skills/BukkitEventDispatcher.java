@@ -214,6 +214,9 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onProjectileFire(ProjectileLaunchEvent event) {
 
+        if (event.getEntity().getShooter() == null) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
                 new ProjectileLaunchTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
         );

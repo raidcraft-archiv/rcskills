@@ -1,6 +1,5 @@
 package de.raidcraft.skills.professions;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillManager;
 import de.raidcraft.skills.SkillsPlugin;
@@ -36,9 +35,7 @@ public final class VirtualProfession extends AbstractProfession {
     @Override
     public Collection<Skill> getSkills() {
 
-
         if (skills.size() < 1) {
-
             this.skills.clear();
             this.skills.putAll(getProperties().loadSkills(this));
             // also load all skills that are only added in the db

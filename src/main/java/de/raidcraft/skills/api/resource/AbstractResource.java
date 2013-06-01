@@ -150,6 +150,10 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void setCurrent(int current) {
 
+        if (!getHero().isOnline() || getHero().getHealth() < 0) {
+            return;
+        }
+
         try {
             if (current < getMin()) current = getMin();
             if (current > getMax()) current = getMax();

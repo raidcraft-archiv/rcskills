@@ -115,9 +115,11 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     @Override
     public void run() throws CombatException {
 
-        if (projectile == null) projectile = projectileType.spawn(getSource());
-        projectile.setBounce(false);
-        projectile.setFireTicks(0);
+        if (projectile == null) {
+            projectile = projectileType.spawn(getSource());
+            projectile.setBounce(false);
+            projectile.setFireTicks(0);
+        }
         if (velocity != null) projectile.setVelocity(velocity);
         // queue the ranged callback to be called if the projectile hits
         SourcedRangeCallback<T> rangeCallback = new SourcedRangeCallback<>(this);
