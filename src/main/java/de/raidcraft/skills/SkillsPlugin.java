@@ -41,6 +41,7 @@ import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
+import de.raidcraft.skills.tabdeco.TabDecoArmorSettings;
 import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tables.THero;
@@ -169,6 +170,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
                             TabDecoRegistry.registerNewSetting("profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
                                     new TabDecoProfessionPathSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("armorValue",
+                                    new TabDecoArmorSettings(SkillsPlugin.this), SkillsPlugin.this);
                             //Let the user of the plugin know that everything worked
                             getLogger().info("Registered settings for TabDeco");
 
