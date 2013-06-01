@@ -295,7 +295,7 @@ public abstract class AbstractResource implements Resource {
         data.setValue(getCurrent());
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).update(data);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
         }
     }
 }
