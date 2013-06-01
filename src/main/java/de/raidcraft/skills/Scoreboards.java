@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public final class Scoreboards {
     private static final String OBJECTIVE_LIST_BASE_NAME = "list";
     private static final String LIST_DISPLAY_NAME = "Stats";
     private static final String SIDE_DISPLAY_NAME = "Charakterübersicht";
+    private static final String TEAM_NAME = "raidcraft";
     private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
 
     public static Scoreboard getScoreboard(Player player) {
@@ -44,8 +46,26 @@ public final class Scoreboards {
             for (Objective objective : scoreboard.getObjectives()) {
                 objective.unregister();
             }
+            for (Team team : scoreboard.getTeams()) {
+                team.unregister();
+            }
             for (DisplaySlot slot : DisplaySlot.values()) {
                 scoreboard.clearSlot(slot);
+            }
+        }
+    }
+
+    public static void updateTeams() {
+
+        for (Scoreboard scoreboard : scoreboards.values()) {
+            Team team = scoreboard.getTeam(TEAM_NAME);
+            if (team == null) {
+                team = scoreboard.registerNewTeam(TEAM_NAME);
+                team.setAllowFriendlyFire(true);
+                team.setCanSeeFriendlyInvisibles(true);
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                team.addPlayer(player);
             }
         }
     }

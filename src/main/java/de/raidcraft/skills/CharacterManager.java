@@ -339,6 +339,7 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+        Scoreboards.updateTeams();
         queueHeroLogout(getHero(event.getPlayer()));
     }
 
@@ -363,6 +364,7 @@ public final class CharacterManager implements Listener {
         if (task != null) {
             task.cancel();
         }
+        Scoreboards.updateTeams();
         // init once to set the health from the db and so on
         getHero(event.getPlayer()).updateEntity(event.getPlayer());
     }
