@@ -73,42 +73,42 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @SuppressWarnings("unchecked")
-    protected final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, (S) this, eClass);
     }
 
-    protected final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, source, eClass);
     }
 
-    protected List<CharacterTemplate> getNearbyTargets() throws CombatException {
+    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
 
         return getNearbyTargets(true);
     }
 
-    protected List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
+    public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
 
         return getHolder().getNearbyTargets(getTotalRange(), friendly);
     }
 
-    protected List<CharacterTemplate> getTargetsInFront() throws CombatException {
+    public List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
         return getHolder().getTargetsInFront(getTotalRange());
     }
 
-    protected List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
+    public List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
 
         return getHolder().getTargetsInFront(getTotalRange(), degrees);
     }
 
-    protected CharacterTemplate getTarget() throws CombatException {
+    public CharacterTemplate getTarget() throws CombatException {
 
         return getHolder().getTarget(getTotalRange());
     }
 
-    protected CharacterTemplate getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
+    public CharacterTemplate getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
 
         CharacterTemplate target;
         if (args.argsLength() > 0) {
@@ -134,56 +134,56 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return target;
     }
 
-    protected final Location getBlockTarget() throws CombatException {
+    public final Location getBlockTarget() throws CombatException {
 
         return getHolder().getBlockTarget(getTotalRange());
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
 
         return attack(target, damage, null);
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
 
         return attack(target, getTotalDamage(), null);
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
 
         return attack(target, getTotalDamage(), callback);
     }
 
-    protected final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.run();
         return attack;
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
 
         return rangedAttack(type, getTotalDamage(), null);
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage) throws CombatException {
 
         return rangedAttack(type, damage, null);
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, T callback) throws CombatException {
 
         return rangedAttack(type, getTotalDamage(), callback);
     }
 
-    protected final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
         attack.run();
         return attack;
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
         magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
@@ -192,37 +192,37 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack;
     }
 
-    protected final MagicalAttack magicalAttack(int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(int damage, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), damage, callback);
     }
 
-    protected final MagicalAttack magicalAttack(EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), getTotalDamage(), callback);
     }
 
-    protected final MagicalAttack magicalAttack() throws CombatException {
+    public final MagicalAttack magicalAttack() throws CombatException {
 
         return magicalAttack(getTarget(), getTotalDamage(), null);
     }
 
-    protected final MagicalAttack magicalAttack(int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(int damage) throws CombatException {
 
         return magicalAttack(damage, null);
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(target, getTotalDamage(), callback);
     }
 
-    protected final MagicalAttack magicalAttack(CharacterTemplate taraget, int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate taraget, int damage) throws CombatException {
 
         return magicalAttack(taraget, damage, null);
     }
 
-    protected final BlockFace getFacing() {
+    public final BlockFace getFacing() {
 
         return HeroUtil.yawToFace(getHolder().getEntity().getLocation().getYaw());
     }
