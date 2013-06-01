@@ -5,7 +5,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
-import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.Bukkit;
@@ -40,14 +39,6 @@ public class BukkitUserInterface implements UserInterface {
     private void updateSidebar() {
 
         Objective objective = Scoreboards.getPlayerSidebarObjective(getHero());
-        for (Attribute attribute : getHero().getAttributes()) {
-            int currentValue = attribute.getCurrentValue();
-            if (currentValue == 0) {
-                continue;
-            }
-            objective.getScore(Bukkit.getOfflinePlayer(ChatColor.YELLOW + attribute.getFriendlyName())).setScore(currentValue);
-        }
-        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_GRAY + "Rüstung")).setScore(getHero().getTotalArmorValue());
         objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
     }
 
