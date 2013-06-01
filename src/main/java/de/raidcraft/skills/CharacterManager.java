@@ -351,7 +351,9 @@ public final class CharacterManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
-        getHero(event.getPlayer()).reset();
+        Hero hero = getHero(event.getPlayer());
+        hero.updateEntity(event.getPlayer());
+        hero.reset();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -362,13 +364,15 @@ public final class CharacterManager implements Listener {
             task.cancel();
         }
         // init once to set the health from the db and so on
-        getHero(event.getPlayer());
+        getHero(event.getPlayer()).updateEntity(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onWorldChange(PlayerChangedWorldEvent event) {
 
-        getHero(event.getPlayer()).save();
+        Hero hero = getHero(event.getPlayer());
+        hero.updateEntity(event.getPlayer());
+        hero.save();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

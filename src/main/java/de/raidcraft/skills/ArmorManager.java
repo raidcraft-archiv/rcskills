@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ItemUtil;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -82,7 +83,7 @@ public final class ArmorManager implements Triggered, Listener {
         Hero hero = plugin.getCharacterManager().getHero(player);
         hero.clearArmor();
         for (ItemStack item : inventory.getArmorContents()) {
-            if (ItemUtil.isArmor(item)) {
+            if (CustomItemUtil.isArmor(item)) {
                 CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
                 if (!armor.isMeetingAllRequirements(player)) {
                     player.sendMessage(ChatColor.RED + armor.getResolveReason(hero.getPlayer()));

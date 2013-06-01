@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.util.ItemUtil;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -106,7 +107,7 @@ public final class WeaponManager implements Listener {
         Hero hero = plugin.getCharacterManager().getHero(player);
         ItemStack itemInHand = inventory.getItemInHand();
         hero.clearWeapons();
-        if (!ItemUtil.isWeapon(itemInHand)) {
+        if (!CustomItemUtil.isWeapon(itemInHand)) {
             return false;
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(itemInHand);
@@ -137,7 +138,7 @@ public final class WeaponManager implements Listener {
             }
         } else if (heldItemSlot + 1 < 9) {
             CustomItemStack itemStack = RaidCraft.getCustomItem(inventory.getItem(heldItemSlot + 1));
-            if (itemStack != null && ItemUtil.isShield(inventory.getItem(heldItemSlot + 1))) {
+            if (itemStack != null && CustomItemUtil.isShield(inventory.getItem(heldItemSlot + 1))) {
                 // check for a equiped shield
                 hero.setArmor((CustomArmor) itemStack.getItem());
             }
@@ -165,7 +166,7 @@ public final class WeaponManager implements Listener {
         return heldItemSlot + 1 < 9
                 && inventory.getItem(heldItemSlot + 1) != null
                 && inventory.getItem(heldItemSlot + 1).getTypeId() != 0
-                && ItemUtil.isWeapon(inventory.getItem(heldItemSlot + 1));
+                && CustomItemUtil.isWeapon(inventory.getItem(heldItemSlot + 1));
     }
 
     public DefaultWeaponConfig getDefaultMinMaxDamage(int itemid) {

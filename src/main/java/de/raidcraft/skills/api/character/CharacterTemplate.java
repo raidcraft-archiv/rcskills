@@ -26,6 +26,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public String getName();
 
+    public void updateEntity(LivingEntity entity);
+
     public LivingEntity getEntity();
 
     public ThreatTable getThreatTable();
