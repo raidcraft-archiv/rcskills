@@ -145,6 +145,9 @@ public final class CombatManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInteract(PlayerInteractEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) {
+            return;
+        }
         try {
             plugin.getCharacterManager().getHero(event.getPlayer()).removeEffect(CastTime.class);
         } catch (CombatException e) {
