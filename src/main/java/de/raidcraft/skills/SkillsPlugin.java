@@ -134,7 +134,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     public void disable() {
 
         // clear the cache of all heroes, saving them to the database
-        for (Hero hero : getCharacterManager().getCachedHeroes()) {
+        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
             getCharacterManager().clearCacheOf(hero);
         }
     }
