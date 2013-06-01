@@ -33,7 +33,7 @@ public class TabDecoProfessionPathSettings extends TabDecoSetting {
             // lets get the profession first
             Profession profession = getProfession(matcher.group(2), hero.getProfessions());
             if (profession == null) {
-                return "";
+                return "N/A";
             }
             // now check what value we want
             String action = matcher.group(1);
@@ -45,7 +45,7 @@ public class TabDecoProfessionPathSettings extends TabDecoSetting {
                 return profession.getAttachedLevel().getExp() + "/" + profession.getAttachedLevel().getMaxExp();
             }
         }
-        return "";
+        return "N/A";
     }
 
     private Profession getProfession(String pathName, Collection<Profession> professions) {
@@ -53,7 +53,12 @@ public class TabDecoProfessionPathSettings extends TabDecoSetting {
         for (Profession profession : professions) {
             if (profession.isActive() && profession.getPath().getName().equalsIgnoreCase(pathName)) {
                 if (profession.hasChildren()) {
-                    return getProfession(pathName, profession.getChildren());
+                    Profession child = getProfession(pathName, profession.getChildren());
+                    if (child.isActive()) {
+                        return child;
+                    } else {
+                        return profession;
+                    }
                 } else {
                     return profession;
                 }

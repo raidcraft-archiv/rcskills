@@ -30,7 +30,7 @@ public class TabDecoAttributeSettings extends TabDecoSetting {
         if (attribute != null) {
             return String.valueOf(attribute.getCurrentValue());
         }
-        return "";
+        return "N/A";
     }
 
     public Attribute getAttribute(Player player, String input) {
