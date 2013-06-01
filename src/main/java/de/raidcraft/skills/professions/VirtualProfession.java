@@ -15,7 +15,6 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,26 +32,22 @@ public final class VirtualProfession extends AbstractProfession {
     }
 
     @Override
-    public Collection<Skill> getSkills() {
+    public void loadSkills() {
 
-        if (skills.size() < 1) {
-            this.skills.clear();
-            this.skills.putAll(getProperties().loadSkills(this));
-            // also load all skills that are only added in the db
-            SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
-            List<THeroSkill> dbSkills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId()).getSkills();
-            if (dbSkills != null) {
-                for (THeroSkill tHeroSkill : dbSkills) {
-                    try {
-                        Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
-                        this.skills.put(skill.getName(), skill);
-                    } catch (UnknownSkillException e) {
-                        getHero().sendMessage(ChatColor.RED + e.getMessage());
-                    }
+        super.loadSkills();
+        // also load all skills that are only added in the db
+        SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
+        List<THeroSkill> dbSkills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId()).getSkills();
+        if (dbSkills != null) {
+            for (THeroSkill tHeroSkill : dbSkills) {
+                try {
+                    Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
+                    this.skills.put(skill.getName(), skill);
+                } catch (UnknownSkillException e) {
+                    getHero().sendMessage(ChatColor.RED + e.getMessage());
                 }
             }
         }
-        return skills.values();
     }
 
     @Override

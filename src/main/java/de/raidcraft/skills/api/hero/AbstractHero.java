@@ -137,7 +137,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 profession.checkSkillsForUnlock();
             }
         }
-        getVirtualProfession().checkSkillsForUnlock();
         // make sure all virtual skills are added last and override normal skills
         for (Skill skill : getVirtualProfession().getSkills()) {
             if (skill.isUnlocked()) {
@@ -145,6 +144,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 virtualSkills.put(skill.getName(), skill);
             }
         }
+        getVirtualProfession().checkSkillsForUnlock();
     }
 
     private void loadAttributes() {
@@ -220,16 +220,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void addSkill(Skill skill) {
 
         getVirtualProfession().addSkill(skill);
-        // we need to reload the skills in order for normal profession skills to load
-        loadSkills();
     }
 
     @Override
     public void removeSkill(Skill skill) {
 
         getVirtualProfession().removeSkill(skill);
-        // we need to reload the skills in order for normal profession skills to load
-        loadSkills();
     }
 
     @Override
