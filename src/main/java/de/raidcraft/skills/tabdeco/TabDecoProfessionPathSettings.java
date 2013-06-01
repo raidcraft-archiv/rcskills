@@ -54,7 +54,7 @@ public class TabDecoProfessionPathSettings extends TabDecoSetting {
             if (profession.isActive() && profession.getPath().getName().equalsIgnoreCase(pathName)) {
                 if (profession.hasChildren()) {
                     Profession child = getProfession(pathName, profession.getChildren());
-                    if (child.isActive()) {
+                    if (child != null && child.isActive()) {
                         return child;
                     } else {
                         return profession;
