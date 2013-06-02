@@ -314,6 +314,16 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         hero.sendMessage(message);
     }
 
+    protected void combatLog(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getTarget() instanceof Hero) {
+            ((Hero) getTarget()).combatLog(this, message);
+        }
+    }
+
     private String convertName(String name) {
 
         return name.toLowerCase().replace(" ", "-").trim();
