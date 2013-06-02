@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.InvocationTargetException;
@@ -114,10 +113,5 @@ public class BukkitUserInterface implements UserInterface {
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
         return objective;
-    }
-
-    public Score getHealthScore() {
-
-        return getScoreboardHealthObjective().getScore(hero.getPlayer());
     }
 }

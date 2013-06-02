@@ -83,22 +83,6 @@ public final class Scoreboards {
         }
     }
 
-    public static Objective getPlayerTabListObjective(Hero hero) {
-
-        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
-
-        String objectiveName = OBJECTIVE_LIST_BASE_NAME + hero.getId();
-        Objective objective;
-        if (scoreboard.getObjective(objectiveName) == null) {
-            objective = scoreboard.registerNewObjective(objectiveName, "dummy");
-            objective.setDisplayName(LIST_DISPLAY_NAME);
-            objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-        } else {
-            objective = scoreboard.getObjective(objectiveName);
-        }
-        return objective;
-    }
-
     public static Objective getPlayerSidebarObjective(Hero hero) {
 
         Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
