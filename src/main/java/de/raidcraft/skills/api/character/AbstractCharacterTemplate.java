@@ -371,6 +371,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().setMaxHealth(maxHealth);
     }
 
+    @Override
+    public void increaseMaxHealth(int amount) {
+
+        setMaxHealth(amount);
+        setHealth(getHealth() + amount);
+    }
+
+    @Override
+    public void decreaseMaxHealth(int amount) {
+
+        setHealth(getHealth() - amount);
+        setMaxHealth(amount);
+    }
+
     private void damage(int damage) {
 
         int newHealth = getHealth() - damage;

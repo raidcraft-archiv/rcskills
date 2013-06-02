@@ -98,6 +98,10 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setMaxHealth(int maxHealth);
 
+    public void increaseMaxHealth(int amount);
+
+    public void decreaseMaxHealth(int amount);
+
     public int getDefaultHealth();
 
     public void damage(Attack attack);
