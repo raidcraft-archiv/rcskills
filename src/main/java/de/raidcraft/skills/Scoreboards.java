@@ -24,14 +24,17 @@ public final class Scoreboards {
     private static final String TEAM_NAME = "raidcraft";
     private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
 
-    public static Scoreboard getScoreboard(Player player) {
+    public static Scoreboard getScoreboard(Hero hero) {
 
-        String playerName = player.getName().toLowerCase();
+        String playerName = hero.getName().toLowerCase();
         if (scoreboards.containsKey(playerName)) {
             return scoreboards.get(playerName);
         }
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        player.setScoreboard(scoreboard);
+        if (!hero.isOnline()) {
+            hero.updateEntity(Bukkit.getPlayer(playerName));
+        }
+        hero.getPlayer().setScoreboard(scoreboard);
         scoreboards.put(playerName, scoreboard);
         return scoreboard;
     }
@@ -85,7 +88,7 @@ public final class Scoreboards {
 
     public static Objective getPlayerSidebarObjective(Hero hero) {
 
-        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
+        Scoreboard scoreboard = Scoreboards.getScoreboard(hero);
 
         String objectiveName = OBJECTIVE_SIDE_BASE_NAME + hero.getId();
         Objective objective;

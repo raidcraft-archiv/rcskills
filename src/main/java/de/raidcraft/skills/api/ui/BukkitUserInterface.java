@@ -104,7 +104,7 @@ public class BukkitUserInterface implements UserInterface {
     private Objective getScoreboardHealthObjective() {
 
         // lets also set the scoreboard to display the health of this player to all online players
-        Scoreboard scoreboard = Scoreboards.getScoreboard(hero.getPlayer());
+        Scoreboard scoreboard = Scoreboards.getScoreboard(hero);
 
         Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + hero.getId());
         if (objective == null) {
