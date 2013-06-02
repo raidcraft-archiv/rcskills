@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.resource;
 
+import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.skills.SkillsPlugin;
@@ -7,6 +8,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.ResourceData;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.trigger.ResourceChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Bukkit;
@@ -23,7 +25,6 @@ public abstract class AbstractResource implements Resource {
 
     private final String name;
     private final String friendlyName;
-    private final ResourceData data;
     private final Profession profession;
     private final ConfigurationSection config;
     private final ConfigurationSection inCombatRegen;
@@ -39,7 +40,6 @@ public abstract class AbstractResource implements Resource {
 
         this.name = config.getName().toLowerCase().replace(" ", "-").trim();
         this.friendlyName = config.getString("name", name);
-        this.data = data;
         this.profession = profession;
         this.config = config;
         for (String type : config.getStringList("types")) {
@@ -292,10 +292,14 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void save() {
 
-        data.setValue(getCurrent());
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
+            EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
+            THeroResource resource = database.find(THeroResource.class).where()
+                    .eq("profession_id", getProfession().getId())
+                    .eq("name", getName()).findUnique();
+            resource.setValue(getCurrent());
+            database.update(resource);
         }
     }
 }
