@@ -61,7 +61,9 @@ public class BindingsTable extends Table {
                 CommandContext args;
                 try {
                     skill = hero.getSkill(resultSet.getString("skill"));
-                    args = new CommandContext(resultSet.getString("args").split(" "));
+                    // we need to fake the first argument because the commandcontext
+                    // will cut it off and use it as base command string
+                    args = new CommandContext(skill.getName() + " " + resultSet.getString("args"));
                 } catch (UnknownSkillException | CommandException e) {
                     deleteBinding(id);
                     continue;
