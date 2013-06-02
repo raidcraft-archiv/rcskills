@@ -176,6 +176,7 @@ public final class ConfigUtil {
         Set<String> availableModifier = section.getKeys(false);
         double value = section.getDouble("base", 0.0);
         double cap = section.getDouble("cap", 0);
+        double low = section.getDouble("low", 0);
         boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
 
         if (ability != null && profession == null && ability instanceof Skill) {
@@ -204,8 +205,11 @@ public final class ConfigUtil {
             value += holder.getDamage();
         }
 
-        if (cap > 0 && value > cap) {
+        if (cap > 0.0 && value > cap) {
             value = cap;
+        }
+        if (low != 0.0 && value < low) {
+            value = low;
         }
         if (value == 0.0) {
             value = defautValue;
