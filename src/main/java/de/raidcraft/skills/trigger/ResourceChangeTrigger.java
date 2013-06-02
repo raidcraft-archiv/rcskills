@@ -11,6 +11,13 @@ import org.bukkit.event.Cancellable;
  */
 public class ResourceChangeTrigger extends Trigger implements Cancellable {
 
+    public enum Action {
+
+        GAIN,
+        LOSS,
+        NO_CHANGE;
+    }
+
     private final Resource resource;
     private int newValue = 0;
     private boolean cancelled = false;
@@ -40,6 +47,16 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
     public void setNewValue(int newValue) {
 
         this.newValue = newValue;
+    }
+
+    public Action getAction() {
+
+        if (getNewValue() == getResource().getCurrent()) {
+            return Action.NO_CHANGE;
+        } else if (getNewValue() > getResource().getCurrent()) {
+            return Action.GAIN;
+        }
+        return Action.LOSS;
     }
 
     /*///////////////////////////////////////////////////
