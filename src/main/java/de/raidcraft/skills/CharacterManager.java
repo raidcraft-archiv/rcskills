@@ -73,7 +73,7 @@ public final class CharacterManager implements Listener {
             @Override
             public void onPacketSending(PacketEvent event) {
 
-                if (pausedExpPlayers.contains(event.getPlayer().getName().toLowerCase())) {
+                if (isPausingPlayerExpUpdate(event.getPlayer())) {
                     return;
                 }
                 Hero hero = getHero(event.getPlayer());
@@ -99,6 +99,11 @@ public final class CharacterManager implements Listener {
     public boolean isPausingPlayerExpUpdate(Player player) {
 
         return pausedExpPlayers.contains(player.getName().toLowerCase());
+    }
+
+    public boolean isPlayerCached(String name) {
+
+        return heroes.containsKey(name.toLowerCase());
     }
 
     public void reload() {
