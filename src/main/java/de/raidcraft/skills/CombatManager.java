@@ -314,7 +314,9 @@ public final class CombatManager implements Listener {
         if (FAKED_EVENTS.contains(event)) {
             return;
         }
-        if (event.getEntity() == null || !(event.getEntity() instanceof LivingEntity)) {
+        if (event.getEntity() == null
+                || event.getDamager() == null
+                || !(event.getEntity() instanceof LivingEntity)) {
             return;
         }
         boolean callback = false;
