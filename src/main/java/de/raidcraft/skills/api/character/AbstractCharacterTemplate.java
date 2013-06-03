@@ -375,7 +375,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void increaseMaxHealth(int amount) {
 
-        setMaxHealth(getMaxHealth() + amount);
+        int maxHealth = getMaxHealth() + amount;
+        if (maxHealth < 1) {
+            maxHealth = 20;
+        }
+        setMaxHealth(maxHealth);
         setHealth(getHealth() + amount);
     }
 
@@ -383,7 +387,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void decreaseMaxHealth(int amount) {
 
         setHealth(getHealth() - amount);
-        setMaxHealth(getMaxHealth() - amount);
+        int maxHealth = getMaxHealth() - amount;
+        if (maxHealth < 1) {
+            maxHealth = 20;
+        }
+        setMaxHealth(maxHealth);
     }
 
     private void damage(int damage) {

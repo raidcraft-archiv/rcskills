@@ -78,11 +78,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         attachLevel(new ConfigurableAttachedLevel<CharacterTemplate>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
-        loadSkills();
-        loadAttributes();
         // keep this last because we need to professions to load first
         setMaxHealth(getDefaultHealth());
         setHealth(data.getHealth());
+        // load the skills after the profession
+        loadSkills();
+        loadAttributes();
         // it is important to load the user interface last or lese it will run in an endless loop
         this.userInterface = new BukkitUserInterface(this);
     }
