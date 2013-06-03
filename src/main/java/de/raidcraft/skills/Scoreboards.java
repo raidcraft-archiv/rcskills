@@ -79,7 +79,9 @@ public final class Scoreboards {
             for (Objective objective : scoreboard.getObjectives()) {
                 if (objective.getName().startsWith(BukkitUserInterface.HEALTH_OBJECTIVE)) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        objective.getScore(player).setScore(player.getHealth());
+                        if (player.getHealth() > 0) {
+                            objective.getScore(player).setScore(player.getHealth());
+                        }
                     }
                 }
             }
