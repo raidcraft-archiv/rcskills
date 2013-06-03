@@ -85,6 +85,7 @@ public final class CharacterManager implements Listener {
                 }
             }
         });
+        startRefreshTask();
     }
 
     private void startRefreshTask() {
@@ -126,7 +127,9 @@ public final class CharacterManager implements Listener {
 
     public void reload() {
 
-        refreshTask.cancel();
+        if (refreshTask != null) {
+            refreshTask.cancel();
+        }
         for (Hero hero : new ArrayList<>(heroes.values())) {
             hero.clearEffects();
             clearCacheOf(hero);
