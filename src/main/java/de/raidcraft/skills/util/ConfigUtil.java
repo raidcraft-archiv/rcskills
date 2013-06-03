@@ -119,8 +119,9 @@ public final class ConfigUtil {
                     value += section.getDouble(resource.getName() + "-modifier") * base;
                     availableModifiers.remove(resource.getName() + "-modifier");
                 }
-                if (section.getBoolean(resource.getName() + "-percent-modifier", false)) {
-                    value += (double) resource.getCurrent() / (double) resource.getMax();
+                if (section.isSet(resource.getName() + "-percent-modifier")) {
+                    value += ((double) resource.getCurrent() / (double) resource.getMax())
+                            * section.getDouble(resource.getName() + "-percent-modifier", 1.0);
                     availableModifiers.remove(resource.getName() + "-percent-modifier");
                 }
             }
