@@ -27,6 +27,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), damage,
                 (projectileType == ProjectileType.FIREBALL ? EffectType.MAGICAL : EffectType.PHYSICAL));
         this.projectileType = projectileType;
+        addAttackTypes(EffectType.RANGE);
     }
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType) {

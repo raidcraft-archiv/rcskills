@@ -28,6 +28,7 @@ public class SkillAction extends AbstractAction<Hero> {
     private final CommandContext args;
     private final Map<String, Double> resourceCosts = new HashMap<>();
     private int castTime;
+    private double cooldown;
     private boolean delayed = false;
 
     private final PlayerCastSkillTrigger trigger;
@@ -38,6 +39,7 @@ public class SkillAction extends AbstractAction<Hero> {
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();
+        this.cooldown = skill.getTotalCooldown();
 
         for (Resource resource : skill.getHolder().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));
@@ -76,6 +78,16 @@ public class SkillAction extends AbstractAction<Hero> {
     public void setCastTime(int castTime) {
 
         this.castTime = castTime;
+    }
+
+    public double getCooldown() {
+
+        return cooldown;
+    }
+
+    public void setCooldown(double cooldown) {
+
+        this.cooldown = cooldown;
     }
 
     @Override
