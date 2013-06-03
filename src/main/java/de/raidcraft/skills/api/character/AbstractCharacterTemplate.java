@@ -23,6 +23,7 @@ import de.raidcraft.skills.api.party.SimpleParty;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.EffectUtil;
@@ -501,6 +502,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
+
+        // lets fire an event/trigger
+        PlayerGainedEffectTrigger trigger = TriggerManager.callSafeTrigger(
+                new PlayerGainedEffectTrigger(this, effect)
+        );
+        if (trigger.isCancelled()) {
+            throw new CombatException(CombatException.Type.INVALID_TARGET);
+        }
 
         if (hasEffect(eClass)) {
             Effect<?> existingEffect = effects.get(eClass);

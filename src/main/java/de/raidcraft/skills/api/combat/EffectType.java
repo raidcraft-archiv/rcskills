@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.combat;
 
+import de.raidcraft.util.EnumUtils;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
@@ -31,7 +32,13 @@ public enum EffectType {
     PROTECTION,
     PURGEABLE,
     DISABLEING,
-    RANGE;
+    RANGE,
+    COMBO;
+
+    public static EffectType fromString(String str) {
+
+        return EnumUtils.getEnumFromString(EffectType.class, str);
+    }
 
     public static EffectType fromEvent(EntityDamageEvent.DamageCause cause) {
 

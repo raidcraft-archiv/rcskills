@@ -8,6 +8,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.AbilityFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.AbilityInformation;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,6 +117,21 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
             }
         }
         return effects;
+    }
+
+    @Override
+    public Set<EffectType> getTypes() {
+
+        HashSet<EffectType> types = new HashSet<>();
+        for (String str : getStringList("types")) {
+            EffectType type = EffectType.fromString(str);
+            if (type == null) {
+                getPlugin().getLogger().warning("Wrong effect type " + str + " defined in config " + getName());
+                continue;
+            }
+            types.add(type);
+        }
+        return types;
     }
 
     @Override

@@ -47,12 +47,14 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     protected String description;
     private long lastCast;
 
+    @SuppressWarnings("unchecked")
     public AbstractAbility(T holder, AbilityProperties data) {
 
         this.name = data.getName();
         this.description = data.getDescription();
         this.properties = data;
         this.holder = holder;
+        this.effectTypes.addAll(getProperties().getTypes());
     }
 
     @Override
