@@ -84,7 +84,7 @@ public class BindCommands {
         BindManager bindManager = plugin.getBindManager();
         if (args.hasFlag('a')) {
             // unbind all spells
-            for (BoundItem item : bindManager.getBoundItems(hero.getName())) {
+            for (BoundItem item : new ArrayList<>(bindManager.getBoundItems(hero.getName()))) {
                 bindManager.removeBindings(hero, item.getItem());
             }
             hero.sendMessage(ChatColor.DARK_GREEN + "Alle deine gebunden Skills wurden von den Items entfernt.");
