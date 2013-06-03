@@ -18,6 +18,9 @@ public class HealthResource extends AbstractResource {
     @Override
     public void setCurrent(int current) {
 
+        if (getHero().getEntity().isDead()) {
+            return;
+        }
         try {
             getHero().setHealth(fireResourceChangeEvent(current));
         } catch (RaidCraftException ignored) {
