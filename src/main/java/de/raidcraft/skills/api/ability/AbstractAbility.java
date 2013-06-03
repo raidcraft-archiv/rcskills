@@ -262,8 +262,13 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @Override
     public final void setRemainingCooldown(double cooldown) {
 
+        setRemainingCooldown(cooldown, true);
+    }
+
+    public final void setRemainingCooldown(double cooldown, boolean verbose) {
+
         double remainingCooldown = getRemainingCooldown();
-        if (remainingCooldown != cooldown && getHolder() instanceof Hero) {
+        if (verbose && remainingCooldown != cooldown && getHolder() instanceof Hero) {
             if (cooldown > remainingCooldown) {
                 ((Hero) getHolder()).sendMessage(
                         ChatColor.RED + "Cooldown von " + getFriendlyName() + " wurde auf " + cooldown + "s erhöht.");
