@@ -1,8 +1,10 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.api.combat.AttackSource;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -13,6 +15,12 @@ public interface Attack<S, T> extends TargetedAction<S, T> {
     public int getDamage();
 
     public void setDamage(int damage);
+
+    public Set<EffectElement> getAttackElements();
+
+    public void addAttackElement(Collection<EffectElement> elements);
+
+    public boolean isOfAttackElement(EffectElement element);
 
     public Set<EffectType> getAttackTypes();
 

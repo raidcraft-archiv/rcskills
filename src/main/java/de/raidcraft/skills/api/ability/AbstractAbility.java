@@ -159,6 +159,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
+        attack.addAttackElement(getElements());
         attack.run();
         return attack;
     }
@@ -181,6 +182,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
+        attack.addAttackElement(getElements());
         attack.run();
         return attack;
     }
@@ -188,6 +190,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
+        magicalAttack.addAttackElement(getElements());
         magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
         magicalAttack.setLineEffects(getAmbientEffects(AbilityEffectStage.LINE));
         magicalAttack.run();

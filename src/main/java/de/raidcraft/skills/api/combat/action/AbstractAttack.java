@@ -3,11 +3,13 @@ package de.raidcraft.skills.api.combat.action;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
 
     private int damage;
     private final Set<EffectType> attackTypes = new HashSet<>();
+    private final Set<EffectElement> attackElemens = new HashSet<>();
     private final AttackSource source;
 
     public AbstractAttack(S attacker, T target, int damage, EffectType... types) {
@@ -55,6 +58,24 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
             this.damage = 0;
         }
         this.damage = damage;
+    }
+
+    @Override
+    public Set<EffectElement> getAttackElements() {
+
+        return attackElemens;
+    }
+
+    @Override
+    public void addAttackElement(Collection<EffectElement> elements) {
+
+        attackElemens.addAll(elements);
+    }
+
+    @Override
+    public boolean isOfAttackElement(EffectElement element) {
+
+        return attackElemens.contains(element);
     }
 
     @Override

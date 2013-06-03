@@ -10,6 +10,7 @@ import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -192,6 +193,21 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
             types.add(type);
         }
         return types;
+    }
+
+    @Override
+    public Set<EffectElement> getElements() {
+
+        HashSet<EffectElement> elements = new HashSet<>();
+        for (String str : getStringList("elements")) {
+            EffectElement element = EffectElement.fromString(str);
+            if (element == null) {
+                getPlugin().getLogger().warning("Wrong effect element " + str + " defined in config " + getName());
+                continue;
+            }
+            elements.add(element);
+        }
+        return elements;
     }
 
     @Override

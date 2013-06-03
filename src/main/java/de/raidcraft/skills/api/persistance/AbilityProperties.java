@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,6 +34,8 @@ public interface AbilityProperties<T> {
     public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects();
 
     public Set<EffectType> getTypes();
+
+    public Set<EffectElement> getElements();
 
     ConfigurationSection getData();
 
