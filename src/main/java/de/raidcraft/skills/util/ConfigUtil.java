@@ -113,10 +113,16 @@ public final class ConfigUtil {
         double value = 0.0;
         boolean fromMax = section.getBoolean("from-max", false);
         for (Resource resource : ((Hero) holder).getResources()) {
-            if (resource.isEnabled() && section.isSet(resource.getName() + "-modifier")) {
-                int base = fromMax ? resource.getMax() : resource.getCurrent();
-                value += section.getDouble(resource.getName() + "-modifier") * base;
-                availableModifiers.remove(resource.getName() + "-modifier");
+            if (resource.isEnabled()) {
+                if (section.isSet(resource.getName() + "-modifier")) {
+                    int base = fromMax ? resource.getMax() : resource.getCurrent();
+                    value += section.getDouble(resource.getName() + "-modifier") * base;
+                    availableModifiers.remove(resource.getName() + "-modifier");
+                }
+                if (section.getBoolean(resource.getName() + "-percent-modifier", false)) {
+                    value += (double) resource.getCurrent() / (double) resource.getMax();
+                    availableModifiers.remove(resource.getName() + "-percent-modifier");
+                }
             }
         }
         return value;
