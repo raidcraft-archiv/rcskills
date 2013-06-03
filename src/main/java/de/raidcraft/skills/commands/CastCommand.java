@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.SkillUtil;
-import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -52,7 +51,7 @@ public class CastCommand {
         } catch (CombatException e) {
             String msg = e.getMessage();
             if (e.getType() == CombatException.Type.ON_COOLDOWN) {
-                msg = e.getMessage() + " - " + TimeUtil.millisToSeconds(skill.getRemainingCooldown()) + "s";
+                msg = e.getMessage() + " - " + skill.getRemainingCooldown() + "s";
             }
             throw new CommandException(msg);
         }

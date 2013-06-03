@@ -56,7 +56,7 @@ public interface Ability<T extends CharacterTemplate> {
 
     void setRemainingCooldown(double cooldown);
 
-    long getRemainingCooldown();
+    double getRemainingCooldown();
 
     boolean isOnCooldown();
 
