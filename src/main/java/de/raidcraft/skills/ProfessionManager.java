@@ -141,6 +141,7 @@ public final class ProfessionManager {
             cachedProfessions.get(hero.getName()).put(profId, profession);
             if (profession instanceof AbstractProfession) {
                 ((AbstractProfession) profession).loadResources();
+                ((AbstractProfession) profession).loadSkills();
             }
         }
         return profession;

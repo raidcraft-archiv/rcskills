@@ -106,9 +106,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 for (Profession child : profession.getChildren()) {
                     professions.put(child.getName(), child);
                 }
-                if (profession instanceof AbstractProfession) {
-                    ((AbstractProfession) profession).loadSkills();
-                }
             } catch (UnknownSkillException | UnknownProfessionException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }

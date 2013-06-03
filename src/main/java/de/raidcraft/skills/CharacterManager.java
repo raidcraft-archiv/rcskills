@@ -183,7 +183,7 @@ public final class CharacterManager implements Listener {
                 RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
             }
             hero = new SimpleHero(player, heroTable);
-            heroes.put(hero.getName().toLowerCase(), hero);
+            heroes.put(name, hero);
         } else {
             hero = heroes.get(name);
         }
