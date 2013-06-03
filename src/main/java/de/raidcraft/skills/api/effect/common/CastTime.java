@@ -26,6 +26,7 @@ import java.util.List;
 )
 public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
+    private boolean casted = false;
     private final float fillPerTick;
     private boolean isPlayer = false;
     private Player player;
@@ -61,6 +62,10 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     protected void tick(CharacterTemplate target) throws CombatException {
 
         if (isPlayer) {
+            // when the spell is cast above 90% it is consired success
+            if (player.getExp() >= 0.9F) {
+                casted = true;
+            }
             float newExp = player.getExp() + fillPerTick;
             if (newExp > 1.0F) {
                 return;
@@ -85,8 +90,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
             nullExp();
             RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().unpausePlayerExpUpdate(player);
         }
-        // when the spell is cast above 90% it is consired success
-        if (getRemainingTicks() / getDuration() < 0.90) {
+        if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
         } else {
             getSource().run();

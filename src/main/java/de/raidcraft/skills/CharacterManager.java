@@ -96,6 +96,11 @@ public final class CharacterManager implements Listener {
         pausedExpPlayers.remove(player.getName().toLowerCase());
     }
 
+    public boolean isPausingPlayerExpUpdate(Player player) {
+
+        return pausedExpPlayers.contains(player.getName().toLowerCase());
+    }
+
     public void reload() {
 
         for (Hero hero : new ArrayList<>(heroes.values())) {

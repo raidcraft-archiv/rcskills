@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import org.bukkit.Bukkit;
@@ -49,6 +50,9 @@ public class BukkitUserInterface implements UserInterface {
 
     private void updateExperienceDisplay() {
 
+        if (RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().isPausingPlayerExpUpdate(getHero().getPlayer())) {
+            return;
+        }
         try {
             hero.getPlayer().setLevel(0);
             hero.getPlayer().setExp(0.0F);
