@@ -399,7 +399,9 @@ public final class CharacterManager implements Listener {
         }
         Scoreboards.updateTeams();
         // init once to set the health from the db and so on
-        getHero(event.getPlayer()).updateEntity(event.getPlayer());
+        Hero hero = getHero(event.getPlayer());
+        hero.updateEntity(event.getPlayer());
+        hero.updatePermissions();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

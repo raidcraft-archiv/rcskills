@@ -87,6 +87,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.userInterface = new BukkitUserInterface(this);
     }
 
+    @Override
+    public void updatePermissions() {
+
+        // permissions update is essentially reapplying the skills
+        loadSkills();
+    }
+
     @SuppressWarnings("unchecked")
     private void loadProfessions(HeroData data) {
 

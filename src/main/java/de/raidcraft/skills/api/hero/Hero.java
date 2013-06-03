@@ -106,4 +106,5 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public void removeSkill(Skill skill);
 
+    void updatePermissions();
 }
