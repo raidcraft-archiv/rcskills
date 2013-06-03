@@ -18,8 +18,6 @@ import java.util.Map;
 public final class Scoreboards {
 
     private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
-    private static final String OBJECTIVE_LIST_BASE_NAME = "list";
-    private static final String LIST_DISPLAY_NAME = "Stats";
     private static final String SIDE_DISPLAY_NAME = "Charakterübersicht";
     private static final String TEAM_NAME = "raidcraft";
     private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
@@ -79,7 +77,7 @@ public final class Scoreboards {
             for (Objective objective : scoreboard.getObjectives()) {
                 if (objective.getName().startsWith(BukkitUserInterface.HEALTH_OBJECTIVE)) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.getHealth() > 0) {
+                        if (player.getHealth() > 0 && !player.hasMetadata("GHOST")) {
                             objective.getScore(player).setScore(player.getHealth());
                         }
                     }
