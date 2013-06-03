@@ -349,7 +349,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setHealth(int health) {
 
-        if (getEntity() == null) return;
+        if (getEntity() == null || getEntity().isDead()) {
+            return;
+        }
         if (health > getMaxHealth()) {
             health = getMaxHealth();
         }

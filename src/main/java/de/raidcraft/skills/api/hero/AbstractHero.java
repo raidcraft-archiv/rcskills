@@ -31,7 +31,6 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -341,7 +340,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void reset() {
 
-        if (!isOnline() || getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (!isOnline()) {
             return;
         }
         updateHighestRankedProfession();
