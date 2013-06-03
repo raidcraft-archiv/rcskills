@@ -13,7 +13,7 @@ public enum EffectElement {
     EARTH,
     DARK,
     LIGHTNING,
-    LIGHT,
+    HOLY,
     AIR;
 
     public static EffectElement fromString(String name) {

@@ -20,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
         name = "Speed",
         description = "Das Ziel wird schneller",
         types = {EffectType.BUFF},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class Speed<S> extends ExpirableEffect<S> {
 
