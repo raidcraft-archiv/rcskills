@@ -58,6 +58,7 @@ public final class CharacterManager implements Listener {
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();
+    private BukkitTask refreshTask;
 
     private final Map<String, BukkitTask> queuedLoggedOutHeroes = new HashMap<>();
 
@@ -86,6 +87,23 @@ public final class CharacterManager implements Listener {
         });
     }
 
+    private void startRefreshTask() {
+
+        refreshTask = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                for (Hero hero : getCachedHeroes()) {
+                    if (hero.isOnline()) {
+                        hero.getUserInterface().refresh();
+                    }
+                }
+            }
+        },
+        plugin.getCommonConfig().userinterface_refresh_interval,
+        plugin.getCommonConfig().userinterface_refresh_interval);
+    }
+
     public void pausePlayerExpUpdate(Player player) {
 
         pausedExpPlayers.add(player.getName().toLowerCase());
@@ -108,6 +126,7 @@ public final class CharacterManager implements Listener {
 
     public void reload() {
 
+        refreshTask.cancel();
         for (Hero hero : new ArrayList<>(heroes.values())) {
             hero.clearEffects();
             clearCacheOf(hero);
@@ -117,6 +136,7 @@ public final class CharacterManager implements Listener {
             character.clearEffects();
         }
         characters.clear();
+        startRefreshTask();
     }
 
     public Collection<Hero> getCachedHeroes() {

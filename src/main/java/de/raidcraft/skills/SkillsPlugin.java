@@ -425,6 +425,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public double default_swing_time = 1.0;
         @Setting("hero-cache-timeout")
         public int hero_cache_timeout = 300;
+        @Setting("defaults.userinterface-refresh-interval")
+        public int userinterface_refresh_interval = 100;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
