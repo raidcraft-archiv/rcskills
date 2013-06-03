@@ -9,6 +9,7 @@ import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -41,6 +42,12 @@ public class BukkitUserInterface implements UserInterface {
 
         Objective objective = Scoreboards.getPlayerSidebarObjective(getHero());
         objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
+        // update all resource displays
+        for (Resource resource : getHero().getResources()) {
+            if (resource.isEnabled() && resource.getProfession().isActive()) {
+                objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN + resource.getFriendlyName())).setScore(resource.getCurrent());
+            }
+        }
     }
 
     private void updateHealthDisplay() {
