@@ -15,4 +15,6 @@ public @interface TriggerHandler {
     public TriggerPriority priority() default TriggerPriority.NORMAL;
 
     public boolean ignoreCancelled() default false;
+
+    public boolean filterTargets() default true;
 }

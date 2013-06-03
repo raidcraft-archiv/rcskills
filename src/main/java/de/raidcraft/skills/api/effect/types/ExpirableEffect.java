@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
  */
 public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
+    private long startTime;
     protected long duration = 0;
 
     public ExpirableEffect(S source, CharacterTemplate target, EffectData data) {
@@ -32,6 +33,19 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
         }
     }
 
+    public double getRemainingDuration() {
+
+        long runningTimeMillis = System.currentTimeMillis() - startTime;
+        return TimeUtil.ticksToSeconds(getDuration()) - TimeUtil.millisToSeconds(runningTimeMillis);
+    }
+
+    public void setDuration(double time) {
+
+        duration = TimeUtil.secondsToTicks(time);
+        stopTask();
+        startTask();
+    }
+
     public long getDuration() {
 
         return duration;
@@ -45,6 +59,7 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
                 RaidCraft.getComponent(SkillsPlugin.class),
                 this,
                 getDuration()));
+        startTime = System.currentTimeMillis();
     }
 
     @Override

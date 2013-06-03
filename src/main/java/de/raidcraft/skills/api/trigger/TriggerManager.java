@@ -159,7 +159,16 @@ public class TriggerManager {
                     }
                 }
             };
-            if (Ability.class.isAssignableFrom(listener.getClass())) {
+            if (!annotation.filterTargets()) {
+                // if defined in the annotation pass on the trigger without checks
+                eventSet.add(new RegisteredTrigger(listener, executor, annotation) {
+                    @Override
+                    protected void call(Trigger trigger) throws CombatException, EventException {
+
+                        executor.execute(listener, trigger);
+                    }
+                });
+            } else if (Ability.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredAbilityTrigger(listener, executor, annotation));
             } else if (Effect.class.isAssignableFrom(listener.getClass())) {
                 eventSet.add(new RegisteredEffectTrigger(listener, executor, annotation));

@@ -13,16 +13,23 @@ public class HealTrigger extends Trigger implements Cancellable {
 
     private int amount;
     private boolean cancelled = false;
+    private final HealAction<?> action;
 
     public HealTrigger(HealAction action, int amount) {
 
         super((CharacterTemplate) action.getTarget());
+        this.action = action;
         this.amount = amount;
     }
 
     public CharacterTemplate getTarget() {
 
         return getSource();
+    }
+
+    public HealAction<?> getAction() {
+
+        return action;
     }
 
     public int getAmount() {
