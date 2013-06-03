@@ -3,7 +3,7 @@ package de.raidcraft.skills.api.effect.common;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.action.SkillAction;
-import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
@@ -23,9 +23,9 @@ import org.bukkit.entity.Projectile;
         name = "Queued-Range-Attack",
         description = "Calls back a range attack when projectile hits."
 )
-public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableEffect<Skill> implements Triggered {
+public class QueuedRangedAttack extends ExpirableEffect<Skill> implements Triggered {
 
-    private T callback;
+    private RangedCallback callback;
     private boolean fired = false;
 
     public QueuedRangedAttack(Skill source, CharacterTemplate target, EffectData data) {
@@ -34,7 +34,7 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
         if (duration == 0) duration = 20 * 5;
     }
 
-    public void addCallback(T callback) {
+    public void addCallback(RangedCallback callback) {
 
         this.callback = callback;
     }
@@ -47,7 +47,7 @@ public class QueuedRangedAttack<T extends ProjectileCallback> extends ExpirableE
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // lets replace the fired projectile with ours so we can track the impact and callback
-        RangedAttack<T> attack = new RangedAttack<>(getSource().getHolder(), trigger.getEvent(), callback);
+        RangedAttack<RangedCallback> attack = new RangedAttack<>(getSource().getHolder(), trigger.getEvent(), callback);
         attack.setProjectile((Projectile) trigger.getEvent().getProjectile());
         // since we dont "run" the attack we need to queue for callbacks
         new SourcedRangeCallback<>(attack).queueCallback();
