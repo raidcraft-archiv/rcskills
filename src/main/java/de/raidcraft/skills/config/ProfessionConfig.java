@@ -173,4 +173,10 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
 
         return getOverrideSection("resources." + type);
     }
+
+    @Override
+    public ConfigurationSection getExpMoneyConversionRate() {
+
+        return getOverrideSection("exp-money-conversion-rate");
+    }
 }
