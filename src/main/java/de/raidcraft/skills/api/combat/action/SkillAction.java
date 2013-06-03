@@ -27,7 +27,7 @@ public class SkillAction extends AbstractAction<Hero> {
     private final Skill skill;
     private final CommandContext args;
     private final Map<String, Double> resourceCosts = new HashMap<>();
-    private int castTime;
+    private double castTime;
     private double cooldown;
     private boolean delayed = false;
 
@@ -70,13 +70,16 @@ public class SkillAction extends AbstractAction<Hero> {
         resourceCosts.put(resource, cost);
     }
 
-    public int getCastTime() {
+    public double getCastTime() {
 
         return castTime;
     }
 
-    public void setCastTime(int castTime) {
+    public void setCastTime(double castTime) {
 
+        if (castTime < 0.0) {
+            castTime = 0.0;
+        }
         this.castTime = castTime;
     }
 
@@ -87,6 +90,9 @@ public class SkillAction extends AbstractAction<Hero> {
 
     public void setCooldown(double cooldown) {
 
+        if (cooldown < 0.0) {
+            cooldown = 0.0;
+        }
         this.cooldown = cooldown;
     }
 

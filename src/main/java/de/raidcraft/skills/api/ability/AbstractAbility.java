@@ -251,9 +251,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final int getTotalCastTime() {
+    public final double getTotalCastTime() {
 
-        return (int) (ConfigUtil.getTotalValue(this, properties.getCastTime()) * 20.0);
+        return ConfigUtil.getTotalValue(this, properties.getCastTime());
     }
 
     @Override

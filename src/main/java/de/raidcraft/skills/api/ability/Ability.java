@@ -48,7 +48,7 @@ public interface Ability<T extends CharacterTemplate> {
 
     int getTotalDamage();
 
-    int getTotalCastTime();
+    double getTotalCastTime();
 
     int getTotalRange();
 

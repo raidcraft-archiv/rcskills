@@ -8,6 +8,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.skills.AbilityFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.AbilityInformation;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
@@ -120,7 +121,7 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
-    public Set<EffectType> getTypes() {
+         public Set<EffectType> getTypes() {
 
         HashSet<EffectType> types = new HashSet<>();
         for (String str : getStringList("types")) {
@@ -132,6 +133,21 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
             types.add(type);
         }
         return types;
+    }
+
+    @Override
+    public Set<EffectElement> getElements() {
+
+        HashSet<EffectElement> elements = new HashSet<>();
+        for (String str : getStringList("elements")) {
+            EffectElement element = EffectElement.fromString(str);
+            if (element == null) {
+                getPlugin().getLogger().warning("Wrong effect element " + str + " defined in config " + getName());
+                continue;
+            }
+            elements.add(element);
+        }
+        return elements;
     }
 
     @Override
