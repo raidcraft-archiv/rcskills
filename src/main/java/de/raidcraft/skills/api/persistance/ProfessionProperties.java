@@ -40,6 +40,8 @@ public interface ProfessionProperties {
 
     public ConfigurationSection getResourceConfig(String type);
 
+    public ConfigurationSection getExpMoneyConversionRate();
+
     public Map<String, Skill> loadSkills(Profession profession);
 
     public List<Requirement<Hero>> loadRequirements(Profession profession);
