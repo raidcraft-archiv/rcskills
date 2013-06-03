@@ -44,6 +44,9 @@ public class BukkitUserInterface implements UserInterface {
         objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
         // update all resource displays
         for (Resource resource : getHero().getResources()) {
+            if (resource.getName().equals("health")) {
+                continue;
+            }
             if (resource.isEnabled() && resource.getProfession().isActive()) {
                 objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN + resource.getFriendlyName())).setScore(resource.getCurrent());
             }
