@@ -93,7 +93,10 @@ public class Creature extends AbstractCharacterTemplate {
                 healthBar.append(HEALTH_BAR_MAIN_SYMBOL);
             }
             if ((healthInPercent * 100) % 10 < 6) {
-                healthBar.append(HEALTH_BAR_HALF_SYMBOL);
+                healthBar.append(HEALTH_BAR_HALF_SYMBOL).append(" ");
+            }
+            for (int i = 0; i < (1.0 - (healthInPercent * 10)); i++) {
+                healthBar.append("  ");
             }
             getEntity().setCustomName(healthBar.toString());
             getEntity().setCustomNameVisible(true);
