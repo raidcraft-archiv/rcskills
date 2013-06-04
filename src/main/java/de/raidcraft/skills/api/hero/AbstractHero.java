@@ -1,12 +1,16 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractSkilledCharacter;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -29,10 +33,13 @@ import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -327,6 +334,65 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public Set<Resource> getResources() {
 
         return new HashSet<>(resources.values());
+    }
+
+    @Override
+    public void checkWeapons(int slot) throws CombatException {
+
+        // lets check all equiped weapons and adjust the player accordingly
+        ItemStack item = getPlayer().getInventory().getItem(slot);
+        clearWeapons();
+        removeArmor(EquipmentSlot.SHIELD_HAND);
+        if (item == null || !CustomItemUtil.isEquipment(item)) {
+            return;
+        }
+        if (!CustomItemUtil.isWeapon(item)) {
+            return;
+        }
+        CustomWeapon weapon = CustomItemUtil.getWeapon(item);
+        if (weapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
+            throw new CombatException("Du kannst diese Waffe nur in deiner Schildhand tragen.");
+        }
+        if (!weapon.isMeetingAllRequirements(getPlayer())) {
+            throw new CombatException(weapon.getResolveReason(getPlayer()));
+        }
+        if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+            if (slot + 1 < 9) {
+                ItemStack secondHandItem = getPlayer().getInventory().getItem(slot + 1);
+                if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
+                    ItemUtil.moveItem(this, slot + 1, secondHandItem);
+                    sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
+                }
+                setWeapon(weapon);
+            } else {
+                throw new CombatException("Du benötigst zum Tragen dieser Waffe beide Hände.");
+            }
+        } else if (weapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
+            if (slot + 1 < 9) {
+                // check for a second weapon too
+                ItemStack secondHandItem = getPlayer().getInventory().getItem(slot + 1);
+                if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
+                    if (CustomItemUtil.isWeapon(secondHandItem)) {
+                        CustomWeapon secondWeapon = CustomItemUtil.getWeapon(secondHandItem);
+                        if (!secondWeapon.isMeetingAllRequirements(getPlayer())) {
+                            throw new CombatException(secondWeapon.getResolveReason(getPlayer()));
+                        }
+                        setWeapon(secondWeapon);
+                    } else if (CustomItemUtil.isShield(secondHandItem)) {
+                        // check for a shield
+                        CustomArmor armor = CustomItemUtil.getArmor(secondHandItem);
+                        if (!armor.isMeetingAllRequirements(getPlayer())) {
+                            throw new CombatException(armor.getResolveReason(getPlayer()));
+                        }
+                        setArmor(armor);
+                    } else {
+                        removeWeapon(EquipmentSlot.SHIELD_HAND);
+                        removeArmor(EquipmentSlot.SHIELD_HAND);
+                    }
+                }
+            }
+            setWeapon(weapon);
+        }
     }
 
     @Override

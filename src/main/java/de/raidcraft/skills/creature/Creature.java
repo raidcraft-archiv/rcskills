@@ -37,7 +37,7 @@ public class Creature extends AbstractCharacterTemplate {
         } catch (CombatException ignored) {
             // ignored
         }*/
-        attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 1));
+        attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 60));
     }
 
     public CharacterTemplate getHighestThread() {

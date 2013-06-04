@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.skills.api.character.SkilledCharacter;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -37,6 +38,8 @@ public interface Hero extends SkilledCharacter<Hero> {
     public Attribute getAttribute(String attribute);
 
     public Attribute getAttribute(ItemAttribute attribute);
+
+    void checkWeapons(int slot) throws CombatException;
 
     public Party getPendingPartyInvite();
 

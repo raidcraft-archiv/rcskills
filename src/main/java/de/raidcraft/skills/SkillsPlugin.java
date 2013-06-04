@@ -267,7 +267,6 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.characterManager.reload();
         this.combatManager.reload();
         this.damageManager.reload();
-        this.weaponManager.reload();
 
         this.permissionsProvider.reload();
     }
