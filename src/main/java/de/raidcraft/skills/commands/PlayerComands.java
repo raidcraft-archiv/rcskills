@@ -79,6 +79,10 @@ public class PlayerComands {
             sender.sendMessage(ChatColor.RED + "Die Verknüpfung mit deinem EXP Pool wurde aufgehoben.");
         } else {
             Profession profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
+            if (profession.isMastered()) {
+                throw new CommandException("Diese " + profession.getPath().getFriendlyName()
+                        + " Spezialisierung hat bereits das maximale Level erreicht.");
+            }
             Option.EXP_POOL_LINK.set(hero, profession.getName());
             sender.sendMessage(ChatColor.GREEN + "Dein EXP Pool ist nun mit deiner " + profession.getPath().getFriendlyName()
                     + " Spezialisierung " + ChatColor.AQUA + profession.getFriendlyName() + ChatColor.GREEN + " verknüpft.");

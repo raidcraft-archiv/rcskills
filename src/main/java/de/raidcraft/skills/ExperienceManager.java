@@ -156,6 +156,14 @@ public final class ExperienceManager implements Listener {
             if (linkedProf != null) {
                 try {
                     Profession profession = plugin.getProfessionManager().getProfession(hero, linkedProf);
+                    // dont redirect exp into a mastered profession
+                    if (profession.isMastered()) {
+                        Option.EXP_POOL_LINK.set(hero, null);
+                        hero.sendMessage(ChatColor.RED + "Die Verbindung von deinem EXP Pool mit der "
+                                + profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName()
+                                + " wurde aufgehoben, da die Spezialisierung bereits das maximale Level erreicht hat.");
+                        return;
+                    }
                     profession.getAttachedLevel().addExp(event.getGainedExp());
                     event.setCancelled(true);
                 } catch (UnknownSkillException | UnknownProfessionException e) {
