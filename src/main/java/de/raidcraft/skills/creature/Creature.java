@@ -15,7 +15,8 @@ import org.bukkit.entity.Wolf;
  */
 public class Creature extends AbstractCharacterTemplate {
 
-    private static final String HEALTH_BAR_SYMBOL = "█";
+    private static final String HEALTH_BAR_MAIN_SYMBOL = "█";
+    private static final String HEALTH_BAR_HALF_SYMBOL = "▌";
 
     private CharacterTemplate highestThread;
     protected boolean usingHealthBar = true;
@@ -73,17 +74,26 @@ public class Creature extends AbstractCharacterTemplate {
         ChatColor barColor = ChatColor.GREEN;
         double healthInPercent = getHealth() / (double) getMaxHealth();
         if (healthInPercent < 0.20) {
+            barColor = ChatColor.DARK_RED;
+        } else if (healthInPercent < 0.35) {
             barColor = ChatColor.RED;
         } else if (healthInPercent < 0.50) {
+            barColor = ChatColor.GOLD;
+        } else if (healthInPercent < 0.75) {
             barColor = ChatColor.YELLOW;
+        } else if (healthInPercent < 0.90) {
+            barColor = ChatColor.DARK_GREEN;
         }
         if (!usingHealthBar) {
             getEntity().setCustomName(ChatColor.BLACK + "[" + barColor + getHealth() + ChatColor.BLACK
                     + "/" + ChatColor.GREEN + getMaxHealth() + ChatColor.BLACK + "] " + getEntity().getCustomName());
         } else {
-            StringBuilder healthBar = new StringBuilder(barColor + HEALTH_BAR_SYMBOL);
-            for (int i = 0; i < healthInPercent * 20; i++) {
-                healthBar.append(HEALTH_BAR_SYMBOL);
+            StringBuilder healthBar = new StringBuilder(barColor + "");
+            for (int i = 0; i < healthInPercent * 10; i++) {
+                healthBar.append(HEALTH_BAR_MAIN_SYMBOL);
+            }
+            if ((healthInPercent * 100) % 10 < 6) {
+                healthBar.append(HEALTH_BAR_HALF_SYMBOL);
             }
             getEntity().setCustomName(healthBar.toString());
             getEntity().setCustomNameVisible(true);
