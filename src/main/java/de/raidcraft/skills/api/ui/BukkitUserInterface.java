@@ -106,8 +106,8 @@ public class BukkitUserInterface implements UserInterface {
         updateExperienceDisplay();
         // lets update the scoreboard
         updateHealthDisplay();
-        // lets update the player nametag
-        updateNameTag();
+        // TODO: lets update the player nametag
+        // updateNameTag();
         // make sure the food level is never at 20 to allow eating
         if (hero.getPlayer().getFoodLevel() > 19) {
             hero.getPlayer().setFoodLevel(19);

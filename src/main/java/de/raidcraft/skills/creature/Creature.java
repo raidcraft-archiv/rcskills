@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Wolf;
@@ -14,7 +15,10 @@ import org.bukkit.entity.Wolf;
  */
 public class Creature extends AbstractCharacterTemplate {
 
+    private static final String HEALTH_BAR_SYMBOL = "█";
+
     private CharacterTemplate highestThread;
+    protected boolean usingHealthBar = true;
 
     public Creature(LivingEntity entity) {
 
@@ -48,6 +52,42 @@ public class Creature extends AbstractCharacterTemplate {
     public void setHighestThread(CharacterTemplate highestThread) {
 
         this.highestThread = highestThread;
+    }
+
+    @Override
+    public void setHealth(int health) {
+
+        super.setHealth(health);
+        updateHealthBar();
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth) {
+
+        super.setMaxHealth(maxHealth);
+        updateHealthBar();
+    }
+
+    private void updateHealthBar() {
+
+        ChatColor barColor = ChatColor.GREEN;
+        double healthInPercent = getHealth() / (double) getMaxHealth();
+        if (healthInPercent < 0.20) {
+            barColor = ChatColor.RED;
+        } else if (healthInPercent < 0.50) {
+            barColor = ChatColor.YELLOW;
+        }
+        if (!usingHealthBar) {
+            getEntity().setCustomName(ChatColor.BLACK + "[" + barColor + getHealth() + ChatColor.BLACK
+                    + "/" + ChatColor.GREEN + getMaxHealth() + ChatColor.BLACK + "] " + getEntity().getCustomName());
+        } else {
+            StringBuilder healthBar = new StringBuilder(barColor + HEALTH_BAR_SYMBOL);
+            for (int i = 0; i < healthInPercent * 20; i++) {
+                healthBar.append(HEALTH_BAR_SYMBOL);
+            }
+            getEntity().setCustomName(healthBar.toString());
+            getEntity().setCustomNameVisible(true);
+        }
     }
 
     @Override
