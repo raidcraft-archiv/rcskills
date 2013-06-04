@@ -349,6 +349,7 @@ public final class CharacterManager implements Listener {
         character.setMaxHealth(creatureHealth);
         character.setHealth(creatureHealth);
         character.setDamage(damageManager.getCreatureDamage(entityType));
+        character.setInCombat(false);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
