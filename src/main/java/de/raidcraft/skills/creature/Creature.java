@@ -15,8 +15,9 @@ import org.bukkit.entity.Wolf;
  */
 public class Creature extends AbstractCharacterTemplate {
 
-    private static final String HEALTH_BAR_MAIN_SYMBOL = "█";
-    private static final String HEALTH_BAR_HALF_SYMBOL = "▌";
+    private static final char HEALTH_BAR_MAIN_SYMBOL = '█';
+    private static final char HEALTH_BAR_HALF_SYMBOL = '▌';
+    private static final int HEALTH_BAR_LENGTH = 5;
 
     private CharacterTemplate highestThread;
     protected boolean usingHealthBar = true;
@@ -84,23 +85,45 @@ public class Creature extends AbstractCharacterTemplate {
         } else if (healthInPercent < 0.90) {
             barColor = ChatColor.DARK_GREEN;
         }
+        String health = ChatColor.BLACK + "[" + barColor + getHealth() + ChatColor.BLACK
+                + "/" + ChatColor.GREEN + getMaxHealth() + ChatColor.BLACK + "]";
         if (!usingHealthBar) {
-            getEntity().setCustomName(ChatColor.BLACK + "[" + barColor + getHealth() + ChatColor.BLACK
-                    + "/" + ChatColor.GREEN + getMaxHealth() + ChatColor.BLACK + "] " + getEntity().getCustomName());
+            getEntity().setCustomName(health + getEntity().getCustomName());
         } else {
-            StringBuilder healthBar = new StringBuilder(barColor + "");
-            for (int i = 0; i < healthInPercent * 10; i++) {
+            StringBuilder healthBar = new StringBuilder(health).append(barColor);
+            int count = (int) (healthInPercent * HEALTH_BAR_LENGTH);
+            double modulo = (healthInPercent * (HEALTH_BAR_LENGTH * 10)) % 10;
+            boolean appendHalfBar = modulo < 6 && modulo > 0;
+            for (int i = 0; i < count; i++) {
+                if (i == count - 1 && appendHalfBar) {
+                    break;
+                }
                 healthBar.append(HEALTH_BAR_MAIN_SYMBOL);
             }
-            if ((healthInPercent * 100) % 10 < 6) {
-                healthBar.append(HEALTH_BAR_HALF_SYMBOL).append(" ");
+            if (appendHalfBar) {
+                healthBar.append(HEALTH_BAR_HALF_SYMBOL);
             }
-            for (int i = 0; i < (1.0 - (healthInPercent * 10)); i++) {
+            for (int i = 0; i < HEALTH_BAR_LENGTH - count; i++) {
                 healthBar.append("  ");
             }
+/*
+            healthBar.append(ChatColor.BLACK).append("(").append(barColor).append(getHealth()).append(ChatColor.BLACK).append("/");
+            healthBar.append(ChatColor.GREEN).append(getMaxHealth()).append(ChatColor.BLACK).append(")");
+*/
+
             getEntity().setCustomName(healthBar.toString());
             getEntity().setCustomNameVisible(true);
         }
+    }
+
+    @Override
+    public void setInCombat(boolean inCombat) {
+
+        super.setInCombat(inCombat);
+        if (!usingHealthBar) {
+            return;
+        }
+        getEntity().setCustomNameVisible(inCombat);
     }
 
     @Override
