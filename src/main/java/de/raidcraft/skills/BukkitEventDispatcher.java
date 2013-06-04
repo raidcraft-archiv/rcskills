@@ -3,30 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.trigger.BlockBreakTrigger;
-import de.raidcraft.skills.trigger.BlockPlaceTrigger;
-import de.raidcraft.skills.trigger.BowFireTrigger;
-import de.raidcraft.skills.trigger.BrewTrigger;
-import de.raidcraft.skills.trigger.CombatTrigger;
-import de.raidcraft.skills.trigger.CraftTrigger;
-import de.raidcraft.skills.trigger.EnchantTrigger;
-import de.raidcraft.skills.trigger.EntityTargetTrigger;
-import de.raidcraft.skills.trigger.FurnaceExtractTrigger;
-import de.raidcraft.skills.trigger.InventoryClickTrigger;
-import de.raidcraft.skills.trigger.InventoryCloseTrigger;
-import de.raidcraft.skills.trigger.InventoryOpenTrigger;
-import de.raidcraft.skills.trigger.ItemHeldTrigger;
-import de.raidcraft.skills.trigger.ItemPickupTrigger;
-import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
-import de.raidcraft.skills.trigger.PlayerEggThrowTrigger;
-import de.raidcraft.skills.trigger.PlayerFishTrigger;
-import de.raidcraft.skills.trigger.PlayerInteractTrigger;
-import de.raidcraft.skills.trigger.PlayerItemBreakTrigger;
-import de.raidcraft.skills.trigger.PlayerLoginTrigger;
-import de.raidcraft.skills.trigger.PlayerQuitTrigger;
-import de.raidcraft.skills.trigger.PotionSplashTrigger;
-import de.raidcraft.skills.trigger.ProjectileHitTrigger;
-import de.raidcraft.skills.trigger.ProjectileLaunchTrigger;
+import de.raidcraft.skills.trigger.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
@@ -58,6 +35,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +87,7 @@ public final class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onPlayerEggThrow(PlayerEggThrowEvent event) {
 
         TriggerManager.callSafeTrigger(
@@ -293,6 +271,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerQuitTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPlayerShearSheep(PlayerShearEntityEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerShearTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
         );
     }
 }
