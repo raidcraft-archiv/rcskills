@@ -182,6 +182,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                             TabDecoRegistry.registerNewSetting("expPool",
                                     new TabDecoExpPoolSettings(SkillsPlugin.this), SkillsPlugin.this);
 
+                            TabDecoRegistry.registerNewSetting("expPoolLink",
+                                    new TabDecoExpPoolSettings(SkillsPlugin.this), SkillsPlugin.this);
+
                             //Let the user of the plugin know that everything worked
                             getLogger().info("Registered settings for TabDeco");
 
