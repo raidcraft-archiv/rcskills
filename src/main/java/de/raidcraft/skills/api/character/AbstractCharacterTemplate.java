@@ -72,13 +72,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private Attack lastAttack;
     private BukkitTask deathTask;
     private AttachedLevel<CharacterTemplate> attachedLevel;
+    protected boolean usingHealthBar = true;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
         this.entity = entity;
         this.threatTable = new ThreatTable(this);
         if (entity != null) {
-            if (entity.getCustomName() != null && !entity.getCustomName().equals("")) {
+            if (!usingHealthBar && entity.getCustomName() != null && !entity.getCustomName().equals("")) {
                 this.name = entity.getCustomName();
             } else if (entity instanceof Player) {
                 this.name = ((Player) entity).getName();

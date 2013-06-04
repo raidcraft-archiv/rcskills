@@ -20,7 +20,6 @@ public class Creature extends AbstractCharacterTemplate {
     private static final int HEALTH_BAR_LENGTH = 5;
 
     private CharacterTemplate highestThread;
-    protected boolean usingHealthBar = true;
 
     public Creature(LivingEntity entity) {
 
