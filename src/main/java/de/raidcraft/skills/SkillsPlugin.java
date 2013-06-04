@@ -43,6 +43,7 @@ import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tabdeco.TabDecoArmorSettings;
 import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
+import de.raidcraft.skills.tabdeco.TabDecoExpPoolSettings;
 import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tables.THero;
@@ -177,6 +178,10 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
                             TabDecoRegistry.registerNewSetting("maxHealth",
                                     new TabDecoMaxHealthSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("expPool",
+                                    new TabDecoExpPoolSettings(SkillsPlugin.this), SkillsPlugin.this);
+
                             //Let the user of the plugin know that everything worked
                             getLogger().info("Registered settings for TabDeco");
 
