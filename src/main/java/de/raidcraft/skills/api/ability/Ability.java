@@ -54,7 +54,7 @@ public interface Ability<T extends CharacterTemplate> {
 
     double getTotalCooldown();
 
-    void setRemainingCooldown(double cooldown);
+    void setCooldown(double cooldown);
 
     double getRemainingCooldown();
 

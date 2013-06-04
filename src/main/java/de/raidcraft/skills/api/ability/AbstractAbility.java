@@ -49,6 +49,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     // protected final THeroSkill database;
     protected String description;
     private long lastCast;
+    private double cooldown;
 
     @SuppressWarnings("unchecked")
     public AbstractAbility(T holder, AbilityProperties data) {
@@ -260,12 +261,12 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final void setRemainingCooldown(double cooldown) {
+    public final void setCooldown(double cooldown) {
 
-        setRemainingCooldown(cooldown, true);
+        setCooldown(cooldown, true);
     }
 
-    public final void setRemainingCooldown(double cooldown, boolean verbose) {
+    public final void setCooldown(double cooldown, boolean verbose) {
 
         double remainingCooldown = getRemainingCooldown();
         if (verbose && remainingCooldown != cooldown && getHolder() instanceof Hero) {
@@ -277,13 +278,13 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
                         ChatColor.GREEN + "Cooldown von " + getFriendlyName() + " wurde auf " + cooldown + "s verringert.");
             }
         }
-        setLastCast(System.currentTimeMillis() - TimeUtil.secondsToMillis(cooldown));
+        this.cooldown = cooldown;
     }
 
     @Override
     public final double getRemainingCooldown() {
 
-        return TimeUtil.millisToSeconds(lastCast + (TimeUtil.secondsToMillis(getTotalCooldown())) - System.currentTimeMillis());
+        return TimeUtil.millisToSeconds(lastCast + (TimeUtil.secondsToMillis(cooldown)) - System.currentTimeMillis());
     }
 
     @Override

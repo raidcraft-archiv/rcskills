@@ -123,7 +123,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         // and lets set the cooldown because it is like a usage cost for further casting
         setLastCast(System.currentTimeMillis());
         // get the cooldown from the skill action
-        setRemainingCooldown(action.getCooldown(), false);
+        setCooldown(action.getCooldown(), false);
         // also give the player the defined amount of exp for using the skill
         int useExp = getUseExp();
         if (this instanceof LevelableSkill) {
