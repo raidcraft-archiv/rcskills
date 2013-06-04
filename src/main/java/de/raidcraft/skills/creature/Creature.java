@@ -87,7 +87,7 @@ public class Creature extends AbstractCharacterTemplate {
         String health = ChatColor.BLACK + "[" + barColor + getHealth() + ChatColor.BLACK
                 + "/" + ChatColor.GREEN + getMaxHealth() + ChatColor.BLACK + "]";
         if (!usingHealthBar) {
-            getEntity().setCustomName(health + getEntity().getCustomName());
+            getEntity().setCustomName(health + ChatColor.RED + getName());
         } else {
             StringBuilder healthBar = new StringBuilder(health).append(barColor);
             int count = (int) (healthInPercent * HEALTH_BAR_LENGTH);
