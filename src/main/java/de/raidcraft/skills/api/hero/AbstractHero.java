@@ -343,10 +343,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         ItemStack item = getPlayer().getInventory().getItem(slot);
         clearWeapons();
         removeArmor(EquipmentSlot.SHIELD_HAND);
-        if (item == null || !CustomItemUtil.isEquipment(item)) {
-            return;
-        }
-        if (!CustomItemUtil.isWeapon(item)) {
+        if (item == null || !CustomItemUtil.isWeapon(item)) {
             return;
         }
         CustomWeapon weapon = CustomItemUtil.getWeapon(item);
@@ -368,6 +365,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 throw new CombatException("Du benötigst zum Tragen dieser Waffe beide Hände.");
             }
         } else if (weapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
+            setWeapon(weapon);
             if (slot + 1 < 9) {
                 // check for a second weapon too
                 ItemStack secondHandItem = getPlayer().getInventory().getItem(slot + 1);
@@ -391,7 +389,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     }
                 }
             }
-            setWeapon(weapon);
         }
     }
 

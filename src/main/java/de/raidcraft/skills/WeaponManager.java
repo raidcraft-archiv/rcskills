@@ -37,7 +37,7 @@ public final class WeaponManager implements Listener {
     public void onItemHeldChange(PlayerItemHeldEvent event) {
 
         try {
-            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons(event.getPlayer().getInventory().getHeldItemSlot());
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons(event.getNewSlot());
         } catch (CombatException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
