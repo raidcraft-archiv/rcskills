@@ -24,8 +24,10 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
@@ -245,6 +247,25 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public Collection<CustomArmor> getArmor() {
 
         return armorPieces.values();
+    }
+
+    @Override
+    public void checkArmor() {
+
+        clearArmor();
+        for (ItemStack item : getEntity().getEquipment().getArmorContents()) {
+            if (CustomItemUtil.isArmor(item)) {
+                CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
+                if (this instanceof Hero) {
+                    if (!armor.isMeetingAllRequirements((Player) getEntity())) {
+                        ((Hero)this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
+                        ItemUtil.moveItem((Hero) this, -1, item);
+                    } else {
+                        setArmor(armor);
+                    }
+                }
+            }
+        }
     }
 
     @Override
