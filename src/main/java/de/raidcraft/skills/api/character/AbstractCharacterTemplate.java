@@ -386,6 +386,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public int getMaxHealth() {
 
+        if (getEntity() == null) {
+            return 20;
+        }
         return getEntity().getMaxHealth();
     }
 
