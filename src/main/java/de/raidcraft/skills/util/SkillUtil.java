@@ -50,7 +50,7 @@ public final class SkillUtil {
         if (foundSkills.size() > 1) {
             // check if a skills matches exactly
             for (Skill skill : foundSkills) {
-                if (skill.getName().equalsIgnoreCase(input)) {
+                if (skill.getName().equalsIgnoreCase(input) || skill.getFriendlyName().equalsIgnoreCase(input)) {
                     return skill;
                 }
             }
