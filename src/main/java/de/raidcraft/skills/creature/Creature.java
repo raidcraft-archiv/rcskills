@@ -24,24 +24,6 @@ public class Creature extends AbstractCharacterTemplate {
     public Creature(LivingEntity entity) {
 
         super(entity);
-        // lets calculate the average level based on the players around
-/*        int averageLevel = 1;
-        try {
-            int totalLevel = 0;
-            int totalHeroes = 0;
-            List<CharacterTemplate> targets = getNearbyTargets(100, false);
-            for (CharacterTemplate target : targets) {
-                if (target instanceof Hero && ((Hero) target).getPlayer().getGameMode() != GameMode.CREATIVE) {
-                    totalHeroes++;
-                    totalLevel += ((Hero) target).getAttachedLevel().getLevel();
-                }
-            }
-            if (totalHeroes != 0) {
-                averageLevel = totalLevel / totalHeroes;
-            }
-        } catch (CombatException ignored) {
-            // ignored
-        }*/
         attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 60));
     }
 
@@ -105,13 +87,9 @@ public class Creature extends AbstractCharacterTemplate {
             for (int i = 0; i < HEALTH_BAR_LENGTH - count; i++) {
                 healthBar.append("  ");
             }
-/*
-            healthBar.append(ChatColor.BLACK).append("(").append(barColor).append(getHealth()).append(ChatColor.BLACK).append("/");
-            healthBar.append(ChatColor.GREEN).append(getMaxHealth()).append(ChatColor.BLACK).append(")");
-*/
 
             getEntity().setCustomName(healthBar.toString());
-            getEntity().setCustomNameVisible(true);
+            getEntity().setCustomNameVisible(isInCombat());
         }
     }
 
