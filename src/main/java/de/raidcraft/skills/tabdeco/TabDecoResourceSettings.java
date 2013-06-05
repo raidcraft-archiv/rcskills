@@ -54,10 +54,12 @@ public class TabDecoResourceSettings extends TabDecoSetting {
             if (!resource.isEnabled() || !resource.getProfession().isActive()) {
                 continue;
             }
-            if (resource.getProfession().hasChildren() && !primary) {
+            if (resource.getProfession().hasChildren() && primary) {
                 return resource;
             }
-            return resource;
+            if (!resource.getProfession().hasChildren() && !primary) {
+                return resource;
+            }
         }
         return null;
     }
