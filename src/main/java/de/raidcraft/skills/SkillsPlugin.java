@@ -26,6 +26,7 @@ import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.PartyCommands;
 import de.raidcraft.skills.commands.PlayerComands;
 import de.raidcraft.skills.commands.ProfessionCommands;
+import de.raidcraft.skills.commands.PvPCommands;
 import de.raidcraft.skills.commands.SkillCommands;
 import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
@@ -515,6 +516,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 desc = "Toggles PvP for the player"
         )
         @CommandPermissions("rcskills.player.pvp")
+        @NestedCommand(value = PvPCommands.class, executeBody = true)
         public void pvp(CommandContext args, CommandSender sender) throws CommandException {
 
             Hero hero = getCharacterManager().getHero((Player) sender);
