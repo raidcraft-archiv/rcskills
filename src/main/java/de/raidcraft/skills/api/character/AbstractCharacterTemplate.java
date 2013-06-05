@@ -254,9 +254,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void checkArmor() {
 
         clearArmor();
+        if (getEntity() == null) {
+            return;
+        }
         for (ItemStack item : getEntity().getEquipment().getArmorContents()) {
             if (CustomItemUtil.isArmor(item)) {
-                CustomArmor armor = (CustomArmor) RaidCraft.getCustomItem(item).getItem();
+                CustomArmor armor = CustomItemUtil.getArmor(item);
                 if (this instanceof Hero) {
                     if (!armor.isMeetingAllRequirements((Player) getEntity())) {
                         ((Hero)this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
