@@ -46,6 +46,7 @@ import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
 import de.raidcraft.skills.tabdeco.TabDecoExpPoolSettings;
 import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
+import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -172,6 +173,9 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
                             TabDecoRegistry.registerNewSetting("profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
                                     new TabDecoProfessionPathSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("resource([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
+                                    new TabDecoResourceSettings(SkillsPlugin.this), SkillsPlugin.this);
 
                             TabDecoRegistry.registerNewSetting("armorValue",
                                     new TabDecoArmorSettings(SkillsPlugin.this), SkillsPlugin.this);
