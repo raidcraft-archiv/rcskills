@@ -898,7 +898,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             this.party = party;
             party.addMember(this);
         }
-        CharacterManager.refreshPlayerTag(this);
     }
 
     @Override
@@ -908,7 +907,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             party.removeMember(this);
         }
         this.party = new SimpleParty(this);
-        CharacterManager.refreshPlayerTag(this);
     }
 
     @Override

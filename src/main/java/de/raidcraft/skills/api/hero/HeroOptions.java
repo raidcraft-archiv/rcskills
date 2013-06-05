@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroOption;
@@ -28,6 +29,9 @@ class HeroOptions {
     public void set(Option option, String value) {
 
         options.put(option.getKey(), value);
+        if (option == Option.PVP) {
+            CharacterManager.refreshPlayerTag(hero);
+        }
     }
 
     public void set(Option option, boolean value) {

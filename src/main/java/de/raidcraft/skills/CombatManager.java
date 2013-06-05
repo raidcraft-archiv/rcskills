@@ -13,7 +13,11 @@ import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.hero.Option;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
+import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.AttackTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
@@ -38,7 +42,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class CombatManager implements Listener {
+public final class CombatManager implements Listener, Triggered {
 
     public static final Set<EntityDamageByEntityEvent> FAKED_EVENTS = new HashSet<>();
 
@@ -79,6 +83,7 @@ public final class CombatManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        TriggerManager.registerListeners(this);
     }
 
     public void reload() {
@@ -143,6 +148,28 @@ public final class CombatManager implements Listener {
     //      Hooked Bukkit events for handling all the combat stuff
     //////////////////////////////////////////////////////////////////////////////*/
 
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        if (!(trigger.getAttack().getTarget() instanceof Hero) || !(trigger.getSource() instanceof Hero)) {
+            return;
+        }
+        Hero victim = (Hero) trigger.getAttack().getTarget();
+        Hero attacker = (Hero) trigger.getSource();
+        if (!victim.isPvPEnabled() && !attacker.isPvPEnabled()) {
+            return;
+        }
+        // lets check some advanced stuff first, like if the attacking player has pvp disabled and the victim has pvp enabled
+        if (victim.isPvPEnabled() && !attacker.isPvPEnabled()) {
+            attacker.setPvPEnabled(true);
+            attacker.sendMessage(ChatColor.RED + "Dein PvP Status wurde auf aktiv gesetzt!");
+        } else if (!victim.isPvPEnabled()) {
+            trigger.setCancelled(true);
+            trigger.getAttack().setCancelled(true);
+            throw new CombatException("Dein Ziel hat PvP nicht aktiviert und kann nicht angegriffen werden!");
+        }
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInteract(PlayerInteractEvent event) {
 
@@ -193,13 +220,6 @@ public final class CombatManager implements Listener {
         CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
         CharacterTemplate attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
 
-        // lets check some advanced stuff first, like if the attacking player has pvp disabled and the victim has pvp enabled
-        if (attacker instanceof Hero && victim instanceof Hero) {
-            if (Option.PVP.getBoolean((Hero) victim) && !Option.PVP.getBoolean((Hero) attacker)) {
-                Option.PVP.set((Hero) attacker, true);
-                ((Hero) attacker).sendMessage(ChatColor.RED + "Dein PvP Status wurde auf aktiv gesetzt!");
-            }
-        }
         if (attacker.isFriendly(victim)) {
             event.setCancelled(true);
         }
@@ -225,7 +245,6 @@ public final class CombatManager implements Listener {
             return;
         }
 
-        CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
         CharacterTemplate attacker = null;
         if (event.getDamager() instanceof LivingEntity) {
             attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
@@ -246,16 +265,13 @@ public final class CombatManager implements Listener {
                 physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 event.setDamage(0);
                 physicalAttack.run();
-                if (physicalAttack.getDamage() == 0) {
+                if (physicalAttack.getDamage() == 0 || physicalAttack.isCancelled()) {
                     event.setCancelled(true);
                 }
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
-            }
-            if (target instanceof Hero) {
-                ((Hero) target).debug((attacker.getName()) + "->You: " + e.getMessage());
             }
         }
     }

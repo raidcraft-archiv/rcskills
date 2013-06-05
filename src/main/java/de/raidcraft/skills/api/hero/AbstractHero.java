@@ -5,6 +5,7 @@ import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
@@ -69,6 +70,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private Profession selectedProfession;
     private Profession highestRankedProfession;
     private long lastCombatAction;
+    private boolean pvpEnabled = false;
 
     protected AbstractHero(Player player, HeroData data) {
 
@@ -79,12 +81,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
         // load some default options
-        if (getOptions().isSet(Option.PVP)) {
-            getOptions().set(Option.PVP, true);
-        }
-        if (getOptions().isSet(Option.COMBAT_LOGGING)) {
-            getOptions().set(Option.COMBAT_LOGGING, false);
-        }
+        pvpEnabled = Option.PVP.getBoolean(this);
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
@@ -238,19 +235,29 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public boolean isPvPEnabled() {
 
-        return Option.PVP.getBoolean(this);
+        return pvpEnabled;
+    }
+
+    @Override
+    public void setPvPEnabled(boolean enablePvP) {
+
+        this.pvpEnabled = enablePvP;
+        CharacterManager.refreshPlayerTag(this);
+    }
+
+    @Override
+    public boolean isFriendly(CharacterTemplate source) {
+
+        if (source instanceof Hero) {
+            return super.isFriendly(source) || (!isPvPEnabled() && !((Hero) source).isPvPEnabled());
+        }
+        return super.isFriendly(source);
     }
 
     @Override
     public long getLastCombatAction() {
 
         return lastCombatAction;
-    }
-
-    @Override
-    public boolean isFriendly(CharacterTemplate source) {
-
-        return super.isFriendly(source) || !isPvPEnabled();
     }
 
     @Override
@@ -580,6 +587,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             getExpPool().saveLevelProgress();
             saveSkills();
         }
+        getOptions().set(Option.PVP, pvpEnabled);
         getOptions().save();
     }
 
@@ -713,8 +721,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (inCombat != isInCombat()) {
             super.setInCombat(inCombat);
             updateSelectedProfession();
-        }
-        if (!isInCombat()) {
             lastCombatAction = System.currentTimeMillis();
         }
     }

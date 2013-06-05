@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.party;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -75,6 +76,9 @@ public class SimpleParty implements Party {
                 heros.add((Hero) character);
             }
         }
+        if (owner instanceof Hero) {
+            heros.add((Hero) owner);
+        }
         return heros;
     }
 
@@ -88,13 +92,17 @@ public class SimpleParty implements Party {
             BukkitTask bukkitTask = invitedMembers.remove(member);
             if (bukkitTask != null) bukkitTask.cancel();
         }
+        for (Hero template : getHeroes()) {
+            CharacterManager.refreshPlayerTag(template);
+        }
     }
 
     @Override
     public void inviteMember(final Hero member) {
 
         member.sendMessage(ChatColor.YELLOW + getOwner().getName() + " hat dich in eine Gruppe eingeladen.",
-                ChatColor.GRAY + "Gebe /party accept ein um die Einladung anzunehmen. Gebe /party deny ein um abzulehnen.");
+                ChatColor.YELLOW + "Gebe " + ChatColor.GREEN + "/party accept" + ChatColor.YELLOW + " ein um die Einladung anzunehmen." +
+                        " Gebe " + ChatColor.DARK_RED +"/party deny" + ChatColor.YELLOW + " ein um abzulehnen.");
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
         BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
@@ -136,6 +144,11 @@ public class SimpleParty implements Party {
                 }
             }
         }
+        for (Hero template : getHeroes()) {
+            CharacterManager.refreshPlayerTag(template);
+        }
+        // also refresh the member that left the party
+        CharacterManager.refreshPlayerTag(member);
     }
 
     @Override

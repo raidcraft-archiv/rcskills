@@ -18,7 +18,6 @@ import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindManager;
@@ -520,13 +519,13 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
 
             Hero hero = getCharacterManager().getHero((Player) sender);
             long combatCooldown = TimeUtil.secondsToMillis(getCommonConfig().combat_pvp_timeout) + hero.getLastCombatAction();
-            if (Option.PVP.getBoolean(hero) && System.currentTimeMillis() > combatCooldown) {
+            if (hero.isPvPEnabled() && System.currentTimeMillis() < combatCooldown) {
                 throw new CommandException("Du kannst dein PvP Status erst in "
-                        + TimeUtil.millisToSeconds(System.currentTimeMillis() - combatCooldown) + "s umschalten");
+                        + TimeUtil.millisToSeconds(combatCooldown - System.currentTimeMillis()) + "s umschalten");
             }
-            Option.PVP.set(hero, !Option.PVP.getBoolean(hero));
-            sender.sendMessage((Option.PVP.getBoolean(hero) ? ChatColor.RED : ChatColor.AQUA) + "PvP wurde "
-                    + (Option.PVP.getBoolean(hero) ? "eingeschaltet." : "ausgeschaltet."));
+            hero.setPvPEnabled(!hero.isPvPEnabled());
+            sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) + "PvP wurde "
+                    + (hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."));
         }
 
         @Command(

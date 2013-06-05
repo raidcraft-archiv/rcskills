@@ -152,7 +152,7 @@ public final class CharacterManager implements Listener {
         if (Bukkit.getPluginManager().getPlugin("TagAPI") == null) {
             return;
         }
-        if (!(template instanceof Hero)) {
+        if (!(template instanceof Hero) || !((Hero) template).isOnline()) {
             return;
         }
         TagAPI.refreshPlayer(((Hero) template).getPlayer());
@@ -163,12 +163,18 @@ public final class CharacterManager implements Listener {
 
         Hero hero = getHero(event.getNamedPlayer());
         Hero receivingPlayer = getHero(event.getPlayer());
-        if (hero.isFriendly(receivingPlayer)) {
-            if (hero.getParty().isInGroup(receivingPlayer)) {
+        if (hero.getParty().isInGroup(receivingPlayer)) {
+            if (hero.isInCombat()) {
+                event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
+            } else {
+                event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+            }
+        } else {
+            if (hero.isPvPEnabled()) {
                 if (hero.isInCombat()) {
-                    event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
+                    event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
                 } else {
-                    event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+                    event.setTag(ChatColor.RED + event.getNamedPlayer().getName());
                 }
             } else {
                 if (hero.isInCombat()) {
@@ -176,12 +182,6 @@ public final class CharacterManager implements Listener {
                 } else {
                     event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
                 }
-            }
-        } else {
-            if (hero.isInCombat()) {
-                event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-            } else {
-                event.setTag(ChatColor.RED + event.getNamedPlayer().getName());
             }
         }
     }

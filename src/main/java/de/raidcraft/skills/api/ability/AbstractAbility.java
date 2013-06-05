@@ -135,7 +135,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             target = getTarget();
         }
         if (friendlyOnly && !target.isFriendly(getHolder())) {
-            throw new CombatException("Du kannst nur dich selbst oder Gruppenmitglieder anvisieren.");
+            throw new CombatException("Du kannst nur freundliche Ziele anvisieren!");
         }
         return target;
     }

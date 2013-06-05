@@ -59,6 +59,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public boolean isPvPEnabled();
 
+    void setPvPEnabled(boolean enablePvP);
+
     public long getLastCombatAction();
 
     public void reset();
