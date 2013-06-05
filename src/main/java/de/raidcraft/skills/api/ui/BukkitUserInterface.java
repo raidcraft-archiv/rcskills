@@ -59,19 +59,6 @@ public class BukkitUserInterface implements UserInterface {
         Scoreboards.updateHealthDisplays();
     }
 
-    private void updateNameTag() {
-
-        String displayName = getHero().getName();
-        if (getHero().getPlayer().hasMetadata("GHOST")) {
-            displayName = ChatColor.GRAY + displayName;
-        } else if (getHero().isInCombat()) {
-            displayName = ChatColor.RED + displayName;
-        } else if (!getHero().isInCombat()) {
-            displayName = ChatColor.AQUA + displayName;
-        }
-        getHero().getPlayer().setDisplayName(displayName);
-    }
-
     private void updateExperienceDisplay() {
 
         CharacterManager characterManager = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
@@ -106,8 +93,6 @@ public class BukkitUserInterface implements UserInterface {
         updateExperienceDisplay();
         // lets update the scoreboard
         updateHealthDisplay();
-        // TODO: lets update the player nametag
-        // updateNameTag();
         // make sure the food level is never at 20 to allow eating
         if (hero.getPlayer().getFoodLevel() > 19) {
             hero.getPlayer().setFoodLevel(19);

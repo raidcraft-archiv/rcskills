@@ -18,6 +18,7 @@ import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindManager;
@@ -55,7 +56,9 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.util.TimeUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -409,6 +412,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public String default_permission_group = "default";
         @Setting("defaults.skeleton-knockback")
         public double skeletons_knockback_chance = 1.0;
+        @Setting("defaults.pvp-combat-timeout")
+        public double combat_pvp_timeout = 300;
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")
@@ -504,6 +509,24 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         @NestedCommand(SkillCommands.class)
         public void skill(CommandContext args, CommandSender sender) {
 
+        }
+
+        @Command(
+                aliases = "pvp",
+                desc = "Toggles PvP for the player"
+        )
+        @CommandPermissions("rcskills.player.pvp")
+        public void pvp(CommandContext args, CommandSender sender) throws CommandException {
+
+            Hero hero = getCharacterManager().getHero((Player) sender);
+            long combatCooldown = TimeUtil.secondsToMillis(getCommonConfig().combat_pvp_timeout) + hero.getLastCombatAction();
+            if (Option.PVP.getBoolean(hero) && System.currentTimeMillis() > combatCooldown) {
+                throw new CommandException("Du kannst dein PvP Status erst in "
+                        + TimeUtil.millisToSeconds(System.currentTimeMillis() - combatCooldown) + "s umschalten");
+            }
+            Option.PVP.set(hero, !Option.PVP.getBoolean(hero));
+            sender.sendMessage((Option.PVP.getBoolean(hero) ? ChatColor.RED : ChatColor.AQUA) + "PvP wurde "
+                    + (Option.PVP.getBoolean(hero) ? "eingeschaltet." : "ausgeschaltet."));
         }
 
         @Command(

@@ -17,6 +17,7 @@ permissions:
       rcskills.player.profession.info: true
       rcskills.player.skill.info: true
       rcskills.player.skill.list: true
+      rcskills.player.pvp: true
       rcskills.player.cmd.info: true
       rcskills.player.cmd.link: true
       rcskills.player.cmd.addexp: true

@@ -57,6 +57,10 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public void combatLog(Object o, String message);
 
+    public boolean isPvPEnabled();
+
+    public long getLastCombatAction();
+
     public void reset();
 
     public Resource getResource(String name);

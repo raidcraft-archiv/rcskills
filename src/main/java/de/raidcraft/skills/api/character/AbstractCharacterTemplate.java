@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -813,6 +814,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setInCombat(boolean inCombat) {
 
+        if (inCombat != this.inCombat) {
+            CharacterManager.refreshPlayerTag(this);
+        }
         this.inCombat = inCombat;
         if (!inCombat) {
             getThreatTable().reset();
@@ -894,6 +898,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             this.party = party;
             party.addMember(this);
         }
+        CharacterManager.refreshPlayerTag(this);
     }
 
     @Override
@@ -903,6 +908,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             party.removeMember(this);
         }
         this.party = new SimpleParty(this);
+        CharacterManager.refreshPlayerTag(this);
     }
 
     @Override

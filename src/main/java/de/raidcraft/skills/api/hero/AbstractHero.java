@@ -68,6 +68,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     // this just tells the client what to display in the experience bar and so on
     private Profession selectedProfession;
     private Profession highestRankedProfession;
+    private long lastCombatAction;
 
     protected AbstractHero(Player player, HeroData data) {
 
@@ -77,6 +78,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
+        // load some default options
+        if (getOptions().isSet(Option.PVP)) {
+            getOptions().set(Option.PVP, true);
+        }
+        if (getOptions().isSet(Option.COMBAT_LOGGING)) {
+            getOptions().set(Option.COMBAT_LOGGING, false);
+        }
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
@@ -225,6 +233,18 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public HeroOptions getOptions() {
 
         return options;
+    }
+
+    @Override
+    public boolean isPvPEnabled() {
+
+        return Option.PVP.getBoolean(this);
+    }
+
+    @Override
+    public boolean isFriendly(CharacterTemplate source) {
+
+        return super.isFriendly(source) || !isPvPEnabled();
     }
 
     @Override
@@ -687,6 +707,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (inCombat != isInCombat()) {
             super.setInCombat(inCombat);
             updateSelectedProfession();
+        }
+        if (!isInCombat()) {
+            lastCombatAction = System.currentTimeMillis();
         }
     }
 

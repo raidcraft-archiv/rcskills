@@ -7,7 +7,8 @@ public enum Option {
 
     DEBUGGING("debug"),
     COMBAT_LOGGING("combatlog"),
-    EXP_POOL_LINK("exp_pool_link");
+    EXP_POOL_LINK("exp_pool_link"),
+    PVP("pvp");
 
     private final String key;
 
@@ -22,6 +23,11 @@ public enum Option {
     }
 
     public void set(Hero hero, String value) {
+
+        hero.getOptions().set(this, value);
+    }
+
+    public void set(Hero hero, boolean value) {
 
         hero.getOptions().set(this, value);
     }

@@ -20,6 +20,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +38,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitTask;
+import org.kitteh.tag.PlayerReceiveNameTagEvent;
+import org.kitteh.tag.TagAPI;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -141,6 +144,49 @@ public final class CharacterManager implements Listener {
         characters.clear();
         startRefreshTask();
     }
+
+    // handle some tag api stuff here
+
+    public static void refreshPlayerTag(CharacterTemplate template) {
+
+        if (Bukkit.getPluginManager().getPlugin("TagAPI") == null) {
+            return;
+        }
+        if (!(template instanceof Hero)) {
+            return;
+        }
+        TagAPI.refreshPlayer(((Hero) template).getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onNameTagChange(PlayerReceiveNameTagEvent event) {
+
+        Hero hero = getHero(event.getNamedPlayer());
+        Hero receivingPlayer = getHero(event.getPlayer());
+        if (hero.isFriendly(receivingPlayer)) {
+            if (hero.getParty().isInGroup(receivingPlayer)) {
+                if (hero.isInCombat()) {
+                    event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+                }
+            } else {
+                if (hero.isInCombat()) {
+                    event.setTag(ChatColor.DARK_BLUE + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
+                }
+            }
+        } else {
+            if (hero.isInCombat()) {
+                event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
+            } else {
+                event.setTag(ChatColor.RED + event.getNamedPlayer().getName());
+            }
+        }
+    }
+
+    // tag api end
 
     public Collection<Hero> getCachedHeroes() {
 

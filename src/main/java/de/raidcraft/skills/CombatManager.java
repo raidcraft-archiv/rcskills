@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
@@ -192,6 +193,13 @@ public final class CombatManager implements Listener {
         CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
         CharacterTemplate attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
 
+        // lets check some advanced stuff first, like if the attacking player has pvp disabled and the victim has pvp enabled
+        if (attacker instanceof Hero && victim instanceof Hero) {
+            if (Option.PVP.getBoolean((Hero) victim) && !Option.PVP.getBoolean((Hero) attacker)) {
+                Option.PVP.set((Hero) attacker, true);
+                ((Hero) attacker).sendMessage(ChatColor.RED + "Dein PvP Status wurde auf aktiv gesetzt!");
+            }
+        }
         if (attacker.isFriendly(victim)) {
             event.setCancelled(true);
         }

@@ -30,6 +30,11 @@ class HeroOptions {
         options.put(option.getKey(), value);
     }
 
+    public void set(Option option, boolean value) {
+
+        set(option, Boolean.toString(value));
+    }
+
     public String get(Option option) {
 
         return options.get(option.getKey());
