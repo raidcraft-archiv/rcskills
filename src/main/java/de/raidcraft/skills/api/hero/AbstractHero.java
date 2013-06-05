@@ -242,6 +242,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public long getLastCombatAction() {
+
+        return lastCombatAction;
+    }
+
+    @Override
     public boolean isFriendly(CharacterTemplate source) {
 
         return super.isFriendly(source) || !isPvPEnabled();
