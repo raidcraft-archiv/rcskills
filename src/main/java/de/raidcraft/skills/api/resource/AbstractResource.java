@@ -292,6 +292,9 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void save() {
 
+        if (!getHero().isOnline()) {
+            return;
+        }
         // dont save when the player is in a blacklist world
         if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
             EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
