@@ -18,7 +18,7 @@ public class HealthResource extends AbstractResource {
     @Override
     public void setCurrent(int current) {
 
-        if (getHero().getEntity().isDead()) {
+        if (!getHero().isOnline() || getHero().getEntity().isDead()) {
             return;
         }
         try {
