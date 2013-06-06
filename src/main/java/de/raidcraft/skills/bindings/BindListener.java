@@ -47,7 +47,11 @@ public class BindListener implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             boundItem.next();
-            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + boundItem.getCurrent().getSkill().getFriendlyName());
+            if (boundItem.getCurrent().getSkill() == null) {
+                boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Platzhalter selektiert.");
+            } else {
+                boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + boundItem.getCurrent().getSkill().getFriendlyName());
+            }
         }
     }
 

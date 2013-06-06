@@ -30,7 +30,10 @@ public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
     public boolean containsSkill(Skill skill) {
 
         for (Binding currentBinding : bindings) {
-            if (currentBinding.getSkill().getName().equalsIgnoreCase(skill.getName())) {
+            if (skill == null && currentBinding.getSkill() == null) {
+                return true;
+            }
+            if (skill != null && currentBinding.getSkill().getName().equalsIgnoreCase(skill.getName())) {
                 return true;
             }
         }
@@ -70,6 +73,11 @@ public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
     public void use() {
 
         Binding binding = bindings.get(index);
+        if (binding.getSkill() == null) {
+            // its the playerholder
+            // dont send message und quietly return
+            return;
+        }
         try {
             new SkillAction(binding.getSkill(), binding.getArgs()).run();
         } catch (CombatException e) {

@@ -33,7 +33,7 @@ public class BindingsTable extends Table {
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`player` VARCHAR ( 32 ) NOT NULL ,\n" +
                             "`item` VARCHAR ( 32 ) NOT NULL ,\n" +
-                            "`skill` VARCHAR ( 32 ) NOT NULL ,\n" +
+                            "`skill` VARCHAR ( 32 ),\n" +
                             "`args` VARCHAR ( 64 ) NOT NULL ,\n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
@@ -60,10 +60,16 @@ public class BindingsTable extends Table {
                 Skill skill;
                 CommandContext args;
                 try {
-                    skill = hero.getSkill(resultSet.getString("skill"));
-                    // we need to fake the first argument because the commandcontext
-                    // will cut it off and use it as base command string
-                    args = new CommandContext(skill.getName() + " " + resultSet.getString("args"));
+                    String skillResult = resultSet.getString("skill");
+                    if (skillResult == null || skillResult.equalsIgnoreCase("null")) {
+                        skill = null;
+                        args = null;
+                    } else {
+                        skill = hero.getSkill(skillResult);
+                        // we need to fake the first argument because the commandcontext
+                        // will cut it off and use it as base command string
+                        args = new CommandContext(skill.getName() + " " + resultSet.getString("args"));
+                    }
                 } catch (UnknownSkillException | CommandException e) {
                     deleteBinding(id);
                     continue;
@@ -79,11 +85,12 @@ public class BindingsTable extends Table {
     public void saveBinding(Binding binding) {
 
         try {
+            String skillName = (binding.getSkill() == null ? null : binding.getSkill().getName());
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE " +
                             "player = '" + binding.getHero().getName() + "' AND " +
                             "item = '" + binding.getMaterial().name() + "' AND " +
-                            "skill = '" + binding.getSkill().getName() + "';").execute();
+                            "skill = '" + skillName + "';").execute();
             String args = "";
             if (binding.getArgs() != null && binding.getArgs().argsLength() > 0) {
                 args = binding.getArgs().getJoinedStrings(0);
@@ -92,7 +99,7 @@ public class BindingsTable extends Table {
                     "VALUES (" +
                     "'" + binding.getHero().getName() + "'" + "," +
                     "'" + binding.getMaterial().name() + "'" + "," +
-                    "'" + binding.getSkill().getName() + "'" + "," +
+                    "'" + skillName + "'" + "," +
                     "'" + args + "'" +
                     ")").executeUpdate();
         } catch (SQLException e) {
@@ -108,7 +115,7 @@ public class BindingsTable extends Table {
                     "DELETE FROM " + getTableName() + " WHERE " +
                             "player = '" + hero.getName() + "' AND " +
                             "item = '" + material.name() + "' AND " +
-                            "skill = '" + skill.getName() + "';").execute();
+                            "skill = '" + (skill == null ? null : skill.getName()) + "';").execute();
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();

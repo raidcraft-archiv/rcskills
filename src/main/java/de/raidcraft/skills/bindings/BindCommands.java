@@ -36,6 +36,7 @@ public class BindCommands {
     @Command(
             aliases = "bind",
             desc = "Binds a skill to an item",
+            flags = "x",
             min = 1
     )
     @CommandPermissions("rcskills.player.bind")
@@ -52,6 +53,14 @@ public class BindCommands {
             throw new CommandException("Du kannst Skills nur an Items binden.");
         }
 
+        BindManager bindManager = RaidCraft.getComponent(SkillsPlugin.class).getBindManager();
+        if (args.hasFlag('x')) {
+            if (bindManager.addBinding(hero, hero.getItemTypeInHand(), null)) {
+                hero.sendMessage(ChatColor.DARK_GREEN + "Du hast das Item erfolgreich mit einem Platzhalter belegt.");
+                return;
+            }
+        }
+
         // lets parse the argument for a valid spell
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
 
@@ -59,7 +68,7 @@ public class BindCommands {
             throw new CommandException("Du kannst diesen Skill nicht binden.");
         }
 
-        if (RaidCraft.getComponent(SkillsPlugin.class).getBindManager().addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill, new CommandContext(args.getSlice(1)))) {
+        if (bindManager.addBinding(hero, hero.getPlayer().getItemInHand().getType(), skill, new CommandContext(args.getSlice(1)))) {
             hero.sendMessage(ChatColor.DARK_GREEN + "Der Skill " + skill.getFriendlyName() + " wurde an dieses Item gebunden!");
             return;
         }
