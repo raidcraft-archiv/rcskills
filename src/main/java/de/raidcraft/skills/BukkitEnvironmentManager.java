@@ -23,21 +23,6 @@ public final class BukkitEnvironmentManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
-                plugin,
-                ConnectionSide.SERVER_SIDE,
-                Packets.Server.UPDATE_HEALTH
-        ) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-
-                PacketContainer packet = event.getPacket();
-                Player player = event.getPlayer();
-                float health = (int) Math.round(((double)player.getHealth() / (double)player.getMaxHealth()) * 20.0);
-                packet.getFloat().write(0, health);
-                event.setPacket(packet);
-            }
-        });
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
