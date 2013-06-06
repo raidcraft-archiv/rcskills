@@ -36,8 +36,7 @@ public class BindCommands {
     @Command(
             aliases = "bind",
             desc = "Binds a skill to an item",
-            flags = "x",
-            min = 1
+            flags = "x"
     )
     @CommandPermissions("rcskills.player.bind")
     public void bind(CommandContext args, CommandSender sender) throws CommandException {
@@ -59,6 +58,11 @@ public class BindCommands {
                 hero.sendMessage(ChatColor.DARK_GREEN + "Du hast das Item erfolgreich mit einem Platzhalter belegt.");
                 return;
             }
+            throw new CommandException("Du hast bereits einen Platzhalter an dieses Item gebunden.");
+        }
+
+        if (args.argsLength() < 1) {
+            throw new CommandException("Du musst einen Skill angeben, den du binden willst: /bind <skill>");
         }
 
         // lets parse the argument for a valid spell

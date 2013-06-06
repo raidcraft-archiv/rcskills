@@ -58,8 +58,9 @@ public class Binding {
 
         Binding binding = (Binding) o;
 
-        return hero.equals(binding.hero) && material == binding.material && skill.equals(binding.skill);
-
+        return hero.equals(binding.hero)
+                && material == binding.material
+                && (skill == null && binding.skill == null || skill != null && skill.equals(binding.skill));
     }
 
     @Override
