@@ -164,24 +164,18 @@ public final class CharacterManager implements Listener {
         Hero hero = getHero(event.getNamedPlayer());
         Hero receivingPlayer = getHero(event.getPlayer());
         if (hero.getParty().isInGroup(receivingPlayer)) {
-            if (hero.isInCombat()) {
-                event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
-            } else {
+            if (hero.isPvPEnabled()) {
                 event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+            } else {
+                event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
             }
         } else {
-            if (hero.isPvPEnabled()) {
-                if (hero.isInCombat()) {
-                    event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-                } else {
-                    event.setTag(ChatColor.RED + event.getNamedPlayer().getName());
-                }
+            if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
+                event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
+            } else if (hero.isPvPEnabled() && !receivingPlayer.isPvPEnabled()) {
+                event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
             } else {
-                if (hero.isInCombat()) {
-                    event.setTag(ChatColor.DARK_BLUE + event.getNamedPlayer().getName());
-                } else {
-                    event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
-                }
+                event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
             }
         }
     }
