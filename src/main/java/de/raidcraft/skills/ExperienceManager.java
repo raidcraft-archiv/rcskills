@@ -114,9 +114,7 @@ public final class ExperienceManager implements Listener {
             }
         }
         if (heroesToAddExp.isEmpty()) return;
-        int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType());
-        // always round up
-        exp = (int) (((double) exp + 0.99) / heroesToAddExp.size());
+        int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
         // lets actually give out the exp
         for (Hero expToAdd : heroesToAddExp) {
             expToAdd.getExpPool().addExp(exp);
