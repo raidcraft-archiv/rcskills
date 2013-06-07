@@ -15,11 +15,11 @@ import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
-import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.effects.Summoned;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -35,6 +35,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 
 /**
  * @author Silthus
@@ -106,11 +107,22 @@ public final class ExperienceManager implements Listener {
         } else {
             return;
         }
-        AttachedLevel<Hero> expPool = hero.getExpPool();
+        HashSet<Hero> heroesToAddExp = new HashSet<>();
+        for (Hero partyHero : hero.getParty().getHeroes()) {
+            if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
+                heroesToAddExp.add(partyHero);
+            }
+        }
+        if (heroesToAddExp.isEmpty()) return;
         int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType());
-        expPool.addExp(exp);
-        // lets do some visual magic tricks and let the player see the exp
-        sendPacket(hero.getPlayer(), character.getEntity(), exp);
+        // always round up
+        exp = (int) ((double) exp + 0.99 / (double) heroesToAddExp.size());
+        // lets actually give out the exp
+        for (Hero expToAdd : heroesToAddExp) {
+            expToAdd.getExpPool().addExp(exp);
+            // lets do some visual magic tricks and let the player see the exp
+            sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
