@@ -366,7 +366,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public int getHealth() {
 
         if (getEntity() == null) {
-            RaidCraft.LOGGER.warning("Entity " + getName() + " is NULL on getHealth() call!");
             return 0;
         }
         return getEntity().getHealth();

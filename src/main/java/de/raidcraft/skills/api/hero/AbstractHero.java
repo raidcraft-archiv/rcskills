@@ -56,6 +56,7 @@ import java.util.Set;
 public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implements Hero {
 
     private final int id;
+    private final String name;
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
     private final UserInterface userInterface;
@@ -77,6 +78,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         super(player);
 
         this.id = data.getId();
+        this.name = data.getName();
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
@@ -224,6 +226,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         Scoreboards.removeScoreboard(getPlayer());
         reset();
         save();
+    }
+
+    @Override
+    public String getName() {
+
+        return name;
     }
 
     @Override
