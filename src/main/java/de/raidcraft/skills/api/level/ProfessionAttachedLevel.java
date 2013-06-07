@@ -18,6 +18,14 @@ public class ProfessionAttachedLevel extends ConfigurableAttachedLevel<Professio
     @Override
     public void addExp(int exp) {
 
+        if (getLevelObject().isMastered() && getLevelObject().hasChildren()) {
+            for (Profession profession : getLevelObject().getChildren()) {
+                if (profession.isActive() && !profession.isMastered()) {
+                    profession.getAttachedLevel().addExp(exp);
+                }
+            }
+            return;
+        }
         super.addExp(exp);
         // lets add some exp to the profession of the skill
         exp = (int) (exp * RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getProfessionHeroExpRate());
