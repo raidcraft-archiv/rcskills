@@ -92,9 +92,9 @@ public class PlayerComands {
     @Command(
             aliases = {"addxp", "addexp"},
             desc = "Adds EXP from the EXP pool into a profession or skill",
-            flags = "f",
-            usage = "<beruf/klasse> <exp>",
-            min = 2
+            flags = "fa",
+            usage = "<beruf/klasse> [-a] <exp>",
+            min = 1
     )
     @CommandPermissions("rcskills.player.cmd.addexp")
     public void addExpCommand(CommandContext args, CommandSender sender) throws CommandException {
@@ -105,9 +105,14 @@ public class PlayerComands {
             if (!(expPool.getExp() > 0)) {
                 throw new CommandException("Dein EXP Pool ist leer und du kannst keine EXP verteilen.");
             }
-            int exp = args.getInteger(1);
+            if (!args.hasFlag('a') && args.argsLength() < 2) {
+                throw new CommandException("Du musst angeben wieviel EXP du vergeben möchtest: /rcs addxp <beruf/klasse> <exp>. " +
+                        "Gebe /rcsa addxp <beruf/klasse> -a ein um alle EXP zu vergeben.");
+            }
+            int exp = (args.hasFlag('a') ? expPool.getExp() : args.getInteger(1));
             if (exp > expPool.getExp()) {
-                throw new CommandException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
+                throw new CommandException("Du kannst maximal " + expPool.getExp() + "exp verteilen. " +
+                        "Gebe /rcs addxp <beruf/klasse> -a ein um alle EXP zu vergeben.");
             }
             AttachedLevel attachedLevel = ProfessionUtil.getProfessionFromArgs(hero, args.getString(0)).getAttachedLevel();
             if (attachedLevel == null) {
