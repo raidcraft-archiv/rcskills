@@ -11,7 +11,6 @@ import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
-import de.raidcraft.skills.api.effect.common.GlobalCooldown;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -261,7 +260,7 @@ public final class CombatManager implements Listener, Triggered {
 
                 PhysicalAttack physicalAttack;
                 // lets check for skills that are queued and allow the attack without setting the weapons swing cooldown
-                if (attacker.hasEffect(QueuedAttack.class) && !attacker.hasEffect(GlobalCooldown.class)) {
+                if (attacker.hasEffect(QueuedAttack.class)) {
                     physicalAttack = new PhysicalAttack(event, attacker.getDamage());
                 } else {
                     // if not swing the weapons normally
