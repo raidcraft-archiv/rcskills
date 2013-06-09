@@ -11,6 +11,8 @@ import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
+import de.raidcraft.skills.api.effect.common.GlobalCooldown;
+import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -257,12 +259,20 @@ public final class CombatManager implements Listener, Triggered {
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 
-                if (!attacker.canAttack()) {
-                    event.setCancelled(true);
-                    return;
+                PhysicalAttack physicalAttack;
+                // lets check for skills that are queued and allow the attack without setting the weapons swing cooldown
+                if (attacker.hasEffect(QueuedAttack.class) && !attacker.hasEffect(GlobalCooldown.class)) {
+                    physicalAttack = new PhysicalAttack(event, attacker.getDamage());
+                } else {
+                    // if not swing the weapons normally
+                    if (!attacker.canAttack()) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
+                    physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 }
-                PhysicalAttack physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
-                physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
+
                 event.setDamage(0);
                 physicalAttack.run();
                 if (physicalAttack.getDamage() == 0 || physicalAttack.isCancelled()) {
@@ -273,6 +283,7 @@ public final class CombatManager implements Listener, Triggered {
             if (attacker instanceof Hero) {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
             }
+            event.setCancelled(true);
         }
     }
 
