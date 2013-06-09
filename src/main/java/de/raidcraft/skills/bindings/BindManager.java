@@ -43,7 +43,7 @@ public class BindManager implements Component {
 
     public void unloadBoundItems(String player) {
 
-        boundItems.remove(player);
+        boundItems.remove(player.toLowerCase());
     }
 
     public void reloadBoundItems(Player player) {
@@ -54,7 +54,7 @@ public class BindManager implements Component {
 
     public List<BoundItem> getBoundItems(String player) {
 
-        return boundItems.get(player);
+        return boundItems.get(player.toLowerCase());
     }
 
     public boolean addBinding(Hero hero, Material item, Skill skill) {
@@ -69,13 +69,13 @@ public class BindManager implements Component {
 
     public boolean addBinding(Hero hero, Material item, Skill skill, CommandContext args, boolean save) {
 
-        if (!boundItems.containsKey(hero.getName())) {
-            boundItems.put(hero.getName(), new ArrayList<BoundItem>());
+        if (!boundItems.containsKey(hero.getName().toLowerCase())) {
+            boundItems.put(hero.getName().toLowerCase(), new ArrayList<BoundItem>());
         }
 
         boolean found = false;
         Binding binding = new Binding(hero, item, skill, args);
-        for (BoundItem boundItem : boundItems.get(hero.getName())) {
+        for (BoundItem boundItem : boundItems.get(hero.getName().toLowerCase())) {
             if (boundItem.getItem() == item) {
                 if (boundItem.contains(binding)) {
                     return false;
@@ -87,7 +87,7 @@ public class BindManager implements Component {
         if (!found) {
             BoundItem boundItem = new BoundItem(hero, item);
             boundItem.add(binding);
-            boundItems.get(hero.getName()).add(boundItem);
+            boundItems.get(hero.getName().toLowerCase()).add(boundItem);
         }
         if (save) {
             Database.getTable(BindingsTable.class).saveBinding(binding);
@@ -98,12 +98,12 @@ public class BindManager implements Component {
     public boolean removeBindings(Hero hero, Material item) {
 
         if (boundItems.containsKey(hero.getName())) {
-            for (BoundItem boundItem : boundItems.get(hero.getName())) {
+            for (BoundItem boundItem : boundItems.get(hero.getName().toLowerCase())) {
                 if (boundItem.getItem() == item) {
                     for (Binding binding : boundItem.getBindings()) {
                         Database.getTable(BindingsTable.class).deleteBinding(binding);
                     }
-                    boundItems.get(hero.getName()).remove(boundItem);
+                    boundItems.get(hero.getName().toLowerCase()).remove(boundItem);
                     return true;
                 }
             }
