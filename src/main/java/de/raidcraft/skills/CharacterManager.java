@@ -223,9 +223,6 @@ public final class CharacterManager implements Listener {
                 RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
             }
             hero = new SimpleHero(player, heroTable);
-            if (!plugin.getCommonConfig().cache_offline_players && !hero.isOnline()) {
-                return hero;
-            }
             heroes.put(name, hero);
         } else {
             hero = heroes.get(name);
