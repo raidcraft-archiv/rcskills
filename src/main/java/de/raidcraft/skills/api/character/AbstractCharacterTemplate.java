@@ -435,9 +435,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             getEntity().getWorld().playSound(
                     getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
         }
-        if (this instanceof Hero) {
-            ((Hero) this).debug("You took: " + damage + "dmg - [" + newHealth + "]");
-        }
     }
 
     @Override
@@ -515,7 +512,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void kill() {
 
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        setHealth(0);
+        getEntity().damage(getHealth() + 1);
         clearEffects();
         // play the death sound
         getEntity().getWorld().playSound(
