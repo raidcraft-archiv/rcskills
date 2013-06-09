@@ -31,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -432,14 +433,24 @@ public final class CharacterManager implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 
-        BukkitTask task = queuedLoggedOutHeroes.remove(event.getPlayer().getName().toLowerCase());
+        BukkitTask task = queuedLoggedOutHeroes.remove(event.getName());
         if (task != null) {
             task.cancel();
         }
+        try {
+            // lets try to already cache the hero in the pre login event and only update the entity later
+            getHero(event.getName());
+        } catch (UnknownPlayerException ignored) {
+            // ignore
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
         Scoreboards.updateTeams();
-        // init once to set the health from the db and so on
         Hero hero = getHero(event.getPlayer());
         hero.updateEntity(event.getPlayer());
         hero.updatePermissions();
