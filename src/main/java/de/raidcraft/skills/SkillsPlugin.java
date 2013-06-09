@@ -411,6 +411,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         public boolean environment_damage_in_percent = false;
         @Setting("defaults.effect-priority")
         public double default_effect_priority = 1.0;
+        @Setting("cache-offline-players")
+        public boolean cache_offline_players = false;
         @Setting("defaults.party-exp-range")
         public int party_exp_range = 100;
         @Setting("defaults.global-cooldown")
