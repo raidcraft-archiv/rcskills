@@ -34,7 +34,7 @@ public class ChooseProfessionAction extends AbstractAction {
         try {
             profession = plugin.getProfessionManager().getProfession(hero, args.getString("profession"));
             double cost = 0.0;
-            if (hero.hasPath(profession.getPath())) {
+            if (profession.getAttachedLevel().getLevel() > 1) {
                 cost = ProfessionUtil.getProfessionChangeCost(profession);
             }
 
@@ -64,7 +64,7 @@ public class ChooseProfessionAction extends AbstractAction {
                     hero.sendMessage("");
                     hero.changeProfession(profession);
                     if (cost > 0.0) {
-                        RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
+                        RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "Wechsel zu " + profession.getFriendlyName());
                     }
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {

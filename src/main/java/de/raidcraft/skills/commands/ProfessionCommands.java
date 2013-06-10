@@ -112,7 +112,7 @@ public class ProfessionCommands {
                 chooseProfession(hero, profession);
             } else {
                 double cost = 0.0;
-                if (hero.hasPath(profession.getPath())) {
+                if (profession.getAttachedLevel().getLevel() > 1) {
                     cost = ProfessionUtil.getProfessionChangeCost(profession);
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
