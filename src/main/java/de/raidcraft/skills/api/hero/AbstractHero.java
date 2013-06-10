@@ -234,6 +234,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         super.updateEntity(entity);
         updatePermissions();
+        Scoreboards.updateHealthDisplays();
+        Scoreboards.updateTeams();
         getUserInterface().refresh();
     }
 
