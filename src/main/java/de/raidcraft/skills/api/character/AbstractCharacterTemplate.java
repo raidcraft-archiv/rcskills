@@ -428,7 +428,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (newHealth <= 0) {
             kill();
         } else {
-            damage(damage);
+            getEntity().damage(damage);
 /*            getEntity().playEffect(EntityEffect.HURT);
             getEntity().getWorld().playSound(
                     getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);*/
