@@ -16,6 +16,10 @@ public interface Attack<S, T> extends TargetedAction<S, T> {
 
     public void setDamage(int damage);
 
+    public boolean hasKnockback();
+
+    public void setKnockback(boolean knockback);
+
     public Set<EffectElement> getAttackElements();
 
     public void addAttackElement(Collection<EffectElement> elements);

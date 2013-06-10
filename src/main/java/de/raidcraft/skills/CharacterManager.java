@@ -22,13 +22,13 @@ import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
 import org.kitteh.tag.TagAPI;
@@ -255,6 +256,16 @@ public final class CharacterManager implements Listener {
         CharacterTemplate creature;
         if (!characters.containsKey(entity.getUniqueId())) {
             creature = new Creature(entity);
+            // load all custom properties
+            DamageManager damageManager = plugin.getDamageManager();
+            EntityType entityType = creature.getEntity().getType();
+            // lets set the health and damage of the entity
+            int creatureHealth = damageManager.getCreatureHealth(entityType);
+            creature.setMaxHealth(creatureHealth);
+            creature.setHealth(creatureHealth);
+            creature.setDamage(damageManager.getCreatureDamage(entityType));
+            creature.setInCombat(false);
+            // cache the character
             characters.put(entity.getUniqueId(), creature);
         } else {
             creature = characters.get(entity.getUniqueId());
@@ -376,21 +387,15 @@ public final class CharacterManager implements Listener {
     //    Bukkit Events are called beyond this line - put your buckets on!
     /////////////////////////////////////////////////////////////////////////*/
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onEntitySpawn(CreatureSpawnEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onChunkUnload(ChunkUnloadEvent event) {
 
-        CharacterTemplate character = getCharacter(event.getEntity());
-        if (character instanceof Hero) {
-            return;
+        // remove the cached entities
+        for (Entity entity : event.getChunk().getEntities()) {
+            if (entity instanceof LivingEntity) {
+                clearCacheOf(getCharacter((LivingEntity) entity));
+            }
         }
-        DamageManager damageManager = plugin.getDamageManager();
-        EntityType entityType = character.getEntity().getType();
-        // lets set the health and damage of the entity
-        int creatureHealth = damageManager.getCreatureHealth(entityType);
-        character.setMaxHealth(creatureHealth);
-        character.setHealth(creatureHealth);
-        character.setDamage(damageManager.getCreatureDamage(entityType));
-        character.setInCombat(false);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

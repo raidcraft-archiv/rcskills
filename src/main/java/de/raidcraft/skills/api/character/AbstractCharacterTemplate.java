@@ -422,19 +422,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         setMaxHealth(maxHealth);
     }
 
-    private void damage(int damage) {
-
-        int newHealth = getHealth() - damage;
-        if (newHealth <= 0) {
-            kill();
-        } else {
-            getEntity().damage(damage);
-/*            getEntity().playEffect(EntityEffect.HURT);
-            getEntity().getWorld().playSound(
-                    getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);*/
-        }
-    }
-
     @Override
     public void damage(Attack attack) {
 
@@ -448,9 +435,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
-            // lets set some bukkit properties
-            getEntity().setLastDamage(attack.getDamage());
-            damage(attack.getDamage());
             // lets do some USK18+ gore effects
             // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
             // 152 = redstone block
@@ -467,6 +451,23 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     attacker = (CharacterTemplate) ((Effect) attack.getSource()).getSource();
                 }
             }
+            // lets set some bukkit properties
+            getEntity().setLastDamage(attack.getDamage());
+            // also actually damage the entity
+            int newHealth = getHealth() - attack.getDamage();
+            if (newHealth <= 0) {
+                kill();
+            } else {
+                setHealth(newHealth);
+                if (attack.hasKnockback()) {
+                    if (attacker != null) {
+                        getEntity().damage(0, attacker.getEntity());
+                    } else {
+                        getEntity().damage(0);
+                    }
+                }
+            }
+            // and some debug output
             if (attacker != null && attacker instanceof Hero) {
                 ((Hero) attacker).combatLog("Du hast " + getName() +
                 (!(attack.getSource() instanceof CharacterTemplate) ? " mit " + attack.getSource() + " " : " ")
@@ -474,7 +475,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             }
             if (this instanceof Hero) {
                 ((Hero)this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
-                        (attacker != null ? "[" + attacker.getName() + "] " : " ") + "erhalten.");
+                        (attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "] " : " ") + "erhalten.");
             }
         }
     }
@@ -500,10 +501,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill(CharacterTemplate killer) {
 
-        kill();
-        if (killer instanceof Hero) {
-            ((Hero) killer).debug("YOU killed " + getName());
-        }
+        RaidCraft.callEvent(new RCEntityDeathEvent(this));
+        getEntity().damage(getHealth() + 1, killer.getEntity());
+        clearEffects();
     }
 
     @Override
@@ -512,26 +512,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         getEntity().damage(getHealth() + 1);
         clearEffects();
-/*        // play the death sound
-        getEntity().getWorld().playSound(
-                getEntity().getLocation(),
-                getDeathSound(getEntity().getType()),
-                1.0F,
-                getSoundStrength(getEntity())
-        );
-        // play the death effect
-        getEntity().playEffect(EntityEffect.DEATH);
-        if (!(this instanceof Hero)) {
-            if (deathTask == null) {
-                deathTask = Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                    @Override
-                    public void run() {
-
-                        getEntity().remove();
-                    }
-                }, 60L);
-            }
-        }*/
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {

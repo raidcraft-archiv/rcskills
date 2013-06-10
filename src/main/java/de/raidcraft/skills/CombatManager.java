@@ -272,11 +272,9 @@ public final class CombatManager implements Listener, Triggered {
                     physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                 }
 
-                event.setDamage(0);
+                physicalAttack.setKnockback(true);
                 physicalAttack.run();
-                if (physicalAttack.getDamage() == 0 || physicalAttack.isCancelled()) {
-                    event.setCancelled(true);
-                }
+                event.setCancelled(true);
             }
         } catch (CombatException e) {
             if (attacker instanceof Hero) {

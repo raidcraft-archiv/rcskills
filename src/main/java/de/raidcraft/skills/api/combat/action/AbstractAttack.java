@@ -19,6 +19,7 @@ import java.util.Set;
 public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> implements Attack<S, T> {
 
     private int damage;
+    private boolean knockback;
     private final Set<EffectType> attackTypes = new HashSet<>();
     private final Set<EffectElement> attackElemens = new HashSet<>();
     private final AttackSource source;
@@ -58,6 +59,18 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
             this.damage = 0;
         }
         this.damage = damage;
+    }
+
+    @Override
+    public boolean hasKnockback() {
+
+        return knockback;
+    }
+
+    @Override
+    public void setKnockback(boolean knockback) {
+
+        this.knockback = knockback;
     }
 
     @Override
