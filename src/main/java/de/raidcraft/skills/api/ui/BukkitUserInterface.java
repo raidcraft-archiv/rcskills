@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.ui;
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.injector.PlayerLoggedOutException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.Scoreboards;
@@ -77,6 +78,7 @@ public class BukkitUserInterface implements UserInterface {
             ProtocolLibrary.getProtocolManager().sendServerPacket(hero.getPlayer(), packet);
         } catch (InvocationTargetException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+        } catch (PlayerLoggedOutException ignored) {
         }
     }
 

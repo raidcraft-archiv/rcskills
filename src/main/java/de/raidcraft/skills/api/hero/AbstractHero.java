@@ -233,10 +233,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void updateEntity(LivingEntity entity) {
 
         super.updateEntity(entity);
-        updatePermissions();
-        Scoreboards.updateHealthDisplays();
-        Scoreboards.updateTeams();
-        getUserInterface().refresh();
+        if (isOnline()) {
+            updatePermissions();
+            Scoreboards.updateHealthDisplays();
+            Scoreboards.updateTeams();
+            getUserInterface().refresh();
+        }
     }
 
     @Override
