@@ -32,9 +32,7 @@ import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -430,10 +428,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (newHealth <= 0) {
             kill();
         } else {
-            setHealth(newHealth);
-            getEntity().playEffect(EntityEffect.HURT);
+            damage(damage);
+/*            getEntity().playEffect(EntityEffect.HURT);
             getEntity().getWorld().playSound(
-                    getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);
+                    getEntity().getLocation(), getDeathSound(getEntity().getType()), getSoundStrength(getEntity()), 1.0F);*/
         }
     }
 
@@ -514,7 +512,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         getEntity().damage(getHealth() + 1);
         clearEffects();
-        // play the death sound
+/*        // play the death sound
         getEntity().getWorld().playSound(
                 getEntity().getLocation(),
                 getDeathSound(getEntity().getType()),
@@ -533,7 +531,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     }
                 }, 60L);
             }
-        }
+        }*/
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
