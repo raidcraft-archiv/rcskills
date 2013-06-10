@@ -23,7 +23,7 @@ public abstract class LevelRequirement extends AbstractRequirement<Hero> {
     @Override
     protected void load(ConfigurationSection data) {
 
-        requiredLevel = data.getInt("level", getLevelable().getMaxLevel());
+        requiredLevel = data.getInt("level", getLevelable() == null ? 1 : getLevelable().getMaxLevel());
     }
 
     protected int getRequiredLevel() {
