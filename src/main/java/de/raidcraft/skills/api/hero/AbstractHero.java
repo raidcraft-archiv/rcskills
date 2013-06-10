@@ -39,6 +39,7 @@ import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -226,6 +227,14 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         Scoreboards.removeScoreboard(getPlayer());
         reset();
         save();
+    }
+
+    @Override
+    public void updateEntity(LivingEntity entity) {
+
+        super.updateEntity(entity);
+        updatePermissions();
+        getUserInterface().refresh();
     }
 
     @Override
