@@ -80,7 +80,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
                     " Noch: " + getRemainingCooldown() + "s");
         }
         Set<WeaponType> requiredWeapons = getSkillProperties().getRequiredWeapons();
-        if (requiredWeapons.size() > 0) {
+        if (!getSkillProperties().getInformation().queuedAttack() && requiredWeapons.size() > 0) {
             CustomItemStack customItem = RaidCraft.getComponent(CustomItemManager.class)
                     .getCustomItem(getHolder().getEntity().getEquipment().getItemInHand());
             if (customItem == null || customItem.getItem() == null) {

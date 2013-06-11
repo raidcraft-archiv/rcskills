@@ -167,7 +167,7 @@ public class ProfessionCommands {
         }
 
         double cost = 0.0;
-        if (hero.hasPath(profession.getPath())) {
+        if (profession.getAttachedLevel().getLevel() > 1) {
             cost = ProfessionUtil.getProfessionChangeCost(profession);
         }
         hero.changeProfession(profession);
