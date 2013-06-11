@@ -33,6 +33,9 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
     @Override
     public double getPriority() {
 
+        if (super.getPriority() < 0) {
+            return super.getPriority();
+        }
         return super.getPriority() + getRemainingTicks();
     }
 
