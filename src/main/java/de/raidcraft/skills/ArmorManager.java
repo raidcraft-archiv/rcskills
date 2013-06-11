@@ -4,7 +4,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -75,7 +74,7 @@ public final class ArmorManager implements Triggered, Listener {
         // default the level to 60
         int level = 60;
         // we dont want to get the level of heroes and only calculate with mob level if applicable
-        if (attack.getSource() instanceof Levelable && !(attack.getSource() instanceof Hero)) {
+        if (attack.getSource() instanceof Levelable && attack.getSource() instanceof CharacterTemplate) {
             level = ((Levelable) attack.getSource()).getAttachedLevel().getLevel();
         }
         double reduction = armor / ((45.0 * level) + armor + 200.0);
