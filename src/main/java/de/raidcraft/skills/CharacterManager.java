@@ -288,9 +288,10 @@ public final class CharacterManager implements Listener {
     public <T extends CharacterTemplate> T spawnCharacter(EntityType entityType, Location location, Class<T> creatureClazz, Object... args) {
 
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
-        // at this point the spawnEntity event was called
-        // now lets remove the spawned entity from the UUID list and add our own
-        characters.remove(entity.getUniqueId()).leaveParty();
+        // at this point the spawnEntity event was called but we dont always handle it, so lets check if we have it cached
+        if (characters.containsKey(entity.getUniqueId())) {
+            characters.remove(entity.getUniqueId()).leaveParty();
+        }
 
         if (!cachedClasses.containsKey(creatureClazz)) {
             // lets find the matching constructor
