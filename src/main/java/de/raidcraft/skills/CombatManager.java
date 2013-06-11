@@ -361,8 +361,8 @@ public final class CombatManager implements Listener, Triggered {
             // and go thru all registered callbacks
             for (SourcedRangeCallback<RangedCallback> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
                 if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
-                    // lets set the damage of the event to 0 because it is handled by us
-                    event.setDamage(0);
+                    // cancel the damage event because we are handling it quit well :)
+                    event.setCancelled(true);
                     try {
                         // lets damage the target with the ranged attack
                         target.damage(sourcedCallback.getAttack());
@@ -394,20 +394,26 @@ public final class CombatManager implements Listener, Triggered {
                     }
                 }
                 if (!damaged) {
+                    boolean knockback = true;
                     // nerf skeletons
                     if (plugin.getCommonConfig().skeletons_knockback_chance < 1.0
                             && source.getEntity() instanceof Skeleton) {
                         if (Math.random() > plugin.getCommonConfig().skeletons_knockback_chance) {
-                            event.setCancelled(true);
+                            knockback = false;
                         }
                     }
                     // lets issue a new physical attack for the event
                     try {
-                        new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK).run();
-                    } catch (CombatException ignored) {
+                        PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK);
+                        attack.setKnockback(knockback);
+                        attack.run();
+                    } catch (CombatException e) {
+                        if (source instanceof Hero) {
+                            ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
+                        }
                     }
                 }
-                event.setDamage(0);
+                event.setCancelled(true);
             }
         }
     }
