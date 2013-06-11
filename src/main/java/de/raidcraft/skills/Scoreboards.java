@@ -99,21 +99,25 @@ public final class Scoreboards {
         } else {
             objective = scoreboard.getObjective(objectiveName);
         }
-        ChatColor color;
-        if (hero.getParty().getHeroes().size() > 1) {
-            if (hero.isPvPEnabled()) {
-                color = ChatColor.DARK_GREEN;
-            } else {
-                color = ChatColor.GREEN;
-            }
+        if (hero.getEntity().hasMetadata("GHOST")) {
+            objective.setDisplayName(ChatColor.DARK_GRAY + SIDE_DISPLAY_NAME.replace("%pvp%", "Geist"));
         } else {
-            if (hero.isPvPEnabled()) {
-                color = ChatColor.DARK_RED;
+            ChatColor color;
+            if (hero.getParty().getHeroes().size() > 1) {
+                if (hero.isPvPEnabled()) {
+                    color = ChatColor.DARK_GREEN;
+                } else {
+                    color = ChatColor.GREEN;
+                }
             } else {
-                color = ChatColor.AQUA;
+                if (hero.isPvPEnabled()) {
+                    color = ChatColor.DARK_RED;
+                } else {
+                    color = ChatColor.AQUA;
+                }
             }
+            objective.setDisplayName(color + SIDE_DISPLAY_NAME.replace("%pvp%", "PvP: " + (hero.isPvPEnabled() ? "an" : "aus")));
         }
-        objective.setDisplayName(color + SIDE_DISPLAY_NAME.replace("%pvp%", "PvP: " + (hero.isPvPEnabled() ? "an" : "aus")));
         return objective;
     }
 }
