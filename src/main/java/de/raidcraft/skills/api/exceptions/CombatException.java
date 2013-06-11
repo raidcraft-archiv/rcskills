@@ -56,7 +56,12 @@ public class CombatException extends RaidCraftException {
 
     public CombatException(Type type) {
 
-        super(type.getMessage());
+        this(type, type.getMessage());
+    }
+
+    public CombatException(Type type, String message) {
+
+        super(message);
         this.type = type;
     }
 
