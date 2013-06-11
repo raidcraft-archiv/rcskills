@@ -42,6 +42,7 @@ public class BukkitUserInterface implements UserInterface {
     private void updateSidebar() {
 
         Objective objective = Scoreboards.getPlayerSidebarObjective(getHero());
+        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_GRAY + "Rüstung")).setScore(getHero().getTotalArmorValue());
         objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
         // update all resource displays
         for (Resource resource : getHero().getResources()) {
