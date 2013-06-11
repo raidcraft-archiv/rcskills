@@ -493,9 +493,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         setHealth(newHealth);
         // lets fake some wolf hearts for visuals
         EffectUtil.fakeWolfHearts(getEntity().getLocation());
-        if (this instanceof Hero) {
-            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
-        }
         Hero source = null;
         if (action.getSource() instanceof Hero) {
             source = (Hero) action.getSource();
@@ -504,7 +501,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         } else if (action.getSource() instanceof Effect && ((Effect) action.getSource()).getSource() instanceof Skill) {
             source = ((Skill) ((Effect) action.getSource()).getSource()).getHolder();
         }
-        if (source != null) {
+        if (source != null && this.equals(source)) {
+            source.combatLog("Du hast dich um " + action.getAmount() + " Leben geheilt.");
+        } else if (this instanceof Hero) {
+            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
+        } else if (source != null) {
             source.combatLog("Du hast " + this + " um " + action.getAmount() + " geheilt.");
         }
     }
