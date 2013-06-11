@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -18,7 +19,7 @@ import java.util.Map;
 public final class Scoreboards {
 
     private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
-    private static final String SIDE_DISPLAY_NAME = "Charakterübersicht";
+    private static final String SIDE_DISPLAY_NAME = "---- %pvp% ----";
     private static final String TEAM_NAME = "raidcraft";
     private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
 
@@ -77,7 +78,7 @@ public final class Scoreboards {
             for (Objective objective : scoreboard.getObjectives()) {
                 if (objective.getName().startsWith(BukkitUserInterface.HEALTH_OBJECTIVE)) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.getHealth() > 0) {
+                        if (player.getHealth() > 0 && !player.hasMetadata("NPC")) {
                             objective.getScore(player).setScore(player.getHealth());
                         }
                     }
@@ -94,11 +95,25 @@ public final class Scoreboards {
         Objective objective;
         if (scoreboard.getObjective(objectiveName) == null) {
             objective = scoreboard.registerNewObjective(objectiveName, "dummy");
-            objective.setDisplayName(SIDE_DISPLAY_NAME);
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         } else {
             objective = scoreboard.getObjective(objectiveName);
         }
+        ChatColor color;
+        if (hero.getParty().getHeroes().size() > 1) {
+            if (hero.isPvPEnabled()) {
+                color = ChatColor.DARK_GREEN;
+            } else {
+                color = ChatColor.GREEN;
+            }
+        } else {
+            if (hero.isPvPEnabled()) {
+                color = ChatColor.DARK_RED;
+            } else {
+                color = ChatColor.AQUA;
+            }
+        }
+        objective.setDisplayName(color + SIDE_DISPLAY_NAME.replace("%pvp%", "PvP: " + (hero.isPvPEnabled() ? "an" : "aus")));
         return objective;
     }
 }
