@@ -496,6 +496,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (this instanceof Hero) {
             ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
         }
+        Hero source = null;
+        if (action.getSource() instanceof Hero) {
+            source = (Hero) action.getSource();
+        } else if (action.getSource() instanceof Skill) {
+            source = ((Skill) action.getSource()).getHolder();
+        } else if (action.getSource() instanceof Effect && ((Effect) action.getSource()).getSource() instanceof Skill) {
+            source = ((Skill) ((Effect) action.getSource()).getSource()).getHolder();
+        }
+        if (source != null) {
+            source.combatLog("Du hast " + this + " um " + action.getAmount() + " geheilt.");
+        }
     }
 
     @Override
