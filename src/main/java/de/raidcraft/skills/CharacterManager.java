@@ -10,6 +10,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.SkilledCharacter;
+import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -414,6 +415,14 @@ public final class CharacterManager implements Listener {
                 }
             }
         }, 1L);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerDeath(RCEntityDeathEvent event) {
+
+        if (event.getCharacter() instanceof Hero) {
+            event.getCharacter().getParty().sendMessage(ChatColor.RED + event.getCharacter().getName() + " ist gestorben.");
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
