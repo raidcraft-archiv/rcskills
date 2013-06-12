@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 
 /**

@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
-import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

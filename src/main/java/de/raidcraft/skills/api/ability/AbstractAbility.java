@@ -22,7 +22,7 @@ import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
-import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
