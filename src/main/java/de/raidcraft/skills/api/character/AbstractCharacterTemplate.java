@@ -397,6 +397,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setMaxHealth(int maxHealth) {
 
         if (getEntity() == null) return;
+        if (maxHealth < 1) {
+            maxHealth = 20;
+        }
         getEntity().setMaxHealth(maxHealth);
     }
 
