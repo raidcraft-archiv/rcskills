@@ -38,6 +38,10 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
     private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
     // list of cached skills mapped to a hero
     private final Map<String, Map<CachedSkill, Skill>> cachedSkills = new HashMap<>();
+    private int loadedSkills;
+    private int failedSkills;
+    private int loadedAliases;
+    private int failedAliases;
 
     protected SkillManager(SkillsPlugin plugin) {
 
@@ -61,8 +65,11 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
                 registerClass(clazz);
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
+                failedSkills++;
             }
         }
+        plugin.getLogger().info("Loaded " + loadedSkills + "/" + (failedSkills + loadedSkills) + " Skills.");
+        plugin.getLogger().info("Loaded " + loadedAliases + "/" + (failedAliases + loadedAliases) + " Alias Skills.");
     }
 
     @Override
@@ -96,7 +103,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             String skillName = StringUtils.formatName(skillClass.getAnnotation(SkillInformation.class).name());
             // check for duplicate skills
             if (skillFactories.containsKey(skillName)) {
-                plugin.getLogger().warning("Found duplicate Skill: " + skillName);
+                throw new UnknownSkillException("Found duplicate Skill: " + skillName);
             }
             // load the skill factory
             SkillFactory factory = new SkillFactory(plugin, skillClass, skillName);
@@ -104,9 +111,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             skillClasses.put(skillName, skillClass);
             // lets create the skill once to make a default config
             factory.createDefaults();
-            plugin.getLogger().info("Loaded Skill: " + factory.getName());
+            loadedSkills++;
         } else {
-            plugin.getLogger().warning("Found skill without SkillInformation: " + skillClass.getCanonicalName());
+            throw new UnknownSkillException("Found skill without SkillInformation: " + skillClass.getCanonicalName());
         }
     }
 
@@ -116,9 +123,10 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
             skillFactories.put(alias, factory);
             factory.createDefaults();
-            plugin.getLogger().info("Loaded Alias: " + alias + " -> " + skill);
+            loadedAliases++;
         } catch (UnknownSkillException e) {
             plugin.getLogger().warning(e.getMessage());
+            failedAliases++;
         }
     }
 

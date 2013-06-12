@@ -76,7 +76,6 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
             abilityFactories.put(skillName, factory);
             abilityClasses.put(skillName, skillClass);
             // lets create the skill once to make a default config
-            plugin.getLogger().info("Loaded Ability: " + factory.getName());
         } else {
             plugin.getLogger().warning("Found ability without AbilityInformation: " + skillClass.getCanonicalName());
         }
@@ -87,7 +86,6 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         try {
             AbilityFactory factory = new AbilityFactory(plugin, abilityClasses.get(skill), skill, config);
             abilityFactories.put(alias, factory);
-            plugin.getLogger().info("Loaded Alias Ability: " + alias + " -> " + skill);
         } catch (UnknownSkillException e) {
             plugin.getLogger().warning(e.getMessage());
         }

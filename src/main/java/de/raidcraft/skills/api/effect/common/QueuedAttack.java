@@ -69,7 +69,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        info("Du hebst deine Waffe zum Angriff: " + getSource().getFriendlyName());
+
     }
 
     @Override
