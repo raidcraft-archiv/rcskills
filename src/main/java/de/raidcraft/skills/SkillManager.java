@@ -53,6 +53,10 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
     public void reload() {
 
+        loadedSkills = 0;
+        failedSkills = 0;
+        loadedAliases = 0;
+        failedAliases = 0;
         skillFactories.clear();
         loadFactories();
     }
