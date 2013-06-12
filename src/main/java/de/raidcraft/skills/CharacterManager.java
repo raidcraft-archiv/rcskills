@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.SkilledCharacter;
@@ -57,7 +58,7 @@ import java.util.UUID;
 /**
  * @author Silthus
  */
-public final class CharacterManager implements Listener {
+public final class CharacterManager implements Listener, Component {
 
     private final SkillsPlugin plugin;
     private final Map<String, Hero> heroes = new HashMap<>();
@@ -71,6 +72,7 @@ public final class CharacterManager implements Listener {
     protected CharacterManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+        RaidCraft.registerComponent(CharacterManager.class, this);
         plugin.registerEvents(this);
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
                 RaidCraft.getComponent(SkillsPlugin.class),
