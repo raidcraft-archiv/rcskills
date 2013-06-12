@@ -293,7 +293,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         if (message == null || message.equals("")) {
             return;
         }
-        hero.sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + message);
+        hero.sendMessage("" + ChatColor.GRAY + message);
     }
 
     protected void msg(String message) {
