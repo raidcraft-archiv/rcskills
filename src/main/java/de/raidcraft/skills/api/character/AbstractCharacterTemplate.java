@@ -733,10 +733,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
 
         List<CharacterTemplate> nearbyTargets = getNearbyTargets(range);
-        if (!friendly) {
+        if (friendly) {
             List<CharacterTemplate> targets = new ArrayList<>();
             for (CharacterTemplate target : nearbyTargets) {
-                if (!target.isFriendly(this)) {
+                if (target.isFriendly(this)) {
                     targets.add(target);
                 }
             }
