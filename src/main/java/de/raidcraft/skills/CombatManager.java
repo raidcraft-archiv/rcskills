@@ -157,7 +157,7 @@ public final class CombatManager implements Listener, Triggered {
         }
         Hero victim = (Hero) trigger.getAttack().getTarget();
         Hero attacker = (Hero) trigger.getSource();
-        if (!victim.isPvPEnabled() && !attacker.isPvPEnabled()) {
+        if (victim.isPvPEnabled() && attacker.isPvPEnabled()) {
             return;
         }
         // lets check some advanced stuff first, like if the attacking player has pvp disabled and the victim has pvp enabled
