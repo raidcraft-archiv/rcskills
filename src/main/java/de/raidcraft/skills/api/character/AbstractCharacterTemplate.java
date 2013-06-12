@@ -738,12 +738,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     targets.add(target);
                 }
             }
-            if (targets.size() < 1) {
-                throw new CombatException(CombatException.Type.INVALID_TARGET);
+            return targets;
+        } else {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (!target.isFriendly(this)) {
+                    targets.add(target);
+                }
             }
             return targets;
         }
-        return nearbyTargets;
     }
 
     @Override
