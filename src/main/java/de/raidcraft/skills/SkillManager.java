@@ -1,5 +1,8 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.items.attachments.ItemAttachment;
+import de.raidcraft.api.items.attachments.ItemAttachmentException;
+import de.raidcraft.api.items.attachments.ItemAttachmentProvider;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -12,6 +15,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +29,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class SkillManager extends GenericJarFileManager<Skill> {
+public final class SkillManager extends GenericJarFileManager<Skill> implements ItemAttachmentProvider {
 
     private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new HashMap<>();
@@ -56,6 +60,21 @@ public final class SkillManager extends GenericJarFileManager<Skill> {
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
             }
+        }
+    }
+
+    @Override
+    public ItemAttachment getItemAttachment(Player player, String attachmentName) throws ItemAttachmentException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(player);
+            Skill skill = hero.getSkill(attachmentName);
+            if (skill instanceof ItemAttachment) {
+                return (ItemAttachment) skill;
+            }
+            throw new ItemAttachmentException("The skill " + skill.getName() + " is not a valid ItemAttachment!");
+        } catch (UnknownSkillException e) {
+            throw new ItemAttachmentException(e.getMessage());
         }
     }
 
