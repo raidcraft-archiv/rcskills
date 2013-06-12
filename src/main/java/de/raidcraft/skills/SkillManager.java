@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentProvider;
+import de.raidcraft.api.items.attachments.ProviderInformation;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -29,6 +30,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
+@ProviderInformation("skills")
 public final class SkillManager extends GenericJarFileManager<Skill> implements ItemAttachmentProvider {
 
     private final SkillsPlugin plugin;

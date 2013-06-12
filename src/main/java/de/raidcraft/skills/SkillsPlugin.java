@@ -12,7 +12,6 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
@@ -136,7 +135,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
                 }
                 if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
                     try {
-                        RaidCraft.getComponent(ItemAttachmentManager.class).registerItemAttachmentProvider(getSkillManager());
+                        RaidCraft.registerItemAttachmentProvider(getSkillManager());
                     } catch (RaidCraftException e) {
                         getLogger().warning(e.getMessage());
                     }
