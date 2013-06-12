@@ -42,7 +42,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +68,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private int damage;
     private boolean inCombat = false;
     private Attack lastAttack;
-    private BukkitTask deathTask;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     protected boolean usingHealthBar = true;
 
@@ -517,7 +515,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void kill(CharacterTemplate killer) {
 
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        getEntity().damage(getHealth() + 1, killer.getEntity());
+        getEntity().damage(getMaxHealth(), killer.getEntity());
         clearEffects();
     }
 
@@ -525,7 +523,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void kill() {
 
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        setHealth(0);
+        getEntity().damage(getMaxHealth());
         clearEffects();
     }
 
