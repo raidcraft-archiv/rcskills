@@ -74,7 +74,9 @@ public final class ArmorManager implements Triggered, Listener {
         // default the level to 60
         int level = 60;
         // we dont want to get the level of heroes and only calculate with mob level if applicable
-        if (attack.getSource() instanceof Levelable && attack.getSource() instanceof CharacterTemplate) {
+        if (attack.getSource() instanceof Levelable
+                && attack.getSource() instanceof CharacterTemplate
+                && ((CharacterTemplate) attack.getSource()).getAttachedLevel() != null) {
             level = ((Levelable) attack.getSource()).getAttachedLevel().getLevel();
         }
         double reduction = armor / ((45.0 * level) + armor + 200.0);

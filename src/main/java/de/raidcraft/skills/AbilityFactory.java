@@ -4,7 +4,7 @@ import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.ability.AbilityInformation;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.config.AbilityConfig;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.AbstractFactory;
@@ -28,9 +28,9 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
     }
 
     @SuppressWarnings("unchecked")
-    protected AbilityFactory(SkillsPlugin plugin, Class<? extends Ability> sClass, String skillName, AliasesConfig aliasConfig) throws UnknownSkillException {
+    protected AbilityFactory(SkillsPlugin plugin, Class<? extends Ability> sClass, String abilityName, AliasesConfig aliasConfig) throws UnknownSkillException {
 
-        super(plugin, skillName);
+        super(plugin, abilityName);
         this.plugin = plugin;
         this.sClass = sClass;
         this.aliasConfig = aliasConfig;
@@ -40,11 +40,11 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
                 continue;
             }
             if (CharacterTemplate.class.isAssignableFrom(constructor.getParameterTypes()[0])
-                    && SkillProperties.class.isAssignableFrom(constructor.getParameterTypes()[1])) {
+                    && AbilityProperties.class.isAssignableFrom(constructor.getParameterTypes()[1])) {
                 constructor.setAccessible(true);
                 this.constructor = (Constructor<? extends Ability>) constructor;
             } else {
-                throw new UnknownSkillException("Found no matching constructor for the skill: " + skillName);
+                throw new UnknownSkillException("Found no matching constructor for the ability: " + abilityName);
             }
         }
     }
