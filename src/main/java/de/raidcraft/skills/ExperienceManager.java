@@ -115,11 +115,13 @@ public final class ExperienceManager implements Listener {
         }
         if (heroesToAddExp.isEmpty()) return;
         int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
-        // lets actually give out the exp
-        for (Hero expToAdd : heroesToAddExp) {
-            expToAdd.getExpPool().addExp(exp);
-            // lets do some visual magic tricks and let the player see the exp
-            sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+        if (exp > 0) {
+            // lets actually give out the exp
+            for (Hero expToAdd : heroesToAddExp) {
+                expToAdd.getExpPool().addExp(exp);
+                // lets do some visual magic tricks and let the player see the exp
+                sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+            }
         }
     }
 
