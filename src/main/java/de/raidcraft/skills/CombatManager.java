@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
-import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -32,7 +31,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,19 +166,6 @@ public final class CombatManager implements Listener, Triggered {
             trigger.setCancelled(true);
             trigger.getAttack().setCancelled(true);
             throw new CombatException("Dein Ziel hat PvP nicht aktiviert und kann nicht angegriffen werden!");
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInteract(PlayerInteractEvent event) {
-
-        if (event.getPlayer().hasMetadata("NPC")) {
-            return;
-        }
-        try {
-            plugin.getCharacterManager().getHero(event.getPlayer()).removeEffect(CastTime.class);
-        } catch (CombatException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
