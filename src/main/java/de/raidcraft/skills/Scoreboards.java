@@ -40,7 +40,7 @@ public final class Scoreboards {
 
     public static void removeScoreboard(Player player) {
 
-        if (player == null || !player.isOnline()) {
+        if (player == null) {
             return;
         }
         Scoreboard scoreboard = scoreboards.remove(player.getName().toLowerCase());

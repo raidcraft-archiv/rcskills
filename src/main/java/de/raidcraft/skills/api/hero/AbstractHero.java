@@ -214,12 +214,16 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 ((AbstractProfession) tmpProfession).loadResources();
             }
             tmpProfession.save();
-            tmpProfession = profession.getParent();
+            tmpProfession = tmpProfession.getParent();
         } while (tmpProfession != null);
 
         // lets clear all skills from the list and add them again for the profession
-        loadSkills();
         loadAttributes();
+        // keep this last because we need to professions to load first
+        setMaxHealth(getDefaultHealth());
+        setHealth(getMaxHealth());
+        // load the skills after the profession
+        loadSkills();
         // update the display stuff
         updateHighestRankedProfession();
         updateSelectedProfession();
@@ -470,7 +474,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         }
         updateHighestRankedProfession();
         updateSelectedProfession();
-        setMaxHealth(getDefaultHealth());
         setHealth(getMaxHealth());
         clearEffects();
         for (Resource resource : getResources()) {
