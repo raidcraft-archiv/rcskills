@@ -520,7 +520,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void debug(String message) {
 
         if (Option.DEBUGGING.getBoolean(this) && message != null && !message.equals("")) {
-            getPlayer().sendMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.ITALIC + message);
+            getPlayer().sendMessage(ChatColor.GRAY + "[DEBUG] " + message);
         }
     }
 
@@ -535,7 +535,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         if (Option.COMBAT_LOGGING.getBoolean(this) && message != null && !message.equals("")) {
             getPlayer().sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
-                    + " " + ChatColor.ITALIC + message);
+                    + " " + message);
         }
     }
 
