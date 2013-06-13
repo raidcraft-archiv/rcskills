@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
@@ -187,7 +188,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void changeProfession(Profession profession) {
+    public void changeProfession(final Profession profession) {
 
         // lets save once before we change it all to make sure the levels are safed
         save();
@@ -203,17 +204,18 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // lets set the selected profession before we go all wanky in the while loop
         updateHighestRankedProfession();
 
+        Profession tmpProfession = profession;
         // now lets go thru all of the professions parents add them and activate them
         do {
-            profession.setActive(true);
-            professions.put(profession.getName(), profession);
-            if (profession instanceof AbstractProfession) {
-                ((AbstractProfession) profession).loadSkills();
-                ((AbstractProfession) profession).loadResources();
+            tmpProfession.setActive(true);
+            professions.put(tmpProfession.getName(), tmpProfession);
+            if (tmpProfession instanceof AbstractProfession) {
+                ((AbstractProfession) tmpProfession).loadSkills();
+                ((AbstractProfession) tmpProfession).loadResources();
             }
-            profession.save();
-            profession = profession.getParent();
-        } while (profession != null);
+            tmpProfession.save();
+            tmpProfession = profession.getParent();
+        } while (tmpProfession != null);
 
         // lets clear all skills from the list and add them again for the profession
         loadSkills();
@@ -227,6 +229,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         Scoreboards.removeScoreboard(getPlayer());
         reset();
         save();
+        // lets fire an informal event
+        RaidCraft.callEvent(new PlayerChangeProfessionEvent(getPlayer(), profession.getName(), profession.getAttachedLevel().getLevel()));
     }
 
     @Override
