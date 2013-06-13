@@ -356,7 +356,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public Resource getResource(String name) {
 
-        return resources.get(name.toLowerCase());
+        return resources.get(name);
     }
 
     @Override
