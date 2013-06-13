@@ -21,6 +21,8 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     private final SkillsPlugin plugin;
     private final Map<Class<? extends Effect>, EffectFactory<? extends Effect>> effectFactoryClasses = new HashMap<>();
+    private int loadedEffects;
+    private int failedEffects;
 
     protected EffectManager(SkillsPlugin plugin) {
 
@@ -31,6 +33,8 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
 
     public void reload() {
 
+        loadedEffects = 0;
+        failedEffects = 0;
         effectFactoryClasses.clear();
         loadFactories();
     }
@@ -43,8 +47,10 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
                 registerClass(clazz);
             } catch (InvalidEffectException | UnknownEffectException e) {
                 plugin.getLogger().warning(e.getMessage());
+                failedEffects++;
             }
         }
+        plugin.getLogger().info("Loaded " + loadedEffects + "/" + (loadedEffects + failedEffects) + " Effects.");
     }
 
     public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException, UnknownEffectException {
@@ -56,7 +62,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
             EffectFactory factory = new EffectFactory<>(plugin, effectClass);
             effectFactoryClasses.put(factory.getEffectClass(), factory);
             factory.createDefaults();
-            plugin.getLogger().info("Loaded Effect: " + factory.getEffectName());
+            loadedEffects++;
         } else {
             throw new InvalidEffectException("Found effect without EffectInformation: " + effectClass.getCanonicalName());
         }
