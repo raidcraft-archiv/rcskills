@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
@@ -35,10 +36,14 @@ public final class ArmorManager implements Triggered, Listener {
         plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkArmor();
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) {
 
         Attack<?,CharacterTemplate> attack = trigger.getAttack();
+        // dont reduce environment or non physical damage
+        if (attack.hasSource(AttackSource.ENVIRONMENT)) {
+            return;
+        }
         if (attack.isOfAttackType(EffectType.IGNORE_ARMOR) || !attack.isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
