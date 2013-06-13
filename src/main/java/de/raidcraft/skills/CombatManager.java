@@ -87,7 +87,8 @@ public final class CombatManager implements Listener, Triggered {
 
     public void reload() {
 
-        // dont clear the callbacks let them run out quietly to not interrupt combat
+        entityHitCallbacks.clear();
+        locationCallbacks.clear();
     }
 
     public void queueRangedAttack(final SourcedRangeCallback rangedAttack) {
