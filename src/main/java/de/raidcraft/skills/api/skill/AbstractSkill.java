@@ -22,6 +22,7 @@ import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -77,7 +78,8 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
         if (isOnCooldown()) {
             throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
-                    " Noch: " + getRemainingCooldown() + "s");
+                    " Noch: " +
+                    (getRemainingCooldown() > 60.0 ? TimeUtil.secondsToMinutes(getRemainingCooldown()) + "min" : getRemainingCooldown() + "s"));
         }
         Set<WeaponType> requiredWeapons = getSkillProperties().getRequiredWeapons();
         if (!getSkillProperties().getInformation().queuedAttack() && requiredWeapons.size() > 0) {
