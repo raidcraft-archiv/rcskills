@@ -26,12 +26,10 @@ public final class Scoreboards {
     public static Scoreboard getScoreboard(Hero hero) {
 
         String playerName = hero.getName().toLowerCase();
-        Scoreboard scoreboard;
         if (scoreboards.containsKey(playerName)) {
-            scoreboard = scoreboards.get(playerName);
-        } else {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            return scoreboards.get(playerName);
         }
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         if (!hero.isOnline()) {
             hero.updateEntity(Bukkit.getPlayer(playerName));
         }
