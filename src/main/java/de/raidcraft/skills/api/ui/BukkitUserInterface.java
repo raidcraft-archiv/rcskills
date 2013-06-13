@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class BukkitUserInterface implements UserInterface {
 
-    public static final String HEALTH_OBJECTIVE = "hp";
+    public static final String HEALTH_OBJECTIVE = "rcshp";
 
     private final Hero hero;
 
@@ -127,9 +127,9 @@ public class BukkitUserInterface implements UserInterface {
         // lets also set the scoreboard to display the health of this player to all online players
         Scoreboard scoreboard = Scoreboards.getScoreboard(hero);
 
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + hero.getId());
+        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + getHero().getId());
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + hero.getId(), "dummy");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + getHero().getId(), "dummy");
             objective.setDisplayName("❤");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }

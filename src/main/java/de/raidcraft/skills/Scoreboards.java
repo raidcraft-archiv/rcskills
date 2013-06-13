@@ -84,6 +84,7 @@ public final class Scoreboards {
                             objective.getScore(player).setScore(player.getHealth());
                         }
                     }
+                    break;
                 }
             }
         }
