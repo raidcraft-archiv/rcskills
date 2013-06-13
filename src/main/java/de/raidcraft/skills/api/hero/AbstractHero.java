@@ -293,6 +293,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void addSkill(Skill skill) {
 
         getVirtualProfession().addSkill(skill);
+        save();
         loadSkills();
     }
 
@@ -300,6 +301,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void removeSkill(Skill skill) {
 
         getVirtualProfession().removeSkill(skill);
+        save();
         loadSkills();
     }
 
