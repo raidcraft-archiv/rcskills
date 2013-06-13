@@ -18,6 +18,7 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -416,6 +417,30 @@ public class AdminCommands {
                 new QueuedCaptchaCommand(sender, this, "purgeHero", sender, hero);
             }
         } catch (UnknownPlayerException | NoSuchMethodException e) {
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    @Command(
+            aliases = "kick",
+            desc = "Kicks the player and clears his cache",
+            min = 1
+    )
+    @CommandPermissions("rcskills.admin.kick")
+    public void kick(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            final Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            hero.getPlayer().kickPlayer("Dein RPG Profil Cache wird geleert.");
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+
+                    plugin.getCharacterManager().clearCacheOf(hero);
+                }
+            }, 5L);
+
+        } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
         }
     }
