@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 
@@ -16,6 +17,8 @@ public final class AliasManager {
     private final File configPath;
     private final Map<String, AliasesConfig> aliasConfigs = new HashMap<>();
     private final Map<String, String> aliasSkillMapping = new HashMap<>();
+    private int loadedAliases;
+    private int failedAliases;
 
     public AliasManager(SkillsPlugin plugin) {
 
@@ -31,8 +34,15 @@ public final class AliasManager {
         loadAliasConfig(configPath);
         // now lets create factories for every alias based on their skill
         for (Map.Entry<String, String> entry : aliasSkillMapping.entrySet()) {
-            plugin.getSkillManager().createAliasFactory(entry.getKey(), entry.getValue(), aliasConfigs.get(entry.getKey()));
+            try {
+                plugin.getSkillManager().createAliasFactory(entry.getKey(), entry.getValue(), aliasConfigs.get(entry.getKey()));
+                loadedAliases++;
+            } catch (UnknownSkillException e) {
+                plugin.getLogger().warning(e.getMessage());
+                failedAliases++;
+            }
         }
+        plugin.getLogger().info("Loaded " + loadedAliases + "/" + (failedAliases + loadedAliases) + " alias skills.");
     }
 
     private void loadAliasConfig(File dir) {
@@ -48,9 +58,11 @@ public final class AliasManager {
                 if (config.getString("skill") == null || !plugin.getSkillManager().hasSkill(config.getString("skill"))) {
                     plugin.getLogger().warning(
                             "Der Alias " + alias + " ist falsch konfiguriert! Es gibt keinen Skill: " + config.getString("skill"));
+                    failedAliases++;
                 } else if (plugin.getSkillManager().hasSkill(alias)) {
                     plugin.getLogger().warning(
                             "Der Alias " + alias + " ist falsch konfiguriert! Es gibt bereits einen Skill mit dem Namen: " + alias);
+                    failedAliases++;
                 } else {
                     aliasSkillMapping.put(alias, config.getString("skill"));
                     aliasConfigs.put(alias, config);
@@ -61,6 +73,8 @@ public final class AliasManager {
 
     public void reload() {
 
+        loadedAliases = 0;
+        failedAliases = 0;
         aliasConfigs.clear();
         aliasSkillMapping.clear();
         loadAliases();

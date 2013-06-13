@@ -50,7 +50,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
                 failedEffects++;
             }
         }
-        plugin.getLogger().info("Loaded " + loadedEffects + "/" + (loadedEffects + failedEffects) + " Effects.");
+        plugin.getLogger().info("Loaded " + loadedEffects + "/" + (loadedEffects + failedEffects) + " effects.");
     }
 
     public <E extends Effect> void registerClass(Class<E> effectClass) throws InvalidEffectException, UnknownEffectException {

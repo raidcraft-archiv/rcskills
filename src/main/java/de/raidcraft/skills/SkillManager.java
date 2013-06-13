@@ -40,8 +40,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
     private final Map<String, Map<CachedSkill, Skill>> cachedSkills = new HashMap<>();
     private int loadedSkills;
     private int failedSkills;
-    private int loadedAliases;
-    private int failedAliases;
 
     protected SkillManager(SkillsPlugin plugin) {
 
@@ -55,8 +53,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
         loadedSkills = 0;
         failedSkills = 0;
-        loadedAliases = 0;
-        failedAliases = 0;
         skillFactories.clear();
         loadFactories();
     }
@@ -72,8 +68,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
                 failedSkills++;
             }
         }
-        plugin.getLogger().info("Loaded " + loadedSkills + "/" + (failedSkills + loadedSkills) + " Skills.");
-        plugin.getLogger().info("Loaded " + loadedAliases + "/" + (failedAliases + loadedAliases) + " Alias Skills.");
+        plugin.getLogger().info("Loaded " + loadedSkills + "/" + (failedSkills + loadedSkills) + " skills.");
     }
 
     @Override
@@ -121,17 +116,11 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         }
     }
 
-    protected void createAliasFactory(String alias, String skill, AliasesConfig config) {
+    protected void createAliasFactory(String alias, String skill, AliasesConfig config) throws UnknownSkillException {
 
-        try {
-            SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
-            skillFactories.put(alias, factory);
-            factory.createDefaults();
-            loadedAliases++;
-        } catch (UnknownSkillException e) {
-            plugin.getLogger().warning(e.getMessage());
-            failedAliases++;
-        }
+        SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
+        skillFactories.put(alias, factory);
+        factory.createDefaults();
     }
 
     public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
