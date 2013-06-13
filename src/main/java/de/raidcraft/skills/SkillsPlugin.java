@@ -35,6 +35,7 @@ import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.conversations.CanChooseProfessionAction;
 import de.raidcraft.skills.conversations.ChooseProfessionAction;
+import de.raidcraft.skills.conversations.LinkExpPoolAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.conversations.MaxOutHeroAction;
 import de.raidcraft.skills.logging.ExpLogger;
@@ -227,6 +228,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         ActionManager.registerAction(new ListProfessionSkills());
         ActionManager.registerAction(new MaxOutHeroAction());
         ActionManager.registerAction(new CanChooseProfessionAction());
+        ActionManager.registerAction(new LinkExpPoolAction());
     }
 
     private void loadEngine() {

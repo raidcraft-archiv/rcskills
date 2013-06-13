@@ -85,6 +85,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Set<Path<Profession>> getPaths();
 
+    public Path<Profession> getPath(String name);
+
     public void changeProfession(Profession profession);
 
     public List<Skill> getSkills();

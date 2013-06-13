@@ -8,6 +8,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
@@ -132,6 +133,16 @@ public final class HeroUtil {
     public static Hero getHeroFromName(String name) throws UnknownPlayerException {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(name);
+    }
+
+    public static Profession getActivePathProfession(Hero hero, Path<Profession> path) {
+
+        for (Profession profession : path.getParents(hero)) {
+            if (profession.isActive()) {
+                return profession;
+            }
+        }
+        return null;
     }
 
     public static void maxOutAll(Hero hero) {

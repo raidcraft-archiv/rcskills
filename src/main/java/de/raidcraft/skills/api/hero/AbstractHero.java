@@ -66,7 +66,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private final Map<String, Profession> professions = new HashMap<>();
     private final Map<String, Resource> resources = new HashMap<>();
     private final Map<String, Attribute> attributes = new HashMap<>();
-    private final Set<Path<Profession>> paths = new HashSet<>();
+    private final Map<String, Path<Profession>> paths = new HashMap<>();
     private Party pendingPartyInvite;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
@@ -118,7 +118,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             try {
                 Profession profession = manager.getProfession(this, professionName);
                 professions.put(profession.getProperties().getName(), profession);
-                paths.add(profession.getPath());
+                paths.put(profession.getPath().getName().toLowerCase(), profession.getPath());
                 // set selected profession
                 updateHighestRankedProfession();
                 // also add the parent if one exists
@@ -467,7 +467,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public Set<Path<Profession>> getPaths() {
 
-        return paths;
+        return new HashSet<>(paths.values());
+    }
+
+    @Override
+    public Path<Profession> getPath(String name) {
+
+        return paths.get(name.toLowerCase());
     }
 
     @Override
