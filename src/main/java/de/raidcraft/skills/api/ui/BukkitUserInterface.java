@@ -57,8 +57,8 @@ public class BukkitUserInterface implements UserInterface {
 
     private void updateHealthDisplay() {
 
-        getScoreboardHealthObjective();
-        Scoreboards.updateHealthDisplays();
+        // getScoreboardHealthObjective();
+        // Scoreboards.updateHealthDisplays();
     }
 
     private void updateExperienceDisplay() {
