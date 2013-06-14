@@ -209,6 +209,9 @@ public final class CharacterManager implements Listener, Component {
                     pool.setPlayer(name);
                     pool.setHeroId(heroTable.getId());
                     RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
+                } else {
+                    pool.setHeroId(heroTable.getId());
+                    RaidCraft.getDatabase(SkillsPlugin.class).update(pool);
                 }
                 heroTable.setExpPool(pool);
                 RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
