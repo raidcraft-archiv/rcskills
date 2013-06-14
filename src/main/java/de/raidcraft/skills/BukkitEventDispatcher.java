@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.events.RCCombatEvent;
+import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.*;
 import org.bukkit.block.Block;
@@ -279,6 +280,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerShearTrigger(plugin.getCharacterManager().getHero(event.getPlayer()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onRCEntityDeath(RCEntityDeathEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new EntityDeathTrigger(event.getCharacter(), event)
         );
     }
 }
