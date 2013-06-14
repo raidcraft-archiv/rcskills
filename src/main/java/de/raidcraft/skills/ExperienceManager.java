@@ -107,6 +107,9 @@ public final class ExperienceManager implements Listener {
         } else {
             return;
         }
+        if (plugin.getCommonConfig().getIgnoredWorlds().contains(hero.getPlayer().getWorld().getName())) {
+            return;
+        }
         HashSet<Hero> heroesToAddExp = new HashSet<>();
         for (Hero partyHero : hero.getParty().getHeroes()) {
             if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
@@ -131,6 +134,9 @@ public final class ExperienceManager implements Listener {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
+        if (plugin.getCommonConfig().getIgnoredWorlds().contains(event.getPlayer().getWorld().getName())) {
+            return;
+        }
         Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
         hero.getExpPool().addExp(plugin.getExperienceConfig().getBlockExperienceFor(event.getBlock().getTypeId()));
     }
@@ -139,6 +145,9 @@ public final class ExperienceManager implements Listener {
     public void onCraftItem(CraftItemEvent event) {
 
         if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+        if (plugin.getCommonConfig().getIgnoredWorlds().contains(event.getWhoClicked().getWorld().getName())) {
             return;
         }
         Hero hero = plugin.getCharacterManager().getHero((Player) event.getWhoClicked());
@@ -164,6 +173,9 @@ public final class ExperienceManager implements Listener {
         if (event.getAttachedLevel() instanceof ExpPool) {
             // redirect the exp directly to the profession if linked
             Hero hero = (Hero) event.getAttachedLevel().getLevelObject();
+            if (plugin.getCommonConfig().getIgnoredWorlds().contains(hero.getPlayer().getWorld().getName())) {
+                return;
+            }
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
             if (linkedProf != null) {
                 try {
