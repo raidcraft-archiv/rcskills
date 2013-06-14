@@ -7,11 +7,11 @@ import de.raidcraft.api.database.Database;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 public class BindManager implements Component {
 
     private SkillsPlugin plugin;
-    private Map<String, List<BoundItem>> boundItems = new HashMap<>();
+    private Map<String, List<BoundItem>> boundItems = new CaseInsensitiveMap<>();
 
     public BindManager(SkillsPlugin plugin) {
 
