@@ -197,6 +197,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         Path path = profession.getPath();
         for (Profession currentProf : getProfessions()) {
             if (currentProf.getPath().equals(path)) {
+                for (Resource resource : currentProf.getResources()) {
+                    detachResource(resource.getName());
+                }
                 currentProf.setActive(false);
                 currentProf.save();
             }
