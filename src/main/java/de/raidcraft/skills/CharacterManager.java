@@ -202,20 +202,20 @@ public final class CharacterManager implements Listener, Component {
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
                 RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
-                // also create a new exp pool for the hero
-                THeroExpPool pool = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class).where().eq("player", name).findUnique();
-                if (pool == null) {
-                    pool = new THeroExpPool();
-                    pool.setPlayer(name);
-                    pool.setHeroId(heroTable.getId());
-                    RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
-                } else {
-                    pool.setHeroId(heroTable.getId());
-                    RaidCraft.getDatabase(SkillsPlugin.class).update(pool);
-                }
-                heroTable.setExpPool(pool);
-                RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
             }
+            // also create a new exp pool for the hero
+            THeroExpPool pool = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class).where().eq("player", name).findUnique();
+            if (pool == null) {
+                pool = new THeroExpPool();
+                pool.setPlayer(name);
+                pool.setHeroId(heroTable.getId());
+                RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
+            } else {
+                pool.setHeroId(heroTable.getId());
+                RaidCraft.getDatabase(SkillsPlugin.class).update(pool);
+            }
+            heroTable.setExpPool(pool);
+            RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
             hero = new SimpleHero(player, heroTable);
             heroes.put(name, hero);
         } else {
