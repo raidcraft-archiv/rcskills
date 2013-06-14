@@ -223,12 +223,11 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     private void checkProgress() {
 
         if (canLevel()) {
-            int oldLevel = getLevel();
             int newLevel = getLevel() + getLevelAmountForExp(getExp());
             // increase the level
             setLevel(newLevel);
             // lets get the total needed exp from the old level to the new level-1
-            int neededExp = getFormula().getNeededExpForLevel(oldLevel);
+            int neededExp = getFormula().getNeededExpForLevel(newLevel);
             // set the exp
             setExp(getExp() - neededExp);
         } else if (getExp() < 0 && getLevel() > 0) {

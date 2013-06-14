@@ -25,7 +25,7 @@ import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.commands.AdminCommands;
 import de.raidcraft.skills.commands.CastCommand;
 import de.raidcraft.skills.commands.PartyCommands;
-import de.raidcraft.skills.commands.PlayerComands;
+import de.raidcraft.skills.commands.PlayerCommands;
 import de.raidcraft.skills.commands.ProfessionCommands;
 import de.raidcraft.skills.commands.PvPCommands;
 import de.raidcraft.skills.commands.SkillCommands;
@@ -494,7 +494,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 aliases = {"rcs"},
                 desc = "Base Command for Players"
         )
-        @NestedCommand(value = PlayerComands.class)
+        @NestedCommand(value = PlayerCommands.class)
         public void player(CommandContext args, CommandSender sender) {
 
         }

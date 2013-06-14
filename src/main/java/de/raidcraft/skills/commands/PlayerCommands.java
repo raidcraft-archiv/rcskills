@@ -23,11 +23,11 @@ import java.util.Collection;
 /**
  * @author Silthus
  */
-public class PlayerComands {
+public class PlayerCommands {
 
     private final SkillsPlugin plugin;
 
-    public PlayerComands(SkillsPlugin plugin) {
+    public PlayerCommands(SkillsPlugin plugin) {
 
         this.plugin = plugin;
     }
