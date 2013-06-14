@@ -93,7 +93,8 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             if (callback != null && callback instanceof EntityAttackCallback) {
                 callback.run(this);
             }
-            if (!isOfAttackType(EffectType.DEFAULT_ATTACK)) {
+            // only add weapon damage if it is a physical attack
+            if (!isOfAttackType(EffectType.DEFAULT_ATTACK) && isOfAttackType(EffectType.PHYSICAL)) {
                 // if this is a special attack add weapon damage
                 setDamage(getDamage() + getSource().getDamage());
             }
