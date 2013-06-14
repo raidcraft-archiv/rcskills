@@ -138,18 +138,14 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    /*//////////////////////////////////////////////////////////////////////////////
-    //      Hooked Bukkit events for handling all the combat stuff
-    //////////////////////////////////////////////////////////////////////////////*/
+    public void checkPvPAttack(CharacterTemplate attackerChar, CharacterTemplate victimChar) throws CombatException {
 
-    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
-    public void onAttack(AttackTrigger trigger) throws CombatException {
-
-        if (!(trigger.getAttack().getTarget() instanceof Hero) || !(trigger.getSource() instanceof Hero)) {
+        if (!(attackerChar instanceof Hero) || !(victimChar instanceof Hero)) {
             return;
         }
-        Hero victim = (Hero) trigger.getAttack().getTarget();
-        Hero attacker = (Hero) trigger.getSource();
+        Hero attacker = (Hero) attackerChar;
+        Hero victim = (Hero) victimChar;
+
         if (victim.isPvPEnabled() && attacker.isPvPEnabled()) {
             return;
         }
@@ -158,10 +154,18 @@ public final class CombatManager implements Listener, Triggered {
             attacker.setPvPEnabled(true);
             attacker.sendMessage(ChatColor.RED + "Dein PvP Status wurde auf aktiv gesetzt!");
         } else if (!victim.isPvPEnabled()) {
-            trigger.setCancelled(true);
-            trigger.getAttack().setCancelled(true);
             throw new CombatException("Dein Ziel hat PvP nicht aktiviert und kann nicht angegriffen werden!");
         }
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    //      Hooked Bukkit events for handling all the combat stuff
+    //////////////////////////////////////////////////////////////////////////////*/
+
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        checkPvPAttack(trigger.getSource(), trigger.getAttack().getTarget());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -336,62 +340,73 @@ public final class CombatManager implements Listener, Triggered {
         enterCombat(event);
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
-            CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
-            CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
-            // and go thru all registered callbacks
-            for (SourcedRangeCallback<RangedCallback> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
-                if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
-                    // cancel the damage event because we are handling it quit well :)
+
+                CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+                CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+            try {
+                // lets check pvp flags first
+                checkPvPAttack(source, target);
+                // and go thru all registered callbacks
+                for (SourcedRangeCallback<RangedCallback> sourcedCallback : new ArrayList<>(entityHitCallbacks.values())) {
+                    if (sourcedCallback.getProjectile().equals(event.getDamager()) && sourcedCallback.getSource().equals(source)) {
+                        // cancel the damage event because we are handling it quit well :)
+                        event.setCancelled(true);
+                        try {
+                            // lets damage the target with the ranged attack
+                            target.damage(sourcedCallback.getAttack());
+                            if (sourcedCallback.getCallback() != null) {
+                                // the shooter is our source so lets call back and remove
+                                sourcedCallback.getCallback().run(target);
+                            }
+                            entityHitCallbacks.remove(sourcedCallback.getTaskId());
+                            if (sourcedCallback.getSource() instanceof Hero) {
+                                ((Hero) sourcedCallback.getSource()).debug("Called Range Entity Callback - " + sourcedCallback.getTaskId());
+                            }
+                        } catch (CombatException e) {
+                            if (sourcedCallback.getSource() instanceof Hero) {
+                                ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
+                            }
+                        }
+                        callback = true;
+                    }
+                }
+                if (!callback) {
+                    boolean damaged = false;
+                    // lets check all registered ranged attacks first
+                    for (SourcedRangeCallback attack : new ArrayList<>(rangedAttacks.values())) {
+                        if (attack.getProjectile().equals(event.getDamager()) && attack.getSource().equals(source)) {
+                            target.damage(attack.getAttack());
+                            rangedAttacks.remove(attack.getTaskId());
+                            damaged = true;
+                            break;
+                        }
+                    }
+                    if (!damaged) {
+                        boolean knockback = true;
+                        // nerf skeletons
+                        if (plugin.getCommonConfig().skeletons_knockback_chance < 1.0
+                                && source.getEntity() instanceof Skeleton) {
+                            if (Math.random() > plugin.getCommonConfig().skeletons_knockback_chance) {
+                                knockback = false;
+                            }
+                        }
+                        // lets issue a new physical attack for the event
+                        try {
+                            PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK);
+                            attack.setKnockback(knockback);
+                            attack.run();
+                        } catch (CombatException e) {
+                            event.setCancelled(true);
+                            if (source instanceof Hero) {
+                                ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
+                            }
+                        }
+                    }
                     event.setCancelled(true);
-                    try {
-                        // lets damage the target with the ranged attack
-                        target.damage(sourcedCallback.getAttack());
-                        if (sourcedCallback.getCallback() != null) {
-                            // the shooter is our source so lets call back and remove
-                            sourcedCallback.getCallback().run(target);
-                        }
-                        entityHitCallbacks.remove(sourcedCallback.getTaskId());
-                        if (sourcedCallback.getSource() instanceof Hero) {
-                            ((Hero) sourcedCallback.getSource()).debug("Called Range Entity Callback - " + sourcedCallback.getTaskId());
-                        }
-                    } catch (CombatException e) {
-                        if (sourcedCallback.getSource() instanceof Hero) {
-                            ((Hero) sourcedCallback.getSource()).sendMessage(ChatColor.RED + e.getMessage());
-                        }
-                    }
-                    callback = true;
                 }
-            }
-            if (!callback) {
-                boolean damaged = false;
-                // lets check all registered ranged attacks first
-                for (SourcedRangeCallback attack : new ArrayList<>(rangedAttacks.values())) {
-                    if (attack.getProjectile().equals(event.getDamager()) && attack.getSource().equals(source)) {
-                        target.damage(attack.getAttack());
-                        rangedAttacks.remove(attack.getTaskId());
-                        damaged = true;
-                        break;
-                    }
-                }
-                if (!damaged) {
-                    boolean knockback = true;
-                    // nerf skeletons
-                    if (plugin.getCommonConfig().skeletons_knockback_chance < 1.0
-                            && source.getEntity() instanceof Skeleton) {
-                        if (Math.random() > plugin.getCommonConfig().skeletons_knockback_chance) {
-                            knockback = false;
-                        }
-                    }
-                    // lets issue a new physical attack for the event
-                    try {
-                        PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK);
-                        attack.setKnockback(knockback);
-                        attack.run();
-                    } catch (CombatException e) {
-                        if (source instanceof Hero) {
-                            ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
-                        }
-                    }
+            } catch (CombatException e) {
+                if (source instanceof Hero) {
+                    ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
                 }
                 event.setCancelled(true);
             }
