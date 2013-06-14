@@ -502,6 +502,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         } else if (action.getSource() instanceof Effect && ((Effect) action.getSource()).getSource() instanceof Skill) {
             source = ((Skill) ((Effect) action.getSource()).getSource()).getHolder();
         }
+        // lets activate pvp on the source if the target had pvp activated
+        if (source != null && !source.isPvPEnabled() && this instanceof Hero && ((Hero) this).isPvPEnabled()) {
+            source.setPvPEnabled(true);
+            source.sendMessage(ChatColor.RED + "Dein PvP Status wurde eingeschaltet da du ein freundliches PvP Ziel geheilt hast.");
+        }
         if (source != null && this.equals(source)) {
             source.combatLog("Du hast dich um " + action.getAmount() + " Leben geheilt.");
         } else if (this instanceof Hero) {

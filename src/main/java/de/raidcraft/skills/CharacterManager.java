@@ -142,7 +142,10 @@ public final class CharacterManager implements Listener, Component {
         if (!(template instanceof Hero) || !((Hero) template).isOnline()) {
             return;
         }
-        TagAPI.refreshPlayer(((Hero) template).getPlayer());
+        // lets refresh all online players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            TagAPI.refreshPlayer(player);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
