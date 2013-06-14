@@ -217,6 +217,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             tmpProfession = tmpProfession.getParent();
         } while (tmpProfession != null);
 
+        // update the display stuff
+        updateHighestRankedProfession();
+        updateSelectedProfession();
         // lets clear all skills from the list and add them again for the profession
         loadAttributes();
         // keep this last because we need to professions to load first
@@ -224,14 +227,10 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         setHealth(getMaxHealth());
         // load the skills after the profession
         loadSkills();
-        // update the display stuff
-        updateHighestRankedProfession();
-        updateSelectedProfession();
         // reload the bound items
         RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
         clearWeapons();
         Scoreboards.removeScoreboard(getPlayer());
-        reset();
         save();
         // lets fire an informal event
         RaidCraft.callEvent(new PlayerChangeProfessionEvent(getPlayer(), profession.getName(), profession.getAttachedLevel().getLevel()));
@@ -484,10 +483,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (!isOnline()) {
             return;
         }
-        updateHighestRankedProfession();
-        updateSelectedProfession();
         setHealth(getMaxHealth());
-        clearEffects();
         for (Resource resource : getResources()) {
             resource.setCurrent(resource.getMax());
         }

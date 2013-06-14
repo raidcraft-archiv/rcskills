@@ -48,13 +48,13 @@ public class SimpleProfession extends AbstractProfession {
     @Override
     public void onLevelGain() {
 
-        // lets reset all stats to max
-        getHero().reset();
+        // lets update the max health
+        getHero().setMaxHealth(getHero().getDefaultHealth());
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
         checkSkillsForUnlock();
-        getHero().getUserInterface().refresh();
+        getHero().reset();
     }
 
     @Override
