@@ -251,6 +251,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public String getName() {
 
+        if (isOnline()) {
+            return getPlayer().getName();
+        }
         return name;
     }
 

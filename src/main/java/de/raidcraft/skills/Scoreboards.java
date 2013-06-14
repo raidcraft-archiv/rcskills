@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,7 +11,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +21,7 @@ public final class Scoreboards {
     private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
     private static final String SIDE_DISPLAY_NAME = "---- %pvp% ----";
     private static final String TEAM_NAME = "raidcraft";
-    private static final Map<String, Scoreboard> scoreboards = new HashMap<>();
+    private static final Map<String, Scoreboard> scoreboards = new CaseInsensitiveMap<>();
 
     public static Scoreboard getScoreboard(Hero hero) {
 

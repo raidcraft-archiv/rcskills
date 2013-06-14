@@ -3,9 +3,9 @@ package de.raidcraft.skills;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,8 +15,8 @@ public final class AliasManager {
 
     private final SkillsPlugin plugin;
     private final File configPath;
-    private final Map<String, AliasesConfig> aliasConfigs = new HashMap<>();
-    private final Map<String, String> aliasSkillMapping = new HashMap<>();
+    private final Map<String, AliasesConfig> aliasConfigs = new CaseInsensitiveMap<>();
+    private final Map<String, String> aliasSkillMapping = new CaseInsensitiveMap<>();
     private int loadedAliases;
     private int failedAliases;
 

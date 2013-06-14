@@ -21,6 +21,7 @@ import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.util.HeroUtil;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -60,7 +61,7 @@ import java.util.UUID;
 public final class CharacterManager implements Listener, Component {
 
     private final SkillsPlugin plugin;
-    private final Map<String, Hero> heroes = new HashMap<>();
+    private final Map<String, Hero> heroes = new CaseInsensitiveMap<>();
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();

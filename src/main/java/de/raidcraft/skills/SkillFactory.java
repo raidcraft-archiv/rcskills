@@ -13,10 +13,10 @@ import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.AbstractFactory;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
     private final SkillsPlugin plugin;
     private final Class<? extends Skill> sClass;
     // every profession needs its own config instance
-    private final Map<String, SkillConfig> skillConfigs = new HashMap<>();
+    private final Map<String, SkillConfig> skillConfigs = new CaseInsensitiveMap<>();
     private final AliasesConfig aliasConfig;
     private Constructor<? extends Skill> constructor;
 

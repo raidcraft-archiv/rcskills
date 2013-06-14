@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.path.VirtualPath;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public final class ProfessionManager {
 
     public static final String VIRTUAL_PROFESSION = "virtual";
     private final SkillsPlugin plugin;
-    private final Map<String, ProfessionFactory> professionFactories = new HashMap<>();
-    private final Map<String, Map<String, Profession>> cachedProfessions = new HashMap<>();
+    private final Map<String, ProfessionFactory> professionFactories = new CaseInsensitiveMap<>();
+    private final Map<String, Map<String, Profession>> cachedProfessions = new CaseInsensitiveMap<>();
     private final File configBaseDir;
 
     protected ProfessionManager(SkillsPlugin plugin) {
@@ -120,7 +121,7 @@ public final class ProfessionManager {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
         if (!cachedProfessions.containsKey(hero.getName())) {
-            cachedProfessions.put(hero.getName(), new HashMap<String, Profession>());
+            cachedProfessions.put(hero.getName(), new CaseInsensitiveMap<Profession>());
         }
         if (cachedProfessions.get(hero.getName()).containsKey(profId)) {
             return cachedProfessions.get(hero.getName()).get(profId);

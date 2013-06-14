@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -34,10 +35,10 @@ import java.util.Set;
 public final class SkillManager extends GenericJarFileManager<Skill> implements ItemAttachmentProvider {
 
     private final SkillsPlugin plugin;
-    private final Map<String, SkillFactory> skillFactories = new HashMap<>();
-    private final Map<String, Class<? extends Skill>> skillClasses = new HashMap<>();
+    private final Map<String, SkillFactory> skillFactories = new CaseInsensitiveMap<>();
+    private final Map<String, Class<? extends Skill>> skillClasses = new CaseInsensitiveMap<>();
     // list of cached skills mapped to a hero
-    private final Map<String, Map<CachedSkill, Skill>> cachedSkills = new HashMap<>();
+    private final Map<String, Map<CachedSkill, Skill>> cachedSkills = new CaseInsensitiveMap<>();
     private int loadedSkills;
     private int failedSkills;
 

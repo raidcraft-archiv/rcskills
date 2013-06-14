@@ -12,9 +12,9 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,8 +23,8 @@ import java.util.Map;
 public final class AbilityManager extends GenericJarFileManager<Ability> implements Component {
 
     private final SkillsPlugin plugin;
-    private final Map<String, AbilityFactory> abilityFactories = new HashMap<>();
-    private final Map<String, Class<? extends Ability>> abilityClasses = new HashMap<>();
+    private final Map<String, AbilityFactory> abilityFactories = new CaseInsensitiveMap<>();
+    private final Map<String, Class<? extends Ability>> abilityClasses = new CaseInsensitiveMap<>();
 
     protected AbilityManager(SkillsPlugin plugin) {
 
