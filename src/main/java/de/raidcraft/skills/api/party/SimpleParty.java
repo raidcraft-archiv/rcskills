@@ -76,9 +76,6 @@ public class SimpleParty implements Party {
                 heros.add((Hero) character);
             }
         }
-        if (owner instanceof Hero) {
-            heros.add((Hero) owner);
-        }
         return heros;
     }
 
@@ -162,7 +159,7 @@ public class SimpleParty implements Party {
     public void dispandParty() {
 
         sendMessage(ChatColor.RED + "Die Gruppe wurde aufgelöst.");
-        for (CharacterTemplate member : getMembers()) {
+        for (CharacterTemplate member : new HashSet<>(getMembers())) {
             removeMember(member);
         }
     }
