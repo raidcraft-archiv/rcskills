@@ -137,6 +137,23 @@ public class PartyCommands {
     }
 
     @Command(
+            aliases = {"dispand", "auflösen"},
+            desc = "Dispands the party, removing all members."
+    )
+    @CommandPermissions("rcskills.party.kick")
+    public void dispand(CommandContext args, CommandSender sender) throws CommandException {
+
+        Hero owner = plugin.getCharacterManager().getHero((Player) sender);
+        if (owner.getParty().getHeroes().size() <= 1) {
+            throw new CommandException("Du bist in keiner Gruppe.");
+        }
+        if (!owner.getParty().getOwner().equals(owner)) {
+            throw new CommandException("Nur der Gruppenleiter kann die Gruppe auflösen.");
+        }
+        owner.getParty().dispandParty();
+    }
+
+    @Command(
             aliases = {"list", "l"},
             desc = "Lists all party members."
     )

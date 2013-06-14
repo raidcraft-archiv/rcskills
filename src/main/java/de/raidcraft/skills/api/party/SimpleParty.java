@@ -144,10 +144,9 @@ public class SimpleParty implements Party {
                 }
             }
         }
-        for (Hero template : getHeroes()) {
-            CharacterManager.refreshPlayerTag(template);
+        if (getHeroes().size() < 2) {
+            dispandParty();
         }
-        // also refresh the member that left the party
         CharacterManager.refreshPlayerTag(member);
     }
 
@@ -157,6 +156,17 @@ public class SimpleParty implements Party {
         hero.sendMessage(ChatColor.RED + "Du wurdest von " + getOwner().getName() + " aus der Gruppe geworfen.");
         removeMember(hero);
         sendMessage(ChatColor.RED + hero.getName() + " wurde von " + getOwner().getName() + " aus der Gruppe geworfen.");
+    }
+
+    @Override
+    public void dispandParty() {
+
+        for (CharacterTemplate member : getMembers()) {
+            member.leaveParty();
+            if (member instanceof Hero) {
+                ((Hero) member).sendMessage(ChatColor.RED + "Die Gruppe wurde aufgelöst.");
+            }
+        }
     }
 
     @Override
