@@ -537,8 +537,14 @@ public class SkillsPlugin extends BasePlugin implements Component {
             Hero hero = getCharacterManager().getHero((Player) sender);
             long combatCooldown = TimeUtil.secondsToMillis(getCommonConfig().combat_pvp_timeout) + hero.getLastCombatAction();
             if (hero.isPvPEnabled() && System.currentTimeMillis() < combatCooldown) {
-                throw new CommandException("Du kannst dein PvP Status erst in "
-                        + TimeUtil.millisToSeconds(combatCooldown - System.currentTimeMillis()) + "s umschalten");
+                double seconds = TimeUtil.millisToSeconds(combatCooldown - System.currentTimeMillis());
+                String time;
+                if (seconds > 60.0) {
+                    time = TimeUtil.secondsToMinutes(seconds) + "min";
+                } else {
+                    time = seconds + "s";
+                }
+                throw new CommandException("Du kannst dein PvP Status erst in " + time + " umschalten");
             }
             hero.setPvPEnabled(!hero.isPvPEnabled());
             sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) + "PvP wurde "
