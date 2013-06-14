@@ -49,15 +49,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
     }
 
-    public void reload() {
-
-        loadedSkills = 0;
-        failedSkills = 0;
-        skillFactories.clear();
-        cachedSkills.clear();
-        loadFactories();
-    }
-
     @Override
     public void loadFactories() {
 

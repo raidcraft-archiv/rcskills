@@ -47,7 +47,6 @@ import org.kitteh.tag.TagAPI;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -131,23 +130,6 @@ public final class CharacterManager implements Listener, Component {
     public boolean isPlayerCached(String name) {
 
         return heroes.containsKey(name.toLowerCase());
-    }
-
-    public void reload() {
-
-        if (refreshTask != null) {
-            refreshTask.cancel();
-        }
-        for (Hero hero : new ArrayList<>(heroes.values())) {
-            hero.clearEffects();
-            clearCacheOf(hero);
-        }
-        heroes.clear();
-        for (CharacterTemplate character : characters.values()) {
-            character.clearEffects();
-        }
-        characters.clear();
-        startRefreshTask();
     }
 
     // handle some tag api stuff here

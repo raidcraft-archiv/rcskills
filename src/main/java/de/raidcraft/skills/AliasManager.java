@@ -71,15 +71,6 @@ public final class AliasManager {
         }
     }
 
-    public void reload() {
-
-        loadedAliases = 0;
-        failedAliases = 0;
-        aliasConfigs.clear();
-        aliasSkillMapping.clear();
-        loadAliases();
-    }
-
     public boolean isAlias(String alias) {
 
         return aliasSkillMapping.containsKey(alias);

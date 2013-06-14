@@ -33,12 +33,6 @@ public final class ProfessionManager {
         loadProfessions();
     }
 
-    public void reload() {
-
-        professionFactories.clear();
-        loadProfessions();
-    }
-
     private void loadProfessions() {
 
         Map<String, File> fileMap = loadProfessions(configBaseDir);

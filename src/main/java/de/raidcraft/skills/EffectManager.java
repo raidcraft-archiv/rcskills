@@ -31,14 +31,6 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_config_path).mkdirs();
     }
 
-    public void reload() {
-
-        loadedEffects = 0;
-        failedEffects = 0;
-        effectFactoryClasses.clear();
-        loadFactories();
-    }
-
     @Override
     public void loadFactories() {
 

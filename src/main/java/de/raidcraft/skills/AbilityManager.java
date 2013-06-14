@@ -35,12 +35,6 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         RaidCraft.registerComponent(AbilityManager.class, this);
     }
 
-    public void reload() {
-
-        abilityFactories.clear();
-        loadFactories();
-    }
-
     @Override
     public void loadFactories() {
 

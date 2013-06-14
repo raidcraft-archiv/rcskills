@@ -85,12 +85,6 @@ public final class CombatManager implements Listener, Triggered {
         TriggerManager.registerListeners(this);
     }
 
-    public void reload() {
-
-        entityHitCallbacks.clear();
-        locationCallbacks.clear();
-    }
-
     public void queueRangedAttack(final SourcedRangeCallback rangedAttack) {
 
         // remove the callback from the queue after the configured time

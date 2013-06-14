@@ -65,6 +65,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
@@ -78,7 +79,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class SkillsPlugin extends BasePlugin implements Component, Listener {
+public class SkillsPlugin extends BasePlugin implements Component {
 
     private static boolean loadedTabDecoSettings = false;
 
@@ -100,6 +101,7 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
     private BindManager bindManager;
+    private BukkitEventDispatcher bukkitEventDispatcher;
 
     @Override
     public void enable() {
@@ -112,19 +114,18 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.pathConfig = configure(new PathConfig(this), false);
         this.levelConfig = configure(new LevelConfig(this), false);
         this.experienceConfig = configure(new ExperienceConfig(this), false);
-        levelConfig.loadFormulas();
+
         loadEngine();
+        // lets register our permissions provider last
+        this.permissionsProvider = new SkillPermissionsProvider(this);
+
         // and commands gogogo
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
         registerCommands(BaseCommands.class);
 
-        this.bindManager = new BindManager(this);
-        new BukkitEventDispatcher(this);
         // register the tab stuff
         registerTabDecoSettings();
-        // lets start our logging tasks
-        ExpLogger.startTask(this);
         // register conv actions when all plugins loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
@@ -234,6 +235,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
     private void loadEngine() {
 
         registerRequirements();
+        // load some config stuff
+        levelConfig.loadFormulas();
         // the skill manager takes care of all skills currently loaded
         this.skillManager = new SkillManager(this);
         this.abilityManager = new AbilityManager(this);
@@ -253,8 +256,8 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.weaponManager = new WeaponManager(this);
         this.experienceManager = new ExperienceManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
-        // lets register our permissions provider last
-        this.permissionsProvider = new SkillPermissionsProvider(this);
+        this.bindManager = new BindManager(this);
+        this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
     }
 
     private void registerRequirements() {
@@ -286,19 +289,12 @@ public class SkillsPlugin extends BasePlugin implements Component, Listener {
         this.experienceConfig.reload();
         // before reloading the managers we need to unregister all listeners
         TriggerManager.unregisterAll();
-
-        this.skillManager.reload();
-        this.abilityManager.reload();
-        registerSkills();
-        this.effectManager.reload();
-        this.aliasManager.reload();
-
-        this.professionManager.reload();
-        this.characterManager.reload();
-        this.combatManager.reload();
-        this.damageManager.reload();
-
-        this.permissionsProvider.reload();
+        // also unregister all of our bukkit events
+        HandlerList.unregisterAll(this);
+        // and reload the complete engine leaving all the stuff to the garbage collector
+        loadEngine();
+        // reload the skill permissions provider
+        permissionsProvider.reload();
     }
 
     @Override
