@@ -161,11 +161,9 @@ public class SimpleParty implements Party {
     @Override
     public void dispandParty() {
 
+        sendMessage(ChatColor.RED + "Die Gruppe wurde aufgelöst.");
         for (CharacterTemplate member : getMembers()) {
-            member.leaveParty();
-            if (member instanceof Hero) {
-                ((Hero) member).sendMessage(ChatColor.RED + "Die Gruppe wurde aufgelöst.");
-            }
+            removeMember(member);
         }
     }
 
