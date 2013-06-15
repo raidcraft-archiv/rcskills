@@ -141,7 +141,7 @@ public class SimpleParty implements Party {
                 }
             }
         }
-        if (getHeroes().size() < 2) {
+        if (member instanceof Hero && getHeroes().size() < 2) {
             dispandParty();
         }
         CharacterManager.refreshPlayerTag(member);
