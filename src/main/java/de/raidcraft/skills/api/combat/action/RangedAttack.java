@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.Location;
+import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
@@ -120,6 +121,9 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
             projectile = projectileType.spawn(getSource());
             projectile.setBounce(false);
             projectile.setFireTicks(0);
+            if (projectile instanceof Explosive) {
+                ((Explosive) projectile).setIsIncendiary(false);
+            }
         }
         if (velocity != null) projectile.setVelocity(velocity);
         // queue the ranged callback to be called if the projectile hits

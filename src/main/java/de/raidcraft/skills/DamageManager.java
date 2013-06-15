@@ -12,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -95,7 +94,7 @@ public final class DamageManager implements Listener {
     //    Bukkit Events are called beyond this line - put your buckets on!
     /////////////////////////////////////////////////////////////////////////*/
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
 
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
@@ -124,6 +123,9 @@ public final class DamageManager implements Listener {
                             int height = damage;
                             damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
                             break;
+                        case WITHER:
+                            event.setCancelled(true);
+                            return;
                         case BLOCK_EXPLOSION:
                         case ENTITY_EXPLOSION:
                             // explosions are measured by power and how far the entity is away from the center
