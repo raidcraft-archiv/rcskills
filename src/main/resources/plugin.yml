@@ -21,6 +21,7 @@ permissions:
         rcskills.player.cmd.link: true
         rcskills.player.cmd.addexp: true
         rcskills.player.cmd.combatlog: true
+        rcskills.player.cmd.clearcache: true
         rcskills.player.cast: true
         rcskills.player.bind: true
         rcskills.player.autobind: true
