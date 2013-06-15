@@ -27,6 +27,8 @@ public interface SkillProperties extends AbilityProperties<SkillInformation> {
 
     public boolean isHidden();
 
+    public boolean isCastable();
+
     public LevelFormula getLevelFormula();
 
     public int getMaxLevel();

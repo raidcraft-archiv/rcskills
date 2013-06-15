@@ -68,7 +68,7 @@ public class BindCommands {
         // lets parse the argument for a valid spell
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
 
-        if (!(skill instanceof CommandTriggered)) {
+        if (!(skill instanceof CommandTriggered) || !skill.getSkillProperties().isCastable()) {
             throw new CommandException("Du kannst diesen Skill nicht binden.");
         }
 

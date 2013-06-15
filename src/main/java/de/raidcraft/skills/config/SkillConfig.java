@@ -94,7 +94,13 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     @Override
     public boolean isEnabled() {
 
-        return getBoolean("enabled", true);
+        return getOverrideBool("enabled", true);
+    }
+
+    @Override
+    public boolean isCastable() {
+
+        return getOverrideBool("castable", true);
     }
 
     @Override

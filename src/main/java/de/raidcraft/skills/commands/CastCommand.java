@@ -46,6 +46,10 @@ public class CastCommand {
         // lets parse the argument for a valid spell
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
 
+        if (!skill.getSkillProperties().isCastable()) {
+            throw new CommandException("Du kannst diesen Skill nicht aktiv verwenden.");
+        }
+
         try {
             new SkillAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
         } catch (CombatException e) {
