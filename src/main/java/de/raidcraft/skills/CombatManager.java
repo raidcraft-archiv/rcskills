@@ -72,6 +72,22 @@ public final class CombatManager implements Listener, Triggered {
         FAKED_EVENTS.remove(event);
         return event;
     }
+
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, CharacterTemplate victim) {
+
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
+                attacker.getEntity(),
+                victim.getEntity(),
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+                1
+        );
+        // we need to check for our own faked events to avoid loops
+        FAKED_EVENTS.add(event);
+        RaidCraft.callEvent(event);
+        FAKED_EVENTS.remove(event);
+        return event;
+    }
+
     private final SkillsPlugin plugin;
     private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
     private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
@@ -306,15 +322,11 @@ public final class CombatManager implements Listener, Triggered {
         }
         CharacterTemplate source = plugin.getCharacterManager().getCharacter(shooter);
         try {
-            // lets add a combat effect first
-            source.addEffect(source, Combat.class);
             // iterate over our queued callbacks
             for (SourcedRangeCallback<LocationCallback> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
                 if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
                     locationCallbacks.remove(sourcedCallback.getTaskId());
-                    if (sourcedCallback.getSource() instanceof Hero) {
-                        ((Hero) sourcedCallback.getSource()).debug("Called Range Location Callback - " + sourcedCallback.getTaskId());
-                    }
+                    sourcedCallback.getCallback().run(event.getEntity().getLocation());
                 }
             }
         } catch (CombatException e) {
@@ -341,9 +353,15 @@ public final class CombatManager implements Listener, Triggered {
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
 
-                CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
-                CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+            CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             try {
+                // lets check a fake damage event
+                EntityDamageByEntityEvent fakeEvent = fakeDamageEvent(source, target);
+                if (fakeEvent.isCancelled()) {
+                    event.setCancelled(true);
+                    return;
+                }
                 // lets check pvp flags first
                 checkPvPAttack(source, target);
                 // and go thru all registered callbacks
