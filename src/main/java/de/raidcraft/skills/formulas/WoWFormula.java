@@ -21,6 +21,6 @@ public class WoWFormula extends AbstractFormula {
     @Override
     public int getNeededExpForLevel(int level) {
 
-        return (int) Math.round(((-.4 * (Math.pow(level, 3))) + (modifier * (Math.pow(level, 2)))));
+        return (int) Math.ceil((-.4 * Math.pow(level, 2)) + (modifier * Math.pow(level, 2)));
     }
 }

@@ -97,12 +97,29 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         return exp;
     }
 
-    private int getLevelAmountForExp(int exp) {
+    @Override
+    public int getNeededExpForLevel(int startLevel, int endLevel) {
+
+        if (endLevel > getMaxLevel()) {
+            endLevel = getMaxLevel();
+        }
+        int neededExp = 0;
+        for (int i = startLevel; i <= endLevel; i++) {
+            neededExp += getFormula().getNeededExpForLevel(i);
+        }
+        return neededExp;
+    }
+
+    @Override
+    public int getLevelAmountForExp(int exp) {
 
         int level = 0;
-        while (level <= getMaxLevel() && exp >= 0) {
+        while (exp >= 0) {
             exp -= getFormula().getNeededExpForLevel(getLevel() + level);
-            if (exp >= 0) level++;
+            if (exp < 0) {
+                break;
+            }
+            level++;
         }
         return level;
     }
@@ -224,10 +241,13 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
 
         if (canLevel()) {
             int newLevel = getLevel() + getLevelAmountForExp(getExp());
+            if (newLevel > getMaxLevel()) {
+                newLevel = getMaxLevel();
+            }
+            // lets get the total needed exp from the old level to the new level-1
+            int neededExp = getNeededExpForLevel(getLevel(), newLevel - 1);
             // increase the level
             setLevel(newLevel);
-            // lets get the total needed exp from the old level to the new level-1
-            int neededExp = getFormula().getNeededExpForLevel(newLevel - 1);
             // set the exp
             setExp(getExp() - neededExp);
         } else if (getExp() < 0 && getLevel() > 0) {

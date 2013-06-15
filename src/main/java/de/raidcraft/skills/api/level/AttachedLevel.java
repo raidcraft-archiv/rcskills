@@ -39,6 +39,17 @@ public interface AttachedLevel<T extends Levelable> {
     public int getTotalNeededExpForLevel(int level);
 
     /**
+     * Gets the exp needed to reach that level from the current level.
+     *
+     * @param startLevel to start calculating at
+     * @param endLevel to calculate for
+     * @return exp needed
+     */
+    public int getNeededExpForLevel(int startLevel, int endLevel);
+
+    public int getLevelAmountForExp(int exp);
+
+    /**
      * Calculates and sets the maxp exp for the current level.
      */
     public void calculateMaxExp();

@@ -2,6 +2,7 @@ package de.raidcraft.skills.professions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
@@ -32,7 +33,10 @@ public class SimpleProfession extends AbstractProfession {
 
         // lets convert some exp into money
         double conversionRate = ConfigUtil.getTotalValue(this, getProperties().getExpMoneyConversionRate());
-        RaidCraft.getEconomy().modify(getHero().getName(), exp * conversionRate, BalanceSource.SKILL, "Berufseinkommen");
+        Economy economy = RaidCraft.getEconomy();
+        if (economy != null) {
+            economy.modify(getHero().getName(), exp * conversionRate, BalanceSource.SKILL, "Berufseinkommen");
+        }
 
         ExpLogger.log(this, exp);
         getHero().getUserInterface().refresh();

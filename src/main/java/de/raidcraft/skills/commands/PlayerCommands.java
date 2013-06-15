@@ -155,6 +155,15 @@ public class PlayerCommands {
             plugin.getLogger().warning(hero.getName() + " tried to exploit the system by adding more exp than he has!");
             throw new InvalidChoiceException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
         }
+        int level = attachedLevel.getLevel() + attachedLevel.getLevelAmountForExp(exp);
+        if (level >= attachedLevel.getMaxLevel()) {
+            exp = attachedLevel.getNeededExpForLevel(attachedLevel.getLevel(), attachedLevel.getMaxLevel() - 1);
+            if (exp <= 0) {
+                throw new InvalidChoiceException("Du hast mit dieser Klasse bereits das max. Level erreicht.");
+            }
+            hero.sendMessage(ChatColor.RED + "Es wurden nur " + ChatColor.AQUA + exp
+                    + ChatColor.RED + " EXP verteilt, da du das max. Level erreicht hast.");
+        }
         expPool.removeExp(exp);
         attachedLevel.addExp(exp);
         hero.sendMessage(ChatColor.GREEN + "Die EXP aus deinem EXP Pool wurden erfolgreich übertragen.");
