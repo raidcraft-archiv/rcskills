@@ -12,8 +12,10 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * @author Silthus
@@ -29,10 +31,16 @@ public final class ArmorManager implements Triggered, Listener {
         plugin.registerEvents(this);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
         plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkArmor();
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInteract(PlayerInteractEvent event) {
+
+        plugin.getCharacterManager().getHero(event.getPlayer()).checkArmor();
     }
 
     @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.MONITOR)

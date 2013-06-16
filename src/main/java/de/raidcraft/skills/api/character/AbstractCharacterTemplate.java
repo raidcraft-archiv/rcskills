@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.CharacterManager;
@@ -254,18 +255,30 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity() == null) {
             return;
         }
+        boolean brokenArmor = false;
         for (ItemStack item : getEntity().getEquipment().getArmorContents()) {
             if (CustomItemUtil.isArmor(item)) {
-                CustomArmor armor = CustomItemUtil.getArmor(item);
+                CustomItemStack customItem = RaidCraft.getCustomItem(item);
+                // check durability
+                if (customItem.getDurability() < 1) {
+                    brokenArmor = true;
+                    // silently continue and dont award armor
+                    continue;
+                }
+                CustomArmor armor = (CustomArmor) customItem.getItem();
                 if (this instanceof Hero) {
                     if (!armor.isMeetingAllRequirements((Player) getEntity())) {
-                        ((Hero)this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
+                        ((Hero) this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
                         ItemUtil.moveItem((Hero) this, -1, item);
                     } else {
                         setArmor(armor);
                     }
                 }
             }
+        }
+        if (brokenArmor) {
+            ((Hero) this).sendMessage(ChatColor.RED + "Ein Rüstungsteil von dir ist kaputt und gibt dir keine Rüstung mehr. " +
+                    "Bitte lasse ihn reparieren oder tausche ihn aus.");
         }
     }
 

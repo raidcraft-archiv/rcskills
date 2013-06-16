@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.hero;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
@@ -414,7 +415,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (item == null || !CustomItemUtil.isWeapon(item)) {
             return;
         }
-        CustomWeapon weapon = CustomItemUtil.getWeapon(item);
+        // lets check the durability of the weapon
+        CustomItemStack customItem = RaidCraft.getCustomItem(item);
+        if (customItem.getDurability() < 1) {
+            ItemUtil.moveItem(this, slot, item);
+            throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
+        }
+        CustomWeapon weapon = (CustomWeapon) customItem.getItem();
         if (weapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
             throw new CombatException("Du kannst diese Waffe nur in deiner Schildhand tragen.");
         }

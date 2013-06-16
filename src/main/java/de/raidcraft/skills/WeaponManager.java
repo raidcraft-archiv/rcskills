@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -21,6 +22,16 @@ public final class WeaponManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInteract(PlayerInteractEvent event) {
+
+        try {
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons(event.getPlayer().getInventory().getHeldItemSlot());
+        } catch (CombatException e) {
+            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
