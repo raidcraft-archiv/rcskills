@@ -18,17 +18,20 @@ import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
-import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.LocationUtil;
+import de.raidcraft.util.TimeUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +53,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     protected String description;
     private long lastCast;
     private double cooldown;
+    private BukkitTask cooldownInformTask;
 
     @SuppressWarnings("unchecked")
     public AbstractAbility(T holder, AbilityProperties data) {
@@ -279,6 +283,24 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         this.cooldown = cooldown;
+        if (getHolder() instanceof Hero) {
+            // start the cooldown task
+            if (cooldownInformTask != null) {
+                cooldownInformTask.cancel();
+            }
+            cooldownInformTask = Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                @Override
+                public void run() {
+
+                    if (Option.COMBAT_LOGGING.getBoolean((Hero) getHolder())) {
+                        ((Hero) getHolder()).combatLog(AbstractAbility.this, "Skill " + getFriendlyName() + " ist wieder bereit.");
+                    } else {
+                        ((Hero) getHolder()).sendMessage(ChatColor.GREEN + "Skill " + ChatColor.AQUA + getFriendlyName()
+                                + ChatColor.GREEN + " ist wieder bereit.");
+                    }
+                }
+            }, TimeUtil.secondsToTicks(cooldown));
+        }
     }
 
     @Override
