@@ -217,6 +217,12 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
+    public int getBaseValue() {
+
+        return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("base"));
+    }
+
+    @Override
     public int getMax() {
 
         return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("max"));

@@ -45,6 +45,8 @@ public interface Resource {
 
     public void setCurrent(int current);
 
+    public int getBaseValue();
+
     public int getMax();
 
     public boolean isMax();

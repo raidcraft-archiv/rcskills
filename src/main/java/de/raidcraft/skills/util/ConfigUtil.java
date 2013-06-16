@@ -1,6 +1,7 @@
 package de.raidcraft.skills.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -8,7 +9,6 @@ import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
-import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -114,10 +114,20 @@ public final class ConfigUtil {
         boolean fromMax = section.getBoolean("from-max", false);
         for (Resource resource : ((Hero) holder).getResources()) {
             if (resource.isEnabled()) {
+                if (section.isSet(resource.getName() + "-base-modifier")) {
+                    int base = resource.getBaseValue();
+                    value += section.getDouble(resource.getName() + "-base-modifier") * base;
+                    availableModifiers.remove(resource.getName() + "-base-modifier");
+                }
+                if (section.isSet(resource.getName() + "-base-percent-modifier")) {
+                    value += ((double) resource.getCurrent() / (double) resource.getBaseValue())
+                            * section.getDouble(resource.getName() + "-base-percent-modifier", 1.0);
+                    availableModifiers.remove(resource.getName() + "-base-percent-modifier");
+                }
                 if (section.isSet(resource.getName() + "-modifier")) {
                     int base = fromMax ? resource.getMax() : resource.getCurrent();
-                    value += section.getDouble(resource.getName() + "-modifier") * base;
-                    availableModifiers.remove(resource.getName() + "-modifier");
+                    value += section.getDouble(resource.getName() + "-base-modifier") * base;
+                    availableModifiers.remove(resource.getName() + "-base-modifier");
                 }
                 if (section.isSet(resource.getName() + "-percent-modifier")) {
                     value += ((double) resource.getCurrent() / (double) resource.getMax())
