@@ -283,7 +283,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         this.cooldown = cooldown;
-        if (getHolder() instanceof Hero) {
+        if (cooldown > 0.0 && getHolder() instanceof Hero) {
             // start the cooldown task
             if (cooldownInformTask != null) {
                 cooldownInformTask.cancel();
