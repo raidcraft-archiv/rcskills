@@ -54,7 +54,11 @@ public final class ExperienceManager implements Listener {
         plugin.registerEvents(this);
     }
 
-    public void sendPacket(Player p, Entity dead, int exp) {
+    public void sendPacket(Player player, Entity dead, int exp) {
+
+        if (!player.isOnline()) {
+            return;
+        }
 
         PacketContainer newPacket = new PacketContainer(24);
 
@@ -71,7 +75,7 @@ public final class ExperienceManager implements Listener {
         newPacket.getDataWatcherModifier().write(0, batWatcher);
 
         try {
-            protocolManager.sendServerPacket(p, newPacket);
+            protocolManager.sendServerPacket(player, newPacket);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
