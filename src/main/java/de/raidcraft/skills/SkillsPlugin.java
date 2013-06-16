@@ -46,6 +46,7 @@ import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tabdeco.TabDecoArmorSettings;
 import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
+import de.raidcraft.skills.tabdeco.TabDecoEconomySetting;
 import de.raidcraft.skills.tabdeco.TabDecoExpPoolSettings;
 import de.raidcraft.skills.tabdeco.TabDecoHeroLevelSettings;
 import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
@@ -205,6 +206,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
                             TabDecoRegistry.registerNewSetting("heroLevel",
                                     new TabDecoHeroLevelSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("rcMoney",
+                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
+
 
 
                             //Let the user of the plugin know that everything worked
