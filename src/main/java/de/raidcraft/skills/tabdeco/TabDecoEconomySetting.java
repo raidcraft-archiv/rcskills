@@ -25,7 +25,7 @@ public class TabDecoEconomySetting extends TabDecoSetting {
 
         Economy economy = RaidCraft.getEconomy();
         if (economy != null) {
-            return CustomItemUtil.getSellPriceString(economy.getBalance(player.getName()), null);
+            return CustomItemUtil.getSellPriceString(economy.getBalance(player.getName()), ChatColor.WHITE);
         }
         // return random unique string
         return ChatColor.GREEN + "" + ChatColor.AQUA + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.AQUA;
