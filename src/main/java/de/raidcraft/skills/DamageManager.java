@@ -123,12 +123,6 @@ public final class DamageManager implements Listener {
                             int height = damage;
                             damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
                             break;
-                        case WITHER:
-                            event.setCancelled(true);
-                            return;
-                        case STARVATION:
-                            event.setCancelled(true);
-                            return;
                         case BLOCK_EXPLOSION:
                         case ENTITY_EXPLOSION:
                             // explosions are measured by power and how far the entity is away from the center
@@ -147,9 +141,11 @@ public final class DamageManager implements Listener {
                     damage = (int) (damage * environmentalDamage.get(event.getCause()));
                 }
             }
-            EnvironmentAttack attack = new EnvironmentAttack(event, damage);
             event.setCancelled(true);
-            attack.run();
+            if (damage > 0) {
+                EnvironmentAttack attack = new EnvironmentAttack(event, damage);
+                attack.run();
+            }
         } catch (CombatException e) {
             if (character instanceof Hero) {
                 ((Hero) character).sendMessage(ChatColor.RED + e.getMessage());
