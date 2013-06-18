@@ -126,6 +126,9 @@ public final class DamageManager implements Listener {
                         case WITHER:
                             event.setCancelled(true);
                             return;
+                        case STARVATION:
+                            event.setCancelled(true);
+                            return;
                         case BLOCK_EXPLOSION:
                         case ENTITY_EXPLOSION:
                             // explosions are measured by power and how far the entity is away from the center
