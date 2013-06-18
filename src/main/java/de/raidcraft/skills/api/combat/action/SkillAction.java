@@ -99,6 +99,9 @@ public class SkillAction extends AbstractAction<Hero> {
     @Override
     public void run() throws CombatException {
 
+        if (skill.getHolder().getPlayer().hasMetadata("GHOST")) {
+            throw new CombatException("Du kannst als Geist keine Skills nutzen.");
+        }
         if (!skill.isActive()) {
             throw new CombatException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");
         }
