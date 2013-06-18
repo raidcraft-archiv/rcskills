@@ -10,11 +10,12 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author Silthus
  */
-public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
+public class BoundItem implements ListIterator<Binding>, Iterable<Binding> {
 
     private final Hero hero;
     private final Material item;
@@ -116,9 +117,48 @@ public class BoundItem implements Iterator<Binding>, Iterable<Binding> {
     }
 
     @Override
+    public boolean hasPrevious() {
+
+        return bindings.size() > 0;
+    }
+
+    @Override
+    public Binding previous() {
+
+        if (bindings.size() < 1) {
+            return null;
+        }
+        Binding skill = bindings.get(index);
+        if (index - 1 > -1) {
+            index--;
+        } else {
+            index = bindings.size() - 1;
+        }
+        return skill;
+    }
+
+    @Override
+    public int nextIndex() {
+
+        return index < bindings.size() - 1 ? index + 1 : 0;
+    }
+
+    @Override
+    public int previousIndex() {
+
+        return index - 1 > -1 ? index - 1 : bindings.size() - 1;
+    }
+
+    @Override
     public void remove() {
 
         bindings.remove(index);
+    }
+
+    @Override
+    public void set(Binding binding) {
+
+        index = bindings.indexOf(binding);
     }
 
     @Override

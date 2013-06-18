@@ -1,5 +1,6 @@
 package de.raidcraft.skills.bindings;
 
+import com.sk89q.worldedit.blocks.ItemID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import org.bukkit.ChatColor;
@@ -40,18 +41,35 @@ public class BindListener implements Listener {
         }
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            boundItem.use();
-            event.setCancelled(true);
-            return;
-        }
-
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            boundItem.next();
-            if (boundItem.getCurrent().getSkill() == null) {
-                boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Platzhalter selektiert.");
+            // lets switch it up and toggle the skill on a bow when left clicking
+            if (event.getItem().getTypeId() == ItemID.BOW) {
+                toggleBoundSkill(boundItem, !event.getPlayer().isSneaking());
             } else {
-                boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + boundItem.getCurrent().getSkill().getFriendlyName());
+                boundItem.use();
             }
+            event.setCancelled(true);
+        } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            // lets switch it up and use the skill on a bow when right clicking
+            if (event.getItem().getTypeId() == ItemID.BOW) {
+                boundItem.use();
+            } else {
+                toggleBoundSkill(boundItem, !event.getPlayer().isSneaking());
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    private void toggleBoundSkill(BoundItem boundItem, boolean forward) {
+
+        if (forward) {
+            boundItem.next();
+        } else {
+            boundItem.previous();
+        }
+        if (boundItem.getCurrent().getSkill() == null) {
+            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Platzhalter selektiert.");
+        } else {
+            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + boundItem.getCurrent().getSkill().getFriendlyName());
         }
     }
 
