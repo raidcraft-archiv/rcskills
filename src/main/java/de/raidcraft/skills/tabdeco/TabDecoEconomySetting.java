@@ -4,7 +4,6 @@ import TCB.TabDeco.API.TabDecoSetting;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,11 +20,18 @@ public class TabDecoEconomySetting extends TabDecoSetting {
     }
 
     @Override
-    public String getSlotText(Player player, String s, String s2) {
+    public String getSlotText(Player player, String inputText, String settingName) {
 
         Economy economy = RaidCraft.getEconomy();
         if (economy != null) {
-            return CustomItemUtil.getSellPriceString(economy.getBalance(player.getName()), ChatColor.WHITE);
+
+            if (settingName.equalsIgnoreCase("rcMoneyGold")) {
+                return String.valueOf((int) economy.getBalance(player.getName()) / 100);
+            } else if (settingName.equalsIgnoreCase("rcMoneySilver")) {
+                return String.valueOf((int) economy.getBalance(player.getName()) % 100);
+            } else if (settingName.equalsIgnoreCase("rcMoneyCopper")) {
+                return String.valueOf((int) ((economy.getBalance(player.getName()) * 100.0) % 100));
+            }
         }
         // return random unique string
         return ChatColor.GREEN + "" + ChatColor.AQUA + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.AQUA;

@@ -207,9 +207,12 @@ public class SkillsPlugin extends BasePlugin implements Component {
                             TabDecoRegistry.registerNewSetting("heroLevel",
                                     new TabDecoHeroLevelSettings(SkillsPlugin.this), SkillsPlugin.this);
 
-                            TabDecoRegistry.registerNewSetting("rcMoney",
+                            TabDecoRegistry.registerNewSetting("rcMoneyGold",
                                     new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
-
+                            TabDecoRegistry.registerNewSetting("rcMoneySilver",
+                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
+                            TabDecoRegistry.registerNewSetting("rcMoneyCopper",
+                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
 
 
                             //Let the user of the plugin know that everything worked
