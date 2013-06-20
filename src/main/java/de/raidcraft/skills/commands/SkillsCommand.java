@@ -48,7 +48,7 @@ public class SkillsCommand {
         final Hero hero;
         if (args.hasFlag('o')) {
             try {
-                HeroUtil.getHeroFromName(args.getFlag('o'));
+                hero = HeroUtil.getHeroFromName(args.getFlag('o'));
             } catch (UnknownPlayerException e) {
                 throw new CommandException(e.getMessage());
             }
