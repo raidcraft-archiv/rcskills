@@ -7,8 +7,6 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
-import de.raidcraft.skills.api.combat.action.EffectDamage;
-import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.events.RCExpGainEvent;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -17,7 +15,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
@@ -101,16 +98,11 @@ public final class ExperienceManager implements Listener {
             return;
         }
 
-        Hero hero;
-        if (attack.getSource() instanceof Hero) {
-            hero = ((Hero) attack.getSource());
-        } else if (attack.getSource() instanceof Skill) {
-            hero = ((Skill) attack.getSource()).getHolder();
-        } else if (attack instanceof EffectDamage) {
-            hero = ((Effect<Skill>) attack.getSource()).getSource().getHolder();
-        } else {
+        CharacterTemplate attacker = attack.getAttacker();
+        if (attacker == null || !(attacker instanceof Hero)) {
             return;
         }
+        Hero hero = (Hero) attacker;
         if (plugin.getCommonConfig().getIgnoredWorlds().contains(hero.getPlayer().getWorld().getName())) {
             return;
         }

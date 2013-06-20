@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.combat.action;
 
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -35,5 +36,9 @@ public interface Attack<S, T> extends TargetedAction<S, T> {
     public AttackSource getAttackSource();
 
     public boolean hasSource(AttackSource source);
+
+    public CharacterTemplate getAttacker();
+
+    public boolean isSource(CharacterTemplate source);
 
 }

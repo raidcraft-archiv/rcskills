@@ -1,10 +1,12 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
@@ -121,4 +123,26 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         return this.source == source;
     }
 
+    @Override
+    public CharacterTemplate getAttacker() {
+
+        if (getSource() instanceof CharacterTemplate) {
+            return (CharacterTemplate) getSource();
+        }
+        if (getSource() instanceof Ability) {
+            return ((Ability) getSource()).getHolder();
+        }
+        if (getSource() instanceof Effect
+                && ((Effect) getSource()).getSource() instanceof Ability) {
+            return ((Ability) ((Effect) getSource()).getSource()).getHolder();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isSource(CharacterTemplate source) {
+
+        CharacterTemplate attacker = getAttacker();
+        return attacker != null && attacker.equals(source);
+    }
 }
