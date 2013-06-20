@@ -130,7 +130,7 @@ public final class CharacterManager implements Listener, Component {
 
     public boolean isPlayerCached(String name) {
 
-        return heroes.containsKey(name.toLowerCase());
+        return heroes.containsKey(name);
     }
 
     // handle some tag api stuff here
@@ -188,7 +188,6 @@ public final class CharacterManager implements Listener, Component {
             heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().like("player", name).findUnique();
             if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
         }
-        name = name.toLowerCase();
 
         Hero hero;
         if (!heroes.containsKey(name)) {
@@ -360,7 +359,7 @@ public final class CharacterManager implements Listener, Component {
                 task.cancel();
             }
             HeroUtil.clearCache((Hero) character);
-            heroes.remove(character.getName().toLowerCase());
+            heroes.remove(character.getName());
             return;
         }
         LivingEntity entity = character.getEntity();
@@ -385,6 +384,9 @@ public final class CharacterManager implements Listener, Component {
 
         // remove the cached entities
         for (Entity entity : event.getChunk().getEntities()) {
+            if (entity instanceof Player) {
+                continue;
+            }
             if (entity instanceof LivingEntity) {
                 clearCacheOf(getCharacter((LivingEntity) entity));
             }
@@ -394,6 +396,9 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(final EntityDeathEvent event) {
 
+        if (event.getEntity() instanceof Player) {
+            return;
+        }
         // dispatch a task that does this with 1 tick delay in order to allow the event to clear properly
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
