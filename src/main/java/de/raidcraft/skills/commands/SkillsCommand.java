@@ -4,12 +4,14 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
 import org.bukkit.ChatColor;
@@ -38,13 +40,21 @@ public class SkillsCommand {
             aliases = "skills",
             desc = "Shows all skills for the selected profession.",
             usage = "[profession] -p #",
-            flags = "p:avsh"
+            flags = "p:avsho:"
     )
     @CommandPermissions("rcskills.player.skill.list")
     public void skills(CommandContext args, CommandSender sender) throws CommandException {
 
         final Hero hero;
-        hero = plugin.getCharacterManager().getHero((Player) sender);
+        if (args.hasFlag('o')) {
+            try {
+                HeroUtil.getHeroFromName(args.getFlag('o'));
+            } catch (UnknownPlayerException e) {
+                throw new CommandException(e.getMessage());
+            }
+        } else {
+            hero = plugin.getCharacterManager().getHero((Player) sender);
+        }
         // Profession profession = null;
         Collection<Skill> skills = new HashSet<>();
         // get the profession
