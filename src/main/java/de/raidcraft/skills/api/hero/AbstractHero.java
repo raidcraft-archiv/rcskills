@@ -417,7 +417,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         }
         // lets check the durability of the weapon
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
-        if (customItem.getDurability() < 1) {
+        if (customItem.getCustomDurability() < 1) {
             ItemUtil.moveItem(this, slot, item);
             throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
         }

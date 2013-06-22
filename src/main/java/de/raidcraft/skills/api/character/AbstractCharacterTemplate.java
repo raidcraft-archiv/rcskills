@@ -260,7 +260,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (CustomItemUtil.isArmor(item)) {
                 CustomItemStack customItem = RaidCraft.getCustomItem(item);
                 // check durability
-                if (customItem.getDurability() < 1) {
+                if (customItem.getCustomDurability() < 1) {
                     brokenArmor = true;
                     // silently continue and dont award armor
                     continue;
