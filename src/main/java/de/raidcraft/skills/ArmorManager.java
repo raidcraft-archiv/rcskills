@@ -100,7 +100,7 @@ public final class ArmorManager implements Triggered, Listener {
                 targetLevel = attackerLevel;
             }
         }
-        double levelDiff = attackerLevel / targetLevel;
+        double levelDiff = targetLevel / attackerLevel;
         double reduction = armor / ((45.0 * (levelDiff * 60)) + armor + 200.0);
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
