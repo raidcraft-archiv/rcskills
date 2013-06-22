@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
@@ -84,14 +85,23 @@ public final class ArmorManager implements Triggered, Listener {
     public double getDamageReduction(Attack attack, int armor) {
 
         // default the level to 60
-        int level = 60;
-        // we dont want to get the level of heroes and only calculate with mob level if applicable
-/*        if (attack.getSource() instanceof Levelable
-                && attack.getSource() instanceof CharacterTemplate
-                && ((CharacterTemplate) attack.getSource()).getAttachedLevel() != null) {
-            level = ((Levelable) attack.getSource()).getAttachedLevel().getLevel();
-        }*/
-        double reduction = armor / ((45.0 * level) + armor + 200.0);
+        int attackerLevel;
+        CharacterTemplate attacker = attack.getAttacker();
+        if (attacker instanceof Hero) {
+            attackerLevel = ((Hero) attacker).getHighestRankedProfession().getPath().getTotalPathLevel((Hero) attacker);
+        } else {
+            attackerLevel = attacker.getAttachedLevel().getLevel();
+        }
+        // lets get the diff of the attacker and victim
+        int targetLevel = 1;
+        if (attack.getTarget() instanceof CharacterTemplate) {
+            targetLevel = ((CharacterTemplate) attack.getTarget()).getAttachedLevel().getLevel();
+            if (targetLevel < 1) {
+                targetLevel = attackerLevel;
+            }
+        }
+        double levelDiff = attackerLevel / targetLevel;
+        double reduction = armor / ((45.0 * (levelDiff * 60)) + armor + 200.0);
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
         return reduction;
