@@ -465,6 +465,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public int hero_cache_timeout = 300;
         @Setting("defaults.userinterface-refresh-interval")
         public int userinterface_refresh_interval = 100;
+        @Setting("defaults.pvp-toggle-delay")
+        public double pvp_toggle_delay = 300;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 

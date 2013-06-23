@@ -65,8 +65,8 @@ public final class CharacterManager implements Listener, Component {
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();
-
     private final Map<String, BukkitTask> queuedLoggedOutHeroes = new CaseInsensitiveMap<>();
+    private final Map<String, BukkitTask> queuedPvPToggle = new CaseInsensitiveMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -110,6 +110,31 @@ public final class CharacterManager implements Listener, Component {
         },
         plugin.getCommonConfig().userinterface_refresh_interval,
         plugin.getCommonConfig().userinterface_refresh_interval);
+    }
+
+    public boolean isPvPToggleQueued(final Hero hero) {
+
+        return queuedPvPToggle.containsKey(hero.getName());
+    }
+
+    public void queuePvPToggle(final Hero hero, final boolean enabled) {
+
+        removeQueuedPvPToggle(hero);
+        queuedPvPToggle.put(hero.getName(), Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                hero.setPvPEnabled(enabled);
+            }
+        }, (long) (plugin.getCommonConfig().pvp_toggle_delay * 20)));
+    }
+
+    public void removeQueuedPvPToggle(Hero hero) {
+
+        BukkitTask task = queuedPvPToggle.remove(hero.getName());
+        if (task != null) {
+            task.cancel();
+        }
     }
 
     public void pausePlayerExpUpdate(Player player) {

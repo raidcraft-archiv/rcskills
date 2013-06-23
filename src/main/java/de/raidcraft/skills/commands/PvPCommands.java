@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +30,17 @@ public class PvPCommands {
     public void pvpStatus(CommandContext args, CommandSender sender) {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) + "Dein PvP ist "
-                + (hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."));
+        if (plugin.getCharacterManager().isPvPToggleQueued(hero)) {
+            plugin.getCharacterManager().removeQueuedPvPToggle(hero);
+            sender.sendMessage(ChatColor.YELLOW + "Das umschalten deines PvP Statuses auf "
+                    + (!hero.isPvPEnabled() ? ChatColor.RED + "ein" : ChatColor.GREEN + "aus")
+                    + ChatColor.YELLOW + " wurde erfolgreich abgebrochen.");
+            return;
+        }
+
+        String time = TimeUtil.getFormattedTime(plugin.getCommonConfig().pvp_toggle_delay);
+        plugin.getCharacterManager().queuePvPToggle(hero, !hero.isPvPEnabled());
+        sender.sendMessage((!hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) + "Dein PvP wird in " + time
+                + (!hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."));
     }
 }
