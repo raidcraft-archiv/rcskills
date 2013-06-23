@@ -27,6 +27,7 @@ permissions:
         rcskills.player.autobind: true
         rcskills.player.unbind: true
         rcskills.party.invite: true
+        rcskills.party.leave: true
         rcskills.party.accept: true
         rcskills.party.deny: true
         rcskills.party.kick: true
@@ -35,25 +36,8 @@ permissions:
     description: Gives access to all relevant player commands.
     default: false
     children:
-      rcskills.player.profession.list: true
       rcskills.player.profession.choose: true
-      rcskills.player.profession.info: true
-      rcskills.player.skill.info: true
-      rcskills.player.skill.list: true
-      rcskills.player.pvp: true
-      rcskills.player.cmd.info: true
-      rcskills.player.cmd.link: true
-      rcskills.player.cmd.addexp: true
-      rcskills.player.cmd.combatlog: true
-      rcskills.player.cast: true
-      rcskills.player.bind: true
-      rcskills.player.autobind: true
-      rcskills.player.unbind: true
-      rcskills.party.invite: true
-      rcskills.party.accept: true
-      rcskills.party.deny: true
-      rcskills.party.kick: true
-      rcskills.party.list: true
+      rcskills.restricted: true
   rcskills.mod:
     description: Grants aditional command permissions for moderators
     default: false
