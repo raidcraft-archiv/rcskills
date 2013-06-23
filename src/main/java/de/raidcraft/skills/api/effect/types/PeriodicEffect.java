@@ -1,14 +1,18 @@
 package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
+
+import java.util.List;
 
 /**
  * @author Silthus
@@ -103,7 +107,13 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
             } else {
                 // a periodic effects apply method is called everytime the effect ticks
                 tick(getTarget());
-                debug("effect ticked");
+                // lets play some visual effects
+                List<AmbientEffect> effects = visualEffects.get(EffectEffectStage.TICK);
+                if (effects != null) {
+                    for (AmbientEffect effect : effects) {
+                        effect.run(getTarget().getEntity().getLocation());
+                    }
+                }
             }
         } catch (CombatException e) {
             warn(e.getMessage());

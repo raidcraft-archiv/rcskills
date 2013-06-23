@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -7,6 +8,7 @@ import de.raidcraft.skills.api.effect.common.DiminishingReturns;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -15,6 +17,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -35,6 +39,8 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private int maxStacks;
     private double priority;
 
+    protected final Map<EffectEffectStage, List<AmbientEffect>> visualEffects;
+
     public AbstractEffect(S source, CharacterTemplate target, EffectData data) {
 
         this.info = data.getInformation();
@@ -47,6 +53,7 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         this.source = source;
         this.target = target;
         this.enabled = data.isEnabled();
+        this.visualEffects = data.getAmbientEffects();
 
         if (this instanceof Stackable) {
             stacks = 0;
@@ -201,8 +208,14 @@ public abstract class AbstractEffect<S> implements Effect<S> {
             TriggerManager.registerListeners((Triggered) this);
         }
         apply(getTarget());
-        debug("applied effect");
         info(activateMessage);
+        // lets play some visual effects
+        List<AmbientEffect> effects = visualEffects.get(EffectEffectStage.APPLY);
+        if (effects != null) {
+            for (AmbientEffect effect : effects) {
+                effect.run(getTarget().getEntity().getLocation());
+            }
+        }
     }
 
     private Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
@@ -227,16 +240,28 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         }
         remove(getTarget());
         getTarget().removeEffect(this);
-        debug("removed effect");
         info(deactivateMessage);
+        // lets play some visual effects
+        List<AmbientEffect> effects = visualEffects.get(EffectEffectStage.REMOVE);
+        if (effects != null) {
+            for (AmbientEffect effect : effects) {
+                effect.run(getTarget().getEntity().getLocation());
+            }
+        }
     }
 
     @Override
     public void renew() throws CombatException {
 
         renew(getTarget());
-        debug("renewed effect");
         info(renewMessage);
+        // lets play some visual effects
+        List<AmbientEffect> effects = visualEffects.get(EffectEffectStage.RENEW);
+        if (effects != null) {
+            for (AmbientEffect effect : effects) {
+                effect.run(getTarget().getEntity().getLocation());
+            }
+        }
     }
 
     protected abstract void apply(CharacterTemplate target) throws CombatException;
