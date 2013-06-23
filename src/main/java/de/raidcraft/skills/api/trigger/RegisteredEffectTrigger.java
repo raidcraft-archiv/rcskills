@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.trigger;
 
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.event.EventException;
 
 /**
@@ -33,7 +32,7 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
             return;
         }
 
-        if (!(effect.getTarget() instanceof Hero) || !effect.getTarget().equals(trigger.getSource())) {
+        if (!effect.getTarget().equals(trigger.getSource())) {
             return;
         }
         // and lets pass on the trigger

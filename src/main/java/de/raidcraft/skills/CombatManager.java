@@ -226,7 +226,7 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onAttack(EntityDamageByEntityEvent event) {
 
         if (FAKED_EVENTS.contains(event)) {
@@ -336,7 +336,7 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
         if (FAKED_EVENTS.contains(event)) {

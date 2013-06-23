@@ -439,6 +439,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void damage(Attack attack) {
 
+        if (getEntity().isDead()) {
+            return;
+        }
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
@@ -497,6 +500,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void heal(HealAction action) {
 
+        if (getEntity().isDead()) {
+            return;
+        }
         int newHealth = getHealth() + action.getAmount();
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         // lets increase the threat
@@ -523,7 +529,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (source != null && this.equals(source)) {
             source.combatLog("Du hast dich um " + action.getAmount() + " Leben geheilt.");
         } else if (this instanceof Hero) {
-            ((Hero)this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
+            ((Hero) this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
         } else if (source != null) {
             source.combatLog("Du hast " + this + " um " + action.getAmount() + " geheilt.");
         }
@@ -532,6 +538,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill(CharacterTemplate killer) {
 
+        if (getEntity().isDead()) {
+            return;
+        }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         getEntity().damage(getMaxHealth(), killer.getEntity());
         clearEffects();
@@ -540,6 +549,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill() {
 
+        if (getEntity().isDead()) {
+            return;
+        }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         getEntity().damage(getMaxHealth());
         clearEffects();

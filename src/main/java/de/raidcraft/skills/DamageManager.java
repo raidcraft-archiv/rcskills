@@ -109,6 +109,10 @@ public final class DamageManager implements Listener {
         if (event instanceof EntityDamageByEntityEvent) {
             return;
         }
+        if (event.getCause() == EntityDamageEvent.DamageCause.WITHER) {
+            event.setCancelled(true);
+            return;
+        }
 
         CharacterTemplate character = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
 
