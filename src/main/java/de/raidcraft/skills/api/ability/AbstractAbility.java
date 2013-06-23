@@ -100,17 +100,41 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
 
-        return getHolder().getNearbyTargets(getTotalRange(), friendly);
+        try {
+            return getHolder().getNearbyTargets(getTotalRange(), friendly);
+        } catch (CombatException e) {
+            // lets check if this is an area effect
+            if (!isOfType(EffectType.AREA)) {
+                throw e;
+            }
+        }
+        return new ArrayList<>();
     }
 
     public List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
-        return getHolder().getTargetsInFront(getTotalRange());
+        try {
+            return getHolder().getTargetsInFront(getTotalRange());
+        } catch (CombatException e) {
+            // lets check if this is an area effect
+            if (!isOfType(EffectType.AREA)) {
+                throw e;
+            }
+        }
+        return new ArrayList<>();
     }
 
     public List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
 
-        return getHolder().getTargetsInFront(getTotalRange(), degrees);
+        try {
+            return getHolder().getTargetsInFront(getTotalRange(), degrees);
+        } catch (CombatException e) {
+            // lets check if this is an area effect
+            if (!isOfType(EffectType.AREA)) {
+                throw e;
+            }
+        }
+        return new ArrayList<>();
     }
 
     public CharacterTemplate getTarget() throws CombatException {
