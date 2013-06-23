@@ -65,9 +65,8 @@ public final class CharacterManager implements Listener, Component {
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();
-    private BukkitTask refreshTask;
 
-    private final Map<String, BukkitTask> queuedLoggedOutHeroes = new HashMap<>();
+    private final Map<String, BukkitTask> queuedLoggedOutHeroes = new CaseInsensitiveMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -98,7 +97,7 @@ public final class CharacterManager implements Listener, Component {
 
     private void startRefreshTask() {
 
-        refreshTask = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
             @Override
             public void run() {
 
@@ -187,6 +186,11 @@ public final class CharacterManager implements Listener, Component {
             // try to find a match in the db
             heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().like("player", name).findUnique();
             if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
+        }
+
+        BukkitTask task = queuedLoggedOutHeroes.remove(name);
+        if (task != null) {
+            task.cancel();
         }
 
         Hero hero;
@@ -338,7 +342,7 @@ public final class CharacterManager implements Listener, Component {
                     clearCacheOf(hero);
                 }
             }, plugin.getCommonConfig().hero_cache_timeout * 20);
-            queuedLoggedOutHeroes.put(hero.getName().toLowerCase(), task);
+            queuedLoggedOutHeroes.put(hero.getName(), task);
         } else {
             clearCacheOf(hero);
         }
@@ -384,7 +388,7 @@ public final class CharacterManager implements Listener, Component {
 
         // remove the cached entities
         for (Entity entity : event.getChunk().getEntities()) {
-            if (entity instanceof Player) {
+            if (entity instanceof Player && !entity.hasMetadata("NPC")) {
                 continue;
             }
             if (entity instanceof LivingEntity) {
@@ -446,10 +450,6 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 
-        BukkitTask task = queuedLoggedOutHeroes.remove(event.getName());
-        if (task != null) {
-            task.cancel();
-        }
         try {
             // lets try to already cache the hero in the pre login event and only update the entity later
             getHero(event.getName());
