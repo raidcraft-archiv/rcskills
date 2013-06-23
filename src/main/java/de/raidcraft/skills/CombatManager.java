@@ -226,7 +226,7 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    @EventHandler(ignoreCancelled = true)
     public void onAttack(EntityDamageByEntityEvent event) {
 
         if (FAKED_EVENTS.contains(event)) {
@@ -336,7 +336,7 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void rangeCallbackEvent(EntityDamageByEntityEvent event) {
 
         if (FAKED_EVENTS.contains(event)) {
@@ -420,8 +420,8 @@ public final class CombatManager implements Listener, Triggered {
                             }
                         }
                     }
-                    event.setCancelled(true);
                 }
+                event.setCancelled(true);
             } catch (CombatException e) {
                 if (source instanceof Hero) {
                     ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());

@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.creature.Creature;
+import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -428,12 +429,16 @@ public final class CharacterManager implements Listener, Component {
         if (event.getEntity() instanceof Player) {
             return;
         }
+        final CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
+        if (character.hasEffect(Summoned.class)) {
+            event.getDrops().clear();
+            event.setDroppedExp(0);
+        }
         // dispatch a task that does this with 1 tick delay in order to allow the event to clear properly
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
 
-                CharacterTemplate character = plugin.getCharacterManager().getCharacter(event.getEntity());
                 character.clearEffects();
                 if (!(character instanceof Hero)) {
                     // lets remove that poor character from our cache... may he Rest in Peace :*(
