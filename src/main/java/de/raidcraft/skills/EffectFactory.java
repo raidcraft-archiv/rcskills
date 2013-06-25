@@ -1,11 +1,11 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.config.EffectConfig;
 import de.raidcraft.skills.config.SkillConfig;

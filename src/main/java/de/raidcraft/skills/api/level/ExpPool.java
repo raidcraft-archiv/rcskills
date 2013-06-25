@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.level;
 
-import com.avaje.ebean.Ebean;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;

@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -7,7 +8,6 @@ import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.InvalidEffectException;
 import de.raidcraft.skills.api.exceptions.UnknownEffectException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
-import de.raidcraft.skills.api.ability.Ability;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.level;
 
-import de.raidcraft.skills.formulas.FormulaType;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.formulas.FormulaType;
 
 /**
  * Represents an empty level object that blocks all level interaction.

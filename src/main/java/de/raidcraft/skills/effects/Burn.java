@@ -1,5 +1,6 @@
 package de.raidcraft.skills.effects;
 
+import de.raidcraft.api.ambient.ParticleEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -9,7 +10,6 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.api.ambient.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
