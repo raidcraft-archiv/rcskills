@@ -247,6 +247,7 @@ public final class CharacterManager implements Listener, Component {
             RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
             hero = new SimpleHero(player, heroTable);
             heroes.put(name, hero);
+            plugin.getLogger().info("Cached hero: " + hero.getName());
         } else {
             hero = heroes.get(name);
         }
@@ -481,6 +482,7 @@ public final class CharacterManager implements Listener, Component {
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 
         try {
+            plugin.getLogger().info("Called asyc pre login event for " + event.getName());
             // lets try to already cache the hero in the pre login event and only update the entity later
             getHero(event.getName());
         } catch (UnknownPlayerException ignored) {
@@ -491,6 +493,7 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        plugin.getLogger().info("Called player join event for " + event.getPlayer().getName());
         Scoreboards.updateTeams();
         Hero hero = getHero(event.getPlayer());
         hero.updateEntity(event.getPlayer());
