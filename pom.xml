@@ -26,13 +26,13 @@
     <parent>
         <groupId>de.raidcraft</groupId>
         <artifactId>masterpom</artifactId>
-        <version>LATEST</version>
+        <version>RELEASE</version>
     </parent>
 
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+            <url>http://dev.raid-craft.de/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -40,27 +40,27 @@
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>LATEST</version>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>permissions</artifactId>
-            <version>LATEST</version>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>rcconversations</artifactId>
-            <version>LATEST</version>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>me.moplants</groupId>
             <artifactId>tabdeco</artifactId>
-            <version>LATEST</version>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kitteh</groupId>
             <artifactId>tagapi</artifactId>
-            <version>LATEST</version>
+            <version>${rc.version}</version>
         </dependency>
     </dependencies>
 </project>
