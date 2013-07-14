@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.raidcraft</groupId>
         <artifactId>masterpom</artifactId>
-        <version>RELEASE</version>
+        <version>LATEST</version>
     </parent>
 
     <repositories>
