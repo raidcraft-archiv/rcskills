@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.kitteh</groupId>
             <artifactId>tagapi</artifactId>
-            <version>${rc.version}</version>
+            <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

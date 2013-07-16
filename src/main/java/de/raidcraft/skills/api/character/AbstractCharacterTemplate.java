@@ -377,7 +377,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity() == null) {
             return 0;
         }
-        return getEntity().getHealth();
+        return (int) getEntity().getHealth();
     }
 
     @Override
@@ -401,7 +401,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity() == null) {
             return 20;
         }
-        return getEntity().getMaxHealth();
+        return (int) getEntity().getMaxHealth();
     }
 
     @Override
