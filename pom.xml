@@ -32,7 +32,7 @@
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://dev.raid-craft.de/nexus/content/groups/public/</url>
+            <url>http://nexus.raid-craft.de/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>me.moplants</groupId>
             <artifactId>tabdeco</artifactId>
-            <version>${rc.version}</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kitteh</groupId>
