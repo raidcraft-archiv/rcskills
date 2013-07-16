@@ -117,15 +117,15 @@ public final class DamageManager implements Listener {
         CharacterTemplate character = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
 
         try {
-            int damage = event.getDamage();
+            double damage = event.getDamage();
             if (environmentalDamage.containsKey(event.getCause())) {
                 if (plugin.getCommonConfig().environment_damage_in_percent) {
                     switch (event.getCause()) {
 
                         case FALL:
                             // the minecraft fall damage is caluclate like so: fall_damage = number of blocks - 3
-                            int height = damage;
-                            damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height));
+                            double height = damage;
+                            damage = character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * height);
                             break;
                         case BLOCK_EXPLOSION:
                         case ENTITY_EXPLOSION:
@@ -134,20 +134,20 @@ public final class DamageManager implements Listener {
                             // default damage is as follows: 97 (charged creeper), 65 (TNT), 49 (creepers), 17 (fireballs)
                             // (1 x 1 + 1) defines the range the entity is away and how much the power gets reduced
                             // damage = (1 × 1 + 1) × 8 × power + 1
-                            float power = (damage - 1) / 8;
-                            damage = (int) (character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * power));
+                            double power = (damage - 1) / 8;
+                            damage = character.getMaxHealth() * (environmentalDamage.get(event.getCause()) * power);
                             break;
                         default:
                             damage = (int) (character.getMaxHealth() * environmentalDamage.get(event.getCause()));
                             break;
                     }
                 } else {
-                    damage = (int) (damage * environmentalDamage.get(event.getCause()));
+                    damage = damage * environmentalDamage.get(event.getCause());
                 }
             }
             event.setCancelled(true);
             if (damage > 0) {
-                EnvironmentAttack attack = new EnvironmentAttack(event, damage);
+                EnvironmentAttack attack = new EnvironmentAttack(event, (int)damage);
                 attack.run();
             }
         } catch (CombatException e) {
