@@ -29,6 +29,10 @@
         <version>RELEASE</version>
     </parent>
 
+    <scm>
+        <developerConnection>scm:git:ssh://git@raid-craft.de:22109/${project.artifactId}.git</developerConnection>
+    </scm>
+
     <repositories>
         <repository>
             <id>raidcraft</id>
