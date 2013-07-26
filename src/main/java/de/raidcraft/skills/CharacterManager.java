@@ -271,7 +271,7 @@ public final class CharacterManager implements Listener, Component {
 
     public CharacterTemplate getCharacter(LivingEntity entity) {
 
-        if (!entity.hasMetadata("remoteentity") && entity instanceof Player) {
+        if (!entity.hasMetadata("NPC") && entity instanceof Player) {
             return getHero((Player) entity);
         }
 
@@ -415,7 +415,7 @@ public final class CharacterManager implements Listener, Component {
 
         // remove the cached entities
         for (Entity entity : event.getChunk().getEntities()) {
-            if (entity instanceof Player && !entity.hasMetadata("remoteentity")) {
+            if (entity instanceof Player && !entity.hasMetadata("NPC")) {
                 continue;
             }
             if (entity instanceof LivingEntity) {

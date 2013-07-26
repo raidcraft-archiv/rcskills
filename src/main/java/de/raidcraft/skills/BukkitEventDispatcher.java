@@ -58,7 +58,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (event.getPlayer().hasMetadata("remoteentity")) {
+        if (event.getPlayer().hasMetadata("NPC")) {
             return;
         }
         TriggerManager.callSafeTrigger(
@@ -69,7 +69,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
 
-        if (event.getPlayer().hasMetadata("remoteentity")) {
+        if (event.getPlayer().hasMetadata("NPC")) {
             return;
         }
         TriggerManager.callSafeTrigger(
@@ -80,7 +80,7 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        if (event.getPlayer().hasMetadata("remoteentity")) {
+        if (event.getPlayer().hasMetadata("NPC")) {
             return;
         }
         TriggerManager.callSafeTrigger(
