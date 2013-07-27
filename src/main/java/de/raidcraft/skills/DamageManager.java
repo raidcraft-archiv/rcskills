@@ -97,6 +97,9 @@ public final class DamageManager implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
 
+        if (event.getEntity().hasMetadata("NPC")) {
+            return;
+        }
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM) {
             return;
         }
