@@ -4,6 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  * @author Silthus
@@ -16,6 +17,17 @@ public final class BukkitEnvironmentManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        if (plugin.getCommonConfig().health_scale > 0) {
+            // lets set the player health scale
+            event.getPlayer().setHealthScale(plugin.getCommonConfig().health_scale);
+        } else {
+            event.getPlayer().setHealthScaled(false);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
