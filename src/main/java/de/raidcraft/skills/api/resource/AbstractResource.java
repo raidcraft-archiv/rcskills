@@ -160,7 +160,7 @@ public abstract class AbstractResource implements Resource {
 
             current = fireResourceChangeEvent(current);
 
-            boolean update = this.current != current && isEnabled();
+            boolean update = this.current != current;
             this.current = current;
 
             if (update) {
