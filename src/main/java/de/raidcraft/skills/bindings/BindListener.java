@@ -52,6 +52,7 @@ public class BindListener implements Listener {
             // lets switch it up and use the skill on a bow when right clicking
             if (event.getItem().getTypeId() == ItemID.BOW) {
                 boundItem.use();
+                event.setCancelled(false);
             } else {
                 toggleBoundSkill(boundItem, !event.getPlayer().isSneaking());
                 event.setCancelled(true);
