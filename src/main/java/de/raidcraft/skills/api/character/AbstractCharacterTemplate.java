@@ -768,6 +768,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     targets.add(target);
                 }
             }
+            // add self
+            targets.add(this);
             return targets;
         } else {
             List<CharacterTemplate> targets = new ArrayList<>();
