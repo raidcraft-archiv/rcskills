@@ -119,7 +119,8 @@ public final class ExperienceManager implements Listener {
             for (Hero expToAdd : heroesToAddExp) {
                 expToAdd.getExpPool().addExp(exp);
                 // lets do some visual magic tricks and let the player see the exp
-                sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+                // TODO: fix and reenable
+                // sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
             }
         }
     }
