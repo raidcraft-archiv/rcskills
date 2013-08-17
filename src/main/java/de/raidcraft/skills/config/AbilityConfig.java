@@ -73,7 +73,7 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     @Override
     public boolean isEnabled() {
 
-        return getBoolean("enabled", true);
+        return getOverrideBool("enabled", true);
     }
 
     @Override
@@ -81,6 +81,12 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
 
         set("enabled", enabled);
         save();
+    }
+
+    @Override
+    public boolean isLevelable() {
+
+        return getOverrideBool("levelable", true);
     }
 
     @Override

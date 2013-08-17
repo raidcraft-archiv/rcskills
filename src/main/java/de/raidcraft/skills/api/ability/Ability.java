@@ -60,6 +60,8 @@ public interface Ability<T extends CharacterTemplate> {
 
     boolean isOnCooldown();
 
+    boolean isLevelable();
+
     void setLastCast(long time);
 
     boolean matches(String name);

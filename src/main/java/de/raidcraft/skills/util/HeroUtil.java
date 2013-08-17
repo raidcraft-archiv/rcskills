@@ -161,7 +161,7 @@ public final class HeroUtil {
                     || excludedSkills.contains(skill.getName().toLowerCase())) {
                 continue;
             }
-            if (skill instanceof Levelable) {
+            if (skill.isLevelable()) {
                 ((Levelable) skill).getAttachedLevel().setLevel(((Levelable) skill).getMaxLevel());
             }
         }

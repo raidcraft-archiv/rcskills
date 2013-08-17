@@ -27,6 +27,8 @@ public interface AbilityProperties<T> {
 
     void setEnabled(boolean enabled);
 
+    boolean isLevelable();
+
     boolean canUseInCombat();
 
     boolean canUseOutOfCombat();

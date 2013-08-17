@@ -19,6 +19,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -337,6 +338,12 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final boolean isOnCooldown() {
 
         return getRemainingCooldown() > 0;
+    }
+
+    @Override
+    public boolean isLevelable() {
+
+        return this instanceof Levelable && properties.isLevelable();
     }
 
     @Override

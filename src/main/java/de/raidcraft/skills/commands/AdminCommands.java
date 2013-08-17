@@ -166,7 +166,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
-                if (skill instanceof Levelable) {
+                if (skill.isLevelable()) {
                     ((Levelable) skill).getAttachedLevel().addExp(exp);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
@@ -222,7 +222,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
-                if (skill instanceof Levelable) {
+                if (skill.isLevelable()) {
                     ((Levelable) skill).getAttachedLevel().removeExp(exp);
                     sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.RED + "Skill " + ChatColor.AQUA + skill.getName()
@@ -278,7 +278,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
-                if (skill instanceof Levelable) {
+                if (skill.isLevelable()) {
                     ((Levelable) skill).getAttachedLevel().setLevel(level);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
@@ -329,7 +329,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
-                if (skill instanceof Levelable) {
+                if (skill.isLevelable()) {
                     ((Levelable) skill).getAttachedLevel().addLevel(level);
                     sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.GREEN + "Skill " + ChatColor.AQUA + skill.getName()
@@ -380,7 +380,7 @@ public class AdminCommands {
             }
             if (args.hasFlag('s')) {
                 Skill skill = SkillUtil.getSkillFromArgs(hero, args.getFlag('s'));
-                if (skill instanceof Levelable) {
+                if (skill.isLevelable()) {
                     ((Levelable) skill).getAttachedLevel().removeLevel(level);
                     sender.sendMessage(ChatColor.RED + "Du hast " + ChatColor.AQUA +
                             hero.getName() + "'s " + ChatColor.RED + "Skill " + ChatColor.AQUA + skill.getName()

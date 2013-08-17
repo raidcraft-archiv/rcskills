@@ -80,7 +80,7 @@ public final class SkillUtil {
         sb.append(ChatColor.GRAY).append(ChatColor.ITALIC).append(skill.getDescription());
         body.add(sb.toString());
 
-        if (skill instanceof Levelable) {
+        if (skill.isLevelable()) {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Level: ").append(ChatColor.AQUA).append(((Levelable) skill).getAttachedLevel().getLevel())
                     .append(ChatColor.YELLOW).append("/").append(ChatColor.AQUA).append(((Levelable) skill).getAttachedLevel().getMaxLevel());
