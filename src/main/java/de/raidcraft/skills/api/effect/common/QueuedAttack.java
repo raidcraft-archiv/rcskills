@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.effect.common;
 
-import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
@@ -26,17 +25,11 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
 
     private Callback<AttackTrigger> callback;
     private boolean attacked = false;
-    private WeaponType weapon;
-    int damage = 0;
 
     public QueuedAttack(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         if (duration == 0) duration = 20 * 5;
-        // lets see if the attack is restricted to a weapon type
-        weapon = WeaponType.fromString(source.getSkillProperties().getData().getString("weapon"));
-        // we need to get the damage now because of the variable resource damage stuff
-        damage = getSource().getTotalDamage();
     }
 
     public void addCallback(Callback<AttackTrigger> callback) {
@@ -47,7 +40,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        if (attacked) {
+        if (attacked || !getSource().canUseSkill()) {
             return;
         }
         // lets substract the usage cost if the skill is marked as a queued attack
@@ -56,7 +49,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         }
         // and now do some attack magic :)
         attacked = true;
-        trigger.getAttack().setDamage(damage);
+        trigger.getAttack().setDamage(getSource().getTotalDamage());
         trigger.getAttack().addAttackTypes(getSource().getTypes().toArray(new EffectType[getSource().getTypes().size()]));
         trigger.getAttack().addAttackTypes(getTypes());
         if (callback != null) {
