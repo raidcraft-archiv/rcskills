@@ -34,6 +34,7 @@ import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -476,6 +477,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 kill();
             } else {
                 setHealth(newHealth);
+                getEntity().playEffect(EntityEffect.HURT);
                 if (attack.hasKnockback()) {
                     if (attacker != null) {
                         getEntity().damage(0, attacker.getEntity());
