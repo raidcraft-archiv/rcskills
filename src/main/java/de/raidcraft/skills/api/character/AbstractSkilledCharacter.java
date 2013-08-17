@@ -2,10 +2,10 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.ability.Useable;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public abstract class AbstractSkilledCharacter<T extends SkilledCharacter> extends AbstractCharacterTemplate implements SkilledCharacter<T> {
 
-    private final Map<String, Ability<T>> abilities = new HashMap<>();
+    private final Map<String, Ability<T>> abilities = new CaseInsensitiveMap<>();
 
     public AbstractSkilledCharacter(LivingEntity entity) {
 

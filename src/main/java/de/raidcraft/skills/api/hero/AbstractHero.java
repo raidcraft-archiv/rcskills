@@ -38,6 +38,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,7 +48,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,11 +63,11 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
     private final UserInterface userInterface;
-    private final Map<String, Skill> virtualSkills = new HashMap<>();
-    private final Map<String, Profession> professions = new HashMap<>();
-    private final Map<String, Resource> resources = new HashMap<>();
-    private final Map<String, Attribute> attributes = new HashMap<>();
-    private final Map<String, Path<Profession>> paths = new HashMap<>();
+    private final Map<String, Skill> virtualSkills = new CaseInsensitiveMap<>();
+    private final Map<String, Profession> professions = new CaseInsensitiveMap<>();
+    private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
+    private final Map<String, Attribute> attributes = new CaseInsensitiveMap<>();
+    private final Map<String, Path<Profession>> paths = new CaseInsensitiveMap<>();
     private Party pendingPartyInvite;
     private Profession virtualProfession;
     // this just tells the client what to display in the experience bar and so on
@@ -377,7 +377,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public boolean hasResource(String name) {
 
-        return resources.containsKey(name.toLowerCase());
+        return resources.containsKey(name);
     }
 
     @Override
@@ -385,14 +385,14 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         if (resource.getProfession().isActive()) {
             resource.setEnabled(true);
-            resources.put(resource.getName().toLowerCase(), resource);
+            resources.put(resource.getName(), resource);
         }
     }
 
     @Override
     public Resource detachResource(String name) {
 
-        Resource resource = resources.remove(name.toLowerCase());
+        Resource resource = resources.remove(name);
         if (resource != null) {
             resource.setEnabled(false);
         }

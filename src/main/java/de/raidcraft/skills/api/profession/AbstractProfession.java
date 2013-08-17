@@ -17,10 +17,10 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.util.StringUtils;
+import de.raidcraft.util.CaseInsensitiveMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +38,8 @@ public abstract class AbstractProfession implements Profession {
     private final List<Profession> children;
     // list of requirements to unlock this profession
     private final List<Requirement<Hero>> requirements = new ArrayList<>();
-    private final Map<String, Resource> resources = new HashMap<>();
-    protected final Map<String, Skill> skills = new HashMap<>();
+    private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
+    protected final Map<String, Skill> skills = new CaseInsensitiveMap<>();
 
     private boolean active = false;
     // can be null - if it is this profession has no parents :*(
