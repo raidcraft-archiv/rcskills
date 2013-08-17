@@ -98,6 +98,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public boolean isLevelable() {
+
+        return getOverrideBool("levelable", true);
+    }
+
+    @Override
     public boolean isCastable() {
 
         return getOverrideBool("castable", true);
