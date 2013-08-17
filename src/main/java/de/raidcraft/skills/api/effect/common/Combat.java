@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
+import org.bukkit.entity.Creature;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,6 +40,8 @@ public class Combat<S> extends ExpirableEffect<S> {
         target.setInCombat(true);
         if (target instanceof Hero) {
             RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.ENTER));
+        } else if (target.getEntity() instanceof Creature) {
+            // TODO: set aggro range
         }
         info("Du hast den Kampf betreten.");
         if (getSource() instanceof CharacterTemplate) {
@@ -54,6 +57,8 @@ public class Combat<S> extends ExpirableEffect<S> {
         target.setInCombat(false);
         if (target instanceof Hero) {
             RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.LEAVE));
+        } else if (target.getEntity() instanceof Creature) {
+            // TODO: unset aggro range
         }
         info("Du hast den Kampf verlassen.");
     }
