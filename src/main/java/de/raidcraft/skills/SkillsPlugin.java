@@ -152,7 +152,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         // clear the cache of all heroes, saving them to the database
         for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
-            getCharacterManager().clearCacheOf(hero);
+            hero.save();
         }
     }
 
