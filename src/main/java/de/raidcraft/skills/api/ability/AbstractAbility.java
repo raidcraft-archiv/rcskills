@@ -318,9 +318,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
                 public void run() {
 
                     if (Option.COMBAT_LOGGING.getBoolean((Hero) getHolder())) {
-                        ((Hero) getHolder()).combatLog(AbstractAbility.this, "Skill " + getFriendlyName() + " ist wieder bereit.");
+                        ((Hero) getHolder()).combatLog(AbstractAbility.this, getFriendlyName() + " ist wieder bereit.");
                     } else {
-                        ((Hero) getHolder()).sendMessage(ChatColor.GREEN + "Skill " + ChatColor.AQUA + getFriendlyName()
+                        ((Hero) getHolder()).sendMessage(ChatColor.AQUA + getFriendlyName()
                                 + ChatColor.GREEN + " ist wieder bereit.");
                     }
                 }
