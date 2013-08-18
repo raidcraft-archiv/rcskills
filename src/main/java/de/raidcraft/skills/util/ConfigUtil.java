@@ -214,7 +214,7 @@ public final class ConfigUtil {
         getExtraValues(holder, section, availableModifier);
 
         if (addWeaponDamage) {
-            value += holder.getDamage();
+            value += holder.getTotalWeaponDamage();
         }
 
         if (cap > 0.0 && value > cap) {
