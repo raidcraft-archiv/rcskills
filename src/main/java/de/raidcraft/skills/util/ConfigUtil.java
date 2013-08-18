@@ -121,8 +121,8 @@ public final class ConfigUtil {
                 }
                 if (section.isSet(resource.getName() + "-modifier")) {
                     int base = fromMax ? resource.getMax() : resource.getCurrent();
-                    value += section.getDouble(resource.getName() + "-base-modifier") * base;
-                    availableModifiers.remove(resource.getName() + "-base-modifier");
+                    value += section.getDouble(resource.getName() + "-modifier") * base;
+                    availableModifiers.remove(resource.getName() + "-modifier");
                 }
                 if (section.isSet(resource.getName() + "-percent-modifier")) {
                     value += ((double) resource.getCurrent() / (double) resource.getMax())
