@@ -14,6 +14,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
+import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -24,9 +25,11 @@ import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
@@ -239,6 +242,18 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         QueuedAttack effect = addEffect(getHolder(), QueuedAttack.class);
         effect.addCallback(callback);
         return effect;
+    }
+
+    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback, Action action) throws CombatException {
+
+        QueuedInteract effect = addEffect(getHolder(), QueuedInteract.class);
+        effect.addCallback(callback, action);
+        return effect;
+    }
+
+    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback) throws CombatException {
+
+        return queueInteract(callback, null);
     }
 
     /*/////////////////////////////////////////////////////////////////
