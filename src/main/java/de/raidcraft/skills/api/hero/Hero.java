@@ -81,6 +81,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Profession getVirtualProfession();
 
+    public int getPlayerLevel();
+
     public boolean hasPath(Path path);
 
     public Set<Path<Profession>> getPaths();

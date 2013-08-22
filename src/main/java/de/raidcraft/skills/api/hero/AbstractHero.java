@@ -327,6 +327,18 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public int getPlayerLevel() {
+
+        Profession profession = getHighestRankedProfession();
+        int level = profession.getAttachedLevel().getLevel();
+        while (profession.hasParent()) {
+            profession = profession.getParent();
+            level += profession.getAttachedLevel().getLevel();
+        }
+        return level;
+    }
+
+    @Override
     public Collection<Attribute> getAttributes() {
 
         return attributes.values();
