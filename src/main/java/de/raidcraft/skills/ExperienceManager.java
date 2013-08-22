@@ -1,8 +1,8 @@
 package de.raidcraft.skills;
 
+import com.comphenix.packetwrapper.Packet18SpawnMob;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -39,6 +39,11 @@ import java.util.HashSet;
  */
 public final class ExperienceManager implements Listener {
 
+    // Metadata indices
+    private static final int METADATA_FLAGS = 0;
+    private static final int METADATA_NAME = 10;        // 1.5.2 -> Change to 5
+    private static final int METADATA_SHOW_NAME = 11;   // 1.5.2 -> Change to 6
+
     private final ProtocolManager protocolManager;
     private final SkillsPlugin plugin;
     private final WrappedDataWatcher batWatcher;
@@ -57,22 +62,20 @@ public final class ExperienceManager implements Listener {
             return;
         }
 
-        PacketContainer newPacket = new PacketContainer(24);
-
-        newPacket.getIntegers().
-                write(0, 500).
-                write(1, (int) EntityType.BAT.getTypeId()).
-                write(2, (int) (dead.getLocation().getX() * 32)).
-                write(3, (int) ((dead.getLocation().getY() + 0.5) * 32)).
-                write(4, (int) (dead.getLocation().getZ() * 32));
-
+        Packet18SpawnMob mobSpawn = new Packet18SpawnMob();
+        mobSpawn.setEntityID(500);
+        mobSpawn.setX(dead.getLocation().getX());
+        mobSpawn.setY(dead.getLocation().getY() + 0.5);
+        mobSpawn.setZ(dead.getLocation().getZ());
+        mobSpawn.setType(EntityType.BAT);
         // batWatcher.setObject(0, (byte) 0x20);
-        batWatcher.setObject(5, ChatColor.GREEN + "+" + String.valueOf(exp) + " EXP");
-        batWatcher.setObject(6, (byte) 1);
-        newPacket.getDataWatcherModifier().write(0, batWatcher);
+        batWatcher.setObject(METADATA_NAME, ChatColor.GREEN + "+" + String.valueOf(exp) + " EXP");
+        batWatcher.setObject(METADATA_SHOW_NAME, (byte) 1);
+
+        mobSpawn.setMetadata(batWatcher);
 
         try {
-            protocolManager.sendServerPacket(player, newPacket);
+            protocolManager.sendServerPacket(player, mobSpawn.getHandle());
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -119,8 +122,7 @@ public final class ExperienceManager implements Listener {
             for (Hero expToAdd : heroesToAddExp) {
                 expToAdd.getExpPool().addExp(exp);
                 // lets do some visual magic tricks and let the player see the exp
-                // TODO: fix and reenable
-                // sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+                sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
             }
         }
     }
