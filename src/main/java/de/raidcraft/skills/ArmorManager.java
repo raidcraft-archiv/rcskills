@@ -72,7 +72,7 @@ public final class ArmorManager implements Triggered, Listener {
 
     /**
      * This reduction formula is based on the WoW Armor Reduction formula for characters up to level 59.
-     * %Reduction = (Armor / ([45 * Enemy_Level] + Armor + 200)) * 100
+     * %Reduction = (Armor / ([45 * Attacker_Level] + Armor + 200)) * 100
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
      * <p/>
      * To make things easier we calculate with a enemy level of 60 at all times.
@@ -92,16 +92,7 @@ public final class ArmorManager implements Triggered, Listener {
         } else {
             attackerLevel = attacker.getAttachedLevel().getLevel();
         }
-        // lets get the diff of the attacker and victim
-        int targetLevel = 1;
-        if (attack.getTarget() instanceof CharacterTemplate) {
-            targetLevel = ((CharacterTemplate) attack.getTarget()).getAttachedLevel().getLevel();
-            if (targetLevel < 1) {
-                targetLevel = attackerLevel;
-            }
-        }
-        double levelDiff = targetLevel / attackerLevel;
-        double reduction = armor / ((45.0 * (levelDiff * 60)) + armor + 200.0);
+        double reduction = armor / ((45.0 * (attackerLevel * 60)) + armor + 200.0);
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
         return reduction;
