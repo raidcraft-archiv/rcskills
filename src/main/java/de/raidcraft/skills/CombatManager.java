@@ -287,7 +287,7 @@ public final class CombatManager implements Listener, Triggered {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void enterCombat(EntityDamageByEntityEvent event) {
 
-        if (FAKED_EVENTS.contains(event)) {
+        if (FAKED_EVENTS.contains(event) || event.getDamage() <= 0) {
             return;
         }
         if (event.getEntity() instanceof LivingEntity) {
