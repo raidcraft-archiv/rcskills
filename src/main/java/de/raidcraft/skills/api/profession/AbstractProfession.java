@@ -191,6 +191,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public Skill getSkill(String id) {
+
+        return skills.get(id);
+    }
+
+    @Override
     public void addSkill(Skill skill) {
 
         throw new UnsupportedOperationException();

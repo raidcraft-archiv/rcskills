@@ -36,7 +36,6 @@ import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.CustomItemUtil;
@@ -430,7 +429,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // lets check the durability of the weapon
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
         if (customItem.getCustomDurability() < 1) {
-            ItemUtil.moveItem(this, slot, item);
+            CustomItemUtil.moveItem(getPlayer(), slot, item);
             throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
         }
         CustomWeapon weapon = (CustomWeapon) customItem.getItem();
@@ -444,7 +443,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             if (slot + 1 < 9) {
                 ItemStack secondHandItem = getPlayer().getInventory().getItem(slot + 1);
                 if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
-                    ItemUtil.moveItem(this, slot + 1, secondHandItem);
+                    CustomItemUtil.moveItem(getPlayer(), slot + 1, secondHandItem);
                     sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
                 }
                 setWeapon(weapon);
@@ -688,9 +687,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         boolean hasSkill = virtualSkills.containsKey(id);
         if (getPlayer().isOnline()) {
             for (Profession profession : getProfessions()) {
-                if (profession.isActive() && profession.hasSkill(id)) {
-                    hasSkill = true;
-                    break;
+                try {
+                    if (profession.isActive() && profession.hasSkill(id)) {
+                        Skill skill = getSkill(id);
+                        hasSkill = skill.isActive() && skill.isEnabled() && skill.isUnlocked();
+                        break;
+                    }
+                } catch (UnknownSkillException ignored) {
                 }
             }
         } else {

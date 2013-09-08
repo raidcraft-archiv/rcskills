@@ -50,7 +50,7 @@ public class SkillRequirement extends AbstractRequirement<Hero> {
     @Override
     public boolean isMet(Hero object) {
 
-        return requiredSkill != null && object.hasSkill(requiredSkill) && requiredSkill.isUnlocked();
+        return requiredSkill != null && object.hasSkill(requiredSkill);
     }
 
     @Override

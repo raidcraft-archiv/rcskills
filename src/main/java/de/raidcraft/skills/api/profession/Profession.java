@@ -46,4 +46,6 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
     public void checkSkillsForUnlock();
 
     public boolean hasSkill(String id);
+
+    public Skill getSkill(String id);
 }

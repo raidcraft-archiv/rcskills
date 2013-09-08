@@ -26,7 +26,6 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
-import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
 import de.raidcraft.util.CustomItemUtil;
@@ -270,7 +269,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 if (this instanceof Hero) {
                     if (!armor.isMeetingAllRequirements((Player) getEntity())) {
                         ((Hero) this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
-                        ItemUtil.moveItem((Hero) this, -1, item);
+                        CustomItemUtil.moveItem((Player) getEntity(), -1, item);
                     } else {
                         setArmor(armor);
                     }

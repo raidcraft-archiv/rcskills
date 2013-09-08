@@ -68,6 +68,7 @@ public final class CharacterManager implements Listener, Component {
     private final Set<String> pausedExpPlayers = new HashSet<>();
     private final Map<String, BukkitTask> queuedLoggedOutHeroes = new CaseInsensitiveMap<>();
     private final Map<String, BukkitTask> queuedPvPToggle = new CaseInsensitiveMap<>();
+    private final Map<String, BukkitTask> queuedHeroLogins = new CaseInsensitiveMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
 
@@ -248,6 +249,7 @@ public final class CharacterManager implements Listener, Component {
             hero = new SimpleHero(player, heroTable);
             heroes.put(name, hero);
             plugin.getLogger().info("Cached hero: " + hero.getName());
+            queuedHeroLogins.remove(name);
         } else {
             hero = heroes.get(name);
         }
@@ -479,15 +481,24 @@ public final class CharacterManager implements Listener, Component {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+    public void onPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 
-        try {
-            plugin.getLogger().info("Called asyc pre login event for " + event.getName());
-            // lets try to already cache the hero in the pre login event and only update the entity later
-            getHero(event.getName());
-        } catch (UnknownPlayerException ignored) {
-            // ignore
+        if (queuedHeroLogins.containsKey(event.getName())) {
+            return;
         }
+        plugin.getLogger().info("Called asyc pre login event for " + event.getName());
+        // lets try to already cache the hero in the pre login event and only update the entity later
+        queuedHeroLogins.put(event.getName(), Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    getHero(event.getName());
+                } catch (UnknownPlayerException e) {
+                    plugin.getLogger().warning(e.getMessage());
+                }
+            }
+        }, 0));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
