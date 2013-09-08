@@ -38,7 +38,7 @@ public class RegisteredAbilityTrigger extends RegisteredTrigger {
             }
         }
 
-        if (!trigger.getSource().equals(ability.getHolder())) {
+        if (info.filterTargets() && !trigger.getSource().equals(ability.getHolder())) {
             return;
         }
 

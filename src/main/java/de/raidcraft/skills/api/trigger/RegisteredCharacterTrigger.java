@@ -31,7 +31,7 @@ public class RegisteredCharacterTrigger extends RegisteredTrigger {
             return;
         }
 
-        if (!trigger.getSource().equals(character)) {
+        if (info.filterTargets() && !trigger.getSource().equals(character)) {
             return;
         }
 

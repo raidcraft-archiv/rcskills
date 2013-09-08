@@ -32,7 +32,7 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
             return;
         }
 
-        if (!effect.getTarget().equals(trigger.getSource())) {
+        if (info.filterTargets() && !effect.getTarget().equals(trigger.getSource())) {
             return;
         }
         // and lets pass on the trigger
