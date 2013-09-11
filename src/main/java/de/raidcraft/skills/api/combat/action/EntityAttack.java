@@ -32,7 +32,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     private Callback<EntityAttack> callback;
     private EntityDamageEvent.DamageCause cause = null;
     private List<AmbientEffect> lineEffects = new ArrayList<>();
-    private List<AmbientEffect> impactEffects = new ArrayList<>();
 
     public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
 
@@ -63,11 +62,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     public void setLineEffects(List<AmbientEffect> lineEffects) {
 
         this.lineEffects = lineEffects;
-    }
-
-    public void setImpactEffects(List<AmbientEffect> impactEffects) {
-
-        this.impactEffects = impactEffects;
     }
 
     @Override
@@ -109,7 +103,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
             // play the impact effects
-            for (AmbientEffect effect : impactEffects) {
+            for (AmbientEffect effect : getImpactEffects()) {
                 effect.run(getTarget().getEntity().getLocation());
             }
         } else {

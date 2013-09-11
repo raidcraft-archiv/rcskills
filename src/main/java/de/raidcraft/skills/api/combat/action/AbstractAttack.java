@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
@@ -10,9 +11,11 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,6 +28,8 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
     private final Set<EffectType> attackTypes = new HashSet<>();
     private final Set<EffectElement> attackElemens = new HashSet<>();
     private final AttackSource source;
+
+    private List<AmbientEffect> impactEffects = new ArrayList<>();
 
     public AbstractAttack(S attacker, T target, int damage, EffectType... types) {
 
@@ -144,5 +149,15 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
 
         CharacterTemplate attacker = getAttacker();
         return attacker != null && attacker.equals(source);
+    }
+
+    public void setImpactEffects(List<AmbientEffect> impactEffects) {
+
+        this.impactEffects = impactEffects;
+    }
+
+    protected List<AmbientEffect> getImpactEffects() {
+
+        return this.impactEffects;
     }
 }

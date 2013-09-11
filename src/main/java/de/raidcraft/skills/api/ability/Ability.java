@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -67,6 +68,8 @@ public interface Ability<T extends CharacterTemplate> {
     boolean matches(String name);
 
     public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage);
+
+    public void executeAmbientEffects(AbilityEffectStage stage, Location location);
 
     /**
      * Applies the skill to the {@link de.raidcraft.skills.api.hero.Hero}. Is called when the skill is first added to the hero.

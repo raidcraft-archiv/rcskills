@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
@@ -43,6 +44,7 @@ public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
         // lets call the bow fire callback
         if (callback != null) {
             callback.run(trigger);
+            getSource().executeAmbientEffects(AbilityEffectStage.BOW_FIRE, trigger.getSource().getEntity().getLocation());
         }
         // lets substract the usage cost if the skill is marked as a queued attack
         if (getSource().getSkillProperties().getInformation().queuedAttack()) {

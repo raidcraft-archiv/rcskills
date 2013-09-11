@@ -77,6 +77,14 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return (List<AmbientEffect>) effects;
     }
 
+    @Override
+    public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
+
+        for (AmbientEffect effect : getAmbientEffects(stage)) {
+            effect.run(location);
+        }
+    }
+
     public final boolean matches(String name) {
 
         name = name.toLowerCase();

@@ -10,7 +10,9 @@ public enum AbilityEffectStage {
     CASTING,
     CAST,
     LINE,
-    IMPACT;
+    IMPACT,
+    HIT,
+    BOW_FIRE;
 
     public static AbilityEffectStage fromString(String name) {
 

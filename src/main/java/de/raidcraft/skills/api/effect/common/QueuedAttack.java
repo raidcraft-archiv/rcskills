@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -54,6 +55,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         trigger.getAttack().addAttackTypes(getTypes());
         if (callback != null) {
             callback.run(trigger);
+            getSource().executeAmbientEffects(AbilityEffectStage.HIT, trigger.getAttack().getTarget().getEntity().getLocation());
         }
         info(getSource().getFriendlyName() + " ausgeführt!");
         remove();
