@@ -158,9 +158,8 @@ public final class ConfigUtil {
         Hero hero = (Hero) holder;
         for (String key : availableModifier) {
             if (key.endsWith("-skill-modifier")) {
-                key = key.replace("-skill-modifier", "").trim();
                 try {
-                    Skill extraSkill = hero.getSkill(key);
+                    Skill extraSkill = hero.getSkill(key.replace("-skill-modifier", "").trim());
                     if (extraSkill instanceof LevelableSkill) {
                         value += section.getDouble(key, 0.0) * ((LevelableSkill) extraSkill).getAttachedLevel().getLevel();
                     }
@@ -168,9 +167,8 @@ public final class ConfigUtil {
                     RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
                 }
             } else if (key.endsWith("-prof-modifier")) {
-                key = key.replace("-prof-modifier", "").trim();
                 try {
-                    Profession extraProf = hero.getProfession(key);
+                    Profession extraProf = hero.getProfession(key.replace("-prof-modifier", "").trim());
                     value += section.getDouble(key, 0.0) * extraProf.getAttachedLevel().getLevel();
                 } catch (UnknownSkillException | UnknownProfessionException e) {
                     RaidCraft.LOGGER.warning(e.getMessage() + " - in " + section.getParent().getName());
