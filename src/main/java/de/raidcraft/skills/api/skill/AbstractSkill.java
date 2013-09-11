@@ -384,6 +384,10 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     @Override
     public void save() {
 
+        if (getHolder().getPlayer() == null) {
+            return;
+        }
+
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         if (skill == null) return;
         skill.setUnlockTime(unlockTime);
