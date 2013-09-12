@@ -38,6 +38,7 @@ import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.conversations.LinkExpPoolAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.conversations.MaxOutHeroAction;
+import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
@@ -139,6 +140,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
                     try {
                         RaidCraft.registerItemAttachmentProvider(getSkillManager());
+                        RaidCraft.registerItemAttachmentProvider(new SkillsRequirementProvider());
                     } catch (RaidCraftException e) {
                         getLogger().warning(e.getMessage());
                     }
