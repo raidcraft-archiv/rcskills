@@ -22,6 +22,8 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.party.SimpleParty;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -437,6 +439,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void damage(Attack attack) {
 
         if (getEntity().isDead()) {
@@ -461,12 +464,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 attacker = (CharacterTemplate) attack.getSource();
             } else if (attack.getSource() instanceof Ability) {
                 attacker = ((Ability) attack.getSource()).getHolder();
+                // lets also play the damage visual effects
+                ((Ability) attack.getSource()).executeAmbientEffects(AbilityEffectStage.DAMAGE, getEntity().getLocation());
             } else if (attack.getSource() instanceof Effect) {
                 if (((Effect) attack.getSource()).getSource() instanceof Ability) {
                     attacker = ((Ability) ((Effect) attack.getSource()).getSource()).getHolder();
                 } else if (((Effect) attack.getSource()).getSource() instanceof CharacterTemplate) {
                     attacker = (CharacterTemplate) ((Effect) attack.getSource()).getSource();
                 }
+                // lets also play the damage visual effects
+                ((Effect) attack.getSource()).executeAmbientEffects(EffectEffectStage.DAMAGE, getEntity().getLocation());
             }
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());

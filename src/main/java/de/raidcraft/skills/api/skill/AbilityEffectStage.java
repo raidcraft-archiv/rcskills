@@ -12,7 +12,8 @@ public enum AbilityEffectStage {
     LINE,
     IMPACT,
     HIT,
-    BOW_FIRE;
+    BOW_FIRE,
+    DAMAGE;
 
     public static AbilityEffectStage fromString(String name) {
 

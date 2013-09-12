@@ -70,11 +70,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @SuppressWarnings("unchecked")
     public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
 
-        Object effects = getProperties().getAmbientEffects().get(stage);
+        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
         if (effects == null) {
             return new ArrayList<>();
         }
-        return (List<AmbientEffect>) effects;
+        return effects;
     }
 
     @Override
