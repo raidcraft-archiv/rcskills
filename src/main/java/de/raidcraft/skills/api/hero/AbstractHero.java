@@ -683,6 +683,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public boolean hasSkill(String id) {
 
+        if (id == null || id.equals("")) return false;
         id = id.toLowerCase();
         boolean hasSkill = virtualSkills.containsKey(id);
         if (getPlayer().isOnline()) {
