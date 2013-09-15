@@ -806,10 +806,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
             throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
         }
-        // there is currently a bug in bukkit for which player.hasLineOfSight always returns false
-        // TODO: workaround for this is to use the entity
-        if (!(target instanceof Player) && !target.hasLineOfSight(getEntity())) {
-            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel nicht im Sichtfeld.");
+        // check the line of sight between entities
+        if (!getEntity().hasLineOfSight(target)) {
+            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel ist nicht im Sichtfeld.");
         }
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
     }
