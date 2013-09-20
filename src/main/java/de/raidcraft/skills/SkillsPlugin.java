@@ -471,6 +471,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public int userinterface_refresh_interval = 100;
         @Setting("defaults.pvp-toggle-delay")
         public double pvp_toggle_delay = 300;
+        @Setting("defaults.exp-bat-despawn-delay")
+        public double exp_bat_despawn_delay = 10.0;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
