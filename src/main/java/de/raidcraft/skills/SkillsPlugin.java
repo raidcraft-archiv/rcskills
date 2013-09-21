@@ -127,7 +127,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(BaseCommands.class);
 
         // register the tab stuff
-        // registerTabDecoSettings();
+        registerTabDecoSettings();
         // register conv actions when all plugins loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
