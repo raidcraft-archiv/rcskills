@@ -1,9 +1,9 @@
 package de.raidcraft.skills.tabdeco;
 
-import TCB.TabDeco.API.TabDecoSetting;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.tabdeco.api.TabDecoSetting;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
