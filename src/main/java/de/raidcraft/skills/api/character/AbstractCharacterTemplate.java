@@ -352,6 +352,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean canAttack() {
 
+        if (!(getEntity() instanceof Player)) return true;
         if (!hasWeaponsEquiped()) return canSwing(EquipmentSlot.HANDS);
         for (EquipmentSlot slot : weapons.keySet()) {
             if (canSwing(slot)) {
