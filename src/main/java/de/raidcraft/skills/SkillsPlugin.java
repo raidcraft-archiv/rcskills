@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import TCB.TabDeco.API.TabDecoRegistry;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -61,6 +60,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
