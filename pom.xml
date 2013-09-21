@@ -58,9 +58,9 @@
             <version>${rc.version}</version>
         </dependency>
         <dependency>
-            <groupId>me.moplants</groupId>
+            <groupId>de.raidcraft</groupId>
             <artifactId>tabdeco</artifactId>
-            <version>1.0.0</version>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kitteh</groupId>
