@@ -89,6 +89,18 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
+    public void addValue(int value) {
+
+        setCurrentValue(getCurrentValue() + value);
+    }
+
+    @Override
+    public void removeValue(int value) {
+
+        setCurrentValue(getCurrentValue() - value);
+    }
+
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;

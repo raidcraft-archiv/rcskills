@@ -338,6 +338,50 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public CustomWeapon removeWeapon(EquipmentSlot slot) {
+
+        CustomWeapon weapon = getWeapon(slot);
+        removeAttributes(weapon.getAttributes());
+        return super.removeWeapon(slot);
+    }
+
+    @Override
+    public CustomArmor removeArmor(EquipmentSlot slot) {
+
+        CustomArmor armor = getArmor(slot);
+        removeAttributes(armor.getAttributes());
+        return super.removeArmor(slot);
+    }
+
+    @Override
+    public void setWeapon(CustomWeapon weapon) {
+
+        super.setWeapon(weapon);
+        addAttributes(weapon.getAttributes());
+    }
+
+    @Override
+    public void setArmor(CustomArmor armor) {
+
+        super.setArmor(armor);
+        addAttributes(armor.getAttributes());
+    }
+
+    private void removeAttributes(Collection<ItemAttribute> attributes) {
+
+        for (ItemAttribute attribute : attributes) {
+            getAttribute(attribute).removeValue(attribute.getValue());
+        }
+    }
+
+    private void addAttributes(Collection<ItemAttribute> attributes) {
+
+        for (ItemAttribute attribute : attributes) {
+            getAttribute(attribute).addValue(attribute.getValue());
+        }
+    }
+
+    @Override
     public Collection<Attribute> getAttributes() {
 
         return attributes.values();

@@ -23,6 +23,10 @@ public interface Attribute {
 
     public void setCurrentValue(int value);
 
+    public void addValue(int value);
+
+    public void removeValue(int value);
+
     public double getDamageModifier();
 
     public double getHealthModifier();
