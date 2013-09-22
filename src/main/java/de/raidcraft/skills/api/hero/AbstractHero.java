@@ -370,14 +370,20 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private void removeAttributes(Collection<ItemAttribute> attributes) {
 
         for (ItemAttribute attribute : attributes) {
-            getAttribute(attribute).removeValue(attribute.getValue());
+            Attribute attr = getAttribute(attribute);
+            if (attr != null) {
+                attr.removeValue(attribute.getValue());
+            }
         }
     }
 
     private void addAttributes(Collection<ItemAttribute> attributes) {
 
         for (ItemAttribute attribute : attributes) {
-            getAttribute(attribute).addValue(attribute.getValue());
+            Attribute attr = getAttribute(attribute);
+            if (attr != null) {
+                attr.addValue(attribute.getValue());
+            }
         }
     }
 
