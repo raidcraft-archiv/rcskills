@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplate> {
 
-    public EffectDamage(Effect<Skill> skillEffect, int damage) {
+    public EffectDamage(Effect<Skill> skillEffect, double damage) {
 
         super(skillEffect, skillEffect.getTarget(), damage, skillEffect.getTypes());
     }
