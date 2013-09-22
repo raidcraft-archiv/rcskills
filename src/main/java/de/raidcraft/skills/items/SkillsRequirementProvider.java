@@ -12,14 +12,12 @@ import org.bukkit.entity.Player;
 @ProviderInformation("skills.requirements")
 public class SkillsRequirementProvider implements ItemAttachmentProvider {
 
-    private final SkillRequirementAttachment skillRequirementAttachment = new SkillRequirementAttachment();
-
     @Override
     public ItemAttachment getItemAttachment(Player player, String attachmentName) throws ItemAttachmentException {
 
         // this is kinda ugly but it works ^^
         if (attachmentName.equalsIgnoreCase("skill")) {
-            return skillRequirementAttachment;
+            return new SkillRequirementAttachment();
         }
         throw new ItemAttachmentException("Unknown Item Attachment with the name: " + attachmentName);
     }

@@ -27,6 +27,12 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
+    public String getName() {
+
+        return "skill";
+    }
+
+    @Override
     public boolean isRequirementMet(Player player) {
 
         try {
@@ -53,8 +59,8 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
             }
             return msg;
         } catch (UnknownSkillException ignored) {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -69,7 +75,7 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
             msg += ".";
             return msg;
         } catch (UnknownSkillException e) {
-            return e.getMessage();
+            return null;
         }
     }
 

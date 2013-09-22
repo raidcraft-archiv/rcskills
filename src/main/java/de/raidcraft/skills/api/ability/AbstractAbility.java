@@ -87,6 +87,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     public final boolean matches(String name) {
 
+        if (name == null) return false;
         name = name.toLowerCase();
         return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
     }
