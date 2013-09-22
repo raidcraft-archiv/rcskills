@@ -636,18 +636,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void recalculateHealth() {
-
-        int maxHealth = getMaxHealth();
-        int defaultHealth = getDefaultHealth();
-        if (defaultHealth > maxHealth) {
-            increaseMaxHealth(defaultHealth - maxHealth);
-        } else if (defaultHealth < maxHealth) {
-            decreaseMaxHealth(maxHealth - defaultHealth);
-        }
-    }
-
-    @Override
     public void setHealth(int health) {
 
         super.setHealth(health);
