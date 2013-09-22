@@ -500,7 +500,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 // check for a second weapon too
                 ItemStack secondHandItem = getPlayer().getInventory().getItem(slot + 1);
                 if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
-                    if (CustomItemUtil.isWeapon(secondHandItem)) {
+                    if (CustomItemUtil.isOffhandWeapon(secondHandItem)) {
                         CustomWeapon secondWeapon = CustomItemUtil.getWeapon(secondHandItem);
                         if (!secondWeapon.isMeetingAllRequirements(getPlayer())) {
                             throw new CombatException(secondWeapon.getResolveReason(getPlayer()));
