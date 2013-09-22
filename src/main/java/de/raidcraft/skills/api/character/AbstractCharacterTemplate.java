@@ -308,10 +308,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearArmor() {
 
-        armorPieces.clear();
+        for (CustomArmor armor : getArmor()) {
+            removeArmor(armor.getEquipmentSlot());
+        }
         // if hero update the user interface
         if (this instanceof Hero) {
-            ((Hero)this).getUserInterface().refresh();
+            ((Hero) this).getUserInterface().refresh();
         }
     }
 
@@ -324,7 +326,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearWeapons() {
 
-        weapons.clear();
+        for (CustomWeapon weapon : getWeapons()) {
+            removeWeapon(weapon.getEquipmentSlot());
+        }
     }
 
     @Override
