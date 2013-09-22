@@ -341,7 +341,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public CustomWeapon removeWeapon(EquipmentSlot slot) {
 
         CustomWeapon weapon = getWeapon(slot);
-        if (weapon != null) removeAttributes(weapon.getAttributes());
+        if (weapon != null && weapon.hasAttributes()) removeAttributes(weapon.getAttributes());
         return super.removeWeapon(slot);
     }
 
@@ -349,7 +349,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
         CustomArmor armor = getArmor(slot);
-        if (armor != null) removeAttributes(armor.getAttributes());
+        if (armor != null && armor.hasAttributes()) removeAttributes(armor.getAttributes());
         return super.removeArmor(slot);
     }
 
@@ -357,14 +357,14 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void setWeapon(CustomWeapon weapon) {
 
         super.setWeapon(weapon);
-        if (weapon != null) addAttributes(weapon.getAttributes());
+        if (weapon != null && weapon.hasAttributes()) addAttributes(weapon.getAttributes());
     }
 
     @Override
     public void setArmor(CustomArmor armor) {
 
         super.setArmor(armor);
-        if (armor != null) addAttributes(armor.getAttributes());
+        if (armor != null && armor.hasAttributes()) addAttributes(armor.getAttributes());
     }
 
     private void removeAttributes(Collection<ItemAttribute> attributes) {
