@@ -4,6 +4,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.tabdeco.api.TabDecoSetting;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
@@ -28,7 +29,9 @@ public class TabDecoAttributeSettings extends TabDecoSetting {
 
         Attribute attribute = getAttribute(player, inputText);
         if (attribute != null) {
-            return String.valueOf(attribute.getCurrentValue());
+            // display what the player is gaining to his base value
+            return String.valueOf(attribute.getBaseValue())
+                    + ChatColor.GREEN + " + " + (attribute.getCurrentValue() - attribute.getBaseValue());
         }
         return "N/A";
     }
