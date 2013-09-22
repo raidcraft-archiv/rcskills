@@ -81,10 +81,10 @@ public final class CharacterManager implements Listener, Component {
             @Override
             public void onPacketSending(PacketEvent event) {
 
+                Hero hero = getHero(event.getPlayer());
                 if (isPausingPlayerExpUpdate(event.getPlayer())) {
                     return;
                 }
-                Hero hero = getHero(event.getPlayer());
                 if (hero.getUserInterface() instanceof BukkitUserInterface) {
                     PacketContainer packetContainer = event.getPacket().deepClone();
                     ((BukkitUserInterface) hero.getUserInterface()).modifyExperiencePacket(packetContainer);
