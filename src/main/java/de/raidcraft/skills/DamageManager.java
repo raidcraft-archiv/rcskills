@@ -28,15 +28,15 @@ public final class DamageManager implements Listener {
     private final SkillsPlugin plugin;
     private final SimpleConfiguration config;
     private Map<EntityType, Integer> creatureHealth;
-    private Map<EntityType, Integer> creatureDamage;
-    private Map<Material, Integer> itemDamage;
+    private Map<EntityType, Double> creatureDamage;
+    private Map<Material, Double> itemDamage;
     private Map<EntityDamageEvent.DamageCause, Double> environmentalDamage;
-    private Map<ProjectileType, Integer> projectileDamage;
+    private Map<ProjectileType, Double> projectileDamage;
 
     protected DamageManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
-        this.config = plugin.configure(new SimpleConfiguration(plugin, CONFIG_NAME));
+        this.config = plugin.configure(new SimpleConfiguration<>(plugin, CONFIG_NAME));
         loadConfig();
         plugin.registerEvents(this);
     }
@@ -44,10 +44,10 @@ public final class DamageManager implements Listener {
     private void loadConfig() {
 
         this.creatureHealth = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-health"), EntityType.class, 20);
-        this.creatureDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-damage"), EntityType.class, 10);
-        this.itemDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("item-damage"), Material.class, 2);
+        this.creatureDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-damage"), EntityType.class, 10.0);
+        this.itemDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("item-damage"), Material.class, 2.0);
         this.environmentalDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("environmental-damage"), EntityDamageEvent.DamageCause.class, 0.0);
-        this.projectileDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("projectile-damage"), ProjectileType.class, 0);
+        this.projectileDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("projectile-damage"), ProjectileType.class, 0.0);
     }
 
     public int getCreatureHealth(EntityType type) {
@@ -58,20 +58,20 @@ public final class DamageManager implements Listener {
         return 20;
     }
 
-    public int getCreatureDamage(EntityType type) {
+    public double getCreatureDamage(EntityType type) {
 
         if (creatureDamage.containsKey(type)) {
             return creatureDamage.get(type);
         }
-        return 10;
+        return 10.0;
     }
 
-    public int getItemDamage(Material type) {
+    public double getItemDamage(Material type) {
 
         if (itemDamage.containsKey(type)) {
             return itemDamage.get(type);
         }
-        return 2;
+        return 2.0;
     }
 
     public double getEnvironmentalDamage(EntityDamageEvent.DamageCause type) {
@@ -82,12 +82,12 @@ public final class DamageManager implements Listener {
         return 0.0;
     }
 
-    public int getProjectileDamage(ProjectileType type) {
+    public double getProjectileDamage(ProjectileType type) {
 
         if (projectileDamage.containsKey(type)) {
             return projectileDamage.get(type);
         }
-        return 0;
+        return 0.0;
     }
 
     /*/////////////////////////////////////////////////////////////////////////

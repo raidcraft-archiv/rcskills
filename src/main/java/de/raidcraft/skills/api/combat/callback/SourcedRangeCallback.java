@@ -50,7 +50,7 @@ public class SourcedRangeCallback<T extends ProjectileCallback> {
         return attack;
     }
 
-    public int getDamage() {
+    public double getDamage() {
 
         return attack.getDamage();
     }

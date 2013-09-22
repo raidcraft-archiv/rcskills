@@ -15,7 +15,7 @@ public class Creature extends AbstractCharacterTemplate {
     public Creature(LivingEntity entity) {
 
         super(entity);
-        attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 60));
+        attachLevel(new CreatureAttachedLevel<CharacterTemplate>(this, 1));
     }
 
     @Override

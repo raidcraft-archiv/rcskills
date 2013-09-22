@@ -33,7 +33,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     private EntityDamageEvent.DamageCause cause = null;
     private List<AmbientEffect> lineEffects = new ArrayList<>();
 
-    public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
+    public EntityAttack(CharacterTemplate source, CharacterTemplate target, double damage, EffectType... types) {
 
         super(source, target, damage, types);
     }
@@ -44,13 +44,13 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         this.callback = callback;
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<EntityAttack> callback, EffectType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, double damage, Callback<EntityAttack> callback, EffectType... types) {
 
         this(attacker, target, damage, types);
         this.callback = callback;
     }
 
-    public EntityAttack(EntityDamageByEntityEvent event, int damage) {
+    public EntityAttack(EntityDamageByEntityEvent event, double damage) {
 
         this(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getDamager()),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),

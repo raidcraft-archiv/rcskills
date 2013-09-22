@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 public class MagicalAttack extends EntityAttack {
 
 
-    public MagicalAttack(CharacterTemplate source, CharacterTemplate target, int damage) {
+    public MagicalAttack(CharacterTemplate source, CharacterTemplate target, double damage) {
 
         super(source, target, damage, EffectType.MAGICAL);
     }
@@ -22,7 +22,7 @@ public class MagicalAttack extends EntityAttack {
         super(attacker, target, callback, EffectType.MAGICAL);
     }
 
-    public MagicalAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, EntityAttackCallback callback) {
+    public MagicalAttack(CharacterTemplate attacker, CharacterTemplate target, double damage, EntityAttackCallback callback) {
 
         super(attacker, target, damage, callback, EffectType.MAGICAL);
     }

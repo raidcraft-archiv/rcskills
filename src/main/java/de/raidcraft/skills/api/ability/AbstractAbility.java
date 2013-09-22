@@ -183,7 +183,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getHolder().getBlockTarget(getTotalRange());
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage) throws CombatException {
 
         return attack(target, damage, null);
     }
@@ -198,7 +198,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack(target, getTotalDamage(), callback);
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.addAttackElement(getElements());
@@ -211,7 +211,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return rangedAttack(type, getTotalDamage(), null);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage) throws CombatException {
 
         return rangedAttack(type, damage, null);
     }
@@ -221,7 +221,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return rangedAttack(type, getTotalDamage(), callback);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) throws CombatException {
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
         attack.addAttackElement(getElements());
@@ -229,7 +229,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack;
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
         magicalAttack.addAttackElement(getElements());
@@ -239,7 +239,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack;
     }
 
-    public final MagicalAttack magicalAttack(int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(double damage, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), damage, callback);
     }
@@ -254,7 +254,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(getTarget(), getTotalDamage(), null);
     }
 
-    public final MagicalAttack magicalAttack(int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(double damage) throws CombatException {
 
         return magicalAttack(damage, null);
     }
@@ -264,7 +264,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(target, getTotalDamage(), callback);
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate taraget, int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate taraget, double damage) throws CombatException {
 
         return magicalAttack(taraget, damage, null);
     }
