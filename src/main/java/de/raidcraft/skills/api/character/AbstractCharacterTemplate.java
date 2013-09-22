@@ -72,6 +72,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private boolean inCombat = false;
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
+    private boolean recalculateHealth = false;
     protected boolean usingHealthBar = true;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
@@ -381,6 +382,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void recalculateHealth() {
 
+        if (isInCombat()) {
+            recalculateHealth = true;
+            return;
+        }
         int maxHealth = getMaxHealth();
         int defaultHealth = getDefaultHealth();
         if (defaultHealth > maxHealth) {
@@ -388,6 +393,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         } else if (defaultHealth < maxHealth) {
             decreaseMaxHealth(maxHealth - defaultHealth);
         }
+        recalculateHealth = false;
     }
 
     @Override
@@ -869,6 +875,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         this.inCombat = inCombat;
         if (!inCombat) {
             getThreatTable().reset();
+            if (recalculateHealth) recalculateHealth();
         }
     }
 
