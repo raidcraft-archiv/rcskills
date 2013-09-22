@@ -13,9 +13,9 @@ import java.util.Set;
  */
 public interface Attack<S, T> extends TargetedAction<S, T> {
 
-    public int getDamage();
+    public double getDamage();
 
-    public void setDamage(int damage);
+    public void setDamage(double damage);
 
     public boolean hasKnockback();
 

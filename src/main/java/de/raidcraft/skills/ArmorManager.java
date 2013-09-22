@@ -44,7 +44,7 @@ public final class ArmorManager implements Triggered, Listener {
         plugin.getCharacterManager().getHero(event.getPlayer()).checkArmor();
     }
 
-    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.MONITOR)
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) {
 
         Attack<?,CharacterTemplate> attack = trigger.getAttack();
@@ -63,8 +63,9 @@ public final class ArmorManager implements Triggered, Listener {
         }
 
         double damageReduction = getDamageReduction(attack, totalArmor);
-        int reducedDamage = (int) (attack.getDamage() * damageReduction);
-        attack.setDamage(attack.getDamage() - reducedDamage);
+        double damage = attack.getDamage();
+        double reducedDamage = damage * damageReduction;
+        attack.setDamage(damage - reducedDamage);
         if (reducedDamage > 0) {
             attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int)(damageReduction * 10000)/100.0) + "%) verringert.");
         }

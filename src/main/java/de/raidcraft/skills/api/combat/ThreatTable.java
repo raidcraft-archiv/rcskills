@@ -64,7 +64,7 @@ public class ThreatTable {
     public class ThreatLevel implements Comparable<ThreatLevel> {
 
         private final CharacterTemplate target;
-        private int threatLevel;
+        private double threatLevel;
 
         public ThreatLevel(CharacterTemplate target) {
 
@@ -76,23 +76,23 @@ public class ThreatTable {
             return target;
         }
 
-        public int getThreatLevel() {
+        public double getThreatLevel() {
 
             return threatLevel;
         }
 
-        public void setThreatLevel(int threatLevel) {
+        public void setThreatLevel(double threatLevel) {
 
             this.threatLevel = threatLevel;
             order();
         }
 
-        public void increaseThreat(int amount) {
+        public void increaseThreat(double amount) {
 
             setThreatLevel(getThreatLevel() + amount);
         }
 
-        public void decreaseThreat(int amount) {
+        public void decreaseThreat(double amount) {
 
             setThreatLevel(getThreatLevel() - amount);
         }

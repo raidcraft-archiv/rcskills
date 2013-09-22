@@ -48,7 +48,7 @@ public class Weakness<S extends Skill> extends ExpirableEffect<S> implements Tri
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
-        int damage = trigger.getAttack().getDamage();
+        double damage = trigger.getAttack().getDamage();
         int newDamage = (int) (damage - damage * getReduction());
         trigger.getAttack().setDamage(newDamage);
     }

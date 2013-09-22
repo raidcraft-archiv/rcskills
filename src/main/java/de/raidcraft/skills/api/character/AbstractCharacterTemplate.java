@@ -68,7 +68,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     // every player is member of his own party by default
     private Party party;
     private LivingEntity entity;
-    private int damage;
+    private double damage;
     private boolean inCombat = false;
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
@@ -368,13 +368,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
 
         return this.damage;
     }
 
     @Override
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
 
         this.damage = damage;
     }
@@ -501,7 +501,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
             // also actually damage the entity
-            int newHealth = getHealth() - attack.getDamage();
+            int newHealth = (int) (getHealth() - attack.getDamage());
             if (newHealth <= 0) {
                 kill();
             } else {

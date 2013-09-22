@@ -88,9 +88,9 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     void leaveParty();
 
-    public int getDamage();
+    public double getDamage();
 
-    public void setDamage(int damage);
+    public void setDamage(double damage);
 
     public void recalculateHealth();
 

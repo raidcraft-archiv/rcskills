@@ -609,9 +609,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
 
-        int damage = super.getDamage();
+        double damage = super.getDamage();
         for (Attribute attribute : getAttributes()) {
             damage += attribute.getCurrentValue() * attribute.getDamageModifier();
         }
