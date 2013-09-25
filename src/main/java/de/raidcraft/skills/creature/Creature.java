@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.util.EntityUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -34,7 +35,7 @@ public class Creature extends AbstractCharacterTemplate {
 
     private void updateHealthBar() {
 
-        getEntity().setCustomName(EntityUtil.drawHealthBar(getHealth(), getMaxHealth()));
+        getEntity().setCustomName(EntityUtil.drawHealthBar(getHealth(), getMaxHealth(), ChatColor.GREEN));
     }
 
     @Override
