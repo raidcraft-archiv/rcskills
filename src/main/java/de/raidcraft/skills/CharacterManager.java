@@ -1,11 +1,5 @@
 package de.raidcraft.skills;
 
-import com.comphenix.protocol.Packets;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ConnectionSide;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.player.UnknownPlayerException;
@@ -15,7 +9,6 @@ import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.hero.SimpleHero;
@@ -73,25 +66,6 @@ public final class CharacterManager implements Listener, Component {
         this.plugin = plugin;
         RaidCraft.registerComponent(CharacterManager.class, this);
         plugin.registerEvents(this);
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
-                RaidCraft.getComponent(SkillsPlugin.class),
-                ConnectionSide.SERVER_SIDE,
-                Packets.Server.SET_EXPERIENCE
-        ) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-
-                Hero hero = getHero(event.getPlayer());
-                if (isPausingPlayerExpUpdate(event.getPlayer())) {
-                    return;
-                }
-                if (hero.getUserInterface() instanceof BukkitUserInterface) {
-                    PacketContainer packetContainer = event.getPacket().deepClone();
-                    ((BukkitUserInterface) hero.getUserInterface()).modifyExperiencePacket(packetContainer);
-                    event.setPacket(packetContainer);
-                }
-            }
-        });
         startRefreshTask();
     }
 

@@ -1,9 +1,13 @@
 package de.raidcraft.skills;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -17,6 +21,15 @@ public final class BukkitEnvironmentManager implements Listener {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onInteract(PlayerInteractEvent event) {
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Du kannst keine Zaubertische öffnen.");
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
