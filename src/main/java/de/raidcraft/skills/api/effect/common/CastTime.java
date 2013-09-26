@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.effect.common;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -10,6 +8,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.util.FakeWither;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -29,8 +28,8 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     private boolean casted = false;
     private final float fillPerTick;
     private boolean isPlayer = false;
-    private Player player;
     private List<AmbientEffect> ambientEffects;
+    private FakeWither castBar;
 
     public CastTime(SkillAction source, CharacterTemplate target, EffectData data) {
 
@@ -44,16 +43,17 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        getSource().getSource().sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC +
-                "Wirke Zauber " + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
-                + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDuration()) + "s");
+        String msg = ChatColor.ITALIC + "" + ChatColor.RED + target.getName() + ChatColor.GRAY + " zaubert "
+                + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
+                + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDuration()) + "s";
 
         isPlayer = getTarget().getEntity() instanceof Player;
         if (isPlayer) {
-            player = (Player) getTarget().getEntity();
-            RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().pausePlayerExpUpdate(player);
-            nullExp();
-            player.setExp(fillPerTick);
+            castBar = new FakeWither(target.getEntity().getLocation().add(0, -1, 0));
+            castBar.setCustomName(msg);
+            castBar.setVisible(false);
+            castBar.setHealth(fillPerTick);
+            castBar.create();
         }
         ambientEffects = getSource().getSkill().getAmbientEffects(AbilityEffectStage.CASTING);
     }
@@ -61,16 +61,16 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer) {
+        if (isPlayer && castBar != null) {
             // when the spell is cast above 90% it is consired success
-            if (player.getExp() >= 0.9F) {
+            if (castBar.getHealth() > 0.9) {
                 casted = true;
             }
-            float newExp = player.getExp() + fillPerTick;
-            if (newExp > 1.0F) {
+            float newStatus = castBar.getHealth() + fillPerTick;
+            if (newStatus > 1.0F) {
                 return;
             }
-            player.setExp(newExp);
+            castBar.setHealth(newStatus);
         }
         for (AmbientEffect effect : ambientEffects) {
             effect.run(getTarget().getEntity().getLocation());
@@ -86,23 +86,13 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer) {
-            nullExp();
-            RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().unpausePlayerExpUpdate(player);
+        if (isPlayer && castBar != null) {
+            castBar.destroy();
         }
         if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
         } else {
             getSource().run();
-        }
-    }
-
-    private void nullExp() {
-
-        if (isPlayer) {
-            player.setExp(0.0F);
-            player.setLevel(0);
-            player.setTotalExperience(0);
         }
     }
 }
