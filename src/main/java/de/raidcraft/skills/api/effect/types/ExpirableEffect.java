@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -67,6 +68,10 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
         startTask();
         super.apply();
+        // lets add the effect to the display
+        if (getTarget() instanceof Hero) {
+            ((Hero) getTarget()).getUserInterface().addEffect(this, (int) TimeUtil.ticksToSeconds(getDuration()));
+        }
     }
 
     @Override
@@ -75,6 +80,10 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
         if (isStarted()) {
             stopTask();
             super.remove();
+            // lets remove the effect from the display
+            if (getTarget() instanceof Hero) {
+                ((Hero) getTarget()).getUserInterface().removeEffect(this);
+            }
         }
     }
 
