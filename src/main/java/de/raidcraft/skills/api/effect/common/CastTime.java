@@ -54,6 +54,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
             castBar.setVisible(false);
             castBar.setHealth(fillPerTick);
             castBar.create();
+            castBar.move(0, -1, 0);
         }
         ambientEffects = getSource().getSkill().getAmbientEffects(AbilityEffectStage.CASTING);
     }
