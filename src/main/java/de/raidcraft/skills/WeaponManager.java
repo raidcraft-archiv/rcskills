@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 /**
@@ -27,19 +26,10 @@ public final class WeaponManager implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
 
         try {
-            plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkWeapons(event.getPlayer().getInventory().getHeldItemSlot());
+            // lets ceck the first slot and checkweapons will always check the second slot
+            plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkWeapons();
         } catch (CombatException e) {
             ((Player) event.getPlayer()).sendMessage(ChatColor.RED + e.getMessage());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onItemHeldChange(PlayerItemHeldEvent event) {
-
-        try {
-            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons(event.getNewSlot());
-        } catch (CombatException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
@@ -47,7 +37,7 @@ public final class WeaponManager implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         try {
-            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons(event.getPlayer().getInventory().getHeldItemSlot());
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons();
         } catch (CombatException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }

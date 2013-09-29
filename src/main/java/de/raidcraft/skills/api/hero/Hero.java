@@ -39,7 +39,7 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Attribute getAttribute(ItemAttribute attribute);
 
-    void checkWeapons(int slot) throws CombatException;
+    void checkWeapons() throws CombatException;
 
     public Party getPendingPartyInvite();
 
