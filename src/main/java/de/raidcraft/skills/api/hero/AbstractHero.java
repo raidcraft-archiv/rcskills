@@ -612,6 +612,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public boolean hasWeaponsEquiped() {
+
+        return super.hasWeaponsEquiped() && getPlayer().getInventory().getHeldItemSlot() == 0;
+    }
+
+    @Override
     public double getDamage() {
 
         double damage = super.getDamage();
