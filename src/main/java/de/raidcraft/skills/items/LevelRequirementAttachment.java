@@ -2,9 +2,9 @@ package de.raidcraft.skills.items;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.skills.CharacterManager;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -22,6 +22,12 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
+    public void loadAttachment(ConfigurationSection data) {
+
+        this.requiredLevel = data.getInt("level", 1);
+    }
+
+    @Override
     public String getName() {
 
         return "level";
@@ -34,25 +40,25 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
-    public String getItemText(Player player) {
+    public String getItemText() {
 
-        return "Benötigt mind. Level " + requiredLevel;
+        return ChatColor.RED + "Benötigt mind. Level " + requiredLevel;
     }
 
     @Override
-    public String getErrorMessage(Player player) {
+    public String getErrorMessage() {
 
         return "Du benötigst mindestens Level " + requiredLevel + " um dieses Item zu tragen.";
     }
 
     @Override
-    public void applyAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void applyAttachment(Player player) throws CustomItemException {
 
-        this.requiredLevel = args.getInt("level", 1);
+
     }
 
     @Override
-    public void removeAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void removeAttachment(Player player) throws CustomItemException {
 
 
     }
