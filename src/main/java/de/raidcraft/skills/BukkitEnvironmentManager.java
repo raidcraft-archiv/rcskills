@@ -1,7 +1,15 @@
 package de.raidcraft.skills;
 
+import com.comphenix.protocol.Packets;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ConnectionSide;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,10 +25,30 @@ public final class BukkitEnvironmentManager implements Listener {
 
     private final SkillsPlugin plugin;
 
-    public BukkitEnvironmentManager(SkillsPlugin plugin) {
+    public BukkitEnvironmentManager(final SkillsPlugin plugin) {
 
         this.plugin = plugin;
         plugin.registerEvents(this);
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
+                plugin, ConnectionSide.SERVER_SIDE, Packets.Server.ARM_ANIMATION
+        ) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+
+                // This is the entity whose arm has just moved
+                Entity entity = event.getPacket().getEntityModifier(event.getPlayer().getWorld()).read(0);
+                if (!(entity instanceof LivingEntity)) {
+                    return;
+                }
+                CharacterTemplate character = BukkitEnvironmentManager.this.plugin.getCharacterManager().getCharacter((LivingEntity) entity);
+
+                int animation = event.getPacket().getIntegers().read(1);
+                // See if this is a "move arm" action
+                if (animation == 1 && !character.canAttack()) {
+                    event.setCancelled(true);
+                }
+            }
+        });
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
