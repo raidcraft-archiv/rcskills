@@ -592,6 +592,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
             }
             try {
                 new HealAction<>("Server", hero, hero.getMaxHealth()).run();
+                hero.getPlayer().setFoodLevel(20);
+                hero.getPlayer().setSaturation(1.0F);
             } catch (CombatException e) {
                 throw new CommandException(e);
             }
