@@ -32,7 +32,7 @@ public abstract class AbstractSkilledCharacter<T extends SkilledCharacter> exten
 
         ArrayList<Ability<T>> useables = new ArrayList<>();
         for (Ability<T> ability : abilities.values()) {
-            if (ability instanceof Useable) {
+            if (ability instanceof Useable && !ability.isOnCooldown()) {
                 useables.add(ability);
             }
         }
