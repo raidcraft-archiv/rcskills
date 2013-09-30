@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
 import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.api.config.DataMap;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
@@ -22,6 +23,22 @@ public interface AbilityProperties<T> extends ConfigurationSection {
     String getDescription();
 
     String[] getUsage();
+
+    public int getOverrideInt(String key, int def);
+
+    public double getOverrideDouble(String key, double def);
+
+    public String getOverrideString(String key, String def);
+
+    public boolean getOverrideBool(String key, boolean def);
+
+    public ConfigurationSection getOverrideSection(String path);
+
+    public DataMap getOverrideConfig();
+
+    public void setOverrideConfig(DataMap override);
+
+    public ConfigurationSection getSafeConfigSection(String path);
 
     boolean isEnabled();
 
