@@ -18,6 +18,8 @@ public class SkillsRequirementProvider implements ItemAttachmentProvider {
         // this is kinda ugly but it works ^^
         if (attachmentName.equalsIgnoreCase("skill")) {
             return new SkillRequirementAttachment();
+        } else if (attachmentName.equalsIgnoreCase("level")) {
+            return new LevelRequirementAttachment();
         }
         throw new ItemAttachmentException("Unknown Item Attachment with the name: " + attachmentName);
     }
