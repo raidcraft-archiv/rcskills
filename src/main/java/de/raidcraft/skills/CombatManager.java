@@ -18,6 +18,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
@@ -258,6 +259,15 @@ public final class CombatManager implements Listener, Triggered {
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 
+                // lets check if the player is attacking with the wrong item slot
+                if (attacker instanceof Hero) {
+                    if (((Hero) attacker).getPlayer().getInventory().getHeldItemSlot() != 0) {
+                        if (CustomItemUtil.isWeapon(((Hero) attacker).getPlayer().getItemInHand())) {
+                            ((Hero) attacker).sendMessage(ChatColor.RED
+                                    + "Du musst deine Waffe in deinen ersten Hotbarslot legen um damit Schaden zu machen!");
+                        }
+                    }
+                }
                 PhysicalAttack physicalAttack;
                 // lets check for skills that are queued and allow the attack without setting the weapons swing cooldown
                 if (attacker.hasEffect(QueuedAttack.class)) {
