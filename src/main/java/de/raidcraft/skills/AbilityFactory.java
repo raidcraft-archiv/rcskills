@@ -52,11 +52,7 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
     @SuppressWarnings("unchecked")
     protected <T extends CharacterTemplate> Ability<T> create(T character, ConfigurationSection... overrides) throws UnknownSkillException {
 
-        AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
-        // we need to set all the overrides to null because they are used multiple times
-        if (useAlias()) {
-            config.merge(aliasConfig);
-        }
+        AbilityConfig config = getNewConfig();
 
         // also lets merge all aditional override configs
         for (ConfigurationSection section : overrides) {
@@ -100,7 +96,11 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
 
     protected AbilityConfig getNewConfig() {
 
-        return plugin.configure(new AbilityConfig(this), false);
+        AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
+        if (useAlias()) {
+            config.merge(aliasConfig);
+        }
+        return config;
     }
 
     protected Class<? extends Ability> getAbilityClass() {

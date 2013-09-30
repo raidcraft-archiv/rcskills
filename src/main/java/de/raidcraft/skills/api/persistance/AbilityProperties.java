@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public interface AbilityProperties<T> {
+public interface AbilityProperties<T> extends ConfigurationSection {
 
     String getName();
 

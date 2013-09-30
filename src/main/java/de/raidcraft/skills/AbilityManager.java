@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.Map;
@@ -85,7 +86,7 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         }
     }
 
-    public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName) throws UnknownSkillException {
+    public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName, ConfigurationSection... merge) throws UnknownSkillException {
 
         Ability<T> ability;
         abilityName = StringUtils.formatName(abilityName);
@@ -93,7 +94,7 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
             throw new UnknownSkillException("Es gibt keine Fähigkeit mit dem Namen: " + abilityName);
         }
         // lets create a new ability for this character
-        ability = abilityFactories.get(abilityName).create(character);
+        ability = abilityFactories.get(abilityName).create(character, merge);
         // lets add the skill as a trigger handler
         if (ability instanceof Triggered) {
             TriggerManager.registerListeners((Triggered) ability);
@@ -105,5 +106,10 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
 
         ability = StringUtils.formatName(ability);
         return abilityFactories.containsKey(ability);
+    }
+
+    public AbilityFactory getFactory(Ability ability) {
+
+        return abilityFactories.get(ability.getName());
     }
 }
