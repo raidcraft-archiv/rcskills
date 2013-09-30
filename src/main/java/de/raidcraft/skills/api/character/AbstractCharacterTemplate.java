@@ -478,6 +478,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return;
         }
         if (!attack.isCancelled() && attack.getDamage() > 0) {
+            // lets add the combat effect
+            try {
+                attack.getAttacker().addEffect(this, Combat.class);
+                addEffect(attack.getAttacker(), Combat.class);
+            } catch (CombatException ignored) {
+            }
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
                 // set the last attack variable to track death

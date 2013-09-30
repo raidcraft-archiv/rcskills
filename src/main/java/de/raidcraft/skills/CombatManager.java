@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
-import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -294,35 +293,6 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void enterCombat(EntityDamageByEntityEvent event) {
-
-        if (FAKED_EVENTS.contains(event) || event.getDamage() <= 0) {
-            return;
-        }
-        if (event.getEntity() instanceof LivingEntity) {
-            CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
-            CharacterTemplate attacker;
-            if (event.getDamager() instanceof LivingEntity) {
-                attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
-            } else if (event.getDamager() instanceof Projectile) {
-                LivingEntity shooter = ((Projectile) event.getDamager()).getShooter();
-                if (shooter == null) return;
-                attacker = plugin.getCharacterManager().getCharacter(shooter);
-            } else {
-                // no combat event
-                return;
-            }
-            try {
-                // add the combat effect to the attacker and victim
-                victim.addEffect(attacker, Combat.class);
-                attacker.addEffect(victim, Combat.class);
-            } catch (CombatException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void projectileHitEvent(ProjectileHitEvent event) {
 
@@ -358,8 +328,6 @@ public final class CombatManager implements Listener, Triggered {
             return;
         }
         boolean callback = false;
-        // lets enter combat for that player
-        enterCombat(event);
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
 
