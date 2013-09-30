@@ -15,7 +15,7 @@ public class RegisteredAbilityTrigger extends RegisteredTrigger {
     public RegisteredAbilityTrigger(final Triggered listener, final TriggerExecutor executor, TriggerHandler info) {
 
         super(listener, executor, info);
-        this.ability = (listener instanceof Skill ? (Skill) listener : null);
+        this.ability = (listener instanceof Ability ? (Ability) listener : null);
     }
 
     /**

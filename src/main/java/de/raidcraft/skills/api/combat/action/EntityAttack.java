@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
@@ -70,16 +69,15 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
-            if (getSource() instanceof Hero) {
-                AttackTrigger trigger = new AttackTrigger(getSource(), this, cause);
-                TriggerManager.callTrigger(trigger);
-                if (trigger.isCancelled()) setCancelled(true);
-            }
-            if (getTarget() instanceof Hero) {
-                DamageTrigger trigger = new DamageTrigger(getTarget(), this, cause);
-                TriggerManager.callTrigger(trigger);
-                if (trigger.isCancelled()) setCancelled(true);
-            }
+            // call the attack trigger
+            AttackTrigger attackTrigger = new AttackTrigger(getSource(), this, cause);
+            TriggerManager.callTrigger(attackTrigger);
+            if (attackTrigger.isCancelled()) setCancelled(true);
+            // call the damage trigger
+            DamageTrigger damageTrigger = new DamageTrigger(getTarget(), this, cause);
+            TriggerManager.callTrigger(damageTrigger);
+            if (damageTrigger.isCancelled()) setCancelled(true);
+
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);
             }
