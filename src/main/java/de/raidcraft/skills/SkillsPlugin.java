@@ -252,6 +252,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.abilityManager = new AbilityManager(this);
         this.effectManager = new EffectManager(this);
         this.skillManager.loadFactories();
+        this.abilityManager.loadFactories();
         this.effectManager.loadFactories();
         // register our inhouse skills
         registerSkills();
