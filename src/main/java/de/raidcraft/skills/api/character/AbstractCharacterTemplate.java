@@ -480,7 +480,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // lets add the combat effect
             try {
-                attack.getAttacker().addEffect(this, Combat.class);
+                if (attack.getAttacker() != null) attack.getAttacker().addEffect(this, Combat.class);
                 addEffect(attack.getAttacker(), Combat.class);
             } catch (CombatException ignored) {
             }
