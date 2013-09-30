@@ -479,6 +479,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void checkWeapons() throws CombatException {
 
+        if (!isOnline()) {
+            return;
+        }
         // lets check all equiped weapons and adjust the player accordingly
         ItemStack item = getPlayer().getInventory().getItem(MAIN_WEAPON_SLOT);
         clearWeapons();

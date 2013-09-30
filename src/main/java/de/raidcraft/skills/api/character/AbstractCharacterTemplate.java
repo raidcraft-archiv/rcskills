@@ -260,6 +260,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void checkArmor() {
 
+        if (getEntity() == null) {
+            return;
+        }
         clearArmor();
         if (getEntity() == null) {
             return;
