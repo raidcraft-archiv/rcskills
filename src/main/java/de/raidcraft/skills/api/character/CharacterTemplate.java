@@ -30,6 +30,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public LivingEntity getEntity();
 
+    public CharacterType getCharacterType();
+
     public ThreatTable getThreatTable();
 
     public Attack getLastDamageCause();

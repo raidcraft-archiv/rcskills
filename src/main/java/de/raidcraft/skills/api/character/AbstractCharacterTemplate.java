@@ -118,6 +118,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public CharacterType getCharacterType() {
+
+        return CharacterType.NATURAL;
+    }
+
+    @Override
     public ThreatTable getThreatTable() {
 
         return threatTable;

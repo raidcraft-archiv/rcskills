@@ -13,6 +13,7 @@ import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractSkilledCharacter;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.character.CharacterType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -260,6 +261,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             return getPlayer().getName();
         }
         return name;
+    }
+
+    @Override
+    public CharacterType getCharacterType() {
+
+        return CharacterType.PLAYER;
     }
 
     @Override
