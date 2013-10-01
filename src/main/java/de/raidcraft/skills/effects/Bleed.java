@@ -1,5 +1,6 @@
 package de.raidcraft.skills.effects;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EffectDamage;
@@ -7,7 +8,6 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.EffectUtil;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -23,7 +23,7 @@ import org.bukkit.World;
         description = "Lässt das Ziel bluten.",
         types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF}
 )
-public class Bleed extends PeriodicExpirableEffect<Skill> {
+public class Bleed extends PeriodicExpirableEffect<Ability> {
 
     private static final FireworkEffect BLEED_EFFECT = FireworkEffect.builder()
             .with(FireworkEffect.Type.BURST)
@@ -31,7 +31,7 @@ public class Bleed extends PeriodicExpirableEffect<Skill> {
             .withFade(Color.BLACK)
             .build();
 
-    public Bleed(Skill source, CharacterTemplate target, EffectData data) {
+    public Bleed(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
