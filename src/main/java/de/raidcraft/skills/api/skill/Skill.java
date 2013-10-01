@@ -21,11 +21,9 @@ public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementReso
 
     public void setEnabled(boolean enabled);
 
-    public void checkUsage(SkillAction action) throws CombatException;
+    void checkUsage(SkillAction action) throws CombatException;
 
-    public boolean canUseSkill();
-
-    public void substractUsageCost(SkillAction action);
+    void substractUsageCost(SkillAction action);
 
     public Hero getHolder();
 

@@ -44,7 +44,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         String msg = ChatColor.ITALIC + "" + ChatColor.RED + target.getName() + ChatColor.GRAY + " zaubert "
-                + ChatColor.AQUA + getSource().getSkill().getFriendlyName()
+                + ChatColor.AQUA + getSource().getAbility().getFriendlyName()
                 + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDuration()) + "s";
 
         isPlayer = getTarget().getEntity() instanceof Player;
@@ -56,7 +56,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
             castBar.create();
             castBar.move(0, -1, 0);
         }
-        ambientEffects = getSource().getSkill().getAmbientEffects(AbilityEffectStage.CASTING);
+        ambientEffects = getSource().getAbility().getAmbientEffects(AbilityEffectStage.CASTING);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
             castBar.destroy();
         }
         if (!casted) {
-            warn(getSource().getSource(), "Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
+            warn(getSource().getSource(), "Zauber " + getSource().getAbility().getFriendlyName() + " wurde unterbrochen.");
         } else {
             getSource().run();
         }

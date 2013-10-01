@@ -4,6 +4,8 @@ import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.AbilityAction;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.Location;
@@ -34,6 +36,12 @@ public interface Ability<T extends CharacterTemplate> {
     boolean canUseInCombat();
 
     boolean canUseOutOfCombat();
+
+    void checkUsage(AbilityAction<T> action) throws CombatException;
+
+    boolean canUseAbility();
+
+    void substractUsageCost(AbilityAction<T> action);
 
     Set<EffectType> getTypes();
 
