@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.effects.Summoned;
+import de.raidcraft.skills.util.ExpUtil;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -97,20 +98,38 @@ public final class ExperienceManager implements Listener {
         if (plugin.getCommonConfig().getIgnoredWorlds().contains(hero.getPlayer().getWorld().getName())) {
             return;
         }
+        int highestPlayerLevel = 0;
+        int totalPlayerLevel = 0;
         HashSet<Hero> heroesToAddExp = new HashSet<>();
         for (Hero partyHero : hero.getParty().getHeroes()) {
             if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
                 heroesToAddExp.add(partyHero);
+                if (partyHero.getPlayerLevel() > highestPlayerLevel) {
+                    highestPlayerLevel = partyHero.getPlayerLevel();
+                }
+                totalPlayerLevel += partyHero.getPlayerLevel();
             }
         }
         if (heroesToAddExp.isEmpty()) return;
-        int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
+        int exp;
+        if (character.getEntity().hasMetadata("RC_CUSTOM_MOB")) {
+            exp = (int) ExpUtil.getPartyMobXPFull(
+                    ((Hero) attacker).getPlayerLevel(),
+                    highestPlayerLevel,
+                    totalPlayerLevel,
+                    character.getAttachedLevel().getLevel(),
+                    character.getEntity().hasMetadata("ELITE"),
+                    // TODO: maybe add rested EXP
+                    0);
+        } else {
+            exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
+        }
         if (exp > 0) {
             // lets actually give out the exp
             for (Hero expToAdd : heroesToAddExp) {
                 expToAdd.getExpPool().addExp(exp);
                 // lets do some visual magic tricks and let the player see the exp
-                sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
+                // sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
             }
         }
     }
