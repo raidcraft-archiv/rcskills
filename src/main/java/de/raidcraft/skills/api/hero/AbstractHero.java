@@ -350,17 +350,17 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public CustomWeapon removeWeapon(EquipmentSlot slot) {
 
-        CustomWeapon weapon = getWeapon(slot);
+        CustomWeapon weapon = super.removeWeapon(slot);
         if (weapon != null && weapon.hasAttributes()) removeAttributes(weapon.getAttributes());
-        return super.removeWeapon(slot);
+        return weapon;
     }
 
     @Override
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
-        CustomArmor armor = getArmor(slot);
+        CustomArmor armor = super.removeArmor(slot);
         if (armor != null && armor.hasAttributes()) removeAttributes(armor.getAttributes());
-        return super.removeArmor(slot);
+        return armor;
     }
 
     @Override
