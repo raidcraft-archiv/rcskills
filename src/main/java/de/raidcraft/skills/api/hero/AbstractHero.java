@@ -676,20 +676,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void onLevelGain() {
-
-        sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
-    }
-
-    @Override
-    public void onLevelLoss() {
-
-        sendMessage(ChatColor.RED + "Du bist ein Level abgestiegen: " +
-                ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getAttachedLevel().getLevel());
-    }
-
-    @Override
     public void save() {
 
         THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
