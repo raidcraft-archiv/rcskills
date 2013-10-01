@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -76,7 +75,7 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         }
     }
 
-    protected void createAliasFactory(String alias, String skill, AliasesConfig config) {
+    protected void createAliasFactory(String alias, String skill, ConfigurationSection config) {
 
         try {
             AbilityFactory factory = new AbilityFactory(plugin, abilityClasses.get(skill), skill, config);
@@ -86,10 +85,14 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         }
     }
 
-    public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName, ConfigurationSection... merge) throws UnknownSkillException {
+    public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName, ConfigurationSection merge) throws UnknownSkillException {
 
         Ability<T> ability;
         abilityName = StringUtils.formatName(abilityName);
+        if (merge != null && merge.isSet("ability") && !abilityFactories.containsKey(abilityName)) {
+            // create ourselves an alias factory
+            createAliasFactory(abilityName, merge.getString("ability"), merge);
+        }
         if (!abilityFactories.containsKey(abilityName)) {
             throw new UnknownSkillException("Es gibt keine Fähigkeit mit dem Namen: " + abilityName);
         }
