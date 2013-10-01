@@ -1,65 +1,12 @@
 package de.raidcraft.skills.util;
 
+import de.raidcraft.util.EntityUtil;
 import org.bukkit.ChatColor;
 
 /**
  * @author Silthus
  */
 public class ExpUtil {
-
-
-    /**
-     * Mob XP Functions (including Con Colors)
-     * Colors will be numbers:
-     * {grey = 0, green = 1, yellow = 2, orange = 3, red = 4, skull = 5}
-     * NOTE: skull = red when working with anything OTHER than mobs!
-     * @param playerlvl the level of the player
-     * @param moblvl the level of the mob
-     * @return difficulty color
-     */
-    public static ChatColor getConColor(int playerlvl, int moblvl) {
-
-        if (playerlvl + 5 <= moblvl) {
-            if (playerlvl + 10 <= moblvl) {
-                return ChatColor.BLACK;
-            } else {
-                return ChatColor.DARK_RED;
-            }
-        } else {
-            switch (moblvl - playerlvl) {
-                case 4:
-                case 3:
-                    return ChatColor.GOLD;
-                case 2:
-                case 1:
-                case 0:
-                case -1:
-                case -2:
-                    return ChatColor.YELLOW;
-                default:
-                    // More adv formula for grey/green lvls:
-                    if (playerlvl <= 5) {
-                        return ChatColor.GREEN; //All others are green.
-                    } else {
-                        if (playerlvl <= 39) {
-                            if (moblvl <= (playerlvl - 5 - Math.floor(playerlvl / 10))) {
-                                // Its below or equal to the 'grey level':
-                                return ChatColor.GRAY;
-                            } else {
-                                return ChatColor.GREEN;
-                            }
-                        } else {
-                            //player over lvl 39:
-                            if (moblvl <= (playerlvl - 1 - Math.floor(playerlvl / 5))) {
-                                return ChatColor.GRAY;
-                            } else {
-                                return ChatColor.GREEN;
-                            }
-                        }
-                    }
-            }
-        }
-    }
 
     public static int getZD(int lvl) {
 
@@ -111,7 +58,7 @@ public class ExpUtil {
                 return Math.floor(temp);
             }
         } else {
-            if (getConColor(playerlvl, moblvl) == ChatColor.GRAY) {
+            if (EntityUtil.getConColor(playerlvl, moblvl) == ChatColor.GRAY) {
                 return 0;
             } else {
                 return Math.floor((playerlvl * 5) + 45) * (1 - (playerlvl - moblvl) / getZD(playerlvl));
