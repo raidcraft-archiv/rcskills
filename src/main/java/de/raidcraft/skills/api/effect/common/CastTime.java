@@ -8,8 +8,8 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
-import de.raidcraft.util.FakeWither;
 import de.raidcraft.util.TimeUtil;
+import de.raidcraft.util.bossbar.BarAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -29,7 +29,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     private final float fillPerTick;
     private boolean isPlayer = false;
     private List<AmbientEffect> ambientEffects;
-    private FakeWither castBar;
+    private float filled = 0.0F;
 
     public CastTime(SkillAction source, CharacterTemplate target, EffectData data) {
 
@@ -49,12 +49,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
         isPlayer = getTarget().getEntity() instanceof Player;
         if (isPlayer) {
-            castBar = new FakeWither(target.getEntity().getLocation().add(0, -1, 0));
-            castBar.setCustomName(msg);
-            castBar.setVisible(false);
-            castBar.setHealth(fillPerTick);
-            castBar.create();
-            castBar.move(0, -1, 0);
+            BarAPI.setMessage((Player) getTarget().getEntity(), msg, filled = fillPerTick);
         }
         ambientEffects = getSource().getAbility().getAmbientEffects(AbilityEffectStage.CASTING);
     }
@@ -62,16 +57,17 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer && castBar != null) {
+        if (isPlayer) {
             // when the spell is cast above 90% it is consired success
-            if (castBar.getHealth() > 0.9) {
+            if (filled > 0.9) {
                 casted = true;
             }
-            float newStatus = castBar.getHealth() + fillPerTick;
-            if (newStatus > 1.0F) {
+            filled += fillPerTick;
+            if (filled > 1.0F) {
+                filled = 1.0F;
                 return;
             }
-            castBar.setHealth(newStatus);
+            BarAPI.setHealth((Player) getTarget().getEntity(), filled);
         }
         for (AmbientEffect effect : ambientEffects) {
             effect.run(getTarget().getEntity().getLocation());
@@ -87,8 +83,8 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer && castBar != null) {
-            castBar.destroy();
+        if (isPlayer) {
+            BarAPI.removeBar((Player) getTarget().getEntity());
         }
         if (!casted) {
             warn(getSource().getSource(), "Zauber " + getSource().getAbility().getFriendlyName() + " wurde unterbrochen.");
