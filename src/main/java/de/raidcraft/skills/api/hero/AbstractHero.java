@@ -58,9 +58,6 @@ import java.util.Set;
  */
 public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implements Hero {
 
-    private static final int MAIN_WEAPON_SLOT = 0;
-    private static final int OFFHAND_WEAPON_SLOT = 1;
-
     private final int id;
     private final String name;
     private final AttachedLevel<Hero> expPool;
@@ -483,7 +480,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             return;
         }
         // lets check all equiped weapons and adjust the player accordingly
-        ItemStack item = getPlayer().getInventory().getItem(MAIN_WEAPON_SLOT);
+        ItemStack item = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
         clearWeapons();
         removeArmor(EquipmentSlot.SHIELD_HAND);
         if (item == null || !CustomItemUtil.isWeapon(item)) {
@@ -492,7 +489,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // lets check the durability of the weapon
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
         if (customItem.getCustomDurability() < 1) {
-            CustomItemUtil.moveItem(getPlayer(), MAIN_WEAPON_SLOT, item);
+            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, item);
             throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
         }
         CustomWeapon weapon = (CustomWeapon) customItem.getItem();
@@ -503,16 +500,16 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             throw new CombatException(weapon.getResolveReason(getPlayer()));
         }
         if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-            ItemStack secondHandItem = getPlayer().getInventory().getItem(OFFHAND_WEAPON_SLOT);
+            ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
             if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
-                CustomItemUtil.moveItem(getPlayer(), OFFHAND_WEAPON_SLOT, secondHandItem);
+                CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
                 sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
             }
             setWeapon(weapon);
         } else if (weapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
             setWeapon(weapon);
             // check for a second weapon too
-            ItemStack secondHandItem = getPlayer().getInventory().getItem(OFFHAND_WEAPON_SLOT);
+            ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
             if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
                 if (CustomItemUtil.isOffhandWeapon(secondHandItem)) {
                     CustomWeapon secondWeapon = CustomItemUtil.getWeapon(secondHandItem);
