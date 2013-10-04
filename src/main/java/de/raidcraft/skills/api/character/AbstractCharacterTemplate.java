@@ -99,6 +99,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     protected void setName(String name) {
 
+        getEntity().setCustomNameVisible(true);
         getEntity().setCustomName(name);
         this.name = ChatColor.stripColor(name);
     }
@@ -559,6 +560,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity().isDead()) {
             return;
         }
+        getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         getEntity().damage(getMaxHealth());
         clearEffects();
