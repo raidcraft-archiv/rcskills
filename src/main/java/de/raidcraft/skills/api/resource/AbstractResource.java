@@ -225,7 +225,8 @@ public abstract class AbstractResource implements Resource {
     @Override
     public double getPercentage() {
 
-        return getCurrent() / getMax();
+        int max = getMax();
+        return max > 0 ? getCurrent() / max : 0;
     }
 
     @Override
