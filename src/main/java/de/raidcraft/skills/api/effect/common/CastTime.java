@@ -56,7 +56,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
         if (isPlayer && !casted) {
             // when the spell is cast above 90% it is consired success
-            if (getRemainingTicks() / getDuration() > 0.9) {
+            if ((double)getRemainingTicks() / (double)getDuration() > 0.9) {
                 casted = true;
             }
         }
