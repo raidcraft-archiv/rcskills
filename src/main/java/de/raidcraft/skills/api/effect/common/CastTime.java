@@ -26,10 +26,8 @@ import java.util.List;
 public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
     private boolean casted = false;
-    private final float fillPerTick;
     private boolean isPlayer = false;
     private List<AmbientEffect> ambientEffects;
-    private float filled = 0.0F;
 
     public CastTime(SkillAction source, CharacterTemplate target, EffectData data) {
 
@@ -37,19 +35,18 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
         setPriority(-1.0);
         duration = TimeUtil.secondsToTicks(source.getCastTime());
         interval = 1;
-        fillPerTick = 1.0F / duration;
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        String msg = ChatColor.ITALIC + "" + ChatColor.RED + target.getName() + ChatColor.GRAY + " zaubert "
+        String msg = ChatColor.GRAY + "Zaubere "
                 + ChatColor.AQUA + getSource().getAbility().getFriendlyName()
                 + ChatColor.GRAY + " in " + TimeUtil.ticksToSeconds(getDuration()) + "s";
 
         isPlayer = getTarget().getEntity() instanceof Player;
         if (isPlayer) {
-            BarAPI.setMessage((Player) getTarget().getEntity(), msg, filled = fillPerTick);
+            BarAPI.setMessage((Player) getTarget().getEntity(), msg, getDuration());
         }
         ambientEffects = getSource().getAbility().getAmbientEffects(AbilityEffectStage.CASTING);
     }
@@ -57,17 +54,11 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer) {
+        if (isPlayer && !casted) {
             // when the spell is cast above 90% it is consired success
-            if (filled > 0.9) {
+            if (getRemainingTicks() / getDuration() > 0.9) {
                 casted = true;
             }
-            filled += fillPerTick;
-            if (filled > 1.0F) {
-                filled = 1.0F;
-                return;
-            }
-            BarAPI.setHealth((Player) getTarget().getEntity(), filled);
         }
         for (AmbientEffect effect : ambientEffects) {
             effect.run(getTarget().getEntity().getLocation());
