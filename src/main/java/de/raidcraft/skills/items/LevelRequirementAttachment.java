@@ -4,7 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.skills.CharacterManager;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -42,7 +41,7 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     @Override
     public String getItemText() {
 
-        return ChatColor.RED + "Benötigt mind. Level " + requiredLevel;
+        return "Benötigt mind. Level " + requiredLevel;
     }
 
     @Override
