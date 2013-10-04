@@ -16,6 +16,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractSkilledCharacter;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterType;
+import de.raidcraft.api.events.RCPlayerGainExpEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -35,7 +36,6 @@ import de.raidcraft.skills.bindings.BindManager;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.formulas.FormulaType;
-import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -740,13 +740,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void onExpGain(int exp) {
 
-        ExpLogger.log(this, exp);
+        RaidCraft.callEvent(new RCPlayerGainExpEvent(getPlayer(), exp));
     }
 
     @Override
     public void onExpLoss(int exp) {
 
-        ExpLogger.log(this, -exp);
+        RaidCraft.callEvent(new RCPlayerGainExpEvent(getPlayer(), -exp));
     }
 
     @Override
