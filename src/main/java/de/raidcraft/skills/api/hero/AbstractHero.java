@@ -4,11 +4,14 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.WeaponType;
+import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
@@ -521,7 +524,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         CustomWeapon mainWeapon = (CustomWeapon) mainWeaponCustomItemStack.getItem();
         // lets check if the player is allowed to wear the weapon
         if (!isAllowedWeapon(mainWeapon.getWeaponType())) {
-            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
+            try {
+                CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
+                EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) mainWeaponCustomItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                tooltip.setColor(ChatColor.DARK_RED);
+                mainWeaponCustomItemStack.rebuild(getPlayer());
+            } catch (CustomItemException ignored) {
+            }
             throw new CombatException("Du kannst diese Waffe nicht tragen.");
         }
         if (mainWeapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
@@ -545,7 +554,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
                     CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
                     if (!isAllowedWeapon(offHandWeapon.getWeaponType())) {
-                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                        try {
+                            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                            EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) mainWeaponCustomItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                            tooltip.setColor(ChatColor.DARK_RED);
+                            mainWeaponCustomItemStack.rebuild(getPlayer());
+                        } catch (CustomItemException ignored) {
+                        }
                         throw new CombatException("Du kannst diese Waffe nicht tragen.");
                     }
                     if (!offHandWeapon.isMeetingAllRequirements(getPlayer())) {
@@ -556,7 +571,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     // check for a shield
                     CustomArmor armor = CustomItemUtil.getArmor(offHandItemStack);
                     if (!isAllowedArmor(armor.getArmorType())) {
-                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                        try {
+                            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                            EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) mainWeaponCustomItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                            tooltip.setColor(ChatColor.DARK_RED);
+                            mainWeaponCustomItemStack.rebuild(getPlayer());
+                        } catch (CustomItemException ignored) {
+                        }
                         throw new CombatException("Du kannst diesen Schild nicht tragen.");
                     }
                     if (!armor.isMeetingAllRequirements(getPlayer())) {
@@ -591,8 +612,14 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 }
                 CustomArmor armor = (CustomArmor) customItemStack.getItem();
                 if (!isAllowedArmor(armor.getArmorType())) {
-                    CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
-                            "Du kannst diese Rüstung nicht tragen. Sie wurde zurück in dein Inventar gelegt.");
+                    try {
+                        CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
+                                "Du kannst diese Rüstung nicht tragen. Sie wurde zurück in dein Inventar gelegt.");
+                        EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) customItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                        tooltip.setColor(ChatColor.DARK_RED);
+                        customItemStack.rebuild(getPlayer());
+                    } catch (CustomItemException ignored) {
+                    }
                     continue;
                 }
                 if (!armor.isMeetingAllRequirements(getPlayer())) {
