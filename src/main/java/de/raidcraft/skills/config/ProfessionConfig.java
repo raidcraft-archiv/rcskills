@@ -1,6 +1,8 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.items.ArmorType;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.ProfessionFactory;
@@ -17,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -178,5 +181,33 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public ConfigurationSection getExpMoneyConversionRate() {
 
         return getOverrideSection("exp-money-conversion-rate");
+    }
+
+    @Override
+    public Map<WeaponType, Integer> getAllowedWeapons() {
+
+        Map<WeaponType, Integer> weapons = new EnumMap<>(WeaponType.class);
+        ConfigurationSection section = getSafeConfigSection("allowed-weapons");
+        for (String key : section.getKeys(false)) {
+            WeaponType type = WeaponType.fromString(key);
+            if (type != null) {
+                weapons.put(type, section.getInt(key));
+            }
+        }
+        return weapons;
+    }
+
+    @Override
+    public Map<ArmorType, Integer> getAllowedArmor() {
+
+        Map<ArmorType, Integer> weapons = new EnumMap<>(ArmorType.class);
+        ConfigurationSection section = getSafeConfigSection("allowed-armor");
+        for (String key : section.getKeys(false)) {
+            ArmorType type = ArmorType.fromString(key);
+            if (type != null) {
+                weapons.put(type, section.getInt(key));
+            }
+        }
+        return weapons;
     }
 }

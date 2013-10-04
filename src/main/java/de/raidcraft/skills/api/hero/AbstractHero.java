@@ -2,11 +2,13 @@ package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
+import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
@@ -474,52 +476,89 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public boolean isAllowedWeapon(WeaponType type) {
+
+        for (Profession profession : getActiveProfessions()) {
+            Map<WeaponType, Integer> weapons = profession.getProperties().getAllowedWeapons();
+            if (weapons.containsKey(type)) {
+                return weapons.get(type) <= profession.getAttachedLevel().getLevel();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isAllowedArmor(ArmorType type) {
+
+        for (Profession profession : getActiveProfessions()) {
+            Map<ArmorType, Integer> armor = profession.getProperties().getAllowedArmor();
+            if (armor.containsKey(type)) {
+                return armor.get(type) <= profession.getAttachedLevel().getLevel();
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void checkWeapons() throws CombatException {
 
         if (!isOnline()) {
             return;
         }
         // lets check all equiped weapons and adjust the player accordingly
-        ItemStack item = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
+        ItemStack mainWeaponItemStack = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
         clearWeapons();
         removeArmor(EquipmentSlot.SHIELD_HAND);
-        if (item == null || !CustomItemUtil.isWeapon(item)) {
+        if (mainWeaponItemStack == null || !CustomItemUtil.isWeapon(mainWeaponItemStack)) {
             return;
         }
         // lets check the durability of the weapon
-        CustomItemStack customItem = RaidCraft.getCustomItem(item);
-        if (customItem.getCustomDurability() < 1) {
-            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, item);
+        CustomItemStack mainWeaponCustomItemStack = RaidCraft.getCustomItem(mainWeaponItemStack);
+        if (mainWeaponCustomItemStack.getCustomDurability() < 1) {
+            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
             throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
         }
-        CustomWeapon weapon = (CustomWeapon) customItem.getItem();
-        if (weapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
+        CustomWeapon mainWeapon = (CustomWeapon) mainWeaponCustomItemStack.getItem();
+        // lets check if the player is allowed to wear the weapon
+        if (!isAllowedWeapon(mainWeapon.getWeaponType())) {
+            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
+            throw new CombatException("Du kannst diese Waffe nicht tragen.");
+        }
+        if (mainWeapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
             throw new CombatException("Du kannst diese Waffe nur in deiner Schildhand tragen.");
         }
-        if (!weapon.isMeetingAllRequirements(getPlayer())) {
-            throw new CombatException(weapon.getResolveReason(getPlayer()));
+        if (!mainWeapon.isMeetingAllRequirements(getPlayer())) {
+            throw new CombatException(mainWeapon.getResolveReason(getPlayer()));
         }
-        if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+        if (mainWeapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
             ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
             if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
                 CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
                 sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
             }
-            setWeapon(weapon);
-        } else if (weapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
-            setWeapon(weapon);
+            setWeapon(mainWeapon);
+        } else if (mainWeapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
+            setWeapon(mainWeapon);
             // check for a second weapon too
-            ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
-            if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
-                if (CustomItemUtil.isOffhandWeapon(secondHandItem)) {
-                    CustomWeapon secondWeapon = CustomItemUtil.getWeapon(secondHandItem);
-                    if (!secondWeapon.isMeetingAllRequirements(getPlayer())) {
-                        throw new CombatException(secondWeapon.getResolveReason(getPlayer()));
+            ItemStack offHandItemStack = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
+            if (offHandItemStack != null && offHandItemStack.getTypeId() != 0) {
+                if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
+                    CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
+                    if (!isAllowedWeapon(offHandWeapon.getWeaponType())) {
+                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                        throw new CombatException("Du kannst diese Waffe nicht tragen.");
                     }
-                    setWeapon(secondWeapon);
-                } else if (CustomItemUtil.isShield(secondHandItem)) {
+                    if (!offHandWeapon.isMeetingAllRequirements(getPlayer())) {
+                        throw new CombatException(offHandWeapon.getResolveReason(getPlayer()));
+                    }
+                    setWeapon(offHandWeapon);
+                } else if (CustomItemUtil.isShield(offHandItemStack)) {
                     // check for a shield
-                    CustomArmor armor = CustomItemUtil.getArmor(secondHandItem);
+                    CustomArmor armor = CustomItemUtil.getArmor(offHandItemStack);
+                    if (!isAllowedArmor(armor.getArmorType())) {
+                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                        throw new CombatException("Du kannst diesen Schild nicht tragen.");
+                    }
                     if (!armor.isMeetingAllRequirements(getPlayer())) {
                         throw new CombatException(armor.getResolveReason(getPlayer()));
                     }
@@ -527,6 +566,40 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 } else {
                     removeWeapon(EquipmentSlot.SHIELD_HAND);
                     removeArmor(EquipmentSlot.SHIELD_HAND);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void checkArmor() {
+
+        if (!isOnline()) {
+            return;
+        }
+        clearArmor();
+        ItemStack[] armorContents = getEntity().getEquipment().getArmorContents();
+        for (int i = 0; i < armorContents.length; i++) {
+            if (CustomItemUtil.isArmor(armorContents[i])) {
+                CustomItemStack customItemStack = RaidCraft.getCustomItem(armorContents[i]);
+                // check durability
+                if (customItemStack.getCustomDurability() < 1) {
+                    CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
+                            "Eine Rüstung von dir ist kaputt und muss repariert werden. Sie wurde in dein Inventar gelegt.");
+                    // silently continue and dont award armor
+                    continue;
+                }
+                CustomArmor armor = (CustomArmor) customItemStack.getItem();
+                if (!isAllowedArmor(armor.getArmorType())) {
+                    CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
+                            "Du kannst diese Rüstung nicht tragen. Sie wurde zurück in dein Inventar gelegt.");
+                    continue;
+                }
+                if (!armor.isMeetingAllRequirements(getPlayer())) {
+                    CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
+                            armor.getResolveReason(getPlayer()));
+                } else {
+                    setArmor(armor);
                 }
             }
         }
@@ -793,6 +866,17 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (highestRankedProfession == null) {
             highestRankedProfession = getVirtualProfession();
         }
+    }
+
+    protected List<Profession> getActiveProfessions() {
+
+        ArrayList<Profession> professions = new ArrayList<>();
+        for (Profession profession : getProfessions()) {
+            if (profession.isActive()) {
+                professions.add(profession);
+            }
+        }
+        return professions;
     }
 
     @Override

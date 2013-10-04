@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,7 +38,10 @@ public final class WeaponManager implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         try {
-            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons();
+            int pickupSlot = CustomItemUtil.getPickupSlot(event);
+            if (pickupSlot == CustomItemUtil.MAIN_WEAPON_SLOT || pickupSlot == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
+                plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons();
+            }
         } catch (CombatException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }

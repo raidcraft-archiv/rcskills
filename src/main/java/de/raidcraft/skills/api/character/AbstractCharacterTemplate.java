@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.CharacterManager;
@@ -30,7 +29,6 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
-import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
@@ -255,43 +253,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public Collection<CustomArmor> getArmor() {
 
         return armorPieces.values();
-    }
-
-    @Override
-    public void checkArmor() {
-
-        if (getEntity() == null) {
-            return;
-        }
-        clearArmor();
-        if (getEntity() == null) {
-            return;
-        }
-        boolean brokenArmor = false;
-        for (ItemStack item : getEntity().getEquipment().getArmorContents()) {
-            if (CustomItemUtil.isArmor(item)) {
-                CustomItemStack customItem = RaidCraft.getCustomItem(item);
-                // check durability
-                if (customItem.getCustomDurability() < 1) {
-                    brokenArmor = true;
-                    // silently continue and dont award armor
-                    continue;
-                }
-                CustomArmor armor = (CustomArmor) customItem.getItem();
-                if (this instanceof Hero) {
-                    if (!armor.isMeetingAllRequirements((Player) getEntity())) {
-                        ((Hero) this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
-                        CustomItemUtil.moveItem((Player) getEntity(), -1, item);
-                    } else {
-                        setArmor(armor);
-                    }
-                }
-            }
-        }
-        if (brokenArmor) {
-            ((Hero) this).sendMessage(ChatColor.RED + "Ein Rüstungsteil von dir ist kaputt und gibt dir keine Rüstung mehr. " +
-                    "Bitte lasse ihn reparieren oder tausche ihn aus.");
-        }
     }
 
     @Override

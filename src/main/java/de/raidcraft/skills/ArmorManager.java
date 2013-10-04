@@ -11,11 +11,17 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * @author Silthus
@@ -35,6 +41,31 @@ public final class ArmorManager implements Triggered, Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
 
         plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkArmor();
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getAction() != Action.RIGHT_CLICK_AIR || !event.hasItem()) {
+            return;
+        }
+        if (CustomItemUtil.isArmor(event.getItem())) {
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkArmor();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInventoryClickEvent(InventoryClickEvent event) {
+
+        if (event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            return;
+        }
+        if (!(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
+        if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
+            plugin.getCharacterManager().getHero((Player) event.getWhoClicked()).checkArmor();
+        }
     }
 
     @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.HIGHEST)

@@ -66,8 +66,6 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setLastSwing(EquipmentSlot slot);
 
-    public void checkArmor();
-
     Collection<CustomArmor> getArmor();
 
     CustomArmor getArmor(EquipmentSlot slot);

@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.hero;
 
+import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -39,7 +41,13 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public Attribute getAttribute(ItemAttribute attribute);
 
+    public boolean isAllowedWeapon(WeaponType type);
+
+    public boolean isAllowedArmor(ArmorType type);
+
     void checkWeapons() throws CombatException;
+
+    public void checkArmor();
 
     public Party getPendingPartyInvite();
 
