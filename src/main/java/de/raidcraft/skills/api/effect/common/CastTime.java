@@ -46,7 +46,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
         isPlayer = getTarget().getEntity() instanceof Player;
         if (isPlayer) {
-            BarAPI.setMessage((Player) getTarget().getEntity(), msg, getDuration());
+            BarAPI.setMessage((Player) getTarget().getEntity(), msg, getDuration(), false);
         }
         ambientEffects = getSource().getAbility().getAmbientEffects(AbilityEffectStage.CASTING);
     }
