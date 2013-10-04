@@ -135,7 +135,7 @@ public class BindCommands {
 
         for (Skill skill : hero.getSkills()) {
             // lets check if the player has this skill unlocked
-            if (!(skill instanceof CommandTriggered) || !skill.isUnlocked() || !skill.isActive()) {
+            if (!(skill instanceof CommandTriggered) || !skill.isUnlocked() || !skill.isActive() || !skill.getSkillProperties().isCastable()) {
                 continue;
             }
 
