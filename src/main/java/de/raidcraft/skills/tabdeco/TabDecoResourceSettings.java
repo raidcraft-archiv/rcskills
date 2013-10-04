@@ -29,8 +29,14 @@ public class TabDecoResourceSettings extends TabDecoSetting {
         Hero hero = plugin.getCharacterManager().getHero(player);
         Matcher matcher = RESOURCE_PATTERN.matcher(inputText);
         if (matcher.matches()) {
+            String group = matcher.group(2);
+            Resource resource;
+            if (!group.equalsIgnoreCase("primary") || !group.equalsIgnoreCase("secondary")) {
+                resource = hero.getResource(group);
+            } else {
+                resource = getResource(hero, group.equalsIgnoreCase("primary"));
+            }
             // lets get the resource first
-            Resource resource = getResource(hero, matcher.group(2).equalsIgnoreCase("primary"));
             if (resource == null) {
                 return "";
             }
