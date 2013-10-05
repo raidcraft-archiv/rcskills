@@ -451,7 +451,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 // set the last attack variable to track death
                 lastAttack = attack;
                 // lets increase the thread against the attacker
-                if (attack.getSource() instanceof CharacterTemplate) {
+                if (attack.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
@@ -514,7 +514,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         int newHealth = getHealth() + action.getAmount();
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         // lets increase the threat
-        if (action.getSource() instanceof CharacterTemplate) {
+        if (action.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
             getThreatTable().getThreatLevel((CharacterTemplate) action.getSource()).increaseThreat(action.getThreat());
         }
         getEntity().setNoDamageTicks(1);
