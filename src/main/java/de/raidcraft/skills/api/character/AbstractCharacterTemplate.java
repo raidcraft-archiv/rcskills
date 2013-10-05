@@ -1012,4 +1012,21 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         // override if needed
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractCharacterTemplate)) return false;
+
+        AbstractCharacterTemplate that = (AbstractCharacterTemplate) o;
+
+        return !(entity != null ? !entity.equals(that.entity) : that.entity != null);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return entity != null ? entity.hashCode() : 0;
+    }
 }
