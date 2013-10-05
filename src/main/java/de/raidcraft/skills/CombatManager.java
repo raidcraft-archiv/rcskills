@@ -1,6 +1,8 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
@@ -264,6 +266,13 @@ public final class CombatManager implements Listener, Triggered {
                         if (CustomItemUtil.isWeapon(((Hero) attacker).getPlayer().getItemInHand())) {
                             ((Hero) attacker).sendMessage(ChatColor.RED
                                     + "Du musst deine Waffe in deinen ersten Hotbarslot legen um damit Schaden zu machen!");
+                        }
+                    }
+                    for (CustomWeapon weapon : attacker.getWeapons()) {
+                        if (weapon.getWeaponType() == WeaponType.BOW || weapon.getWeaponType() == WeaponType.MAGIC_WAND) {
+                            event.setCancelled(true);
+                            ((Hero) attacker).sendMessage(ChatColor.RED + "Du kannst nicht mit einer Fernkampf Waffe im Nahkampf angreifen.");
+                            return;
                         }
                     }
                 }
