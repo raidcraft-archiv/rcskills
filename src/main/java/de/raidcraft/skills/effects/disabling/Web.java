@@ -4,7 +4,7 @@ import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.ExpirableEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -13,11 +13,11 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
@@ -28,10 +28,8 @@ import org.bukkit.potion.PotionEffectType;
         description = "Webs the target to the ground making it unable to move.",
         types = {EffectType.DISABLEING, EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MOVEMENT}
 )
-public class Web extends ExpirableEffect<Ability> implements Triggered {
+public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
 
-    private final PotionEffect jumpBlock;
-    private final PotionEffect moveBlock;
     private boolean abortSkillCast = true;
     private boolean abortDestruction = true;
     private boolean abortKnockback = true;
@@ -40,8 +38,7 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
     public Web(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-        jumpBlock = new PotionEffect(PotionEffectType.JUMP, (int) getDuration(), 128, false);
-        moveBlock = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 6, false);
+        interval = 5;
     }
 
     @Override
@@ -86,14 +83,17 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
     }
 
     @Override
+    protected void tick(CharacterTemplate target) throws CombatException {
+
+        Location location = web.getLocation();
+        location.setPitch(target.getEntity().getLocation().getPitch());
+        location.setYaw(target.getEntity().getLocation().getYaw());
+        target.getEntity().teleport(location);
+    }
+
+    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        web = target.getEntity().getLocation().getBlock();
-        while (web.getType() == Material.AIR) {
-            web = web.getRelative(BlockFace.DOWN);
-        }
-        web = web.getRelative(BlockFace.UP);
-        web.setType(Material.WEB);
         renew(target);
     }
 
@@ -108,7 +108,11 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().addPotionEffect(jumpBlock);
-        target.getEntity().addPotionEffect(moveBlock);
+        web = target.getEntity().getLocation().getBlock();
+        while (web.getType() == Material.AIR) {
+            web = web.getRelative(BlockFace.DOWN);
+        }
+        web = web.getRelative(BlockFace.UP);
+        web.setType(Material.WEB);
     }
 }
