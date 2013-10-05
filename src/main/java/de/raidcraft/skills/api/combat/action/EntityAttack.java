@@ -66,6 +66,9 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     @Override
     public void run() throws CombatException {
 
+        if (getTarget() == null) {
+            return;
+        }
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
