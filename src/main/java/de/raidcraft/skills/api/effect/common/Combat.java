@@ -38,11 +38,7 @@ public class Combat<S> extends ExpirableEffect<S> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         target.setInCombat(true);
-        if (target instanceof Hero) {
-            RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.ENTER));
-        } else if (target.getEntity() instanceof Creature) {
-            // TODO: set aggro range
-        }
+        RaidCraft.callEvent(new RCCombatEvent(getTarget(), RCCombatEvent.Type.ENTER));
         info("Du hast den Kampf betreten.");
         if (getSource() instanceof CharacterTemplate) {
             // als add the source to our list
