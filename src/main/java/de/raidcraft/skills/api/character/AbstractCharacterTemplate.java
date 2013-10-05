@@ -41,6 +41,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -452,6 +453,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 lastAttack = attack;
                 // lets increase the thread against the attacker
                 if (attack.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
+                    if (getEntity() instanceof PigZombie) {
+                        ((PigZombie) getEntity()).setAngry(true);
+                    }
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
