@@ -6,8 +6,8 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -38,14 +38,8 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
     @Override
     public void load(ConfigurationSection data) {
 
-        armorReductionPerStack = data.getDouble("reduction.base", 0.05);
-        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHolder().getAttachedLevel().getLevel();
-        armorReductionPerStack += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getAttachedLevel().getLevel();
-
-        if (getSource() instanceof LevelableSkill) {
-            armorReductionPerStack += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getAttachedLevel().getLevel();
-        }
-        armorReductionCap = data.getDouble("reduction.cap", 0.6);
+        armorReductionPerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
+        armorReductionCap = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction-cap"));
         // cap reduction default is 60%
         if (armorReductionCap < armorReductionPerStack) {
             armorReductionPerStack = armorReductionCap;
