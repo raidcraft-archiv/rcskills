@@ -263,6 +263,10 @@ public final class CharacterManager implements Listener, Component {
             characters.put(entity.getUniqueId(), creature);
         } else {
             creature = characters.get(entity.getUniqueId());
+            if (!creature.getEntity().isValid()) {
+                characters.remove(entity.getUniqueId());
+                return getCharacter(entity);
+            }
         }
         return creature;
     }
