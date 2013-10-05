@@ -554,8 +554,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return;
         }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        getEntity().damage(getMaxHealth(), killer.getEntity());
         clearEffects();
+        getEntity().damage(getMaxHealth(), killer.getEntity());
     }
 
     @Override
@@ -566,8 +566,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        getEntity().damage(getMaxHealth());
         clearEffects();
+        getEntity().damage(getMaxHealth());
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
