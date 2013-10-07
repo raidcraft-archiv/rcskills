@@ -5,7 +5,7 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.permissions.groups.SimpleGroup;
-import de.raidcraft.permissions.provider.PermissionsProvider;
+import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public final class SkillPermissionsProvider implements PermissionsProvider<SkillsPlugin> {
+public final class SkillPermissionsProvider implements RCPermissionsProvider<SkillsPlugin> {
 
     private final SkillsPlugin plugin;
     private final List<Group> groups = new ArrayList<>();
