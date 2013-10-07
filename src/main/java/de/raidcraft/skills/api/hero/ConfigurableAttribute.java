@@ -71,6 +71,7 @@ public class ConfigurableAttribute implements Attribute {
     public void setBaseValue(int value) {
 
         this.baseValue = value;
+        hero.recalculateHealth();
     }
 
     @Override
@@ -86,6 +87,19 @@ public class ConfigurableAttribute implements Attribute {
             currentValue = baseValue;
         }
         this.currentValue = currentValue;
+        hero.recalculateHealth();
+    }
+
+    @Override
+    public void addValue(int value) {
+
+        setCurrentValue(getCurrentValue() + value);
+    }
+
+    @Override
+    public void removeValue(int value) {
+
+        setCurrentValue(getCurrentValue() - value);
     }
 
     @Override

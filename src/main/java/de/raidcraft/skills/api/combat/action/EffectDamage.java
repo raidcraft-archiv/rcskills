@@ -1,11 +1,11 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.skills.CombatManager;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
@@ -15,9 +15,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * @author Silthus
  */
-public class EffectDamage extends AbstractAttack<Effect<Skill>, CharacterTemplate> {
+public class EffectDamage extends AbstractAttack<Effect<? extends Ability>, CharacterTemplate> {
 
-    public EffectDamage(Effect<Skill> skillEffect, int damage) {
+    public EffectDamage(Effect<? extends Ability> skillEffect, double damage) {
 
         super(skillEffect, skillEffect.getTarget(), damage, skillEffect.getTypes());
     }

@@ -1,23 +1,21 @@
 package de.raidcraft.skills.api.ui;
 
-import com.comphenix.protocol.Packets;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.injector.PlayerLoggedOutException;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.Scoreboards;
-import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -27,6 +25,7 @@ public class BukkitUserInterface implements UserInterface {
     public static final String HEALTH_OBJECTIVE = "rcshp";
 
     private final Hero hero;
+    private final Map<String, EffectDisplay> displayedEffects = new CaseInsensitiveMap<>();
 
     public BukkitUserInterface(final Hero hero) {
 
@@ -39,48 +38,57 @@ public class BukkitUserInterface implements UserInterface {
         return hero;
     }
 
-    private void updateSidebar() {
+    @Override
+    public void addEffect(Effect effect, final int duration) {
 
-        Objective objective = Scoreboards.getPlayerSidebarObjective(getHero());
-        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_GRAY + "Rüstung")).setScore(getHero().getTotalArmorValue());
-        objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Leben")).setScore(getHero().getHealth());
-        // update all resource displays
-        for (Resource resource : getHero().getResources()) {
-            if (resource.getName().equals("health")) {
-                continue;
-            }
-            if (resource.isEnabled() && resource.getProfession().isActive()) {
-                objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN + resource.getFriendlyName())).setScore(resource.getCurrent());
-            }
+        if (!isValidEffect(effect)) {
+            return;
+        }
+        final Score score = Scoreboards.getPlayerSidebarObjective(getHero()).getScore(getEffectScore(effect));
+        EffectDisplay display = new EffectDisplay(effect, score, duration);
+        displayedEffects.put(effect.getName(), display);
+    }
+
+    @Override
+    public void renewEffect(Effect effect, int duration) {
+
+        if (!isValidEffect(effect)) {
+            return;
+        }
+        if (displayedEffects.containsKey(effect.getName())) {
+            displayedEffects.get(effect.getName()).setRemainingDuration(duration);
+        } else {
+            addEffect(effect, duration);
         }
     }
 
-    private void updateHealthDisplay() {
+    @Override
+    public void removeEffect(Effect effect) {
 
-        // getScoreboardHealthObjective();
-        // Scoreboards.updateHealthDisplays();
+        if (!isValidEffect(effect)) {
+            return;
+        }
+        EffectDisplay display = displayedEffects.remove(effect.getName());
+        if (display != null) {
+            display.setRemainingDuration(0);
+        }
     }
 
-    private void updateExperienceDisplay() {
+    private boolean isValidEffect(Effect effect) {
 
-        CharacterManager characterManager = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
-        if (characterManager.isPausingPlayerExpUpdate(getHero().getPlayer())) {
-            return;
+        return effect.isOfType(EffectType.HARMFUL)
+                || effect.isOfType(EffectType.HELPFUL);
+    }
+
+    private OfflinePlayer getEffectScore(Effect effect) {
+
+        ChatColor color = ChatColor.WHITE;
+        if (effect.isOfType(EffectType.HELPFUL)) {
+            color = ChatColor.GREEN;
+        } else if (effect.isOfType(EffectType.HARMFUL)) {
+            color = ChatColor.RED;
         }
-        if (!characterManager.isPlayerCached(getHero().getName())) {
-            return;
-        }
-        try {
-            hero.getPlayer().setLevel(0);
-            hero.getPlayer().setExp(0.0F);
-            hero.getPlayer().setTotalExperience(0);
-            PacketContainer packet = new PacketContainer(Packets.Server.SET_EXPERIENCE);
-            modifyExperiencePacket(packet);
-            ProtocolLibrary.getProtocolManager().sendServerPacket(hero.getPlayer(), packet);
-        } catch (InvocationTargetException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
-        } catch (PlayerLoggedOutException ignored) {
-        }
+        return Bukkit.getOfflinePlayer(color + effect.getFriendlyName());
     }
 
     @Override
@@ -92,8 +100,11 @@ public class BukkitUserInterface implements UserInterface {
             return;
         }
 
-        updateSidebar();
-        updateExperienceDisplay();
+        for (EffectDisplay display : new ArrayList<>(displayedEffects.values())) {
+            if (display.getRemainingDuration() < 1) {
+                displayedEffects.remove(display.getEffect().getName());
+            }
+        }
         // lets update the scoreboard
         updateHealthDisplay();
         // make sure the food level is never at 20 to allow eating
@@ -102,24 +113,15 @@ public class BukkitUserInterface implements UserInterface {
         }
     }
 
-    public void modifyExperiencePacket(PacketContainer packet) {
+    private void updateHealthDisplay() {
 
-        Profession prof = hero.getSelectedProfession();
-        float exp;
-        int level;
-        if (prof != null) {
-            // setExp() - This is a percentage value. 0 is "no progress" and 1 is "next level".
-            exp = ((float) prof.getAttachedLevel().getExp()) / ((float) prof.getAttachedLevel().getMaxExp());
-            level = prof.getAttachedLevel().getLevel();
-        } else {
-            // lets set the level to 0
-            exp = 0.0F;
-            level = 0;
+        // update what others see
+        Objective objective = getScoreboardHealthObjective();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            objective.getScore(player).setScore((int) player.getHealth());
         }
-        // lets modify the actual paket
-        packet.getFloat().write(0, exp);
-        packet.getIntegers().write(1, level);
-        packet.getIntegers().write(0, 0);
+        // update what the player sees
+        getHero().getPlayer().setLevel(getHero().getHealth());
     }
 
     private Objective getScoreboardHealthObjective() {
@@ -127,10 +129,10 @@ public class BukkitUserInterface implements UserInterface {
         // lets also set the scoreboard to display the health of this player to all online players
         Scoreboard scoreboard = Scoreboards.getScoreboard(hero);
 
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE + getHero().getId());
+        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
         if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE + getHero().getId(), "dummy");
-            objective.setDisplayName("❤");
+            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
+            objective.setDisplayName(ChatColor.RED + "❤");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
         return objective;

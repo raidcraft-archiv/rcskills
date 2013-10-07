@@ -31,7 +31,8 @@ public class CombatException extends RaidCraftException {
         DISARMED("Du wurdest entwaffnet und kannst nicht angreifen!"),
         OUT_OF_RANGE("Ziel ist nicht in Reichweite."),
         SWING_COOLDOWN("Du kannst mit dieser Waffe gerade nicht angreifen."),
-        NO_GROUP("Dein Ziel ist nicht in deiner Gruppe.");
+        NO_GROUP("Dein Ziel ist nicht in deiner Gruppe."),
+        STUNNED("Du bist betäubt und kannst nicht angreifen.");
 
         private final String message;
 

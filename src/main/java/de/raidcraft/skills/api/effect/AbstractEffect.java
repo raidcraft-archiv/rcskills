@@ -14,9 +14,11 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +72,24 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         } else {
             damage = data.getEffectDamage().getInt("base", 0);
         }
+    }
+
+    @Override
+    public void executeAmbientEffects(EffectEffectStage stage, Location location) {
+
+        for (AmbientEffect effect : getAmbientEffects(stage)) {
+            effect.run(location);
+        }
+    }
+
+    @Override
+    public List<AmbientEffect> getAmbientEffects(EffectEffectStage stage) {
+
+        List<AmbientEffect> effects = visualEffects.get(stage);
+        if (effects == null) {
+            return new ArrayList<>();
+        }
+        return effects;
     }
 
     @Override

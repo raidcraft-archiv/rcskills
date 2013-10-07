@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -60,6 +61,10 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
         if (!isStarted()) {
             super.startTask();
             this.remainingTicks = getDuration();
+            // add the effect to the display
+            if (getTarget() instanceof Hero) {
+                ((Hero) getTarget()).getUserInterface().addEffect(this, (int) TimeUtil.ticksToSeconds(getDuration()));
+            }
         }
     }
 
@@ -71,6 +76,10 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
             this.remainingTicks = getDuration();
             // this is a periodic effect and runs forever until cancelled so simply call renew
             super.renew();
+            // renew the display of the effect
+            if (getTarget() instanceof Hero) {
+                ((Hero) getTarget()).getUserInterface().renewEffect(this, (int) TimeUtil.ticksToSeconds(getDuration()));
+            }
         }
     }
 
@@ -86,6 +95,10 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
             // lets cancel the task if the effect expired
             try {
                 remove();
+                // remove the effect display
+                if (getTarget() instanceof Hero) {
+                    ((Hero) getTarget()).getUserInterface().removeEffect(this);
+                }
             } catch (CombatException e) {
                 warn(e.getMessage());
             }

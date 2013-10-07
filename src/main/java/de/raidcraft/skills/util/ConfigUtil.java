@@ -35,13 +35,13 @@ public final class ConfigUtil {
             String[] split = s.split(":");
             if (split.length != 2) continue;
             try {
-                def.put(split[0], Integer.parseInt(split[1]));
+                def.put(split[0], Double.parseDouble(split[1]));
                 continue;
             } catch (NumberFormatException e) {
-                // lets try doubles
+                // lets try int
             }
             try {
-                def.put(split[0], Double.parseDouble(split[1]));
+                def.put(split[0], Integer.parseInt(split[1]));
                 continue;
             } catch (NumberFormatException e) {
                 // lets try booleans

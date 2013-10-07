@@ -19,7 +19,7 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
     }
 
     @Override
-    public int getThreat() {
+    public double getThreat() {
 
         return (int) (getAmount() * 0.5);
     }

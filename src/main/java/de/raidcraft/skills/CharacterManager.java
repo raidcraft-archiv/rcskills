@@ -1,11 +1,5 @@
 package de.raidcraft.skills;
 
-import com.comphenix.protocol.Packets;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ConnectionSide;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.player.UnknownPlayerException;
@@ -15,12 +9,12 @@ import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
+import de.raidcraft.skills.trigger.InvalidationTrigger;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
@@ -48,6 +42,7 @@ import org.kitteh.tag.TagAPI;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,26 +68,8 @@ public final class CharacterManager implements Listener, Component {
         this.plugin = plugin;
         RaidCraft.registerComponent(CharacterManager.class, this);
         plugin.registerEvents(this);
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
-                RaidCraft.getComponent(SkillsPlugin.class),
-                ConnectionSide.SERVER_SIDE,
-                Packets.Server.SET_EXPERIENCE
-        ) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-
-                if (isPausingPlayerExpUpdate(event.getPlayer())) {
-                    return;
-                }
-                Hero hero = getHero(event.getPlayer());
-                if (hero.getUserInterface() instanceof BukkitUserInterface) {
-                    PacketContainer packetContainer = event.getPacket().deepClone();
-                    ((BukkitUserInterface) hero.getUserInterface()).modifyExperiencePacket(packetContainer);
-                    event.setPacket(packetContainer);
-                }
-            }
-        });
         startRefreshTask();
+        startValidationTask();
     }
 
     private void startRefreshTask() {
@@ -110,6 +87,24 @@ public final class CharacterManager implements Listener, Component {
         },
         plugin.getCommonConfig().userinterface_refresh_interval,
         plugin.getCommonConfig().userinterface_refresh_interval);
+    }
+
+    private void startValidationTask() {
+
+        Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            @Override
+            public void run() {
+
+                for (CharacterTemplate character : new ArrayList<>(characters.values())) {
+                    if (character.getEntity() == null || !character.getEntity().isValid()) {
+                        TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
+                        if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                    }
+                }
+            }
+        },
+        plugin.getCommonConfig().character_invalidation_interval,
+        plugin.getCommonConfig().character_invalidation_interval);
     }
 
     public boolean isPvPToggleQueued(final Hero hero) {
@@ -289,6 +284,10 @@ public final class CharacterManager implements Listener, Component {
             characters.put(entity.getUniqueId(), creature);
         } else {
             creature = characters.get(entity.getUniqueId());
+            if (!creature.getEntity().isValid()) {
+                characters.remove(entity.getUniqueId());
+                return getCharacter(entity);
+            }
         }
         return creature;
     }

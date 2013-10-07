@@ -1,9 +1,9 @@
 package de.raidcraft.skills.tabdeco;
 
-import TCB.TabDeco.API.TabDecoSetting;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.tabdeco.api.TabDecoSetting;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
@@ -29,8 +29,14 @@ public class TabDecoResourceSettings extends TabDecoSetting {
         Hero hero = plugin.getCharacterManager().getHero(player);
         Matcher matcher = RESOURCE_PATTERN.matcher(inputText);
         if (matcher.matches()) {
+            String group = matcher.group(2);
+            Resource resource;
+            if (!group.equalsIgnoreCase("primary") || !group.equalsIgnoreCase("secondary")) {
+                resource = hero.getResource(group);
+            } else {
+                resource = getResource(hero, group.equalsIgnoreCase("primary"));
+            }
             // lets get the resource first
-            Resource resource = getResource(hero, matcher.group(2).equalsIgnoreCase("primary"));
             if (resource == null) {
                 return "";
             }

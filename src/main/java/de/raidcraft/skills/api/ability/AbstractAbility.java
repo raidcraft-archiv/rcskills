@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.action.AbilityAction;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
@@ -22,6 +23,9 @@ import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.skills.api.skill.Passive;
+import de.raidcraft.skills.effects.disabling.Disarm;
+import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.LocationUtil;
@@ -67,14 +71,60 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
+    public final void checkUsage(AbilityAction<T> action) throws CombatException {
+
+        if (this instanceof Passive) {
+            throw new CombatException(CombatException.Type.PASSIVE);
+        }
+        if (getHolder().isInCombat() && !canUseInCombat()) {
+            throw new CombatException(CombatException.Type.NO_COMBAT);
+        }
+        if (!getHolder().isInCombat() && !canUseOutOfCombat()) {
+            throw new CombatException(CombatException.Type.COMBAT_ONLY);
+        }
+        // check common effects here
+        if (this.isOfType(EffectType.MAGICAL) && getHolder().hasEffect(Silence.class)) {
+            throw new CombatException(CombatException.Type.SILENCED);
+        }
+        if (this.isOfType(EffectType.PHYSICAL) && getHolder().hasEffect(Disarm.class)) {
+            throw new CombatException(CombatException.Type.DISARMED);
+        }
+        if (isOnCooldown()) {
+            throw new CombatException(CombatException.Type.ON_COOLDOWN.getMessage() +
+                    " Noch: " +
+                    (getRemainingCooldown() > 60.0 ? TimeUtil.secondsToMinutes(getRemainingCooldown()) + "min" : getRemainingCooldown() + "s"));
+        }
+    }
+
+    @Override
+    public final void substractUsageCost(AbilityAction<T> action) {
+
+        // and lets set the cooldown because it is like a usage cost for further casting
+        setLastCast(System.currentTimeMillis());
+        // get the cooldown from the skill action
+        setCooldown(action.getCooldown(), false);
+    }
+
+    @Override
+    public boolean canUseAbility() {
+
+        try {
+            checkUsage(new AbilityAction<>(this));
+            return true;
+        } catch (CombatException ignored) {
+        }
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
 
-        Object effects = getProperties().getAmbientEffects().get(stage);
+        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
         if (effects == null) {
             return new ArrayList<>();
         }
-        return (List<AmbientEffect>) effects;
+        return effects;
     }
 
     @Override
@@ -87,6 +137,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     public final boolean matches(String name) {
 
+        if (name == null) return false;
         name = name.toLowerCase();
         return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
     }
@@ -182,7 +233,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getHolder().getBlockTarget(getTotalRange());
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage) throws CombatException {
 
         return attack(target, damage, null);
     }
@@ -197,7 +248,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack(target, getTotalDamage(), callback);
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.addAttackElement(getElements());
@@ -210,7 +261,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return rangedAttack(type, getTotalDamage(), null);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage) throws CombatException {
 
         return rangedAttack(type, damage, null);
     }
@@ -220,7 +271,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return rangedAttack(type, getTotalDamage(), callback);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, int damage, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) throws CombatException {
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
         attack.addAttackElement(getElements());
@@ -228,7 +279,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack;
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate target, int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
         magicalAttack.addAttackElement(getElements());
@@ -238,7 +289,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack;
     }
 
-    public final MagicalAttack magicalAttack(int damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(double damage, EntityAttackCallback callback) throws CombatException {
 
         return magicalAttack(getTarget(), damage, callback);
     }
@@ -253,7 +304,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(getTarget(), getTotalDamage(), null);
     }
 
-    public final MagicalAttack magicalAttack(int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(double damage) throws CombatException {
 
         return magicalAttack(damage, null);
     }
@@ -263,7 +314,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(target, getTotalDamage(), callback);
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate taraget, int damage) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate taraget, double damage) throws CombatException {
 
         return magicalAttack(taraget, damage, null);
     }

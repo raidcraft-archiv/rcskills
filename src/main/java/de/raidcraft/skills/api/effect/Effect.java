@@ -1,10 +1,15 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.List;
 
 /**
  * An effect is something that can be applied to entities around in the world.
@@ -39,6 +44,10 @@ public interface Effect<S> {
     public S getSource();
 
     public CharacterTemplate getTarget();
+
+    public void executeAmbientEffects(EffectEffectStage stage, Location location);
+
+    public List<AmbientEffect> getAmbientEffects(EffectEffectStage stage);
 
     public void load(ConfigurationSection data);
 

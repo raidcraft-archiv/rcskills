@@ -223,6 +223,13 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
+    public double getPercentage() {
+
+        int max = getMax();
+        return max > 0 ? (double) getCurrent() / (double) max : 0;
+    }
+
+    @Override
     public int getMax() {
 
         return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("max"));

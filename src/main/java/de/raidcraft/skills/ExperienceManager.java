@@ -1,6 +1,6 @@
 package de.raidcraft.skills;
 
-import com.comphenix.packetwrapper.Packet18SpawnMob;
+import com.comphenix.packetwrapper.Packet1ASpawnExperienceOrb;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.ExpPool;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.effects.Summoned;
+import de.raidcraft.skills.util.ExpUtil;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -39,43 +40,31 @@ import java.util.HashSet;
  */
 public final class ExperienceManager implements Listener {
 
-    // Metadata indices
-    private static final int METADATA_FLAGS = 0;
-    private static final int METADATA_NAME = 10;        // 1.5.2 -> Change to 5
-    private static final int METADATA_SHOW_NAME = 11;   // 1.5.2 -> Change to 6
-
     private final ProtocolManager protocolManager;
     private final SkillsPlugin plugin;
-    private final WrappedDataWatcher batWatcher;
 
     protected ExperienceManager(SkillsPlugin plugin) {
 
         this.plugin = plugin;
         this.protocolManager = ProtocolLibrary.getProtocolManager();
-        this.batWatcher = getDefaultWatcher(plugin.getServer().getWorlds().get(0), EntityType.BAT);
         plugin.registerEvents(this);
     }
 
-    public void sendPacket(Player player, Entity dead, int exp) {
+    public void sendPacket(final Player player, Entity dead, short exp) {
 
         if (!player.isOnline()) {
             return;
         }
 
-        Packet18SpawnMob mobSpawn = new Packet18SpawnMob();
-        mobSpawn.setEntityID(500);
-        mobSpawn.setX(dead.getLocation().getX());
-        mobSpawn.setY(dead.getLocation().getY() + 0.5);
-        mobSpawn.setZ(dead.getLocation().getZ());
-        mobSpawn.setType(EntityType.BAT);
-        // batWatcher.setObject(0, (byte) 0x20);
-        batWatcher.setObject(METADATA_NAME, ChatColor.GREEN + "+" + String.valueOf(exp) + " EXP");
-        batWatcher.setObject(METADATA_SHOW_NAME, (byte) 1);
-
-        mobSpawn.setMetadata(batWatcher);
+        Packet1ASpawnExperienceOrb experienceOrb = new Packet1ASpawnExperienceOrb();
+        experienceOrb.setEntityId(500);
+        experienceOrb.setX(player.getLocation().getX());
+        experienceOrb.setY(player.getLocation().getY() + 1);
+        experienceOrb.setZ(player.getLocation().getZ());
+        experienceOrb.setCount(exp);
 
         try {
-            protocolManager.sendServerPacket(player, mobSpawn.getHandle());
+            protocolManager.sendServerPacket(player, experienceOrb.getHandle());
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -109,20 +98,38 @@ public final class ExperienceManager implements Listener {
         if (plugin.getCommonConfig().getIgnoredWorlds().contains(hero.getPlayer().getWorld().getName())) {
             return;
         }
+        int highestPlayerLevel = 0;
+        int totalPlayerLevel = 0;
         HashSet<Hero> heroesToAddExp = new HashSet<>();
         for (Hero partyHero : hero.getParty().getHeroes()) {
             if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
                 heroesToAddExp.add(partyHero);
+                if (partyHero.getPlayerLevel() > highestPlayerLevel) {
+                    highestPlayerLevel = partyHero.getPlayerLevel();
+                }
+                totalPlayerLevel += partyHero.getPlayerLevel();
             }
         }
         if (heroesToAddExp.isEmpty()) return;
-        int exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
+        int exp;
+        if (character.getEntity().hasMetadata("RC_CUSTOM_MOB")) {
+            exp = (int) ExpUtil.getPartyMobXPFull(
+                    ((Hero) attacker).getPlayerLevel(),
+                    highestPlayerLevel,
+                    totalPlayerLevel,
+                    character.getAttachedLevel().getLevel(),
+                    character.getEntity().hasMetadata("ELITE"),
+                    // TODO: maybe add rested EXP
+                    0);
+        } else {
+            exp = plugin.getExperienceConfig().getEntityExperienceFor(character.getEntity().getType()) / heroesToAddExp.size();
+        }
         if (exp > 0) {
             // lets actually give out the exp
             for (Hero expToAdd : heroesToAddExp) {
                 expToAdd.getExpPool().addExp(exp);
                 // lets do some visual magic tricks and let the player see the exp
-                sendPacket(expToAdd.getPlayer(), character.getEntity(), exp);
+                // sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
             }
         }
     }

@@ -1,5 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.items.ArmorType;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
@@ -47,4 +49,8 @@ public interface ProfessionProperties {
     public List<Requirement<Hero>> loadRequirements(Profession profession);
 
     public List<Profession> loadChildren(Profession profession);
+
+    public Map<WeaponType, Integer> getAllowedWeapons();
+
+    public Map<ArmorType, Integer> getAllowedArmor();
 }

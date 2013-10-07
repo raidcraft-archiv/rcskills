@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.resource;
 
+import de.raidcraft.skills.api.resource.visual.ExperienceVisual;
 import de.raidcraft.skills.api.resource.visual.ScoreboardVisual;
 import de.raidcraft.skills.api.resource.visual.StaminaVisual;
 import de.raidcraft.skills.api.resource.visual.TextVisual;
@@ -12,7 +13,8 @@ public enum VisualResourceType {
 
     STAMINA(new StaminaVisual()),
     TEXT(new TextVisual()),
-    SCOREBOARD(new ScoreboardVisual());
+    SCOREBOARD(new ScoreboardVisual()),
+    EXPERIENCE(new ExperienceVisual());
 
     private final VisualResource visualResource;
 

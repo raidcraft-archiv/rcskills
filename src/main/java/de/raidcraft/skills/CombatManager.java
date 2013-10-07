@@ -1,6 +1,8 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
@@ -9,7 +11,6 @@ import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
-import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -18,6 +19,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
@@ -258,6 +260,22 @@ public final class CombatManager implements Listener, Triggered {
         try {
             if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 
+                // lets check if the player is attacking with the wrong item slot
+                if (attacker instanceof Hero) {
+                    if (((Hero) attacker).getPlayer().getInventory().getHeldItemSlot() != 0) {
+                        if (CustomItemUtil.isWeapon(((Hero) attacker).getPlayer().getItemInHand())) {
+                            ((Hero) attacker).sendMessage(ChatColor.RED
+                                    + "Du musst deine Waffe in deinen ersten Hotbarslot legen um damit Schaden zu machen!");
+                        }
+                    }
+                    for (CustomWeapon weapon : attacker.getWeapons()) {
+                        if (weapon.getWeaponType() == WeaponType.BOW || weapon.getWeaponType() == WeaponType.MAGIC_WAND) {
+                            event.setCancelled(true);
+                            ((Hero) attacker).sendMessage(ChatColor.RED + "Du kannst nicht mit einer Fernkampf Waffe im Nahkampf angreifen.");
+                            return;
+                        }
+                    }
+                }
                 PhysicalAttack physicalAttack;
                 // lets check for skills that are queued and allow the attack without setting the weapons swing cooldown
                 if (attacker.hasEffect(QueuedAttack.class)) {
@@ -281,35 +299,6 @@ public final class CombatManager implements Listener, Triggered {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
             }
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void enterCombat(EntityDamageByEntityEvent event) {
-
-        if (FAKED_EVENTS.contains(event) || event.getDamage() <= 0) {
-            return;
-        }
-        if (event.getEntity() instanceof LivingEntity) {
-            CharacterTemplate victim = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
-            CharacterTemplate attacker;
-            if (event.getDamager() instanceof LivingEntity) {
-                attacker = plugin.getCharacterManager().getCharacter((LivingEntity) event.getDamager());
-            } else if (event.getDamager() instanceof Projectile) {
-                LivingEntity shooter = ((Projectile) event.getDamager()).getShooter();
-                if (shooter == null) return;
-                attacker = plugin.getCharacterManager().getCharacter(shooter);
-            } else {
-                // no combat event
-                return;
-            }
-            try {
-                // add the combat effect to the attacker and victim
-                victim.addEffect(attacker, Combat.class);
-                attacker.addEffect(victim, Combat.class);
-            } catch (CombatException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -348,8 +337,6 @@ public final class CombatManager implements Listener, Triggered {
             return;
         }
         boolean callback = false;
-        // lets enter combat for that player
-        enterCombat(event);
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
 

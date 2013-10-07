@@ -6,7 +6,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.persistance.AbilityProperties;
 import de.raidcraft.skills.config.AbilityConfig;
-import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.AbstractFactory;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -19,7 +18,7 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
 
     private final SkillsPlugin plugin;
     private final Class<? extends Ability> sClass;
-    private final AliasesConfig aliasConfig;
+    private final ConfigurationSection aliasConfig;
     private Constructor<? extends Ability> constructor;
 
     protected AbilityFactory(SkillsPlugin plugin, Class<? extends Ability> sClass, String skillName) throws UnknownSkillException {
@@ -28,7 +27,7 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
     }
 
     @SuppressWarnings("unchecked")
-    protected AbilityFactory(SkillsPlugin plugin, Class<? extends Ability> sClass, String abilityName, AliasesConfig aliasConfig) throws UnknownSkillException {
+    protected AbilityFactory(SkillsPlugin plugin, Class<? extends Ability> sClass, String abilityName, ConfigurationSection aliasConfig) throws UnknownSkillException {
 
         super(plugin, abilityName);
         this.plugin = plugin;
@@ -52,11 +51,7 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
     @SuppressWarnings("unchecked")
     protected <T extends CharacterTemplate> Ability<T> create(T character, ConfigurationSection... overrides) throws UnknownSkillException {
 
-        AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
-        // we need to set all the overrides to null because they are used multiple times
-        if (useAlias()) {
-            config.merge(aliasConfig);
-        }
+        AbilityConfig config = getNewConfig();
 
         // also lets merge all aditional override configs
         for (ConfigurationSection section : overrides) {
@@ -100,7 +95,11 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
 
     protected AbilityConfig getNewConfig() {
 
-        return plugin.configure(new AbilityConfig(this), false);
+        AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
+        if (useAlias()) {
+            config.merge(aliasConfig);
+        }
+        return config;
     }
 
     protected Class<? extends Ability> getAbilityClass() {

@@ -23,7 +23,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     private Vector velocity;
     private float force = 1.0F;
 
-    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage) {
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, double damage) {
 
         super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), damage,
                 (projectileType == ProjectileType.FIREBALL ? EffectType.MAGICAL : EffectType.PHYSICAL));
@@ -41,7 +41,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         this(source, projectileType, source.getDamage(), callback);
     }
 
-    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, int damage, T callback) {
+    public RangedAttack(CharacterTemplate source, ProjectileType projectileType, double damage, T callback) {
 
         this(source, projectileType, damage);
         this.callback = callback;
@@ -109,9 +109,9 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
 
-        return (int) (super.getDamage() * getForce());
+        return super.getDamage() * getForce();
     }
 
     @Override

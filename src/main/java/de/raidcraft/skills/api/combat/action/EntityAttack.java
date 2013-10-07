@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
@@ -33,7 +32,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     private EntityDamageEvent.DamageCause cause = null;
     private List<AmbientEffect> lineEffects = new ArrayList<>();
 
-    public EntityAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
+    public EntityAttack(CharacterTemplate source, CharacterTemplate target, double damage, EffectType... types) {
 
         super(source, target, damage, types);
     }
@@ -44,13 +43,13 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         this.callback = callback;
     }
 
-    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, Callback<EntityAttack> callback, EffectType... types) {
+    public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, double damage, Callback<EntityAttack> callback, EffectType... types) {
 
         this(attacker, target, damage, types);
         this.callback = callback;
     }
 
-    public EntityAttack(EntityDamageByEntityEvent event, int damage) {
+    public EntityAttack(EntityDamageByEntityEvent event, double damage) {
 
         this(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getDamager()),
                 RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter((LivingEntity) event.getEntity()),
@@ -67,19 +66,21 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     @Override
     public void run() throws CombatException {
 
+        if (getTarget() == null) {
+            return;
+        }
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
-            if (getSource() instanceof Hero) {
-                AttackTrigger trigger = new AttackTrigger(getSource(), this, cause);
-                TriggerManager.callTrigger(trigger);
-                if (trigger.isCancelled()) setCancelled(true);
-            }
-            if (getTarget() instanceof Hero) {
-                DamageTrigger trigger = new DamageTrigger(getTarget(), this, cause);
-                TriggerManager.callTrigger(trigger);
-                if (trigger.isCancelled()) setCancelled(true);
-            }
+            // call the attack trigger
+            AttackTrigger attackTrigger = new AttackTrigger(getSource(), this, cause);
+            TriggerManager.callTrigger(attackTrigger);
+            if (attackTrigger.isCancelled()) setCancelled(true);
+            // call the damage trigger
+            DamageTrigger damageTrigger = new DamageTrigger(getTarget(), this, cause);
+            TriggerManager.callTrigger(damageTrigger);
+            if (damageTrigger.isCancelled()) setCancelled(true);
+
             if (isCancelled()) {
                 throw new CombatException(CombatException.Type.CANCELLED);
             }

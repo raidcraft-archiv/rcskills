@@ -2,11 +2,9 @@ package de.raidcraft.skills.items;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
-import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,8 +16,9 @@ import org.bukkit.entity.Player;
 public class SkillRequirementAttachment implements RequiredItemAttachment {
 
     private final SkillsPlugin plugin;
+    private Skill skill;
     private String skillName;
-    private int skillLevel;
+    private int requiredLevel;
 
     public SkillRequirementAttachment() {
 
@@ -27,61 +26,60 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
+    public void loadAttachment(ConfigurationSection data) {
+
+        this.skillName = data.getString("skill");
+        this.requiredLevel = data.getInt("level", 1);
+    }
+
+    @Override
+    public String getName() {
+
+        return "skill";
+    }
+
+    @Override
     public boolean isRequirementMet(Player player) {
 
-        try {
-            Hero hero = plugin.getCharacterManager().getHero(player);
-            if (hero.hasSkill(skillName)) {
-                return false;
-            }
-            Skill skill = hero.getSkill(skillName);
-            return !(skillLevel > 0 && skill instanceof Levelable)
-                    || ((Levelable) skill).getAttachedLevel().getLevel() >= skillLevel;
-        } catch (UnknownSkillException ignored) {
-        }
-        return false;
+        return !skill.getHolder().hasSkill(skill)
+                && (!(requiredLevel > 0
+                && skill instanceof Levelable)
+                || ((Levelable) skill).getAttachedLevel().getLevel() >= requiredLevel);
     }
 
     @Override
-    public String getItemText(Player player) {
+    public String getItemText() {
 
-        try {
-            Skill skill = plugin.getCharacterManager().getHero(player).getSkill(skillName);
-            String msg = skill.getFriendlyName();
-            if (skillLevel > 0 && skill instanceof Levelable) {
-                msg += " Level " + skillLevel;
-            }
-            return msg;
-        } catch (UnknownSkillException ignored) {
+        String msg = skill.getFriendlyName();
+        if (requiredLevel > 0 && skill instanceof Levelable) {
+            msg += " Level " + requiredLevel;
         }
-        return null;
+        return msg;
     }
 
     @Override
-    public String getErrorMessage(Player player) {
+    public String getErrorMessage() {
+
+        String msg = "Benötigt " + skill.getFriendlyName();
+        if (requiredLevel > 0 && skill instanceof Levelable) {
+            msg += " auf Level " + requiredLevel;
+        }
+        msg += ".";
+        return msg;
+    }
+
+    @Override
+    public void applyAttachment(Player player) throws CustomItemException {
 
         try {
-            Skill skill = plugin.getCharacterManager().getHero(player).getSkill(skillName);
-            String msg = "Benötigt " + skill.getFriendlyName();
-            if (skillLevel > 0 && skill instanceof Levelable) {
-                msg += " auf Level " + skillLevel;
-            }
-            msg += ".";
-            return msg;
+            skill = plugin.getCharacterManager().getHero(player).getSkill(skillName);
         } catch (UnknownSkillException e) {
-            return e.getMessage();
+            throw new CustomItemException(e.getMessage());
         }
     }
 
     @Override
-    public void applyAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
-
-        this.skillName = args.getString("skill");
-        this.skillLevel = args.getInt("level");
-    }
-
-    @Override
-    public void removeAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void removeAttachment(Player player) throws CustomItemException {
 
 
     }

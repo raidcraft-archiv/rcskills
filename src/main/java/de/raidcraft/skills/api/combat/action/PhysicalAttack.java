@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class PhysicalAttack extends EntityAttack {
 
 
-    public PhysicalAttack(CharacterTemplate source, CharacterTemplate target, int damage, EffectType... types) {
+    public PhysicalAttack(CharacterTemplate source, CharacterTemplate target, double damage, EffectType... types) {
 
         super(source, target, damage, EffectType.PHYSICAL);
         addAttackTypes(types);
@@ -25,13 +25,13 @@ public class PhysicalAttack extends EntityAttack {
         addAttackTypes(types);
     }
 
-    public PhysicalAttack(CharacterTemplate attacker, CharacterTemplate target, int damage, EntityAttackCallback callback, EffectType... types) {
+    public PhysicalAttack(CharacterTemplate attacker, CharacterTemplate target, double damage, EntityAttackCallback callback, EffectType... types) {
 
         super(attacker, target, damage, callback, EffectType.PHYSICAL);
         addAttackTypes(types);
     }
 
-    public PhysicalAttack(EntityDamageByEntityEvent event, int damage) {
+    public PhysicalAttack(EntityDamageByEntityEvent event, double damage) {
 
         super(event, damage);
     }

@@ -9,7 +9,7 @@ public interface TargetedAction<S, T> extends Action<S>, Cancellable {
 
     public T getTarget();
 
-    public int getThreat();
+    public double getThreat();
 
     public void combatLog(Object o, String message);
 }

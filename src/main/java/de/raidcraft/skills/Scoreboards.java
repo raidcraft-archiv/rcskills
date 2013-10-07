@@ -25,7 +25,7 @@ public final class Scoreboards {
 
     public static Scoreboard getScoreboard(Hero hero) {
 
-        String playerName = hero.getName().toLowerCase();
+        String playerName = hero.getName();
         Scoreboard scoreboard;
         if (scoreboards.containsKey(playerName)) {
             scoreboard = scoreboards.get(playerName);

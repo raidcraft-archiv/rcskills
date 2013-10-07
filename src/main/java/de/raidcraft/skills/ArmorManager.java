@@ -11,11 +11,16 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
@@ -39,12 +44,31 @@ public final class ArmorManager implements Triggered, Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInteract(PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
-        plugin.getCharacterManager().getHero(event.getPlayer()).checkArmor();
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getAction() != Action.RIGHT_CLICK_AIR || !event.hasItem()) {
+            return;
+        }
+        if (CustomItemUtil.isArmor(event.getItem())) {
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkArmor();
+        }
     }
 
-    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInventoryClickEvent(InventoryClickEvent event) {
+
+        if (event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            return;
+        }
+        if (!(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
+        if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
+            plugin.getCharacterManager().getHero((Player) event.getWhoClicked()).checkArmor();
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) {
 
         Attack<?,CharacterTemplate> attack = trigger.getAttack();
@@ -63,8 +87,9 @@ public final class ArmorManager implements Triggered, Listener {
         }
 
         double damageReduction = getDamageReduction(attack, totalArmor);
-        int reducedDamage = (int) (attack.getDamage() * damageReduction);
-        attack.setDamage(attack.getDamage() - reducedDamage);
+        double damage = attack.getDamage();
+        double reducedDamage = damage * damageReduction;
+        attack.setDamage(damage - reducedDamage);
         if (reducedDamage > 0) {
             attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int)(damageReduction * 10000)/100.0) + "%) verringert.");
         }

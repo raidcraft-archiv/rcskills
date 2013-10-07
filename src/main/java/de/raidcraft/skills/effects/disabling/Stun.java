@@ -10,7 +10,9 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
@@ -27,23 +29,45 @@ import org.bukkit.potion.PotionEffectType;
 )
 public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
 
-    private final PotionEffect confusionEffect;
-    private final PotionEffect slowEffect;
+    private final PotionEffect jumpBlock;
+    private final PotionEffect moveBlock;
     private Location location;
     private boolean removeOnDamage = false;
+    private boolean cancelAttacks = true;
+    private boolean cancelSkills = true;
 
     public Stun(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         this.interval = 2;
-        this.confusionEffect = new PotionEffect(PotionEffectType.CONFUSION, (int) getDuration(), 5, false);
-        this.slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 10, false);
+        jumpBlock = new PotionEffect(PotionEffectType.JUMP, (int) getDuration(), 128, false);
+        moveBlock = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 6, false);
     }
 
     @Override
     public void load(ConfigurationSection data) {
 
         removeOnDamage = data.getBoolean("remove-on-damage", false);
+        cancelAttacks = data.getBoolean("cancel-attacks", true);
+        cancelSkills = data.getBoolean("cancel-skills", true);
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        if (cancelAttacks) {
+            trigger.getAttack().setCancelled(true);
+            throw new CombatException(CombatException.Type.STUNNED);
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
+    public void onSkillUse(PlayerCastSkillTrigger trigger) throws CombatException {
+
+        if (cancelSkills) {
+            trigger.setCancelled(true);
+            throw new CombatException(CombatException.Type.STUNNED);
+        }
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -60,7 +84,6 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
         if (location != null) {
             // this is called every tick of the task
             // set the location that was saved when the effect was applied
-            target.getEntity().teleport(location);
             target.getEntity().getLocation().setPitch(location.getPitch());
             target.getEntity().getLocation().setYaw(location.getYaw());
         }
@@ -77,15 +100,15 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().addPotionEffect(confusionEffect, true);
-        target.getEntity().addPotionEffect(slowEffect, true);
+        target.getEntity().addPotionEffect(jumpBlock);
+        target.getEntity().addPotionEffect(moveBlock);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
+        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
         target.getEntity().removePotionEffect(PotionEffectType.SLOW);
-        target.getEntity().removePotionEffect(PotionEffectType.CONFUSION);
         this.location = null;
     }
 }

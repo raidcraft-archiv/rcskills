@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import TCB.TabDeco.API.TabDecoRegistry;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -38,6 +37,7 @@ import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.conversations.LinkExpPoolAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.conversations.MaxOutHeroAction;
+import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.requirement.ItemRequirement;
 import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
@@ -60,6 +60,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -139,6 +140,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
                     try {
                         RaidCraft.registerItemAttachmentProvider(getSkillManager());
+                        RaidCraft.registerItemAttachmentProvider(new SkillsRequirementProvider());
                     } catch (RaidCraftException e) {
                         getLogger().warning(e.getMessage());
                     }
@@ -250,6 +252,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.abilityManager = new AbilityManager(this);
         this.effectManager = new EffectManager(this);
         this.skillManager.loadFactories();
+        this.abilityManager.loadFactories();
         this.effectManager.loadFactories();
         // register our inhouse skills
         registerSkills();
@@ -467,8 +470,12 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public int hero_cache_timeout = 300;
         @Setting("defaults.userinterface-refresh-interval")
         public int userinterface_refresh_interval = 100;
+        @Setting("defaults.character-invalidation-interval")
+        public int character_invalidation_interval = 100;
         @Setting("defaults.pvp-toggle-delay")
         public double pvp_toggle_delay = 300;
+        @Setting("defaults.exp-bat-despawn-delay")
+        public double exp_bat_despawn_delay = 10.0;
 
         public LocalConfiguration(SkillsPlugin plugin) {
 
@@ -588,6 +595,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
             }
             try {
                 new HealAction<>("Server", hero, hero.getMaxHealth()).run();
+                hero.getPlayer().setFoodLevel(20);
+                hero.getPlayer().setSaturation(1.0F);
             } catch (CombatException e) {
                 throw new CommandException(e);
             }

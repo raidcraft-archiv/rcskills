@@ -10,7 +10,8 @@ public enum EffectEffectStage {
     APPLY,
     REMOVE,
     RENEW,
-    TICK;
+    TICK,
+    DAMAGE;
 
     public static EffectEffectStage fromString(String name) {
 

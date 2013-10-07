@@ -1,6 +1,7 @@
 package de.raidcraft.skills.effects;
 
 import de.raidcraft.api.ambient.ParticleEffect;
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -9,7 +10,6 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
@@ -22,9 +22,9 @@ import org.bukkit.Sound;
         types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF},
         elements = {EffectElement.FIRE}
 )
-public class Burn extends PeriodicExpirableEffect<Skill> {
+public class Burn extends PeriodicExpirableEffect<Ability> {
 
-    public Burn(Skill source, CharacterTemplate target, EffectData data) {
+    public Burn(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }

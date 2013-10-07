@@ -1,13 +1,13 @@
 package de.raidcraft.skills.api.effect.common;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
-import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -19,13 +19,13 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.HARMFUL, EffectType.DEBUFF, EffectType.PHYSICAL},
         priority = 1.0
 )
-public class SunderingArmor extends ExpirableEffect<Skill> {
+public class SunderingArmor extends ExpirableEffect<Ability> {
 
     private double armorReduction = 0.05;
     private double armorReductionPerStack;
     private double armorReductionCap = 0.6;
 
-    public SunderingArmor(Skill source, CharacterTemplate target, EffectData data) {
+    public SunderingArmor(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -38,14 +38,8 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
     @Override
     public void load(ConfigurationSection data) {
 
-        armorReductionPerStack = data.getDouble("reduction.base", 0.05);
-        armorReductionPerStack += data.getDouble("reduction.level-modifier") * getSource().getHolder().getAttachedLevel().getLevel();
-        armorReductionPerStack += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getAttachedLevel().getLevel();
-
-        if (getSource() instanceof LevelableSkill) {
-            armorReductionPerStack += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getAttachedLevel().getLevel();
-        }
-        armorReductionCap = data.getDouble("reduction.cap", 0.6);
+        armorReductionPerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
+        armorReductionCap = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction-cap"));
         // cap reduction default is 60%
         if (armorReductionCap < armorReductionPerStack) {
             armorReductionPerStack = armorReductionCap;

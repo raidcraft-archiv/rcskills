@@ -1,5 +1,6 @@
 package de.raidcraft.skills.effects;
 
+import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -8,7 +9,6 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -21,11 +21,11 @@ import org.bukkit.potion.PotionEffectType;
         types = {EffectType.HARMFUL, EffectType.MAGICAL, EffectType.DAMAGING, EffectType.PURGEABLE, EffectType.DEBUFF},
         elements = {EffectElement.EARTH}
 )
-public class Poison extends PeriodicExpirableEffect<Skill> {
+public class Poison extends PeriodicExpirableEffect<Ability> {
 
     private PotionEffect potionEffect;
 
-    public Poison(Skill source, CharacterTemplate target, EffectData data) {
+    public Poison(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         potionEffect = new PotionEffect(PotionEffectType.POISON, (int) getDuration(), 0, true);

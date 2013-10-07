@@ -150,7 +150,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final boolean canUseSkill() {
+    public boolean canUseAbility() {
 
         try {
             checkUsage(new SkillAction(this));

@@ -47,6 +47,8 @@ public interface Resource {
 
     public int getBaseValue();
 
+    public double getPercentage();
+
     public int getMax();
 
     public boolean isMax();

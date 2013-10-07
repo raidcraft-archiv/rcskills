@@ -30,6 +30,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public LivingEntity getEntity();
 
+    public CharacterType getCharacterType();
+
     public ThreatTable getThreatTable();
 
     public Attack getLastDamageCause();
@@ -64,8 +66,6 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setLastSwing(EquipmentSlot slot);
 
-    public void checkArmor();
-
     Collection<CustomArmor> getArmor();
 
     CustomArmor getArmor(EquipmentSlot slot);
@@ -88,9 +88,11 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     void leaveParty();
 
-    public int getDamage();
+    public double getDamage();
 
-    public void setDamage(int damage);
+    public void setDamage(double damage);
+
+    public void recalculateHealth();
 
     public int getHealth();
 

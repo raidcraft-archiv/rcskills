@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class SkillAction extends AbstractAction<Hero> {
+public class SkillAction extends AbilityAction<Hero> {
 
     private final Skill skill;
     private final CommandContext args;
@@ -35,7 +35,7 @@ public class SkillAction extends AbstractAction<Hero> {
 
     public SkillAction(Skill skill, CommandContext args) {
 
-        super(skill.getHolder());
+        super(skill);
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();

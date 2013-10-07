@@ -41,7 +41,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        if (attacked || !getSource().canUseSkill()) {
+        if (attacked || !getSource().canUseAbility()) {
             return;
         }
         // lets substract the usage cost if the skill is marked as a queued attack

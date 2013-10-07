@@ -93,7 +93,9 @@ public final class EffectFactory<E extends Effect> {
 
             // we need to create a new effect config instance for each skill to merge overrides
             config = plugin.configure(new EffectConfig(this), false);
-
+            // merge with the ability config
+            config.merge(ability.getProperties().getOverrideSection("effects." + effectName));
+            // and also merge the skill into it if it exists
             if (ability instanceof Skill) {
                 Skill skill = (Skill) ability;
                 // lets now merge the effect with the merged skill profession config

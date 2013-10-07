@@ -2,7 +2,6 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.CharacterManager;
@@ -22,13 +21,14 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.party.Party;
 import de.raidcraft.skills.api.party.SimpleParty;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
-import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.EffectUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
@@ -41,6 +41,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,10 +67,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     // every player is member of his own party by default
     private Party party;
     private LivingEntity entity;
-    private int damage;
+    private double damage;
     private boolean inCombat = false;
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
+    private boolean recalculateHealth = false;
     protected boolean usingHealthBar = true;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
@@ -98,6 +100,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     protected void setName(String name) {
 
+        getEntity().setCustomNameVisible(true);
         getEntity().setCustomName(name);
         this.name = ChatColor.stripColor(name);
     }
@@ -112,6 +115,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public LivingEntity getEntity() {
 
         return entity;
+    }
+
+    @Override
+    public CharacterType getCharacterType() {
+
+        return CharacterType.NATURAL;
     }
 
     @Override
@@ -249,40 +258,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void checkArmor() {
-
-        clearArmor();
-        if (getEntity() == null) {
-            return;
-        }
-        boolean brokenArmor = false;
-        for (ItemStack item : getEntity().getEquipment().getArmorContents()) {
-            if (CustomItemUtil.isArmor(item)) {
-                CustomItemStack customItem = RaidCraft.getCustomItem(item);
-                // check durability
-                if (customItem.getCustomDurability() < 1) {
-                    brokenArmor = true;
-                    // silently continue and dont award armor
-                    continue;
-                }
-                CustomArmor armor = (CustomArmor) customItem.getItem();
-                if (this instanceof Hero) {
-                    if (!armor.isMeetingAllRequirements((Player) getEntity())) {
-                        ((Hero) this).sendMessage(ChatColor.RED + armor.getResolveReason((Player) getEntity()));
-                        CustomItemUtil.moveItem((Player) getEntity(), -1, item);
-                    } else {
-                        setArmor(armor);
-                    }
-                }
-            }
-        }
-        if (brokenArmor) {
-            ((Hero) this).sendMessage(ChatColor.RED + "Ein Rüstungsteil von dir ist kaputt und gibt dir keine Rüstung mehr. " +
-                    "Bitte lasse ihn reparieren oder tausche ihn aus.");
-        }
-    }
-
-    @Override
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
         CustomArmor remove = armorPieces.remove(slot);
@@ -306,10 +281,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearArmor() {
 
-        armorPieces.clear();
+        for (CustomArmor armor : getArmor()) {
+            removeArmor(armor.getEquipmentSlot());
+        }
         // if hero update the user interface
         if (this instanceof Hero) {
-            ((Hero)this).getUserInterface().refresh();
+            ((Hero) this).getUserInterface().refresh();
         }
     }
 
@@ -322,7 +299,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearWeapons() {
 
-        weapons.clear();
+        for (CustomWeapon weapon : getWeapons()) {
+            removeWeapon(weapon.getEquipmentSlot());
+        }
     }
 
     @Override
@@ -350,6 +329,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean canAttack() {
 
+        if (!(getEntity() instanceof Player)) return true;
         if (!hasWeaponsEquiped()) return canSwing(EquipmentSlot.HANDS);
         for (EquipmentSlot slot : weapons.keySet()) {
             if (canSwing(slot)) {
@@ -360,15 +340,32 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
 
         return this.damage;
     }
 
     @Override
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
 
         this.damage = damage;
+    }
+
+    @Override
+    public void recalculateHealth() {
+
+        if (isInCombat()) {
+            recalculateHealth = true;
+            return;
+        }
+        int maxHealth = getMaxHealth();
+        int defaultHealth = getDefaultHealth();
+        if (defaultHealth > maxHealth) {
+            increaseMaxHealth(defaultHealth - maxHealth);
+        } else if (defaultHealth < maxHealth) {
+            decreaseMaxHealth(maxHealth - defaultHealth);
+        }
+        recalculateHealth = false;
     }
 
     @Override
@@ -437,6 +434,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void damage(Attack attack) {
 
         if (getEntity().isDead()) {
@@ -445,10 +443,19 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
+                // lets add the combat effect
+                try {
+                    if (attack.getAttacker() != null) attack.getAttacker().addEffect(this, Combat.class);
+                    addEffect(attack.getAttacker(), Combat.class);
+                } catch (CombatException ignored) {
+                }
                 // set the last attack variable to track death
                 lastAttack = attack;
                 // lets increase the thread against the attacker
-                if (attack.getSource() instanceof CharacterTemplate) {
+                if (attack.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
+                    if (getEntity() instanceof PigZombie) {
+                        ((PigZombie) getEntity()).setAngry(true);
+                    }
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
@@ -461,17 +468,21 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 attacker = (CharacterTemplate) attack.getSource();
             } else if (attack.getSource() instanceof Ability) {
                 attacker = ((Ability) attack.getSource()).getHolder();
+                // lets also play the damage visual effects
+                ((Ability) attack.getSource()).executeAmbientEffects(AbilityEffectStage.DAMAGE, getEntity().getLocation());
             } else if (attack.getSource() instanceof Effect) {
                 if (((Effect) attack.getSource()).getSource() instanceof Ability) {
                     attacker = ((Ability) ((Effect) attack.getSource()).getSource()).getHolder();
                 } else if (((Effect) attack.getSource()).getSource() instanceof CharacterTemplate) {
                     attacker = (CharacterTemplate) ((Effect) attack.getSource()).getSource();
                 }
+                // lets also play the damage visual effects
+                ((Effect) attack.getSource()).executeAmbientEffects(EffectEffectStage.DAMAGE, getEntity().getLocation());
             }
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
             // also actually damage the entity
-            int newHealth = getHealth() - attack.getDamage();
+            int newHealth = (int) (getHealth() - attack.getDamage());
             if (newHealth <= 0) {
                 kill();
             } else {
@@ -507,7 +518,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         int newHealth = getHealth() + action.getAmount();
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         // lets increase the threat
-        if (action.getSource() instanceof CharacterTemplate) {
+        if (action.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
             getThreatTable().getThreatLevel((CharacterTemplate) action.getSource()).increaseThreat(action.getThreat());
         }
         getEntity().setNoDamageTicks(1);
@@ -543,8 +554,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return;
         }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        getEntity().damage(getMaxHealth(), killer.getEntity());
         clearEffects();
+        getEntity().damage(getMaxHealth(), killer.getEntity());
     }
 
     @Override
@@ -553,9 +564,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity().isDead()) {
             return;
         }
+        getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        getEntity().damage(getMaxHealth());
         clearEffects();
+        getEntity().damage(getMaxHealth());
     }
 
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
@@ -799,10 +811,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
             throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
         }
-        // there is currently a bug in bukkit for which player.hasLineOfSight always returns false
-        // TODO: workaround for this is to use the entity
-        if (!(target instanceof Player) && !target.hasLineOfSight(getEntity())) {
-            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel nicht im Sichtfeld.");
+        // check the line of sight between entities
+        if (!getEntity().hasLineOfSight(target)) {
+            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel ist nicht im Sichtfeld.");
         }
         return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
     }
@@ -846,6 +857,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         this.inCombat = inCombat;
         if (!inCombat) {
             getThreatTable().reset();
+            if (recalculateHealth) recalculateHealth();
         }
     }
 
@@ -1003,5 +1015,22 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void onExpGain(int exp) {
 
         // override if needed
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractCharacterTemplate)) return false;
+
+        AbstractCharacterTemplate that = (AbstractCharacterTemplate) o;
+
+        return !(entity != null ? !entity.equals(that.entity) : that.entity != null);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return entity != null ? entity.hashCode() : 0;
     }
 }

@@ -1,6 +1,6 @@
 package de.raidcraft.skills.api.events;
 
-import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -15,18 +15,18 @@ public class RCCombatEvent extends Event {
         ENTER
     }
 
-    private final Hero hero;
+    private final CharacterTemplate character;
     private final Type type;
 
-    public RCCombatEvent(Hero hero, Type type) {
+    public RCCombatEvent(CharacterTemplate character, Type type) {
 
-        this.hero = hero;
+        this.character = character;
         this.type = type;
     }
 
-    public Hero getHero() {
+    public CharacterTemplate getHero() {
 
-        return hero;
+        return character;
     }
 
     public Type getType() {

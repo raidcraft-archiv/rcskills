@@ -62,6 +62,9 @@ public class BindListener implements Listener {
 
     private void toggleBoundSkill(BoundItem boundItem, boolean forward) {
 
+        if (boundItem.getBindings().size() < 2) {
+            return;
+        }
         if (forward) {
             boundItem.next();
         } else {
