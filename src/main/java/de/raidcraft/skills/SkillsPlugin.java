@@ -291,6 +291,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
     @Override
     public void reload() {
 
+        // clear the cache of all heroes, saving them to the database
+        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
+            hero.save();
+        }
         // cancel all tasks
         Bukkit.getScheduler().cancelTasks(this);
         // and reload all of our managers and configs
