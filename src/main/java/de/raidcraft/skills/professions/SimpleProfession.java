@@ -70,16 +70,4 @@ public class SimpleProfession extends AbstractProfession {
         checkSkillsForUnlock();
         getHero().getUserInterface().refresh();
     }
-
-    protected int getTotalLevel() {
-
-        int level = getAttachedLevel().getLevel();
-        Profession profession = this;
-        while (profession.hasParent()) {
-            profession = profession.getParent();
-            level = profession.getAttachedLevel().getLevel();
-        }
-        return level;
-    }
-
 }
