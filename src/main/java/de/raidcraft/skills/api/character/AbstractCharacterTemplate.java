@@ -461,7 +461,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     } else if (getEntity() instanceof Wolf) {
                         ((Wolf) getEntity()).setAngry(true);
                     }
-                    ((PigZombie) getEntity()).setTarget(attacker.getEntity());
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
