@@ -34,7 +34,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
         super(source, target, data);
         setPriority(-1.0);
         duration = TimeUtil.secondsToTicks(source.getCastTime());
-        interval = 5;
+        interval = 1;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     protected void tick(CharacterTemplate target) throws CombatException {
 
         if (isPlayer && !casted) {
-            // when the spell is cast above 90% it is consired success
-            if ((double) getRemainingTicks() / (double) getDuration() < 0.1) {
+            // when the spell is cast above 85% it is consired success
+            if ((double) getRemainingTicks() / (double) getDuration() < 0.15) {
                 casted = true;
             }
         }
