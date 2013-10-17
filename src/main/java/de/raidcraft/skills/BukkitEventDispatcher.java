@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -288,6 +289,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new EntityDeathTrigger(event.getCharacter(), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onVehicleExit(VehicleExitEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new PlayerVehicleExitTrigger(plugin.getCharacterManager().getCharacter(event.getExited()), event)
         );
     }
 }
