@@ -59,10 +59,9 @@ public final class ExperienceManager implements Listener {
         }
 
         Packet1ASpawnExperienceOrb experienceOrb = new Packet1ASpawnExperienceOrb();
-        experienceOrb.setEntityId(500);
-        experienceOrb.setX(player.getLocation().getX());
-        experienceOrb.setY(player.getLocation().getY() + 1);
-        experienceOrb.setZ(player.getLocation().getZ());
+        experienceOrb.setX(dead.getLocation().getX());
+        experienceOrb.setY(dead.getLocation().getY() + 1);
+        experienceOrb.setZ(dead.getLocation().getZ());
         experienceOrb.setCount(exp);
 
         try {
@@ -131,7 +130,7 @@ public final class ExperienceManager implements Listener {
             for (Hero expToAdd : heroesToAddExp) {
                 expToAdd.getExpPool().addExp(exp);
                 // lets do some visual magic tricks and let the player see the exp
-                // sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
+                sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
             }
         }
     }
