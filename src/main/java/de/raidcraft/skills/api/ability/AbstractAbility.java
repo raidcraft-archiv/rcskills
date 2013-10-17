@@ -158,17 +158,40 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getNearbyTargets(true);
     }
 
+    public List<CharacterTemplate> getSafeNearbyTargets() {
+
+        return getSafeNearbyTargets(true);
+    }
+
+    public List<CharacterTemplate> getSafeNearbyTargets(boolean friendly) {
+
+        try {
+            return getNearbyTargets(friendly);
+        } catch (CombatException e) {
+            return new ArrayList<>();
+        }
+    }
+
     public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
 
         try {
             return getHolder().getNearbyTargets(getTotalRange(), friendly);
         } catch (CombatException e) {
             // lets check if this is an area effect
-            if (!isOfType(EffectType.AREA)) {
+            if (!isOfType(EffectType.AREA) || !isOfType(EffectType.AURA)) {
                 throw e;
             }
         }
         return new ArrayList<>();
+    }
+
+    public List<CharacterTemplate> getSafeTargetsInFront() {
+
+        try {
+            return getTargetsInFront();
+        } catch (CombatException e) {
+            return new ArrayList<>();
+        }
     }
 
     public List<CharacterTemplate> getTargetsInFront() throws CombatException {
@@ -182,6 +205,15 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         return new ArrayList<>();
+    }
+
+    public List<CharacterTemplate> getSafeTargetsInFront(float degrees) {
+
+        try {
+            return getTargetsInFront(degrees);
+        } catch (CombatException e) {
+            return new ArrayList<>();
+        }
     }
 
     public List<CharacterTemplate> getTargetsInFront(float degrees) throws CombatException {
