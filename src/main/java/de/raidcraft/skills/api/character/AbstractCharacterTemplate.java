@@ -461,7 +461,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     } else if (getEntity() instanceof Wolf) {
                         ((Wolf) getEntity()).setAngry(true);
                     }
-                    getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
+                    getThreatTable().getThreatLevel(attacker).increaseThreat(attack.getThreat());
                 }
             }
             // lets do some USK18+ gore effects
