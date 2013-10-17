@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.trigger.ResourceChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
@@ -32,6 +33,8 @@ public abstract class AbstractResource implements Resource {
     private final Set<VisualResourceType> types = new HashSet<>();
     private BukkitTask task;
     private long regenInterval;
+    private long regenUsageDelay;
+    private long lastUsage;
     private double regenValue;
     private double current;
     private boolean enabled = false;
@@ -53,7 +56,8 @@ public abstract class AbstractResource implements Resource {
         // lets get some default values from the config
         this.inCombatRegen = config.getConfigurationSection("in-combat-regen");
         this.outOfCombatRegen = config.getConfigurationSection("out-of-combat-regen");
-        regenInterval = (long) (ConfigUtil.getTotalValue(profession,  config.getConfigurationSection("interval")) * 20.0);
+        regenInterval = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue(profession,  config.getConfigurationSection("interval")));
+        regenUsageDelay = TimeUtil.secondsToMillis(ConfigUtil.getTotalValue(profession, config.getConfigurationSection("usage-delay")));
         if (regenInterval < 1) {
             regenInterval = 20;
         }
@@ -161,6 +165,10 @@ public abstract class AbstractResource implements Resource {
             current = fireResourceChangeEvent(current);
 
             boolean update = this.current != current;
+            // lets check the last usage
+            if (getRegenUseageDelay() > 0 && current < this.current) {
+                lastUsage = System.currentTimeMillis();
+            }
             this.current = current;
 
             if (update) {
@@ -202,6 +210,18 @@ public abstract class AbstractResource implements Resource {
         // we need to change the task
         task.cancel();
         startTask();
+    }
+
+    @Override
+    public void setRegenUseageDelay(long delay) {
+
+        this.regenUsageDelay = delay;
+    }
+
+    @Override
+    public long getRegenUseageDelay() {
+
+        return regenUsageDelay;
     }
 
     @Override
@@ -269,6 +289,9 @@ public abstract class AbstractResource implements Resource {
             return;
         }
         if (isMin() && getRegenValue() < 0) {
+            return;
+        }
+        if (getRegenUseageDelay() > 0 && System.currentTimeMillis() < lastUsage + getRegenUseageDelay()) {
             return;
         }
 

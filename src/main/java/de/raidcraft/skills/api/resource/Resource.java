@@ -65,6 +65,10 @@ public interface Resource {
 
     public void setRegenValue(double percent);
 
+    public void setRegenUseageDelay(long delay);
+
+    public long getRegenUseageDelay();
+
     public void regen();
 
     public void destroy();
