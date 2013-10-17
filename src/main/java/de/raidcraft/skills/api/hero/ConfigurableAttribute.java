@@ -56,6 +56,9 @@ public class ConfigurableAttribute implements Attribute {
     @Override
     public double getBonusDamage(EffectType type) {
 
+        if (!damageModifier.containsKey(type)) {
+            return 0;
+        }
         return damageModifier.get(type) * getCurrentValue();
     }
 

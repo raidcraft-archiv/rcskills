@@ -426,7 +426,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void decreaseMaxHealth(double amount) {
 
-        setHealth(getHealth() - amount);
+        setHealth((getHealth() - amount > 0 ? getHealth() - amount : 1));
         double maxHealth = getMaxHealth() - amount;
         if (maxHealth < 1) {
             maxHealth = 20;
