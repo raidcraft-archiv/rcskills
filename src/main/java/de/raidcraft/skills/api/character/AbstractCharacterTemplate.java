@@ -442,23 +442,26 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return;
         }
         if (!attack.isCancelled() && attack.getDamage() > 0) {
+            // lets get the actual attacker
+            CharacterTemplate attacker = attack.getAttacker();
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
                 // lets add the combat effect
                 try {
-                    if (attack.getAttacker() != null) attack.getAttacker().addEffect(this, Combat.class);
+                    if (attacker != null) attack.getAttacker().addEffect(this, Combat.class);
                     addEffect(attack.getAttacker(), Combat.class);
                 } catch (CombatException ignored) {
                 }
                 // set the last attack variable to track death
                 lastAttack = attack;
                 // lets increase the thread against the attacker
-                if (attack.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
+                if (attacker != null) {
                     if (getEntity() instanceof PigZombie) {
                         ((PigZombie) getEntity()).setAngry(true);
                     } else if (getEntity() instanceof Wolf) {
                         ((Wolf) getEntity()).setAngry(true);
                     }
+                    ((PigZombie) getEntity()).setTarget(attacker.getEntity());
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
             }
@@ -466,19 +469,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // BLOOOOOOOOOOOOOOOOOOOD!!!!!!
             // 152 = redstone block
             EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.STEP_SOUND, 152, attack.getDamage() > 100 ? 5 : 1);
-            CharacterTemplate attacker = null;
-            if (attack.getSource() instanceof CharacterTemplate) {
-                attacker = (CharacterTemplate) attack.getSource();
-            } else if (attack.getSource() instanceof Ability) {
-                attacker = ((Ability) attack.getSource()).getHolder();
-                // lets also play the damage visual effects
+            if (attack.getSource() instanceof Ability) {
                 ((Ability) attack.getSource()).executeAmbientEffects(AbilityEffectStage.DAMAGE, getEntity().getLocation());
             } else if (attack.getSource() instanceof Effect) {
-                if (((Effect) attack.getSource()).getSource() instanceof Ability) {
-                    attacker = ((Ability) ((Effect) attack.getSource()).getSource()).getHolder();
-                } else if (((Effect) attack.getSource()).getSource() instanceof CharacterTemplate) {
-                    attacker = (CharacterTemplate) ((Effect) attack.getSource()).getSource();
-                }
                 // lets also play the damage visual effects
                 ((Effect) attack.getSource()).executeAmbientEffects(EffectEffectStage.DAMAGE, getEntity().getLocation());
             }

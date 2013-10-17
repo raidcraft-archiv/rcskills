@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.combat.action;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -8,8 +7,6 @@ import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
-import de.raidcraft.skills.api.effect.common.Combat;
-import de.raidcraft.skills.api.exceptions.CombatException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,14 +34,6 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         this.damage = damage;
         this.attackTypes.addAll(Arrays.asList(types));
         this.source = AttackSource.fromObject(attacker);
-        // lets trigger the combat effect
-        if (attacker instanceof CharacterTemplate) {
-            try {
-                ((CharacterTemplate)attacker).addEffect(source, Combat.class);
-            } catch (CombatException e) {
-                RaidCraft.LOGGER.warning(e.getMessage());
-            }
-        }
     }
 
     @Override
