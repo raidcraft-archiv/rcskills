@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -147,6 +148,18 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
         }
         return useRequirements;
+    }
+
+    @Override
+    public double getTotalDamage() {
+
+        double damage = super.getTotalDamage();
+        for (Attribute attribute : getHolder().getAttributes()) {
+            for (EffectType type : getTypes()) {
+                damage += attribute.getBonusDamage(type);
+            }
+        }
+        return damage;
     }
 
     @Override

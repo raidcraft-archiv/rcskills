@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.character.AbstractSkilledCharacter;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.CharacterType;
 import de.raidcraft.api.events.RCPlayerGainExpEvent;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -704,7 +705,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         double damage = super.getDamage();
         for (Attribute attribute : getAttributes()) {
-            damage += attribute.getCurrentValue() * attribute.getDamageModifier();
+            damage += attribute.getBonusDamage(EffectType.DEFAULT_ATTACK);
         }
         return damage;
     }

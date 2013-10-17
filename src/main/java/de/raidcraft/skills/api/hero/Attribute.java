@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.items.AttributeType;
+import de.raidcraft.skills.api.combat.EffectType;
 
 /**
  * @author Silthus
@@ -27,5 +28,5 @@ public interface Attribute {
 
     public void removeValue(int value);
 
-    public double getDamageModifier();
+    public double getBonusDamage(EffectType type);
 }

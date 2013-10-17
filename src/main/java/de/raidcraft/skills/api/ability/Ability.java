@@ -55,7 +55,7 @@ public interface Ability<T extends CharacterTemplate> {
 
     boolean isOfElement(EffectElement element);
 
-    int getTotalDamage();
+    double getTotalDamage();
 
     double getTotalCastTime();
 

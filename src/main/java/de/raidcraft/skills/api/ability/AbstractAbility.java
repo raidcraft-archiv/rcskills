@@ -357,9 +357,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final int getTotalDamage() {
+    public double getTotalDamage() {
 
-        return (int) ConfigUtil.getTotalValue(this, properties.getDamage());
+        return ConfigUtil.getTotalValue(this, properties.getDamage());
     }
 
     @Override

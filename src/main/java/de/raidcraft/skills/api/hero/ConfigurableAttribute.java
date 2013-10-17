@@ -1,7 +1,11 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.api.items.AttributeType;
+import de.raidcraft.skills.api.combat.EffectType;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -10,8 +14,7 @@ public class ConfigurableAttribute implements Attribute {
 
     private final Hero hero;
     private final AttributeType type;
-    private final double damageModifier;
-    private final double healthModifier;
+    private final Map<EffectType, Double> damageModifier = new HashMap<>();
     private int baseValue;
     private int currentValue;
 
@@ -19,10 +22,17 @@ public class ConfigurableAttribute implements Attribute {
 
         this.hero = hero;
         this.type = AttributeType.fromString(name);
-        this.damageModifier = config.getDouble("damage-modifier", 0.0);
-        this.healthModifier = config.getDouble("health-modifier", 0.0);
         this.baseValue = baseValue;
         this.currentValue = baseValue;
+        ConfigurationSection section = config.getConfigurationSection("damage-modifiers");
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                EffectType effectType = EffectType.fromString(key);
+                if (effectType != null) {
+                    damageModifier.put(effectType, section.getDouble(key));
+                }
+            }
+        }
     }
 
     @Override
@@ -44,9 +54,9 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
-    public double getDamageModifier() {
+    public double getBonusDamage(EffectType type) {
 
-        return damageModifier;
+        return damageModifier.get(type) * getCurrentValue();
     }
 
     @Override
