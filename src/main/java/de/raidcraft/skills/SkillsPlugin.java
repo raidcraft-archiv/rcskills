@@ -51,6 +51,7 @@ import de.raidcraft.skills.tabdeco.TabDecoExpPoolSettings;
 import de.raidcraft.skills.tabdeco.TabDecoHeroLevelSettings;
 import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
+import de.raidcraft.skills.tabdeco.TabDecoPvPSettings;
 import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
@@ -208,6 +209,9 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
                             TabDecoRegistry.registerNewSetting("heroLevel",
                                     new TabDecoHeroLevelSettings(SkillsPlugin.this), SkillsPlugin.this);
+
+                            TabDecoRegistry.registerNewSetting("pvpStatus",
+                                    new TabDecoPvPSettings(SkillsPlugin.this), SkillsPlugin.this);
 
                             TabDecoRegistry.registerNewSetting("rcMoneyGold",
                                     new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);

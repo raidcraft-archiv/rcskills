@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -105,21 +106,7 @@ public final class Scoreboards {
         if (hero.getEntity().hasMetadata("GHOST")) {
             objective.setDisplayName(ChatColor.DARK_GRAY + SIDE_DISPLAY_NAME.replace("%pvp%", "Geist"));
         } else {
-            ChatColor color;
-            if (hero.getParty().getHeroes().size() > 1) {
-                if (hero.isPvPEnabled()) {
-                    color = ChatColor.DARK_GREEN;
-                } else {
-                    color = ChatColor.GREEN;
-                }
-            } else {
-                if (hero.isPvPEnabled()) {
-                    color = ChatColor.DARK_RED;
-                } else {
-                    color = ChatColor.AQUA;
-                }
-            }
-            objective.setDisplayName(color + SIDE_DISPLAY_NAME.replace("%pvp%", "PvP: " + (hero.isPvPEnabled() ? "an" : "aus")));
+            objective.setDisplayName(SIDE_DISPLAY_NAME.replace("%pvp%", HeroUtil.getPvPTag(hero)));
         }
         return objective;
     }

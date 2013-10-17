@@ -167,6 +167,25 @@ public final class HeroUtil {
         }
     }
 
+    public static String getPvPTag(Hero hero) {
+
+        ChatColor color;
+        if (hero.getParty().getHeroes().size() > 1) {
+            if (hero.isPvPEnabled()) {
+                color = ChatColor.DARK_GREEN;
+            } else {
+                color = ChatColor.GREEN;
+            }
+        } else {
+            if (hero.isPvPEnabled()) {
+                color = ChatColor.DARK_RED;
+            } else {
+                color = ChatColor.AQUA;
+            }
+        }
+        return color + "PvP: " + (hero.isPvPEnabled() ? "an" : "aus");
+    }
+
     public static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
     public static final BlockFace[] radial = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
 
