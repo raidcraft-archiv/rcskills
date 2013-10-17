@@ -14,7 +14,9 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.ExpPool;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.util.ExpUtil;
 import de.raidcraft.util.LocationUtil;
@@ -160,6 +162,23 @@ public final class ExperienceManager implements Listener {
         ItemStack result = event.getRecipe().getResult();
         int exp = plugin.getExperienceConfig().getCraftingExperienceFor(result.getTypeId()) * result.getAmount();
         hero.getExpPool().addExp(plugin.getExperienceConfig().getCraftingExperienceFor(exp));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void cancelCreativeModeExp(RCExpGainEvent event) {
+
+        Levelable object = event.getAttachedLevel().getLevelObject();
+        Player player = null;
+        if (object instanceof Hero) {
+            player = ((Hero) object).getPlayer();
+        } else if (object instanceof Profession) {
+            player = ((Profession) object).getHero().getPlayer();
+        } else if (object instanceof Skill) {
+            player = ((Skill) object).getHolder().getPlayer();
+        }
+        if (player != null && player.getGameMode() == GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
