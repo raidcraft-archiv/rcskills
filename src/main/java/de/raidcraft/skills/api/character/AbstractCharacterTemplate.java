@@ -43,6 +43,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -455,6 +456,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 if (attack.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {
                     if (getEntity() instanceof PigZombie) {
                         ((PigZombie) getEntity()).setAngry(true);
+                    } else if (getEntity() instanceof Wolf) {
+                        ((Wolf) getEntity()).setAngry(true);
                     }
                     getThreatTable().getThreatLevel((CharacterTemplate) attack.getSource()).increaseThreat(attack.getThreat());
                 }
