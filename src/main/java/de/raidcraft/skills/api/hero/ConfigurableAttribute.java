@@ -50,12 +50,6 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
-    public double getHealthModifier() {
-
-        return healthModifier;
-    }
-
-    @Override
     public Hero getHero() {
 
         return hero;

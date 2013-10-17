@@ -22,7 +22,7 @@ public class THeroResource implements ResourceData {
 
     @NotNull
     private String name;
-    private int value;
+    private double value;
 
     @ManyToOne
     private THeroProfession profession;
@@ -47,12 +47,12 @@ public class THeroResource implements ResourceData {
         this.name = name;
     }
 
-    public int getValue() {
+    public double getValue() {
 
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
 
         this.value = value;
     }

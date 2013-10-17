@@ -28,6 +28,4 @@ public interface Attribute {
     public void removeValue(int value);
 
     public double getDamageModifier();
-
-    public double getHealthModifier();
 }

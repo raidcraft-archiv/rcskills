@@ -35,21 +35,21 @@ public interface Resource {
 
     public String getFriendlyName();
 
-    public int getDefault();
+    public double getDefault();
 
-    public int getMin();
+    public double getMin();
 
     public boolean isMin();
 
-    public int getCurrent();
+    public double getCurrent();
 
-    public void setCurrent(int current);
+    public void setCurrent(double current);
 
-    public int getBaseValue();
+    public double getBaseValue();
 
     public double getPercentage();
 
-    public int getMax();
+    public double getMax();
 
     public boolean isMax();
 

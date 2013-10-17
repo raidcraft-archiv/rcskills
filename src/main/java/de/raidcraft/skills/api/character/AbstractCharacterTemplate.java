@@ -358,8 +358,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             recalculateHealth = true;
             return;
         }
-        int maxHealth = getMaxHealth();
-        int defaultHealth = getDefaultHealth();
+        double maxHealth = getMaxHealth();
+        double defaultHealth = getDefaultHealth();
         if (defaultHealth > maxHealth) {
             increaseMaxHealth(defaultHealth - maxHealth);
         } else if (defaultHealth < maxHealth) {
@@ -369,7 +369,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public int getHealth() {
+    public double getHealth() {
 
         if (getEntity() == null) {
             return 0;
@@ -378,7 +378,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(double health) {
 
         if (getEntity() == null || getEntity().isDead()) {
             return;
@@ -393,7 +393,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public int getMaxHealth() {
+    public double getMaxHealth() {
 
         if (getEntity() == null) {
             return 20;
@@ -402,7 +402,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setMaxHealth(int maxHealth) {
+    public void setMaxHealth(double maxHealth) {
 
         if (getEntity() == null) return;
         if (maxHealth < 1) {
@@ -412,9 +412,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void increaseMaxHealth(int amount) {
+    public void increaseMaxHealth(double amount) {
 
-        int maxHealth = getMaxHealth() + amount;
+        double maxHealth = getMaxHealth() + amount;
         if (maxHealth < 1) {
             maxHealth = 20;
         }
@@ -423,10 +423,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void decreaseMaxHealth(int amount) {
+    public void decreaseMaxHealth(double amount) {
 
         setHealth(getHealth() - amount);
-        int maxHealth = getMaxHealth() - amount;
+        double maxHealth = getMaxHealth() - amount;
         if (maxHealth < 1) {
             maxHealth = 20;
         }
@@ -515,7 +515,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity().isDead()) {
             return;
         }
-        int newHealth = getHealth() + action.getAmount();
+        double newHealth = getHealth() + action.getAmount();
         if (newHealth > getMaxHealth()) newHealth = getMaxHealth();
         // lets increase the threat
         if (action.getSource() instanceof CharacterTemplate && !(this instanceof Hero)) {

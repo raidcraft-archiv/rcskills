@@ -11,11 +11,11 @@ import org.bukkit.event.Cancellable;
  */
 public class HealTrigger extends Trigger implements Cancellable {
 
-    private int amount;
+    private double amount;
     private boolean cancelled = false;
     private final HealAction<?> action;
 
-    public HealTrigger(HealAction action, int amount) {
+    public HealTrigger(HealAction action, double amount) {
 
         super((CharacterTemplate) action.getTarget());
         this.action = action;
@@ -32,12 +32,12 @@ public class HealTrigger extends Trigger implements Cancellable {
         return action;
     }
 
-    public int getAmount() {
+    public double getAmount() {
 
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
 
         this.amount = amount;
     }

@@ -10,9 +10,9 @@ import de.raidcraft.skills.trigger.HealTrigger;
  */
 public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> {
 
-    private int amount;
+    private double amount;
 
-    public HealAction(S source, CharacterTemplate target, int amount) {
+    public HealAction(S source, CharacterTemplate target, double amount) {
 
         super(source, target);
         this.amount = amount;
@@ -21,15 +21,15 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
     @Override
     public double getThreat() {
 
-        return (int) (getAmount() * 0.5);
+        return getAmount() * 0.5;
     }
 
-    public int getAmount() {
+    public double getAmount() {
 
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
 
         this.amount = amount;
     }

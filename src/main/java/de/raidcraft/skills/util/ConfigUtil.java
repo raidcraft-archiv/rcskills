@@ -115,12 +115,12 @@ public final class ConfigUtil {
         for (Resource resource : ((Hero) holder).getResources()) {
             if (resource.isEnabled()) {
                 if (section.isSet(resource.getName() + "-base-modifier")) {
-                    int base = resource.getBaseValue();
+                    double base = resource.getBaseValue();
                     value += section.getDouble(resource.getName() + "-base-modifier") * base;
                     availableModifiers.remove(resource.getName() + "-base-modifier");
                 }
                 if (section.isSet(resource.getName() + "-modifier")) {
-                    int base = fromMax ? resource.getMax() : resource.getCurrent();
+                    double base = fromMax ? resource.getMax() : resource.getCurrent();
                     value += section.getDouble(resource.getName() + "-modifier") * base;
                     availableModifiers.remove(resource.getName() + "-modifier");
                 }

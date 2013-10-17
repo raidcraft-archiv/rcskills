@@ -19,10 +19,10 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
     }
 
     private final Resource resource;
-    private int newValue = 0;
+    private double newValue = 0;
     private boolean cancelled = false;
 
-    public ResourceChangeTrigger(Hero source, Resource resource, int newValue) {
+    public ResourceChangeTrigger(Hero source, Resource resource, double newValue) {
 
         super(source);
         this.resource = resource;
@@ -39,12 +39,12 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
         return resource;
     }
 
-    public int getNewValue() {
+    public double getNewValue() {
 
         return newValue;
     }
 
-    public void setNewValue(int newValue) {
+    public void setNewValue(double newValue) {
 
         this.newValue = newValue;
     }

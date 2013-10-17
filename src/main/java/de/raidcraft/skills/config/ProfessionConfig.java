@@ -154,15 +154,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public int getBaseHealth() {
+    public ConfigurationSection getBaseHealth() {
 
-        return getOverride("health.base", 20);
-    }
-
-    @Override
-    public double getBaseHealthModifier() {
-
-        return getOverride("health.level-modifier", 0.0);
+        return getOverrideSection("health");
     }
 
     @Override

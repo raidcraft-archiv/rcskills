@@ -16,7 +16,7 @@ public class HealthResource extends AbstractResource {
     }
 
     @Override
-    public void setCurrent(int current) {
+    public void setCurrent(double current) {
 
         if (!getHero().isOnline() || getHero().getEntity().isDead()) {
             return;
@@ -28,25 +28,25 @@ public class HealthResource extends AbstractResource {
     }
 
     @Override
-    public int getCurrent() {
+    public double getCurrent() {
 
         return getHero().getHealth();
     }
 
     @Override
-    public int getMax() {
+    public double getMax() {
 
         return getHero().getMaxHealth();
     }
 
     @Override
-    public int getMin() {
+    public double getMin() {
 
         return 0;
     }
 
     @Override
-    public int getDefault() {
+    public double getDefault() {
 
         return getHero().getDefaultHealth();
     }

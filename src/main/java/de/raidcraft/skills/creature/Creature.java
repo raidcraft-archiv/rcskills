@@ -20,14 +20,14 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(double health) {
 
         super.setHealth(health);
         updateHealthBar();
     }
 
     @Override
-    public void setMaxHealth(int maxHealth) {
+    public void setMaxHealth(double maxHealth) {
 
         super.setMaxHealth(maxHealth);
         updateHealthBar();
@@ -50,7 +50,7 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public int getDefaultHealth() {
+    public double getDefaultHealth() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
     }

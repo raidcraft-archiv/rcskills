@@ -11,7 +11,7 @@ public interface ResourceData extends Bean {
 
     public String getName();
 
-    public int getValue();
+    public double getValue();
 
-    public void setValue(int value);
+    public void setValue(double value);
 }

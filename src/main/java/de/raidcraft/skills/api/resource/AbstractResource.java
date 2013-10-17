@@ -33,7 +33,7 @@ public abstract class AbstractResource implements Resource {
     private BukkitTask task;
     private long regenInterval;
     private double regenValue;
-    private int current;
+    private double current;
     private boolean enabled = false;
 
     public AbstractResource(ResourceData data, Profession profession, ConfigurationSection config) {
@@ -131,12 +131,12 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public int getCurrent() {
+    public double getCurrent() {
 
         return current;
     }
 
-    protected int fireResourceChangeEvent(int current) throws RaidCraftException {
+    protected double fireResourceChangeEvent(double current) throws RaidCraftException {
 
         // lets fire the trigger
         ResourceChangeTrigger trigger = TriggerManager.callSafeTrigger(new ResourceChangeTrigger(getHero(), this, current));
@@ -148,7 +148,7 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public void setCurrent(int current) {
+    public void setCurrent(double current) {
 
         if (!getHero().isOnline() || getHero().getHealth() < 0) {
             return;
@@ -217,22 +217,22 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public int getBaseValue() {
+    public double getBaseValue() {
 
-        return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("base"));
+        return ConfigUtil.getTotalValue(profession, config.getConfigurationSection("base"));
     }
 
     @Override
     public double getPercentage() {
 
-        int max = getMax();
-        return max > 0 ? (double) getCurrent() / (double) max : 0;
+        double max = getMax();
+        return max > 0 ? getCurrent() / max : 0;
     }
 
     @Override
-    public int getMax() {
+    public double getMax() {
 
-        return (int) ConfigUtil.getTotalValue(profession, config.getConfigurationSection("max"));
+        return ConfigUtil.getTotalValue(profession, config.getConfigurationSection("max"));
     }
 
     @Override
@@ -248,15 +248,15 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public int getMin() {
+    public double getMin() {
 
-        return config.getInt("min", 0);
+        return config.getDouble("min", 0);
     }
 
     @Override
-    public int getDefault() {
+    public double getDefault() {
 
-        return config.getInt("default", 0);
+        return config.getDouble("default", 0);
     }
 
     @Override
@@ -272,7 +272,7 @@ public abstract class AbstractResource implements Resource {
             return;
         }
 
-        int newValue = getCurrent();
+        double newValue = getCurrent();
         if (getHero().isInCombat()) {
             if (isInCombatRegenInPercent()) {
                 newValue += getMax() * getCombatRegenValue();

@@ -120,8 +120,8 @@ public class BukkitUserInterface implements UserInterface {
         for (Player player : Bukkit.getOnlinePlayers()) {
             objective.getScore(player).setScore((int) player.getHealth());
         }
-        // update what the player sees
-        getHero().getPlayer().setLevel(getHero().getHealth());
+        // update what the player sees in his exp bar
+        getHero().getPlayer().setLevel((int) getHero().getHealth());
     }
 
     private Objective getScoreboardHealthObjective() {

@@ -13,7 +13,7 @@ public interface HeroData {
 
     public String getSelectedProfession();
 
-    public int getHealth();
+    public double getHealth();
 
     public int getMaxLevel();
 

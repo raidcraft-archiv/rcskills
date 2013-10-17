@@ -712,24 +712,18 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public int getDefaultHealth() {
+    public double getDefaultHealth() {
 
         Profession profession = getHighestRankedProfession();
-        int health = 20;
+        double health = 20.0;
         if (profession != null) {
-            health = (int) (profession.getProperties().getBaseHealth()
-                    + profession.getProperties().getBaseHealthModifier() * profession.getAttachedLevel().getLevel());
-        }
-        for (Attribute attribute : getAttributes()) {
-            if (attribute.getHealthModifier() > 0.0) {
-                health += attribute.getCurrentValue() * attribute.getHealthModifier();
-            }
+            health = ConfigUtil.getTotalValue(profession, profession.getProperties().getBaseHealth());
         }
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(double health) {
 
         super.setHealth(health);
         if (getUserInterface() != null) {

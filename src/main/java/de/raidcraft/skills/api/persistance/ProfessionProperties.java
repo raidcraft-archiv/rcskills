@@ -34,9 +34,7 @@ public interface ProfessionProperties {
 
     public int getMaxLevel();
 
-    public int getBaseHealth();
-
-    public double getBaseHealthModifier();
+    public ConfigurationSection getBaseHealth();
 
     public Set<String> getResources();
 

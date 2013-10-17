@@ -34,7 +34,7 @@ public class THero implements LevelData, HeroData, Bean {
     private String selectedProfession;
     private int exp;
     private int level;
-    private int health;
+    private double health;
     @OneToOne
     private THeroExpPool expPool;
 
@@ -164,12 +164,12 @@ public class THero implements LevelData, HeroData, Bean {
         this.selectedProfession = selectedProfession;
     }
 
-    public int getHealth() {
+    public double getHealth() {
 
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
 
         this.health = health;
     }

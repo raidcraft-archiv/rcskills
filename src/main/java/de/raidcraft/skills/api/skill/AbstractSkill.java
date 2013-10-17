@@ -124,7 +124,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
 
         // substract the mana, health and stamina cost
         for (Resource resource : getHolder().getResources()) {
-            resource.setCurrent((int) (resource.getCurrent() - action.getResourceCost(resource.getName())));
+            resource.setCurrent(resource.getCurrent() - action.getResourceCost(resource.getName()));
         }
         // keep this last or items will be removed before casting
         holder.getPlayer().getInventory().removeItem(getSkillProperties().getReagents());
