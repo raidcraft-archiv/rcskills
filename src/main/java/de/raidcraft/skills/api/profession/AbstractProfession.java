@@ -118,7 +118,7 @@ public abstract class AbstractProfession implements Profession {
         Profession profession = this;
         while (profession.hasParent()) {
             profession = profession.getParent();
-            maxLevel = profession.getMaxLevel();
+            maxLevel += profession.getMaxLevel();
         }
         return maxLevel;
     }
@@ -130,7 +130,7 @@ public abstract class AbstractProfession implements Profession {
         Profession profession = this;
         while (profession.hasParent()) {
             profession = profession.getParent();
-            level = profession.getAttachedLevel().getLevel();
+            level += profession.getAttachedLevel().getLevel();
         }
         return level;
     }
