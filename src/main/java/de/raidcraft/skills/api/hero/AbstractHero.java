@@ -98,8 +98,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         loadProfessions(data);
         loadAttributes();
         // keep this last because we need to professions to load first
-        setMaxHealth(getDefaultHealth());
-        setHealth(data.getHealth());
+        recalculateHealth();
         // load the skills after the profession
         loadSkills();
         // it is important to load the user interface last or lese it will run in an endless loop
@@ -229,8 +228,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // lets clear all skills from the list and add them again for the profession
         loadAttributes();
         // keep this last because we need to professions to load first
-        setMaxHealth(getDefaultHealth());
-        setHealth(getMaxHealth());
+        recalculateHealth();
         // load the skills after the profession
         loadSkills();
         // reload the bound items
@@ -714,10 +712,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public double getDefaultHealth() {
 
-        Profession profession = getHighestRankedProfession();
+        List<Profession> professions = getActiveProfessions();
         double health = 20.0;
-        if (profession != null) {
-            health = ConfigUtil.getTotalValue(profession, profession.getProperties().getBaseHealth());
+        for (Profession profession : professions) {
+            double profHealth = ConfigUtil.getTotalValue(profession, profession.getProperties().getBaseHealth());
+            if (profHealth > health) {
+                health = profHealth;
+            }
         }
         return health;
     }

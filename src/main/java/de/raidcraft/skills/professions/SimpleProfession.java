@@ -53,7 +53,7 @@ public class SimpleProfession extends AbstractProfession {
     public void onLevelGain() {
 
         // lets update the max health
-        getHero().setMaxHealth(getHero().getDefaultHealth());
+        getHero().recalculateHealth();
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
                 ChatColor.AQUA + getProperties().getFriendlyName() +
                 ChatColor.ITALIC + ChatColor.YELLOW + " Level " + getTotalLevel());
