@@ -49,5 +49,7 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
 
     public Skill getSkill(String id);
 
+    public int getTotalMaxLevel();
+
     public int getTotalLevel();
 }

@@ -40,13 +40,8 @@ public class TabDecoProfessionPathSettings extends TabDecoSetting {
             if (action.equalsIgnoreCase("name")) {
                 return profession.getFriendlyName();
             } else if (action.equalsIgnoreCase("level")) {
-                int maxLevel = profession.getMaxLevel();
-                int level = profession.getAttachedLevel().getLevel();
-                while (profession.hasParent()) {
-                    profession = profession.getParent();
-                    maxLevel += profession.getMaxLevel();
-                    level += profession.getAttachedLevel().getLevel();
-                }
+                int maxLevel = profession.getTotalMaxLevel();
+                int level = profession.getTotalLevel();
                 return level + "/" + maxLevel;
             } else if (action.equalsIgnoreCase("exp")) {
                 return profession.getAttachedLevel().getExp() + "/" + profession.getAttachedLevel().getMaxExp();

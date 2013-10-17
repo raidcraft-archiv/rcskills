@@ -112,6 +112,18 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public int getTotalMaxLevel() {
+
+        int maxLevel = getMaxLevel();
+        Profession profession = this;
+        while (profession.hasParent()) {
+            profession = profession.getParent();
+            maxLevel = profession.getMaxLevel();
+        }
+        return maxLevel;
+    }
+
+    @Override
     public int getTotalLevel() {
 
         int level = getAttachedLevel().getLevel();
