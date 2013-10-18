@@ -108,7 +108,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public double getDefaultHealth();
 
-    public void damage(Attack attack);
+    public void damage(Attack attack) throws CombatException;
 
     public void heal(HealAction action);
 

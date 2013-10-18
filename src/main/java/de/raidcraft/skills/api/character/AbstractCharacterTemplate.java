@@ -415,11 +415,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void increaseMaxHealth(double amount) {
 
-        double maxHealth = getMaxHealth() + amount;
-        if (maxHealth < 1) {
-            maxHealth = 20;
-        }
-        setMaxHealth(maxHealth);
+        double newMaxHealth = getMaxHealth() + amount;
+        setMaxHealth(newMaxHealth);
         setHealth(getHealth() + amount);
     }
 
@@ -427,19 +424,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void decreaseMaxHealth(double amount) {
 
         setHealth((getHealth() - amount > 0 ? getHealth() - amount : 1));
-        double maxHealth = getMaxHealth() - amount;
-        if (maxHealth < 1) {
-            maxHealth = 20;
-        }
-        setMaxHealth(maxHealth);
+        double newMaxHealth = getMaxHealth() - amount;
+        setMaxHealth(newMaxHealth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void damage(Attack attack) {
+    public void damage(Attack attack) throws CombatException{
 
         if (getEntity().isDead()) {
-            return;
+            throw new CombatException(CombatException.Type.DEAD);
         }
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // lets get the actual attacker
@@ -447,11 +441,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
                 // lets add the combat effect
-                try {
-                    if (attacker != null) attack.getAttacker().addEffect(this, Combat.class);
-                    addEffect(attack.getAttacker(), Combat.class);
-                } catch (CombatException ignored) {
-                }
+                if (attacker != null) attack.getAttacker().addEffect(this, Combat.class);
+                addEffect(attack.getAttacker(), Combat.class);
                 // set the last attack variable to track death
                 lastAttack = attack;
                 // lets increase the thread against the attacker

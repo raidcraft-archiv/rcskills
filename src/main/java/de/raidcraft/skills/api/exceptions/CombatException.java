@@ -22,6 +22,7 @@ public class CombatException extends RaidCraftException {
         COMBAT_ONLY("Kann nur im Kampf verwendet werden."),
         ON_GLOBAL_COOLDOWN("Globaler Cooldown."),
         ON_COOLDOWN("Abklingzeit nicht vorbei."),
+        DEAD("Ziel ist bereits tot."),
         IMMUNE("Ziel ist immun."),
         EVADED("Deinem Angriff wurde ausgewichen."),
         PARRIED("Dein Angriff wurde parriert."),
@@ -52,7 +53,7 @@ public class CombatException extends RaidCraftException {
     public CombatException(String message) {
 
         super(message);
-        this.type = Type.UNKNOWN;
+        this.type = CombatException.Type.UNKNOWN;
     }
 
     public CombatException(Type type) {
