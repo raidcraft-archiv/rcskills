@@ -134,7 +134,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
     }
 
     @Override
-    public boolean isSource(CharacterTemplate source) {
+    public boolean isAttacker(CharacterTemplate source) {
 
         CharacterTemplate attacker = getAttacker();
         return attacker != null && attacker.equals(source);

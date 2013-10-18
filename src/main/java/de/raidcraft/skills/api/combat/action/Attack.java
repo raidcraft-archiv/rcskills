@@ -39,6 +39,6 @@ public interface Attack<S, T> extends TargetedAction<S, T> {
 
     public CharacterTemplate getAttacker();
 
-    public boolean isSource(CharacterTemplate source);
+    public boolean isAttacker(CharacterTemplate source);
 
 }
