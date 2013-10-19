@@ -88,7 +88,11 @@ public class BukkitUserInterface implements UserInterface {
         } else if (effect.isOfType(EffectType.HARMFUL)) {
             color = ChatColor.RED;
         }
-        return Bukkit.getOfflinePlayer((color + effect.getFriendlyName()).substring(0, 15));
+        String name = color + effect.getFriendlyName();
+        if (name.length() > 15) {
+            name = name.substring(0, 15);
+        }
+        return Bukkit.getOfflinePlayer(name);
     }
 
     @Override
