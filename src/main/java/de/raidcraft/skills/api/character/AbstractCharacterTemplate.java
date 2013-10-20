@@ -498,7 +498,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void heal(HealAction action) {
 
-        if (getEntity().isDead()) {
+        if (getEntity() == null || getEntity().isDead()) {
             return;
         }
         double newHealth = getHealth() + action.getAmount();
