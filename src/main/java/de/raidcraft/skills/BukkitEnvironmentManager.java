@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.ConnectionSide;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -44,7 +45,7 @@ public final class BukkitEnvironmentManager implements Listener {
 
                 int animation = event.getPacket().getIntegers().read(1);
                 // See if this is a "move arm" action
-                if (animation == 1 && !character.canAttack()) {
+                if (animation == 1 && !character.canAttack() && !character.hasEffect(QueuedAttack.class)) {
                     event.setCancelled(true);
                 }
             }
