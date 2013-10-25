@@ -18,7 +18,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.potion.PotionEffectType;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -33,12 +35,11 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     private boolean abortSkillCast = true;
     private boolean abortDestruction = true;
     private boolean abortKnockback = true;
-    private Block web;
+    private Set<Block> blocks = new HashSet<>();
 
     public Web(Ability source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-        interval = 5;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
         if (!abortDestruction) {
             return;
         }
-        if (trigger.getEvent().getBlock().equals(web)) {
+        if (blocks.contains(trigger.getEvent().getBlock())) {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du versuchst dich vergeblich aus dem Netz zu befreien.");
         }
@@ -83,15 +84,6 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     }
 
     @Override
-    protected void tick(CharacterTemplate target) throws CombatException {
-
-        Location location = web.getLocation();
-        location.setPitch(target.getEntity().getLocation().getPitch());
-        location.setYaw(target.getEntity().getLocation().getYaw());
-        target.getEntity().teleport(location);
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         renew(target);
@@ -100,19 +92,31 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        web.setType(Material.AIR);
-        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
-        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
+        for (Block block : blocks) {
+            block.setType(Material.AIR);
+        }
+    }
+
+    @Override
+    protected void tick(CharacterTemplate target) throws CombatException {
+
+        renew(target);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        web = target.getEntity().getLocation().getBlock();
+        setWebBlock(target.getEntity().getLocation());
+    }
+
+    private void setWebBlock(Location location) {
+
+        Block web = location.getBlock();
         while (web.getType() == Material.AIR) {
             web = web.getRelative(BlockFace.DOWN);
         }
         web = web.getRelative(BlockFace.UP);
         web.setType(Material.WEB);
+        blocks.add(web);
     }
 }
