@@ -499,77 +499,81 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void checkWeapons() throws CombatException {
+    public void checkWeapons() {
 
-        if (!isOnline()) {
-            return;
-        }
-        // lets check all equiped weapons and adjust the player accordingly
-        ItemStack mainWeaponItemStack = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
-        clearWeapons();
-        removeArmor(EquipmentSlot.SHIELD_HAND);
-        if (mainWeaponItemStack == null || !CustomItemUtil.isWeapon(mainWeaponItemStack)) {
-            return;
-        }
-        // lets check the durability of the weapon
-        CustomItemStack mainWeaponCustomItemStack = RaidCraft.getCustomItem(mainWeaponItemStack);
-        if (mainWeaponCustomItemStack.getCustomDurability() < 1) {
-            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
-            throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
-        }
-        CustomWeapon mainWeapon = (CustomWeapon) mainWeaponCustomItemStack.getItem();
-        // lets check if the player is allowed to wear the weapon
-        if (!isAllowedWeapon(mainWeapon.getWeaponType())) {
-            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
-            CustomItemUtil.setEquipmentTypeColor(getPlayer(), mainWeaponItemStack, ChatColor.RED);
-            throw new CombatException("Du kannst diese Waffe nicht tragen.");
-        }
-        if (mainWeapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
-            throw new CombatException("Du kannst diese Waffe nur in deiner Schildhand tragen.");
-        }
-        if (!mainWeapon.isMeetingAllRequirements(getPlayer())) {
-            throw new CombatException(mainWeapon.getResolveReason(getPlayer()));
-        }
-        if (mainWeapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-            ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
-            if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
-                CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
-                sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
+        try {
+            if (!isOnline()) {
+                return;
             }
-            setWeapon(mainWeapon);
-        } else if (mainWeapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
-            setWeapon(mainWeapon);
-            // check for a second weapon too
-            ItemStack offHandItemStack = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
-            if (offHandItemStack != null && offHandItemStack.getTypeId() != 0) {
-                if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
-                    CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
-                    if (!isAllowedWeapon(offHandWeapon.getWeaponType())) {
-                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
-                        CustomItemUtil.setEquipmentTypeColor(getPlayer(), offHandItemStack, ChatColor.RED);
-                        throw new CombatException("Du kannst diese Waffe nicht tragen.");
+            // lets check all equiped weapons and adjust the player accordingly
+            ItemStack mainWeaponItemStack = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
+            clearWeapons();
+            removeArmor(EquipmentSlot.SHIELD_HAND);
+            if (mainWeaponItemStack == null || !CustomItemUtil.isWeapon(mainWeaponItemStack)) {
+                return;
+            }
+            // lets check the durability of the weapon
+            CustomItemStack mainWeaponCustomItemStack = RaidCraft.getCustomItem(mainWeaponItemStack);
+            if (mainWeaponCustomItemStack.getCustomDurability() < 1) {
+                CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
+                throw new CombatException("Diese Waffe ist kaputt und kann nicht angelegt werden. Bitte lasse sie reparieren.");
+            }
+            CustomWeapon mainWeapon = (CustomWeapon) mainWeaponCustomItemStack.getItem();
+            // lets check if the player is allowed to wear the weapon
+            if (!isAllowedWeapon(mainWeapon.getWeaponType())) {
+                CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.MAIN_WEAPON_SLOT, mainWeaponItemStack);
+                CustomItemUtil.setEquipmentTypeColor(getPlayer(), mainWeaponItemStack, ChatColor.RED);
+                throw new CombatException("Du kannst diese Waffe nicht tragen.");
+            }
+            if (mainWeapon.getEquipmentSlot() == EquipmentSlot.SHIELD_HAND) {
+                throw new CombatException("Du kannst diese Waffe nur in deiner Schildhand tragen.");
+            }
+            if (!mainWeapon.isMeetingAllRequirements(getPlayer())) {
+                throw new CombatException(mainWeapon.getResolveReason(getPlayer()));
+            }
+            if (mainWeapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+                ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
+                if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
+                    CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
+                    sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
+                }
+                setWeapon(mainWeapon);
+            } else if (mainWeapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
+                setWeapon(mainWeapon);
+                // check for a second weapon too
+                ItemStack offHandItemStack = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
+                if (offHandItemStack != null && offHandItemStack.getTypeId() != 0) {
+                    if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
+                        CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
+                        if (!isAllowedWeapon(offHandWeapon.getWeaponType())) {
+                            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                            CustomItemUtil.setEquipmentTypeColor(getPlayer(), offHandItemStack, ChatColor.RED);
+                            throw new CombatException("Du kannst diese Waffe nicht tragen.");
+                        }
+                        if (!offHandWeapon.isMeetingAllRequirements(getPlayer())) {
+                            throw new CombatException(offHandWeapon.getResolveReason(getPlayer()));
+                        }
+                        setWeapon(offHandWeapon);
+                    } else if (CustomItemUtil.isShield(offHandItemStack)) {
+                        // check for a shield
+                        CustomArmor armor = CustomItemUtil.getArmor(offHandItemStack);
+                        if (!isAllowedArmor(armor.getArmorType())) {
+                            CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
+                            CustomItemUtil.setEquipmentTypeColor(getPlayer(), offHandItemStack, ChatColor.RED);
+                            throw new CombatException("Du kannst diesen Schild nicht tragen.");
+                        }
+                        if (!armor.isMeetingAllRequirements(getPlayer())) {
+                            throw new CombatException(armor.getResolveReason(getPlayer()));
+                        }
+                        setArmor(armor);
+                    } else {
+                        removeWeapon(EquipmentSlot.SHIELD_HAND);
+                        removeArmor(EquipmentSlot.SHIELD_HAND);
                     }
-                    if (!offHandWeapon.isMeetingAllRequirements(getPlayer())) {
-                        throw new CombatException(offHandWeapon.getResolveReason(getPlayer()));
-                    }
-                    setWeapon(offHandWeapon);
-                } else if (CustomItemUtil.isShield(offHandItemStack)) {
-                    // check for a shield
-                    CustomArmor armor = CustomItemUtil.getArmor(offHandItemStack);
-                    if (!isAllowedArmor(armor.getArmorType())) {
-                        CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, offHandItemStack);
-                        CustomItemUtil.setEquipmentTypeColor(getPlayer(), offHandItemStack, ChatColor.RED);
-                        throw new CombatException("Du kannst diesen Schild nicht tragen.");
-                    }
-                    if (!armor.isMeetingAllRequirements(getPlayer())) {
-                        throw new CombatException(armor.getResolveReason(getPlayer()));
-                    }
-                    setArmor(armor);
-                } else {
-                    removeWeapon(EquipmentSlot.SHIELD_HAND);
-                    removeArmor(EquipmentSlot.SHIELD_HAND);
                 }
             }
+        } catch (CombatException e) {
+            sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 

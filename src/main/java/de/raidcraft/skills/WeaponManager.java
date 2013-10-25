@@ -1,8 +1,6 @@
 package de.raidcraft.skills;
 
-import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,24 +24,16 @@ public final class WeaponManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        try {
-            // lets ceck the first slot and checkweapons will always check the second slot
-            plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkWeapons();
-        } catch (CombatException e) {
-            ((Player) event.getPlayer()).sendMessage(ChatColor.RED + e.getMessage());
-        }
+        // lets ceck the first slot and checkweapons will always check the second slot
+        plugin.getCharacterManager().getHero((Player) event.getPlayer()).checkWeapons();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
-        try {
-            int pickupSlot = CustomItemUtil.getPickupSlot(event);
-            if (pickupSlot == CustomItemUtil.MAIN_WEAPON_SLOT || pickupSlot == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
-                plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons();
-            }
-        } catch (CombatException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+        int pickupSlot = CustomItemUtil.getPickupSlot(event);
+        if (pickupSlot == CustomItemUtil.MAIN_WEAPON_SLOT || pickupSlot == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
+            plugin.getCharacterManager().getHero(event.getPlayer()).checkWeapons();
         }
     }
 }

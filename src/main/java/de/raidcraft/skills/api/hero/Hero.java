@@ -4,7 +4,6 @@ import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.SkilledCharacter;
-import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -45,7 +44,7 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public boolean isAllowedArmor(ArmorType type);
 
-    void checkWeapons() throws CombatException;
+    void checkWeapons();
 
     public void checkArmor();
 
