@@ -345,7 +345,7 @@ public final class CombatManager implements Listener, Triggered {
             try {
                 // lets check a fake damage event
                 EntityDamageByEntityEvent fakeEvent = fakeDamageEvent(source, target);
-                if (fakeEvent.isCancelled()) {
+                if (fakeEvent.isCancelled() || source.isFriendly(target)) {
                     event.setCancelled(true);
                     return;
                 }
