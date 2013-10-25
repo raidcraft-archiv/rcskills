@@ -71,8 +71,6 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     public long getLastCombatAction();
 
-    public void reset();
-
     public Resource getResource(String name);
 
     public boolean hasResource(String name);

@@ -848,6 +848,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public String toString() {
 
         return getName();

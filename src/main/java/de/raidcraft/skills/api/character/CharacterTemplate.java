@@ -169,4 +169,6 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     List<CharacterTemplate> getTargetsInFront() throws CombatException;
 
     Material getItemTypeInHand();
+
+    void reset();
 }
