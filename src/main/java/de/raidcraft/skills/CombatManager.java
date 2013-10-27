@@ -340,6 +340,9 @@ public final class CombatManager implements Listener, Triggered {
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
 
+            if (((Projectile) event.getDamager()).getShooter() == null) {
+                return;
+            }
             CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
             CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             try {
