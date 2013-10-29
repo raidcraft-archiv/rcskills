@@ -35,7 +35,7 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     @Override
     public boolean isRequirementMet(Player player) {
 
-        return requiredLevel < characterManager.getHero(player).getPlayerLevel();
+        return requiredLevel <= characterManager.getHero(player).getPlayerLevel();
     }
 
     @Override
