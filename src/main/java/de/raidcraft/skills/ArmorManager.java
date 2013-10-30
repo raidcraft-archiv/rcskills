@@ -109,15 +109,15 @@ public final class ArmorManager implements Triggered, Listener {
      */
     public double getDamageReduction(Attack attack, int armor) {
 
-        // default the level to 60
-        int attackerLevel;
+        // default the attacker level to 60
+        int attackerLevel = 60;
         CharacterTemplate attacker = attack.getAttacker();
         if (attacker instanceof Hero) {
-            attackerLevel = ((Hero) attacker).getHighestRankedProfession().getPath().getTotalPathLevel((Hero) attacker);
+            attackerLevel = ((Hero) attacker).getPlayerLevel();
         } else {
             attackerLevel = attacker.getAttachedLevel().getLevel();
         }
-        double reduction = armor / ((45.0 * (attackerLevel * 60)) + armor + 200.0);
+        double reduction = armor / ((45.0 * attackerLevel) + armor + 200.0);
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
         return reduction;
