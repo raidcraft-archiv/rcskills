@@ -337,12 +337,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public int getPlayerLevel() {
 
         Profession profession = getHighestRankedProfession();
-        int level = profession.getAttachedLevel().getLevel();
-        while (profession.hasParent()) {
-            profession = profession.getParent();
-            level += profession.getAttachedLevel().getLevel();
-        }
-        return level;
+        return profession.getPath().getTotalPathLevel(this);
     }
 
     @Override
