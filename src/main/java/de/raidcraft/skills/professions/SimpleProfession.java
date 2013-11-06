@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
@@ -37,15 +36,12 @@ public class SimpleProfession extends AbstractProfession {
         if (economy != null) {
             economy.modify(getHero().getName(), exp * conversionRate, BalanceSource.SKILL, "Berufseinkommen");
         }
-
-        ExpLogger.log(this, exp);
         getHero().getUserInterface().refresh();
     }
 
     @Override
     public void onExpLoss(int exp) {
 
-        ExpLogger.log(this, -exp);
         getHero().getUserInterface().refresh();
     }
 

@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.SkillAttachedLevel;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.logging.ExpLogger;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 
@@ -47,18 +46,6 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     public final boolean isMastered() {
 
         return getAttachedLevel().hasReachedMaxLevel();
-    }
-
-    @Override
-    public void onExpGain(int exp) {
-
-        ExpLogger.log(this, exp);
-    }
-
-    @Override
-    public void onExpLoss(int exp) {
-
-        ExpLogger.log(this, -exp);
     }
 
     @Override
