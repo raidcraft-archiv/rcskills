@@ -279,7 +279,7 @@ public final class CombatManager implements Listener, Triggered {
                 PhysicalAttack physicalAttack;
                 // lets check for skills that are queued and allow the attack without setting the weapons swing cooldown
                 if (attacker.hasEffect(QueuedAttack.class)) {
-                    physicalAttack = new PhysicalAttack(event, attacker.getDamage());
+                    physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
                 } else {
                     // if not swing the weapons normally
                     if (!attacker.canAttack()) {
