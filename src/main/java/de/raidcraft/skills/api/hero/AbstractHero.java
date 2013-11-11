@@ -710,6 +710,16 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public int swingWeapons() {
+
+        int damage = super.swingWeapons();
+        for (Attribute attribute : getAttributes()) {
+            damage += attribute.getBonusDamage(EffectType.PHYSICAL);
+        }
+        return damage;
+    }
+
+    @Override
     public double getDefaultHealth() {
 
         List<Profession> professions = getActiveProfessions();
