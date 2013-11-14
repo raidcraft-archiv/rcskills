@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class BindListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
