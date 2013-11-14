@@ -28,9 +28,9 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
     }
 
     @Override
-    public void load(boolean annotations) {
+    public void load() {
 
-        super.load(annotations);
+        super.load();
         entities.putAll(formatEntities(loadExperience(ENTITIES)));
         blocks.putAll(formatItems(loadExperience(BLOCKS)));
         crafting.putAll(formatItems(loadExperience(CRAFTING)));
