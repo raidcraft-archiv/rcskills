@@ -68,6 +68,16 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public void onExpGain(int exp) {
+        //TODO: implement
+    }
+
+    @Override
+    public void onExpLoss(int exp) {
+        //TODO: implement
+    }
+
+    @Override
     public final void save() {
 
         super.save();
