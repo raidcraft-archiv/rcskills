@@ -43,6 +43,9 @@ public class EffectDisplay implements Runnable {
     @Override
     public void run() {
 
+        if (score == null) {
+            return;
+        }
         if (remainingDuration < 1) {
             task.cancel();
             score.getScoreboard().resetScores(score.getPlayer());

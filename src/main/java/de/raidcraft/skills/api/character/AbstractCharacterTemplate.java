@@ -409,7 +409,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (maxHealth < 1) {
             maxHealth = 20;
         }
-        getEntity().setMaxHealth(maxHealth);
+        getEntity().setMaxHealth(Math.round(maxHealth));
     }
 
     @Override
