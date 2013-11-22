@@ -38,7 +38,11 @@ public class Combat<S> extends ExpirableEffect<S> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         target.setInCombat(true);
-        RaidCraft.callEvent(new RCCombatEvent(getTarget(), RCCombatEvent.Type.ENTER));
+        RCCombatEvent event = new RCCombatEvent(getTarget(), RCCombatEvent.Type.ENTER);
+        RaidCraft.callEvent(event);
+        if (event.isCancelled()) {
+            throw new CombatException(CombatException.Type.CANCELLED);
+        }
         info("Du hast den Kampf betreten.");
         if (getSource() instanceof CharacterTemplate) {
             // als add the source to our list
@@ -52,7 +56,11 @@ public class Combat<S> extends ExpirableEffect<S> {
 
         target.setInCombat(false);
         if (target instanceof Hero) {
-            RaidCraft.callEvent(new RCCombatEvent((Hero) getTarget(), RCCombatEvent.Type.LEAVE));
+            RCCombatEvent event = new RCCombatEvent(getTarget(), RCCombatEvent.Type.LEAVE);
+            RaidCraft.callEvent(event);
+            if (event.isCancelled()) {
+                throw new CombatException(CombatException.Type.CANCELLED);
+            }
         } else if (target.getEntity() instanceof Creature) {
             // TODO: unset aggro range
         }

@@ -1,13 +1,14 @@
 package de.raidcraft.skills.api.events;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
  * @author Silthus
  */
-public class RCCombatEvent extends Event {
+public class RCCombatEvent extends Event implements Cancellable {
 
     public enum Type {
 
@@ -17,6 +18,7 @@ public class RCCombatEvent extends Event {
 
     private final CharacterTemplate character;
     private final Type type;
+    private boolean cancelled;
 
     public RCCombatEvent(CharacterTemplate character, Type type) {
 
@@ -32,6 +34,18 @@ public class RCCombatEvent extends Event {
     public Type getType() {
 
         return type;
+    }
+
+    @Override
+    public boolean isCancelled() {
+
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean b) {
+
+        this.cancelled = b;
     }
 
     /*///////////////////////////////////////////////////

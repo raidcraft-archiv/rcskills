@@ -271,7 +271,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return target;
     }
 
-    public final Location getBlockTarget() throws CombatException {
+    public final Location getTargetBlock() throws CombatException {
 
         return getHolder().getBlockTarget(getTotalRange());
     }
