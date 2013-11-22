@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -17,7 +18,8 @@ import de.raidcraft.skills.trigger.PotionSplashTrigger;
  */
 @EffectInformation(
         name = "Queued-Splash-Potion",
-        description = "Calls the callback when a potion splashs."
+        description = "Calls the callback when a potion splashs.",
+        types = {EffectType.SYSTEM}
 )
 public class QueuedSplashPotion extends AbstractEffect<Skill> implements Triggered {
 

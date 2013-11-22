@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -19,7 +20,8 @@ import org.bukkit.event.block.Action;
  */
 @EffectInformation(
         name = "Queued Interact",
-        description = "Löst den gegebenen Skill bei einem Interact aus."
+        description = "Löst den gegebenen Skill bei einem Interact aus.",
+        types = {EffectType.SYSTEM}
 )
 public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered {
 

@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.events.RCCombatEvent;
@@ -19,6 +20,7 @@ import java.util.Set;
 @EffectInformation(
         name = "Combat",
         description = "Is applied when a character enters combat",
+        types = {EffectType.SYSTEM},
         priority = 1.0
 )
 public class Combat<S> extends ExpirableEffect<S> {

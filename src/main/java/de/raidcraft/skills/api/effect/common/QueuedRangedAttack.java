@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
@@ -21,7 +22,8 @@ import org.bukkit.entity.Projectile;
  */
 @EffectInformation(
         name = "Queued-Range-Attack",
-        description = "Calls back a range attack when projectile hits."
+        description = "Calls back a range attack when projectile hits.",
+        types = {EffectType.SYSTEM}
 )
 public class QueuedRangedAttack extends ExpirableEffect<Skill> implements Triggered {
 

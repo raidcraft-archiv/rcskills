@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.BowFireCallback;
@@ -20,7 +21,8 @@ import de.raidcraft.skills.trigger.BowFireTrigger;
  */
 @EffectInformation(
         name = "Queued-Range-Attack",
-        description = "Calls back a range attack when projectile hits."
+        description = "Calls back a range attack when projectile hits.",
+        types = {EffectType.SYSTEM}
 )
 public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
 

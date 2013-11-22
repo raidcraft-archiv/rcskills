@@ -33,7 +33,8 @@ public enum EffectType {
     PURGEABLE,
     DISABLEING,
     RANGE,
-    COMBO;
+    COMBO,
+    SYSTEM;
 
     public static EffectType fromString(String str) {
 

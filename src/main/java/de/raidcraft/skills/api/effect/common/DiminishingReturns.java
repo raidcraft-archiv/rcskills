@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.common;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
@@ -17,6 +18,7 @@ import java.util.Map;
 @EffectInformation(
         name = "Diminishing Returns",
         description = "Provides protection for stun locks and more.",
+        types = {EffectType.SYSTEM},
         priority = 1.0
 )
 public class DiminishingReturns<S> extends ExpirableEffect<S> {
