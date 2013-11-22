@@ -1,6 +1,8 @@
 package de.raidcraft.skills.api.ui;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.hero.Hero;
@@ -76,8 +78,13 @@ public class BukkitUserInterface implements UserInterface {
 
     private boolean isValidEffect(Effect effect) {
 
-        return effect.isOfType(EffectType.HARMFUL)
-                || effect.isOfType(EffectType.HELPFUL);
+        for (String type : RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().getStringList("sidebar-effect-types")) {
+            EffectType effectType = EffectType.fromString(type);
+            if (effectType != null && effect.isOfType(effectType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private OfflinePlayer getEffectScore(Effect effect) {
