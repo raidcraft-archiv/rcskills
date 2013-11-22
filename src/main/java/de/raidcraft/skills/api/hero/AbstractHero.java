@@ -88,6 +88,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
+        setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load some default options
         pvpEnabled = Option.PVP.getBoolean(this);
         // level needs to be attached fast to avoid npes when loading the skills
