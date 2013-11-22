@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 
@@ -38,7 +39,7 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         this.callback = callback;
     }
 
-    @TriggerHandler
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
         if (attacked || !getSource().canUseAbility()) {
