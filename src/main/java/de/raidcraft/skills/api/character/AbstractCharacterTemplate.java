@@ -426,10 +426,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void decreaseMaxHealth(double amount) {
 
-        RCMaxHealthChangeEvent event = new RCMaxHealthChangeEvent(this, amount);
+        RCMaxHealthChangeEvent event = new RCMaxHealthChangeEvent(this, -amount);
         RaidCraft.callEvent(event);
-        setHealth((getHealth() - event.getValue() > 0 ? getHealth() - event.getValue() : 1));
-        double newMaxHealth = getMaxHealth() - event.getValue();
+        // we use plus here because we inverted the amount to a negative value above
+        setHealth((getHealth() + event.getValue() > 0 ? getHealth() + event.getValue() : 1));
+        double newMaxHealth = getMaxHealth() + event.getValue();
         setMaxHealth(newMaxHealth);
     }
 
