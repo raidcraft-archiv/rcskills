@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
+import de.raidcraft.skills.api.events.RCMaxHealthChangeEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -415,16 +416,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void increaseMaxHealth(double amount) {
 
-        double newMaxHealth = getMaxHealth() + amount;
+        RCMaxHealthChangeEvent event = new RCMaxHealthChangeEvent(this, amount);
+        RaidCraft.callEvent(event);
+        double newMaxHealth = getMaxHealth() + event.getValue();
         setMaxHealth(newMaxHealth);
-        setHealth(getHealth() + amount);
+        setHealth(getHealth() + event.getValue());
     }
 
     @Override
     public void decreaseMaxHealth(double amount) {
 
-        setHealth((getHealth() - amount > 0 ? getHealth() - amount : 1));
-        double newMaxHealth = getMaxHealth() - amount;
+        RCMaxHealthChangeEvent event = new RCMaxHealthChangeEvent(this, amount);
+        RaidCraft.callEvent(event);
+        setHealth((getHealth() - event.getValue() > 0 ? getHealth() - event.getValue() : 1));
+        double newMaxHealth = getMaxHealth() - event.getValue();
         setMaxHealth(newMaxHealth);
     }
 

@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
+import de.raidcraft.skills.api.events.RCMaxHealthChangeEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.*;
 import org.bukkit.block.Block;
@@ -297,6 +298,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new PlayerVehicleExitTrigger(plugin.getCharacterManager().getCharacter(event.getExited()), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onMaxHealthChange(RCMaxHealthChangeEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new MaxHealthChangeTrigger(event.getCharacter(), event)
         );
     }
 }
