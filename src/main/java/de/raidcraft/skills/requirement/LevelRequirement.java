@@ -34,6 +34,6 @@ public abstract class LevelRequirement extends AbstractRequirement<Hero> {
     @Override
     public boolean isMet(Hero object) {
 
-        return requiredLevel <= getLevelable().getAttachedLevel().getLevel();
+        return getLevelable() != null && requiredLevel <= getLevelable().getAttachedLevel().getLevel();
     }
 }
