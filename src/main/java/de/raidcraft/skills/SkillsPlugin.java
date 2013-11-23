@@ -569,11 +569,13 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 } else {
                     time = seconds + "s";
                 }
-                throw new CommandException("Du kannst dein PvP Status erst in " + time + " umschalten");
+                throw new CommandException(getTranslationProvider().tr(
+                        sender, "pvp.cooldown", "Du kannst dein PvP Status erst in " + time + " umschalten", time));
             }
             hero.setPvPEnabled(!hero.isPvPEnabled());
-            sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) + "PvP wurde "
-                    + (hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."));
+            sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
+                    getTranslationProvider().tr(sender, "pvp.toggled", "PvP wurde "
+                    + (hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."), hero.isPvPEnabled()));
         }
 
         @Command(
