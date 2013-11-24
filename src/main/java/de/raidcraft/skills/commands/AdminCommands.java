@@ -4,24 +4,44 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
+import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.effect.types.ExpirableEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
+import de.raidcraft.util.PastebinPoster;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -49,10 +69,10 @@ public class AdminCommands {
 
     @Command(
             aliases = "debug",
-            desc = "Sends a lot of debug output to the player"
+            desc = "Will dump the current player object, all skills and effects to pastebin."
     )
     @CommandPermissions("rcskills.admin.debug")
-    public void debug(CommandContext args, CommandSender sender) throws CommandException {
+    public void debug(CommandContext args, final CommandSender sender) throws CommandException {
 
         sender.sendMessage("Du hast die permission testpermission: " + sender.hasPermission("testpermission"));
 
@@ -66,9 +86,137 @@ public class AdminCommands {
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }
-        Option.DEBUGGING.set(hero, (!Option.DEBUGGING.getBoolean(hero)) + "");
-        sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Toggled debug mode: " + ChatColor.AQUA +
-                (Option.DEBUGGING.getBoolean(hero) ? "on." : "off."));
+        StringBuilder sb = new StringBuilder();
+        sb.append("Name: ").append(hero.getName()).append("\n");
+        sb.append("Entity ID: ").append(hero.getEntity().getEntityId()).append(" : ").append(hero.getEntity().getUniqueId()).append("\n");
+        sb.append("First Login: ").append(new Timestamp(hero.getPlayer().getFirstPlayed())).append("\n");
+        sb.append("Level: ").append(hero.getPlayerLevel()).append("\n");
+        sb.append("PvP: ").append(hero.isPvPEnabled() ? "on" : "off").append("\n");
+        sb.append("In Combat: ").append(hero.isInCombat()).append("\n");
+        sb.append("Health: ").append(hero.getHealth()).append("/").append(hero.getMaxHealth()).append("\n");
+        sb.append("Default Health: ").append(hero.getDefaultHealth()).append("\n");
+        sb.append("Armor Value: ").append(hero.getTotalArmorValue()).append("\n");
+        sb.append("Equipment: \n");
+        sb.append("\tHead: ").append(hero.getArmor(EquipmentSlot.HEAD)).append("\n");
+        sb.append("\tChest: ").append(hero.getArmor(EquipmentSlot.CHEST)).append("\n");
+        sb.append("\tLegs: ").append(hero.getArmor(EquipmentSlot.LEGS)).append("\n");
+        sb.append("\tFeet: ").append(hero.getArmor(EquipmentSlot.FEET)).append("\n");
+        sb.append("\tOne Handed: ").append(hero.getWeapon(EquipmentSlot.ONE_HANDED)).append("\n");
+        sb.append("\tTwo Handed: ").append(hero.getWeapon(EquipmentSlot.TWO_HANDED)).append("\n");
+        sb.append("\tHands: ").append(hero.getWeapon(EquipmentSlot.HANDS)).append("\n");
+        sb.append("\tShield Weapon: ").append(hero.getWeapon(EquipmentSlot.SHIELD_HAND)).append("\n");
+        sb.append("\tShield Armor: ").append(hero.getArmor(EquipmentSlot.SHIELD_HAND)).append("\n");
+        sb.append("Attributes: \n");
+        for (Attribute attribute : hero.getAttributes()) {
+            sb.append("\t").append(attribute.getName()).append("[").append(attribute.getType()).append("]: ")
+                    .append(attribute.getCurrentValue()).append("[").append(attribute.getBaseValue()).append("]\n");
+            sb.append("\t\tBonus Damage: \n");
+            for (EffectType type : EffectType.values()) {
+                if (attribute.getBonusDamage(type) != 0) {
+                    sb.append("\t\t\t").append(type).append(": ").append(attribute.getBonusDamage(type)).append("\n");
+                }
+            }
+        }
+        sb.append("Profession:\n");
+        for (Profession profession : hero.getProfessions()) {
+            sb.append("\t").append(profession.getFriendlyName()).append("[").append(profession.getName()).append("#").append(profession.getId()).append("]: \n");
+            sb.append("\t\tLevel: ").append(profession.getAttachedLevel().getLevel()).append("/").append(profession.getMaxLevel()).append("\n");
+            sb.append("\t\tPath: ").append(profession.getPath().getFriendlyName()).append("[").append(profession.getPath().getName()).append("]\n");
+            if (profession.hasParent()) {
+                sb.append("\t\tParent: ").append(profession.getParent().getFriendlyName()).append("[").append(profession.getParent().getName()).append("]\n");
+            }
+            sb.append("\t\tChildren: ").append(StringUtil.joinString(profession.getChildren(), ",", 0));
+            sb.append("\tSkills: \n").append(renderSkills(profession.getSkills())).append("\n");
+        }
+        sb.append("Skills:\n").append(renderSkills(hero.getSkills())).append("\n");
+        sb.append("Active Effects: \n");
+        for (Effect effect : hero.getEffects()) {
+            sb.append("\t").append(effect.getFriendlyName()).append("[").append(effect.getName()).append("]").append("\n");
+            sb.append("\t\tDescription: ").append(effect.getDescription()).append("\n");
+            sb.append("\t\tTriggered: ").append(effect instanceof Triggered).append("\n");
+            sb.append("\t\tStackable: ").append(effect instanceof Stackable).append("\n");
+            sb.append("\t\tDamage: ").append(effect.getDamage()).append("\n");
+            if (effect instanceof Stackable) {
+                sb.append("\t\tStacks: ").append(((Stackable) effect).getStacks()).append("/").append(((Stackable) effect).getMaxStacks()).append("\n");
+            }
+            sb.append("\t\tEffect Types: ").append(StringUtil.joinString(effect.getTypes(), ", ", 0)).append("\n");
+            sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(effect.getElements(), ", ", 0)).append("\n");
+            if (effect instanceof ExpirableEffect) {
+                sb.append("\t\tDuration: " + TimeUtil.secondsToTicks(((ExpirableEffect) effect).getRemainingDuration()) + "/" + ((ExpirableEffect) effect).getDuration()).append("\n");
+            }
+            if (effect instanceof PeriodicEffect) {
+                sb.append("\t\tInterval" + ((PeriodicEffect) effect).getInterval()).append("\n");
+            }
+            sb.append("\t\tAmbient Effects:\n");
+            for (EffectEffectStage stage : EffectEffectStage.values()) {
+                List<AmbientEffect> ambientEffects = effect.getAmbientEffects(stage);
+                if (!ambientEffects.isEmpty()) {
+                    sb.append("\t\t\t").append(stage).append(": \n");
+                    for (AmbientEffect ambientEffect : ambientEffects) {
+                        sb.append("\t\t\t").append(ambientEffect.toString()).append("\n");
+                    }
+                }
+            }
+        }
+        // lets send it to pastebin
+        sender.sendMessage(ChatColor.YELLOW + "Pasting the debug output to pastebin...");
+        PastebinPoster.paste(sb.toString(), new PastebinPoster.PasteCallback() {
+            @Override
+            public void handleSuccess(String url) {
+
+                sender.sendMessage(ChatColor.GREEN + "Hero debug was pasted to: " + url);
+            }
+
+            @Override
+            public void handleError(String err) {
+
+                sender.sendMessage(ChatColor.RED + "Error pasting hero debug output to pastebin!");
+            }
+        });
+    }
+
+    private String renderSkills(Collection<Skill> skills) {
+
+        StringBuilder sb = new StringBuilder();
+        for (Skill skill : skills) {
+            sb.append("\t").append(skill.getFriendlyName()).append("[").append(skill.getName()).append("#").append(skill.getId()).append("]: \n");
+            sb.append("\t\tEnabled: ").append(skill.isEnabled()).append("\n");
+            sb.append("\t\tActive: ").append(skill.isActive()).append("\n");
+            sb.append("\t\tUnlocked: ").append(skill.isUnlocked()).append("\n");
+            sb.append("\t\tProfession: ").append(skill.getProfession().getFriendlyName()).append("[").append(skill.getProfession().getName()).append("]").append("\n");
+            sb.append("\t\tDescription: ").append(skill.getDescription()).append("\n");
+            sb.append("\t\tUsage: ").append(Arrays.toString(skill.getUsage())).append("\n");
+            sb.append("\t\t" + "Levelable: ").append(skill instanceof Levelable).append("\n");
+            if (skill instanceof Levelable) {
+                sb.append("\t\tLevel: ").append(((Levelable) skill).getAttachedLevel().getLevel()).append("/").append(((Levelable) skill).getMaxLevel()).append("\n");
+            }
+            sb.append("\t\tTriggered: ").append(skill instanceof Triggered).append("\n");
+            sb.append("\t\tCommand Triggered: ").append(skill instanceof CommandTriggered).append("\n");
+            sb.append("\t\tEXP per Use: ").append(skill.getUseExp()).append("\n");
+            sb.append("\t\tEffect Types: ").append(StringUtil.joinString(skill.getTypes(), ", ", 0)).append("\n");
+            sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(skill.getElements(), ", ", 0)).append("\n");
+            sb.append("\t\tCooldown: ").append(skill.getRemainingCooldown()).append("/").append(skill.getTotalCooldown()).append("\n");
+            sb.append("\t\tCast Time: ").append(skill.getTotalCastTime()).append("\n");
+            sb.append("\t\tRange: ").append(skill.getTotalRange()).append("\n");
+            sb.append("\t\tRequirements: \n");
+            for (Requirement<Hero> requirement : skill.getRequirements()) {
+                sb.append("\t\t\t").append(requirement.getName()).append(":\n");
+                sb.append("\t\t\t\tDescription: ").append(requirement.getDescription()).append("\n");
+                sb.append("\t\t\t\tLong Reason: ").append(requirement.getLongReason()).append("\n");
+                sb.append("\t\t\t\tShort Reason: ").append(requirement.getShortReason()).append("\n");
+            }
+            sb.append("\t\tAmbient Effects:\n");
+            for (AbilityEffectStage stage : AbilityEffectStage.values()) {
+                List<AmbientEffect> ambientEffects = skill.getAmbientEffects(stage);
+                if (!ambientEffects.isEmpty()) {
+                    sb.append("\t\t\t").append(stage).append(": \n");
+                    for (AmbientEffect effect : ambientEffects) {
+                        sb.append("\t\t\t").append(effect.toString()).append("\n");
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 
     @Command(
