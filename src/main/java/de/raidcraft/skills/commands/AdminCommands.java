@@ -140,7 +140,7 @@ public class AdminCommands {
                 sb.append("\t\tStacks: ").append(((Stackable) effect).getStacks()).append("/").append(((Stackable) effect).getMaxStacks()).append("\n");
             }
             sb.append("\t\tEffect Types: ").append(StringUtil.joinString(effect.getTypes(), ", ", 0)).append("\n");
-            sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(effect.getElements(), ", ", 0)).append("\n");
+            // sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(effect.getElements(), ", ", 0)).append("\n");
             if (effect instanceof ExpirableEffect) {
                 sb.append("\t\tDuration: " + TimeUtil.secondsToTicks(((ExpirableEffect) effect).getRemainingDuration()) + "/" + ((ExpirableEffect) effect).getDuration()).append("\n");
             }
@@ -194,7 +194,7 @@ public class AdminCommands {
             sb.append("\t\tCommand Triggered: ").append(skill instanceof CommandTriggered).append("\n");
             sb.append("\t\tEXP per Use: ").append(skill.getUseExp()).append("\n");
             sb.append("\t\tEffect Types: ").append(StringUtil.joinString(skill.getTypes(), ", ", 0)).append("\n");
-            sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(skill.getElements(), ", ", 0)).append("\n");
+            // sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(skill.getElements(), ", ", 0)).append("\n");
             sb.append("\t\tCooldown: ").append(skill.getRemainingCooldown()).append("/").append(skill.getTotalCooldown()).append("\n");
             sb.append("\t\tCast Time: ").append(skill.getTotalCastTime()).append("\n");
             sb.append("\t\tRange: ").append(skill.getTotalRange()).append("\n");
