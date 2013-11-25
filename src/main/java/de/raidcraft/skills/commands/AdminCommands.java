@@ -142,10 +142,10 @@ public class AdminCommands {
             sb.append("\t\tEffect Types: ").append(StringUtil.joinString(effect.getTypes(), ", ", 0)).append("\n");
             // sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(effect.getElements(), ", ", 0)).append("\n");
             if (effect instanceof ExpirableEffect) {
-                sb.append("\t\tDuration: " + TimeUtil.secondsToTicks(((ExpirableEffect) effect).getRemainingDuration()) + "/" + ((ExpirableEffect) effect).getDuration()).append("\n");
+                sb.append("\t\tDuration: ").append(TimeUtil.secondsToTicks(((ExpirableEffect) effect).getRemainingDuration())).append("/").append(((ExpirableEffect) effect).getDuration()).append("\n");
             }
             if (effect instanceof PeriodicEffect) {
-                sb.append("\t\tInterval" + ((PeriodicEffect) effect).getInterval()).append("\n");
+                sb.append("\t\tInterval").append(((PeriodicEffect) effect).getInterval()).append("\n");
             }
             sb.append("\t\tAmbient Effects:\n");
             for (EffectEffectStage stage : EffectEffectStage.values()) {
