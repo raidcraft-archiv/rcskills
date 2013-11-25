@@ -31,7 +31,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/${project.artifactId}.git</developerConnection>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <repositories>
