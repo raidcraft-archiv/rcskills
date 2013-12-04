@@ -575,7 +575,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
             hero.setPvPEnabled(!hero.isPvPEnabled());
             sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
                     getTranslationProvider().tr(sender, "pvp.toggled", "PvP wurde "
-                    + (hero.isPvPEnabled() ? "eingeschaltet." : "ausgeschaltet."), hero.isPvPEnabled()));
+                    + (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "eingeschaltet")
+                            : getTranslationProvider().var(sender, "pvp.disabled", "ausgeschaltet")), hero.isPvPEnabled()));
         }
 
         @Command(
