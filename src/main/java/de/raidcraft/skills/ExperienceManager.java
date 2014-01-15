@@ -1,6 +1,5 @@
 package de.raidcraft.skills;
 
-import com.comphenix.packetwrapper.Packet1ASpawnExperienceOrb;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
@@ -34,7 +33,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
 /**
@@ -57,18 +55,7 @@ public final class ExperienceManager implements Listener {
         if (!player.isOnline()) {
             return;
         }
-
-        Packet1ASpawnExperienceOrb experienceOrb = new Packet1ASpawnExperienceOrb();
-        experienceOrb.setX(dead.getLocation().getX());
-        experienceOrb.setY(dead.getLocation().getY() + 1);
-        experienceOrb.setZ(dead.getLocation().getZ());
-        experienceOrb.setCount(exp);
-
-        try {
-            protocolManager.sendServerPacket(player, experienceOrb.getHandle());
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        // TODO: readd visual experience effect
     }
 
     public WrappedDataWatcher getDefaultWatcher(World world, EntityType type) {
