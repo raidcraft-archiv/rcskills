@@ -459,11 +459,11 @@ public class SkillsPlugin extends BasePlugin implements Component {
         @Setting("paths.alias-configs")
         public String alias_config_path = "alias-configs/";
         @Setting("paths.skill-jars")
-        public String skill_jar_path = "skills/";
+        public String skill_jar_path = "skills-and-effects/";
         @Setting("paths.effect-configs")
         public String effect_config_path = "effect-configs/";
         @Setting("paths.effect-jars")
-        public String effect_jar_path = "effects/";
+        public String effect_jar_path = "skills-and-effects/";
         @Setting("paths.abilities-jars")
         public String ability_jar_path = "abilities/";
         @Setting("paths.profession-configs")
