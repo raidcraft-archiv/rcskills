@@ -9,6 +9,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.api.language.TranslationProvider;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
@@ -49,10 +50,12 @@ import java.util.List;
 public class AdminCommands {
 
     private final SkillsPlugin plugin;
+    private final TranslationProvider tr;
 
     public AdminCommands(SkillsPlugin plugin) {
 
         this.plugin = plugin;
+        this.tr = plugin.getTranslationProvider();
     }
 
     @Command(
@@ -231,7 +234,8 @@ public class AdminCommands {
         try {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             HeroUtil.maxOutAll(hero);
-            sender.sendMessage(ChatColor.GREEN + "Alle Skills, Berufe und Klassen von " + hero.getName() + " wurden auf max gesetzt.");
+            tr.msg(sender, "commands.max-out",
+                    "All skills and classes of %s have been maxed out.", hero.getName());
         } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
         }
@@ -250,11 +254,11 @@ public class AdminCommands {
             Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
             Skill skill = plugin.getSkillManager().getSkill(hero, hero.getVirtualProfession(), args.getString(1));
             if (skill.isUnlocked()) {
-                throw new CommandException("Der Spieler hat den Skill bereits.");
+                throw new CommandException(tr.tr(sender, "commands.skill.duplicate", "The player already has the skill."));
             }
             hero.addSkill(skill);
-            sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA + hero.getName() + ChatColor.GREEN + " den Skill "
-                    + ChatColor.AQUA + skill.getName() + ChatColor.GREEN + " hinzugefügt.");
+            tr.msg(sender, "commands.skill.add", "You gave {1} the skill {2} ({3}).",
+                    hero.getName(), skill.getFriendlyName(), skill.getName());
         } catch (UnknownPlayerException | UnknownSkillException e) {
             throw new CommandException(e.getMessage());
         }
