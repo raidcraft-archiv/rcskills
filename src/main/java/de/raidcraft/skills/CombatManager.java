@@ -33,6 +33,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -299,6 +300,20 @@ public final class CombatManager implements Listener, Triggered {
                 ((Hero) attacker).sendMessage(ChatColor.RED + e.getMessage());
             }
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void fireProjectileEvent(ProjectileLaunchEvent event) {
+
+        try {
+            LivingEntity shooter = event.getEntity().getShooter();
+            if (shooter == null) {
+                return;
+            }
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter(shooter);
+            source.triggerCombat(source);
+        } catch (CombatException ignored) {
         }
     }
 

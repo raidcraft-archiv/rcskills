@@ -855,6 +855,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void triggerCombat(Object source) throws CombatException {
+
+        addEffect(source, Combat.class);
+    }
+
+    @Override
     public void reset() {
 
     }

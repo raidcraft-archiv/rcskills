@@ -148,6 +148,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setInCombat(boolean inCombat);
 
+    public void triggerCombat(Object source) throws CombatException;
+
     CharacterTemplate getTarget(int range) throws CombatException;
 
     Location getBlockTarget(int range) throws CombatException;
