@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -194,22 +195,24 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onProjectileHit(ProjectileHitEvent event) {
 
-        if (event.getEntity().getShooter() == null) {
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (shooter == null || !(shooter instanceof LivingEntity)) {
             return;
         }
         TriggerManager.callSafeTrigger(
-                new ProjectileHitTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
+                new ProjectileHitTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) shooter), event)
         );
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onProjectileFire(ProjectileLaunchEvent event) {
 
-        if (event.getEntity().getShooter() == null) {
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (shooter == null || !(shooter instanceof LivingEntity)) {
             return;
         }
         TriggerManager.callSafeTrigger(
-                new ProjectileLaunchTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
+                new ProjectileLaunchTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) shooter), event)
         );
     }
 
@@ -224,8 +227,12 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPotionSplash(PotionSplashEvent event) {
 
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (shooter == null || !(shooter instanceof LivingEntity)) {
+            return;
+        }
         TriggerManager.callSafeTrigger(
-                new PotionSplashTrigger(plugin.getCharacterManager().getCharacter(event.getEntity().getShooter()), event)
+                new PotionSplashTrigger(plugin.getCharacterManager().getCharacter((LivingEntity) shooter), event)
         );
     }
 
