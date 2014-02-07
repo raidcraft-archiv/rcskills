@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -307,11 +308,11 @@ public final class CombatManager implements Listener, Triggered {
     public void fireProjectileEvent(ProjectileLaunchEvent event) {
 
         try {
-            LivingEntity shooter = event.getEntity().getShooter();
-            if (shooter == null) {
+            ProjectileSource shooter = event.getEntity().getShooter();
+            if (shooter == null || !(shooter instanceof LivingEntity)) {
                 return;
             }
-            CharacterTemplate source = plugin.getCharacterManager().getCharacter(shooter);
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
             source.triggerCombat(source);
         } catch (CombatException ignored) {
         }
@@ -320,11 +321,11 @@ public final class CombatManager implements Listener, Triggered {
     @EventHandler(ignoreCancelled = true)
     public void projectileHitEvent(ProjectileHitEvent event) {
 
-        LivingEntity shooter = event.getEntity().getShooter();
-        if (shooter == null) {
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (shooter == null || !(shooter instanceof LivingEntity)) {
             return;
         }
-        CharacterTemplate source = plugin.getCharacterManager().getCharacter(shooter);
+        CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
         try {
             // iterate over our queued callbacks
             for (SourcedRangeCallback<LocationCallback> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
@@ -355,10 +356,11 @@ public final class CombatManager implements Listener, Triggered {
         // check if the entity was damaged by a projectile
         if ((event.getDamager() instanceof Projectile)) {
 
-            if (((Projectile) event.getDamager()).getShooter() == null) {
+            ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
+            if (shooter == null || !(shooter instanceof LivingEntity)) {
                 return;
             }
-            CharacterTemplate source = plugin.getCharacterManager().getCharacter(((Projectile) event.getDamager()).getShooter());
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
             CharacterTemplate target = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
             try {
                 // lets check a fake damage event
