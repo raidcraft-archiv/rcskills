@@ -37,7 +37,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
-import org.kitteh.tag.PlayerReceiveNameTagEvent;
+import org.kitteh.tag.AsyncPlayerReceiveNameTagEvent;
 import org.kitteh.tag.TagAPI;
 
 import java.lang.reflect.Constructor;
@@ -169,7 +169,7 @@ public final class CharacterManager implements Listener, Component {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onNameTagChange(PlayerReceiveNameTagEvent event) {
+    public void onNameTagChange(AsyncPlayerReceiveNameTagEvent event) {
 
         Hero hero = getHero(event.getNamedPlayer());
         Hero receivingPlayer = getHero(event.getPlayer());
