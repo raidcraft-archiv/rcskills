@@ -23,6 +23,7 @@ import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Skeleton;
@@ -307,6 +308,10 @@ public final class CombatManager implements Listener, Triggered {
     @EventHandler(ignoreCancelled = true)
     public void fireProjectileEvent(ProjectileLaunchEvent event) {
 
+        EntityType type = event.getEntityType();
+        if (type != EntityType.ARROW || type != EntityType.FIREBALL || type != EntityType.SPLASH_POTION) {
+            return;
+        }
         try {
             ProjectileSource shooter = event.getEntity().getShooter();
             if (shooter == null || !(shooter instanceof LivingEntity)) {
