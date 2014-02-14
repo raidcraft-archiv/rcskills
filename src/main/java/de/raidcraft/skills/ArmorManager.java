@@ -116,10 +116,11 @@ public final class ArmorManager implements Triggered, Listener {
             attackerLevel = attacker.getAttachedLevel().getLevel();
         }
         // we need to calculate attacks above level 59 differently to implement diminishing returns
+        double reduction = 0.0;
         if (attackerLevel > 59) {
-            double reduction = armor / (armor + (233.75 * attackerLevel - 11083.75));
+            reduction = armor / (armor + (233.75 * attackerLevel - 11083.75));
         } else {
-            double reduction = armor / ((45.0 * attackerLevel) + armor + 200.0);
+            reduction = armor / ((45.0 * attackerLevel) + armor + 200.0);
         }
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
