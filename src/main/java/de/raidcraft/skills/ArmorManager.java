@@ -100,8 +100,7 @@ public final class ArmorManager implements Triggered, Listener {
      * %Reduction = (Armor / ([45 * Attacker_Level] + Armor + 200)) * 100
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
      * <p/>
-     * To make things easier we calculate with a enemy level of 60 at all times.
-     * BUT you can change this when spawning your creature (e.g. boss).
+     * The level of the attacker is taken from the hero or the attacking mob (defaults to 60).
      * <p/>
      * Since we have about half the armor items (4 opposed to 8) the formula is halfed.
      *
@@ -109,7 +108,6 @@ public final class ArmorManager implements Triggered, Listener {
      */
     public double getDamageReduction(Attack attack, int armor) {
 
-        // default the attacker level to 60
         int attackerLevel;
         CharacterTemplate attacker = attack.getAttacker();
         if (attacker instanceof Hero) {
@@ -117,7 +115,12 @@ public final class ArmorManager implements Triggered, Listener {
         } else {
             attackerLevel = attacker.getAttachedLevel().getLevel();
         }
-        double reduction = armor / ((45.0 * attackerLevel) + armor + 200.0);
+        // we need to calculate attacks above level 59 differently to implement diminishing returns
+        if (attackerLevel > 59) {
+            double reduction = armor / (armor + (233.75 * attackerLevel - 11083.75));
+        } else {
+            double reduction = armor / ((45.0 * attackerLevel) + armor + 200.0);
+        }
         // cap reduction at 75%
         if (reduction > 0.75) reduction = 0.75;
         return reduction;
