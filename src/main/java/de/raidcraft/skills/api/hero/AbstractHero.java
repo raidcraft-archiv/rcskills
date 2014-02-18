@@ -90,7 +90,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.maxLevel = data.getMaxLevel();
         setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load some default options
-        pvpEnabled = Option.PVP.getBoolean(this);
+        pvpEnabled = Option.PVP.isSet(this);
         // level needs to be attached fast to avoid npes when loading the skills
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
@@ -674,7 +674,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void debug(String message) {
 
-        if (Option.DEBUGGING.getBoolean(this) && message != null && !message.equals("")) {
+        if (Option.DEBUGGING.isSet(this) && message != null && !message.equals("")) {
             getPlayer().sendMessage(ChatColor.GRAY + "[DEBUG] " + message);
         }
     }
@@ -688,7 +688,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void combatLog(Object o, String message) {
 
-        if (Option.COMBAT_LOGGING.getBoolean(this) && message != null && !message.equals("")) {
+        if (Option.COMBAT_LOGGING.isSet(this) && message != null && !message.equals("")) {
             getPlayer().sendMessage(ChatColor.DARK_GRAY + "[Combat]" + (o != null ? "[" + o + "]" : "")
                     + " " + message);
         }

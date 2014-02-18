@@ -173,7 +173,7 @@ public final class CharacterManager implements Listener, Component {
 
         Hero hero = getHero(event.getNamedPlayer());
         Hero receivingPlayer = getHero(event.getPlayer());
-        if (hero.getParty().isInGroup(receivingPlayer)) {
+        if (hero.getParty().contains(receivingPlayer)) {
             if (hero.isPvPEnabled()) {
                 event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
             } else {

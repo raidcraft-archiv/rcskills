@@ -930,7 +930,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean isInParty(Party party) {
 
-        return party.isInGroup(this);
+        return party.contains(this);
     }
 
     @Override
@@ -954,7 +954,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public boolean isFriendly(CharacterTemplate source) {
 
-        return source.equals(this) || getParty().isInGroup(source);
+        return source.equals(this) || getParty().contains(source);
     }
 
     @Override

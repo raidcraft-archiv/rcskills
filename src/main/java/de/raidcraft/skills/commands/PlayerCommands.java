@@ -163,9 +163,22 @@ public class PlayerCommands {
     public void combatLog(CommandContext args, CommandSender sender) {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        Option.COMBAT_LOGGING.set(hero, (!Option.COMBAT_LOGGING.getBoolean(hero)) + "");
+        Option.COMBAT_LOGGING.set(hero, !Option.COMBAT_LOGGING.isSet(hero));
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Kampflog wurde " + ChatColor.AQUA +
-                (Option.COMBAT_LOGGING.getBoolean(hero) ? "eingeschaltet." : "ausgeschaltet."));
+                (Option.COMBAT_LOGGING.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
+    }
+
+    @Command(
+            aliases = {"party", "partyhealth", "ph"},
+            desc = "Zeigt Gruppenmitglieder in der Seitenleiste an."
+    )
+    @CommandPermissions("rcskills.player.cmd.partyhealth")
+    public void partyDisplay(CommandContext args, CommandSender sender) {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Option.SIDEBAR_PARTY_HP.set(hero, !Option.SIDEBAR_PARTY_HP.isSet(hero));
+        sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Die Gruppen Anzeige " + ChatColor.AQUA +
+                (Option.SIDEBAR_PARTY_HP.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
     }
 
     private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {

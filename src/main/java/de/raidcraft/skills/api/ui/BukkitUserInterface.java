@@ -3,9 +3,11 @@ package de.raidcraft.skills.api.ui;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +19,9 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -27,7 +31,8 @@ public class BukkitUserInterface implements UserInterface {
     public static final String HEALTH_OBJECTIVE = "rcshp";
 
     private final Hero hero;
-    private final Map<String, EffectDisplay> displayedEffects = new CaseInsensitiveMap<>();
+    private final Map<String, RefreshingDisplay> refreshingDisplays = new CaseInsensitiveMap<>();
+    private final Map<CharacterTemplate, HealthDisplay> healthDisplays = new HashMap<>();
 
     public BukkitUserInterface(final Hero hero) {
 
@@ -41,14 +46,26 @@ public class BukkitUserInterface implements UserInterface {
     }
 
     @Override
+    public void removeSidebarScore(OfflinePlayer name) {
+
+        Score score = Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name);
+        score.getScoreboard().resetScores(score.getPlayer());
+    }
+
+    @Override
+    public void updateSidebarScore(OfflinePlayer name, int score) {
+
+        Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name).setScore(score);
+    }
+
+    @Override
     public void addEffect(Effect effect, final int duration) {
 
         if (!isValidEffect(effect)) {
             return;
         }
-        final Score score = Scoreboards.getPlayerSidebarObjective(getHero()).getScore(getEffectScore(effect));
-        EffectDisplay display = new EffectDisplay(effect, score, duration);
-        displayedEffects.put(effect.getName(), display);
+        RefreshingEffectDisplay display = new RefreshingEffectDisplay(effect, this, duration);
+        refreshingDisplays.put(effect.getName(), display);
     }
 
     @Override
@@ -57,8 +74,8 @@ public class BukkitUserInterface implements UserInterface {
         if (!isValidEffect(effect)) {
             return;
         }
-        if (displayedEffects.containsKey(effect.getName())) {
-            displayedEffects.get(effect.getName()).setRemainingDuration(duration);
+        if (refreshingDisplays.containsKey(effect.getName())) {
+            refreshingDisplays.get(effect.getName()).setRemainingDuration(duration);
         } else {
             addEffect(effect, duration);
         }
@@ -70,7 +87,7 @@ public class BukkitUserInterface implements UserInterface {
         if (!isValidEffect(effect)) {
             return;
         }
-        EffectDisplay display = displayedEffects.remove(effect.getName());
+        RefreshingDisplay display = refreshingDisplays.remove(effect.getName());
         if (display != null) {
             display.setRemainingDuration(0);
         }
@@ -87,21 +104,6 @@ public class BukkitUserInterface implements UserInterface {
         return false;
     }
 
-    private OfflinePlayer getEffectScore(Effect effect) {
-
-        ChatColor color = ChatColor.WHITE;
-        if (effect.isOfType(EffectType.HELPFUL)) {
-            color = ChatColor.GREEN;
-        } else if (effect.isOfType(EffectType.HARMFUL)) {
-            color = ChatColor.RED;
-        }
-        String name = color + effect.getFriendlyName();
-        if (name.length() > 15) {
-            name = name.substring(0, 15);
-        }
-        return Bukkit.getOfflinePlayer(name);
-    }
-
     @Override
     public void refresh() {
 
@@ -111,9 +113,34 @@ public class BukkitUserInterface implements UserInterface {
             return;
         }
 
-        for (EffectDisplay display : new ArrayList<>(displayedEffects.values())) {
-            if (display.getRemainingDuration() < 1) {
-                displayedEffects.remove(display.getEffect().getName());
+        if (Option.SIDEBAR_PARTY_HP.isSet(getHero())) {
+            // lets update the sidebar display with the party information
+            Set<Map.Entry<CharacterTemplate, HealthDisplay>> entries = healthDisplays.entrySet();
+            for (Map.Entry<CharacterTemplate, HealthDisplay> entry : entries) {
+                if (!getHero().getParty().contains(entry.getKey())) {
+                    entry.getValue().remove();
+                    entries.remove(entry);
+                }
+            }
+            // we need to add missing players to the party display
+            for (CharacterTemplate partyMember : getHero().getParty().getHeroes()) {
+                if (!partyMember.equals(getHero()) && !healthDisplays.containsKey(partyMember)) {
+                    PartyHealthDisplay display = new PartyHealthDisplay(getHero(), partyMember);
+                    display.refresh();
+                    healthDisplays.put(partyMember, display);
+                }
+            }
+        } else {
+            // lets remove all old parties
+            for (HealthDisplay display : healthDisplays.values()) {
+                display.remove();
+            }
+            healthDisplays.clear();
+        }
+
+        for (RefreshingDisplay display : new ArrayList<>(refreshingDisplays.values())) {
+            if (display instanceof RefreshingEffectDisplay && display.getRemainingDuration() < 1) {
+                refreshingDisplays.remove(((RefreshingEffectDisplay) display).getEffect().getName());
             }
         }
         // lets update the scoreboard

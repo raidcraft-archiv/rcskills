@@ -5,16 +5,19 @@ package de.raidcraft.skills.api.hero;
 */
 public enum Option {
 
-    DEBUGGING("debug"),
-    COMBAT_LOGGING("combatlog"),
-    EXP_POOL_LINK("exp_pool_link"),
-    PVP("pvp");
+    DEBUGGING("debug", false),
+    COMBAT_LOGGING("combatlog", false),
+    EXP_POOL_LINK("exp_pool_link", null),
+    SIDEBAR_PARTY_HP("display_sidebar_party_hp", true),
+    PVP("pvp", false);
 
     private final String key;
+    private final Object defaultValue;
 
-    Option(String key) {
+    Option(String key, Object defaultValue) {
 
         this.key = key;
+        this.defaultValue = defaultValue;
     }
 
     public String getKey() {
@@ -34,10 +37,14 @@ public enum Option {
 
     public String get(Hero hero) {
 
-        return hero.getOptions().get(this);
+        String result = hero.getOptions().get(this);
+        if (result == null || result.equals("")) {
+            result = defaultValue.toString();
+        }
+        return result;
     }
 
-    public boolean getBoolean(Hero hero) {
+    public boolean isSet(Hero hero) {
 
         return Boolean.parseBoolean(get(hero));
     }

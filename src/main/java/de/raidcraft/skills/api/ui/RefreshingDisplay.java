@@ -2,33 +2,27 @@ package de.raidcraft.skills.api.ui;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.effect.Effect;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Score;
 
 /**
  * @author Silthus
  */
-public class EffectDisplay implements Runnable {
+public abstract class RefreshingDisplay implements Runnable {
 
-    private final Effect effect;
     private final BukkitTask task;
-    private final Score score;
+    private final UserInterface userInterface;
     private int remainingDuration;
 
-    public EffectDisplay(Effect effect, Score score, int duration) {
+    public RefreshingDisplay(UserInterface userInterface, int duration) {
 
-        this.effect = effect;
-        this.score = score;
+        this.userInterface = userInterface;
         this.remainingDuration = duration;
-        task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), this, 0, 20);
+        task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), this, 1, 20);
     }
 
-    public Effect getEffect() {
-
-        return effect;
-    }
+    public abstract OfflinePlayer getScoreName();
 
     public void setRemainingDuration(int remainingDuration) {
 
@@ -43,15 +37,15 @@ public class EffectDisplay implements Runnable {
     @Override
     public void run() {
 
-        if (score == null) {
+        if (userInterface == null) {
             return;
         }
         if (remainingDuration < 1) {
             task.cancel();
-            score.getScoreboard().resetScores(score.getPlayer());
+            userInterface.removeSidebarScore(getScoreName());
             return;
         }
-        score.setScore(remainingDuration);
+        userInterface.updateSidebarScore(getScoreName(), remainingDuration);
         remainingDuration--;
     }
 }

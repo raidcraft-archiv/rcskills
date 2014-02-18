@@ -419,7 +419,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
                 @Override
                 public void run() {
 
-                    if (Option.COMBAT_LOGGING.getBoolean((Hero) getHolder())) {
+                    if (Option.COMBAT_LOGGING.isSet((Hero) getHolder())) {
                         ((Hero) getHolder()).combatLog(AbstractAbility.this, getFriendlyName() + " ist wieder bereit.");
                     } else {
                         ((Hero) getHolder()).sendMessage(ChatColor.AQUA + getFriendlyName()

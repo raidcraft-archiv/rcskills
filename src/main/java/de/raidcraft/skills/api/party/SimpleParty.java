@@ -165,7 +165,7 @@ public class SimpleParty implements Party {
     }
 
     @Override
-    public boolean isInGroup(CharacterTemplate member) {
+    public boolean contains(CharacterTemplate member) {
 
         return members.contains(member);
     }
