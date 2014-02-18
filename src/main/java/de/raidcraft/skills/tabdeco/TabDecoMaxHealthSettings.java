@@ -19,6 +19,6 @@ public class TabDecoMaxHealthSettings extends TabDecoSetting {
     @Override
     public String getSlotText(Player player, String inputText, String settingName) {
 
-        return String.valueOf(player.getMaxHealth());
+        return String.valueOf((int) player.getMaxHealth());
     }
 }
