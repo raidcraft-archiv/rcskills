@@ -20,6 +20,7 @@ public class PartyHealthDisplay implements HealthDisplay {
         this.holder = holder;
         this.characterTemplate = characterTemplate;
         this.scoreName = Bukkit.getOfflinePlayer(ChatColor.BLUE + characterTemplate.getName());
+        holder.attachHealthDisplay(this);
     }
 
     public Hero getHolder() {
@@ -43,5 +44,6 @@ public class PartyHealthDisplay implements HealthDisplay {
     public void remove() {
 
         getHolder().getUserInterface().removeSidebarScore(scoreName);
+        getHolder().removeHealthDisplay(this);
     }
 }

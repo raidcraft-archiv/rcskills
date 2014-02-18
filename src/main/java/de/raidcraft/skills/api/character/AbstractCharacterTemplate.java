@@ -27,6 +27,7 @@ import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
@@ -51,8 +52,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -64,6 +67,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<EquipmentSlot, CustomWeapon> weapons = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, CustomArmor> armorPieces = new EnumMap<>(EquipmentSlot.class);
+    private final Set<HealthDisplay> healthDisplays = new HashSet<>();
     private String name;
     protected int maxLevel;
     // every player is member of his own party by default
@@ -354,6 +358,21 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void attachHealthDisplay(HealthDisplay display) {
+
+        healthDisplays.add(display);
+        display.refresh();
+    }
+
+    @Override
+    public void removeHealthDisplay(HealthDisplay display) {
+
+        if (healthDisplays.remove(display)) {
+            display.remove();
+        }
+    }
+
+    @Override
     public void recalculateHealth() {
 
         if (isInCombat()) {
@@ -392,6 +411,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             health = 0;
         }
         getEntity().setHealth(health);
+        // lets update all attached health displays
+        for (HealthDisplay display : healthDisplays) {
+            display.refresh();
+        }
     }
 
     @Override

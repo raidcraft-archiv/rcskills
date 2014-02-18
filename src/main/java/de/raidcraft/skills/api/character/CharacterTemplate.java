@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
+import de.raidcraft.skills.api.ui.HealthDisplay;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -91,6 +92,10 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     public double getDamage();
 
     public void setDamage(double damage);
+
+    public void attachHealthDisplay(HealthDisplay display);
+
+    public void removeHealthDisplay(HealthDisplay display);
 
     public void recalculateHealth();
 
