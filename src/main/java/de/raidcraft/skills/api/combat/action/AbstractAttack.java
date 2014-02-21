@@ -31,7 +31,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
     public AbstractAttack(S attacker, T target, double damage, EffectType... types) {
 
         super(attacker, target);
-        this.damage = damage;
+        setDamage(damage);
         this.attackTypes.addAll(Arrays.asList(types));
         this.source = AttackSource.fromObject(attacker);
     }
@@ -54,7 +54,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         if (damage < 0) {
             this.damage = 0;
         }
-        this.damage = damage;
+        this.damage = ((int)(damage * 100.0)) / 100.0;
     }
 
     @Override
