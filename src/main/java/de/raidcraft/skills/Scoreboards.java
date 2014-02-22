@@ -83,6 +83,7 @@ public final class Scoreboards {
             for (Objective objective : scoreboard.getObjectives()) {
                 if (objective.getName().startsWith(BukkitUserInterface.HEALTH_OBJECTIVE)) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (player.hasMetadata("NPC")) continue;
                         if (player.getHealth() > 0) {
                             objective.getScore(player).setScore((int) player.getHealth());
                         } else {
