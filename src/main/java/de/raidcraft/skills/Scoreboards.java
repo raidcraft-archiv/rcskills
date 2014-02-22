@@ -117,9 +117,10 @@ public final class Scoreboards {
     public static Team updatePlayerTeam(Hero hero) {
 
         Scoreboard scoreboard = getScoreboard(hero);
-        Team team = scoreboard.getTeam(hero.hashCode() + "");
+        String teamId = (hero.hashCode() + "").substring(0, 15);
+        Team team = scoreboard.getTeam(teamId);
         if (team == null) {
-            team = scoreboard.registerNewTeam(hero.hashCode() + "");
+            team = scoreboard.registerNewTeam(teamId);
             Profession profession = hero.getHighestRankedProfession();
             ChatColor color = profession.getProperties().getColor();
             team.setPrefix(color + profession.getFriendlyName());
