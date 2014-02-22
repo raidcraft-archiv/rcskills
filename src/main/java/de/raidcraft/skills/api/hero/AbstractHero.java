@@ -88,7 +88,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
-        setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load some default options
         pvpEnabled = Option.PVP.isSet(this);
         // level needs to be attached fast to avoid npes when loading the skills
@@ -101,6 +100,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         loadAttributes();
         // keep this last because we need to professions to load first
         recalculateHealth();
+        setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load the skills after the profession
         loadSkills();
         // it is important to load the user interface last or lese it will run in an endless loop
