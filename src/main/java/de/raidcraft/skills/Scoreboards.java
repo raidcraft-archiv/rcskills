@@ -22,7 +22,6 @@ public final class Scoreboards {
 
     private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
     private static final String SIDE_DISPLAY_NAME = "---- %pvp% ----";
-    private static final String TEAM_NAME = "raidcraft";
     private static final Map<String, Scoreboard> scoreboards = new CaseInsensitiveMap<>();
 
     public static Scoreboard getScoreboard(Hero hero) {
@@ -86,9 +85,10 @@ public final class Scoreboards {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (player.getHealth() > 0) {
                             objective.getScore(player).setScore((int) player.getHealth());
+                        } else {
+                            objective.unregister();
                         }
                     }
-                    break;
                 }
             }
         }
