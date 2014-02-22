@@ -132,6 +132,7 @@ public final class Scoreboards {
             if (level.length() > 15) level = level.substring(0, 15);
             team.setSuffix(level);
             team.setDisplayName(teamId);
+            team.addPlayer(Bukkit.getOfflinePlayer(hero.getName()));
             updateTeams();
         }
         return team;
