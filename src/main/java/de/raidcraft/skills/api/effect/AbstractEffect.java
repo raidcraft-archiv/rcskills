@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.effect;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -303,6 +304,13 @@ public abstract class AbstractEffect<S> implements Effect<S> {
                     (getSource() instanceof CharacterTemplate ? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
                             "->You: " + message + " - " + getName());
         }
+    }
+
+    protected void warn(Throwable e) {
+
+        warn(e.getMessage());
+        RaidCraft.LOGGER.warning(e.getMessage());
+        e.printStackTrace();
     }
 
     protected void warn(String message) {

@@ -569,6 +569,77 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         // override if needed
     }
 
+    protected void warn(Throwable e) {
+
+        warn(e.getMessage());
+        RaidCraft.LOGGER.warning(e.getMessage());
+        e.printStackTrace();
+    }
+
+    protected void warn(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            warn((Hero) getHolder(), message);
+        }
+    }
+
+    protected void warn(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage(ChatColor.RED + message);
+    }
+
+    protected void info(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            info((Hero) getHolder(), message);
+        }
+    }
+
+    protected void info(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage("" + ChatColor.GRAY + message);
+    }
+
+    protected void msg(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            msg((Hero) getHolder(), message);
+        }
+    }
+
+    protected void msg(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage(message);
+    }
+
+    protected void combatLog(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            ((Hero) getHolder()).combatLog(this, message);
+        }
+    }
+
     @Override
     public final String toString() {
 
