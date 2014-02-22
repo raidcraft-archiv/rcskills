@@ -1,6 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -63,14 +64,16 @@ public final class Scoreboards {
     public static void updateTeams() {
 
         for (Scoreboard scoreboard : scoreboards.values()) {
-            Team team = scoreboard.getTeam(TEAM_NAME);
-            if (team == null) {
-                team = scoreboard.registerNewTeam(TEAM_NAME);
-                team.setAllowFriendlyFire(true);
-                team.setCanSeeFriendlyInvisibles(true);
-            }
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                team.addPlayer(player);
+            for (Team team : scoreboard.getTeams()) {
+                for (Scoreboard score : scoreboards.values()) {
+                    Team scoreboardTeam = score.getTeam(team.getName());
+                    if (scoreboardTeam == null) {
+                        Team newTeam = score.registerNewTeam(team.getName());
+                        newTeam.setPrefix(team.getPrefix());
+                        newTeam.setSuffix(team.getSuffix());
+                        newTeam.setDisplayName(team.getDisplayName());
+                    }
+                }
             }
         }
     }
@@ -109,5 +112,21 @@ public final class Scoreboards {
             objective.setDisplayName(SIDE_DISPLAY_NAME.replace("%pvp%", HeroUtil.getPvPTag(hero)));
         }
         return objective;
+    }
+
+    public static Team updatePlayerTeam(Hero hero) {
+
+        Scoreboard scoreboard = getScoreboard(hero);
+        Team team = scoreboard.getPlayerTeam(hero.getPlayer());
+        if (team == null) {
+            team = scoreboard.registerNewTeam(hero.getName());
+            Profession profession = hero.getHighestRankedProfession();
+            ChatColor color = profession.getProperties().getColor();
+            team.setPrefix(color + profession.getFriendlyName());
+            team.setSuffix(color + "[" + ChatColor.GREEN + color + "]");
+            team.setDisplayName(hero.getName());
+            updateTeams();
+        }
+        return team;
     }
 }

@@ -458,8 +458,9 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        Scoreboards.updateTeams();
-        queueHeroLogout(getHero(event.getPlayer()));
+        Hero hero = getHero(event.getPlayer());
+        Scoreboards.updatePlayerTeam(hero);
+        queueHeroLogout(hero);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -483,10 +484,10 @@ public final class CharacterManager implements Listener, Component {
             @Override
             public void run() {
 
-                Scoreboards.updateTeams();
                 Hero hero = getHero(event.getPlayer());
                 hero.updateEntity(event.getPlayer());
                 hero.updatePermissions();
+                Scoreboards.updatePlayerTeam(hero);
             }
         }, 1L);
     }

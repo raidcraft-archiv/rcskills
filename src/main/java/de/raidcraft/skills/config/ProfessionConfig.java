@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.persistance.ProfessionProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.formulas.FormulaType;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -125,6 +126,12 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     public String getDescription() {
 
         return getOverride("description", "Default description");
+    }
+
+    @Override
+    public ChatColor getColor() {
+
+        return ChatColor.valueOf(getOverride("color", "GRAY"));
     }
 
     @Override

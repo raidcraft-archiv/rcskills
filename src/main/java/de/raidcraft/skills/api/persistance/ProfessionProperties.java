@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface ProfessionProperties {
     public String getFriendlyName();
 
     public String getDescription();
+
+    public ChatColor getColor();
 
     public boolean isEnabled();
 

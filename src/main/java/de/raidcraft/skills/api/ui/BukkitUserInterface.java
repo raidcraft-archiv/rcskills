@@ -143,6 +143,7 @@ public class BukkitUserInterface implements UserInterface {
                 refreshingDisplays.remove(((RefreshingEffectDisplay) display).getEffect().getName());
             }
         }
+        Scoreboards.getScoreboard(getHero()).getPlayerTeam(getHero().getPlayer());
         // lets update the scoreboard
         updateHealthDisplay();
         // make sure the food level is never at 20 to allow eating
