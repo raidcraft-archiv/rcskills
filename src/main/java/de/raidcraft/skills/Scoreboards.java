@@ -117,7 +117,8 @@ public final class Scoreboards {
     public static Team updatePlayerTeam(Hero hero) {
 
         Scoreboard scoreboard = getScoreboard(hero);
-        String teamId = (hero.hashCode() + "").substring(0, 15);
+        String teamId = (hero.hashCode() + "");
+        if (teamId.length() > 15) teamId = teamId.substring(0, 15);
         Team team = scoreboard.getTeam(teamId);
         if (team == null) {
             team = scoreboard.registerNewTeam(teamId);
