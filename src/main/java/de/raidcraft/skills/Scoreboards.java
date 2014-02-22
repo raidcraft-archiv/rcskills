@@ -124,10 +124,12 @@ public final class Scoreboards {
             team = scoreboard.registerNewTeam(teamId);
             Profession profession = hero.getHighestRankedProfession();
             ChatColor color = profession.getProperties().getColor();
-            String friendlyName = profession.getFriendlyName();
+            String friendlyName = color + profession.getFriendlyName();
             if (friendlyName.length() > 15) friendlyName = friendlyName.substring(0, 15);
-            team.setPrefix(color + friendlyName);
-            team.setSuffix(color + "[" + ChatColor.GREEN + color + "]");
+            team.setPrefix(friendlyName);
+            String level = color + "[" + ChatColor.GREEN + color + "]";
+            if (level.length() > 15) level = level.substring(0, 15);
+            team.setSuffix(level);
             team.setDisplayName(teamId);
             updateTeams();
         }
