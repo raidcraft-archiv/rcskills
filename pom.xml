@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>skills</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
     <name>Skills</name>
 
     <parent>
@@ -31,7 +31,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
-        <tag>skills-1.2.1</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <repositories>
