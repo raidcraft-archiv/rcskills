@@ -19,7 +19,7 @@ public @interface SkillInformation {
 
     public String description();
     
-    public String[] configUseage() default {};
+    public String[] configUsage() default {};
 
     public EffectType[] types() default {};
 
