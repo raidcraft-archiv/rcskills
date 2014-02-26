@@ -49,6 +49,16 @@ public class SkillCommands {
                     sender.sendMessage(usage);
                 }
             }
+            Class<? extends Effect>[] effects = skill.getSkillProperties().getInformation().effects();
+            for (Class<? extends Effect> effect : effects) {
+                EffectInformation annotation = effect.getAnnotation(EffectInformation.class);
+                sender.sendMessage(annotation.name() + "{");
+                String[] effectUsage = annotation.configUsage();
+                for (String usage : effectUsage) {
+                    sender.sendMessage("\t" + usage);
+                }
+                sender.sendMessage("},");
+            }
         }
     }
 }
