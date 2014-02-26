@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.Effect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,6 +21,8 @@ public @interface SkillInformation {
     public String description();
     
     public String[] configUsage() default {};
+    
+    public Class<? extends Effect>[] effects default {};
 
     public EffectType[] types() default {};
 
