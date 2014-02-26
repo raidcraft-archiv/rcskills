@@ -27,6 +27,7 @@ public class SkillCommands {
             aliases = {"info", "i"},
             desc = "Gives information about the skill",
             usage = "<skill>",
+            flags = "c",
             min = 1
     )
     @CommandPermissions("rcskills.player.skill.info")
@@ -38,6 +39,16 @@ public class SkillCommands {
         sender.sendMessage(SkillUtil.formatHeader(skill));
         for (String msg : SkillUtil.formatBody(skill)) {
             sender.sendMessage(msg);
+        }
+        
+        if (args.hasFlag('c')) {
+            String[] configUsage = skill.getSkillProperties().getInformation().configUsage();
+            if (configUsage.length > 0) {
+                sender.sendMessage("\nConfiguration Information:");
+                for (String usage : configUsage) {
+                    sender.sendMessage(usage);
+                }
+            }
         }
     }
 }
