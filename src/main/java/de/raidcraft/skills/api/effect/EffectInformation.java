@@ -18,6 +18,8 @@ public @interface EffectInformation {
     public String name();
 
     public String description();
+    
+    public String[] configUsage() default {};
 
     public EffectType[] types() default {};
 
