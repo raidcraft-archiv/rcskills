@@ -35,6 +35,7 @@ public final class Scoreboards {
         }
         if (!hero.isOnline()) {
             hero.updateEntity(Bukkit.getPlayer(playerName));
+            return scoreboard;
         }
         hero.getPlayer().setScoreboard(scoreboard);
         scoreboards.put(playerName, scoreboard);
