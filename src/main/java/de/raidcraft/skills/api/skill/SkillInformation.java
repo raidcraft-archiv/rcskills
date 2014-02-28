@@ -22,7 +22,7 @@ public @interface SkillInformation {
     
     public String[] configUsage() default {};
     
-    public Class<? extends Effect>[] effects default {};
+    public Class<? extends Effect>[] effects() default {};
 
     public EffectType[] types() default {};
 
