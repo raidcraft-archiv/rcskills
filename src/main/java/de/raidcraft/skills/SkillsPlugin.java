@@ -133,17 +133,22 @@ public class SkillsPlugin extends BasePlugin implements Component {
             @Override
             public void run() {
 
-                if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
-                    // lets register our conversation actions
-                    registerConversationActions();
-                }
-                if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
-                    try {
-                        RaidCraft.registerItemAttachmentProvider(getSkillManager());
-                        RaidCraft.registerItemAttachmentProvider(new SkillsRequirementProvider());
-                    } catch (RaidCraftException e) {
-                        getLogger().warning(e.getMessage());
+                try {
+                    if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
+                        // lets register our conversation actions
+                        registerConversationActions();
                     }
+                    if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
+                        try {
+                            RaidCraft.registerItemAttachmentProvider(getSkillManager());
+                            RaidCraft.registerItemAttachmentProvider(new SkillsRequirementProvider());
+                        } catch (RaidCraftException e) {
+                            getLogger().warning(e.getMessage());
+                        }
+                    }
+                } catch (Throwable e) {
+                    getLogger().warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }, 1L);
