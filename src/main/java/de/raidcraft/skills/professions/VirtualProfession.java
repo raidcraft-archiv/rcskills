@@ -42,7 +42,9 @@ public final class VirtualProfession extends AbstractProfession {
             for (THeroSkill tHeroSkill : dbSkills) {
                 try {
                     Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
-                    this.skills.put(skill.getName(), skill);
+                    if (skill.isUnlocked()) {
+                        addSkill(skill);
+                    }
                 } catch (UnknownSkillException e) {
                     getHero().sendMessage(ChatColor.RED + e.getMessage());
                 }
