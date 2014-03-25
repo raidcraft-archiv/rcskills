@@ -104,7 +104,7 @@ public final class Scoreboards {
         } else {
             objective = scoreboard.getObjective(objectiveName);
         }
-        if (hero.getEntity().hasMetadata("GHOST")) {
+        if (hero.isOnline() && hero.getEntity().hasMetadata("GHOST")) {
             objective.setDisplayName(ChatColor.DARK_GRAY + SIDE_DISPLAY_NAME.replace("%pvp%", "Geist"));
         } else {
             objective.setDisplayName(SIDE_DISPLAY_NAME.replace("%pvp%", HeroUtil.getPvPTag(hero)));

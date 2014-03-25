@@ -41,11 +41,20 @@ public abstract class RefreshingDisplay implements Runnable {
             return;
         }
         if (remainingDuration < 1) {
-            task.cancel();
-            userInterface.removeSidebarScore(getScoreName());
+            cancel();
+            return;
+        }
+        if (!userInterface.getHero().isOnline()) {
+            cancel();
             return;
         }
         userInterface.updateSidebarScore(getScoreName(), remainingDuration);
         remainingDuration--;
+    }
+
+    private void cancel() {
+
+        task.cancel();
+        userInterface.removeSidebarScore(getScoreName());
     }
 }
