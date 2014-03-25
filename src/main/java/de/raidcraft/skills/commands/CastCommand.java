@@ -31,7 +31,8 @@ public class CastCommand {
     @Command(
             aliases = "cast",
             desc = "Casts the given skill",
-            min = 1
+            min = 1,
+            flags = "a:"
     )
     @CommandPermissions("rcskills.player.cast")
     public void cast(CommandContext args, CommandSender sender) throws CommandException {
@@ -44,14 +45,14 @@ public class CastCommand {
         hero = plugin.getCharacterManager().getHero((Player) sender);
 
         // lets parse the argument for a valid spell
-        Skill skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
+        Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
         if (!skill.getSkillProperties().isCastable()) {
             throw new CommandException("Du kannst diesen Skill nicht aktiv verwenden.");
         }
 
         try {
-            new SkillAction(skill, new CommandContext(args.getSlice(1), args.getFlags())).run();
+            new SkillAction(skill, new CommandContext(args.getFlag('a'), args.getFlags())).run();
         } catch (CombatException e) {
             String msg = e.getMessage();
             if (e.getType() == CombatException.Type.ON_COOLDOWN) {
