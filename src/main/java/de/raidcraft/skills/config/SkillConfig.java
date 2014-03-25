@@ -5,6 +5,7 @@ import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.ambient.AmbientManager;
 import de.raidcraft.api.ambient.UnknownAmbientEffect;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
@@ -22,7 +23,6 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -161,16 +161,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
         ItemStack[] reagents = new ItemStack[keys.size()];
         int i = 0;
         for (String key : keys) {
-            Material material;
             try {
-                material = Material.getMaterial(Integer.parseInt(key));
-            } catch (NumberFormatException e) {
-                material = Material.getMaterial(key);
+                ItemStack item = RaidCraft.getItem(key, section.getInt(key));
+                reagents[i] = item;
+            } catch (CustomItemException e) {
+                getPlugin().getLogger().warning("Wrong item '" + key + "' configured in the skill '" + getName() + "'");
             }
-            if (material == null) {
-                getPlugin().getLogger().warning("Item " + key + " is non existant in bukkit! Skill: " + getName());
-            }
-            reagents[i] = new ItemStack(material, section.getInt(key));
         }
         return reagents;
     }
