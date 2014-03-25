@@ -211,10 +211,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public int swingWeapon(EquipmentSlot slot) {
 
+        setLastSwing(slot);
         if (slot != EquipmentSlot.HANDS && (!hasWeapon(slot) || !canSwing(slot))) {
             return 0;
         }
-        setLastSwing(slot);
         return getWeaponDamage(slot);
     }
 
