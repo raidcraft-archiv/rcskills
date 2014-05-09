@@ -15,7 +15,7 @@ public enum ToolType {
             Material.GOLD_AXE,
             Material.DIAMOND_AXE
     ),
-    SPADE("Schaufel",
+    SHOVEL("Schaufel",
             Material.WOOD_SPADE,
             Material.STONE_SPADE,
             Material.IRON_SPADE,
