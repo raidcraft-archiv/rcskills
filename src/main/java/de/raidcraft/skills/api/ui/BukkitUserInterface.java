@@ -48,6 +48,7 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void removeSidebarScore(OfflinePlayer name) {
 
+        if (!getHero().isOnline()) return;
         Score score = Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name);
         score.getScoreboard().resetScores(score.getPlayer());
     }
@@ -55,6 +56,7 @@ public class BukkitUserInterface implements UserInterface {
     @Override
     public void updateSidebarScore(OfflinePlayer name, int score) {
 
+        if (!getHero().isOnline()) return;
         Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name).setScore(score);
     }
 
