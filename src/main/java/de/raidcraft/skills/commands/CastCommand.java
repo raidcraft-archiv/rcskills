@@ -52,7 +52,7 @@ public class CastCommand {
         }
 
         try {
-            new SkillAction(skill, new CommandContext(args.getFlag('a'), args.getFlags())).run();
+            new SkillAction(skill, new CommandContext(args.hasFlag('a') ? args.getFlag('a') : "", args.getFlags())).run();
         } catch (CombatException e) {
             String msg = e.getMessage();
             if (e.getType() == CombatException.Type.ON_COOLDOWN) {
