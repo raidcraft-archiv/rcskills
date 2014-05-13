@@ -37,8 +37,8 @@ public final class SkillUtil {
                     foundSkills.add(skill);
                     break;
                 }
-            } else if (skill.getName().contains(input)
-                    || StringUtils.formatName(skill.getFriendlyName()).contains(input)) {
+            } else if (skill.getName().startsWith(input)
+                    || StringUtils.formatName(skill.getFriendlyName()).startsWith(input)) {
                 foundSkills.add(skill);
             }
         }
@@ -50,7 +50,7 @@ public final class SkillUtil {
         if (foundSkills.size() > 1) {
             // check if a skills matches exactly
             for (Skill skill : foundSkills) {
-                if (skill.getName().equalsIgnoreCase(input) || skill.getFriendlyName().equalsIgnoreCase(input)) {
+                if (skill.getName().equals(input) || StringUtils.formatName(skill.getFriendlyName()).equals(input)) {
                     return skill;
                 }
             }

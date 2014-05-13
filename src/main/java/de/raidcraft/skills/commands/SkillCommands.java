@@ -39,9 +39,7 @@ public class SkillCommands {
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
         sender.sendMessage(SkillUtil.formatHeader(skill));
-        for (String msg : SkillUtil.formatBody(skill)) {
-            sender.sendMessage(msg);
-        }
+        SkillUtil.formatBody(skill).forEach(sender::sendMessage);
         
         if (args.hasFlag('c')) {
             String[] configUsage = skill.getSkillProperties().getInformation().configUsage();
