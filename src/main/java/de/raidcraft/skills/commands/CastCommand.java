@@ -51,7 +51,7 @@ public class CastCommand {
         }
 
         try {
-            new SkillAction(skill, new CommandContext(args.getJoinedStrings(1), args.getFlags())).run();
+            new SkillAction(skill, new CommandContext((args.argsLength() > 1 ? args.getJoinedStrings(1) : ""), args.getFlags())).run();
         } catch (CombatException e) {
             String msg = e.getMessage();
             if (e.getType() == CombatException.Type.ON_COOLDOWN) {
