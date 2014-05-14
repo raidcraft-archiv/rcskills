@@ -36,6 +36,9 @@ public enum ToolType {
             Material.GOLD_HOE,
             Material.DIAMOND_HOE
     ),
+    FISHING_ROD("Angel",
+            Material.FISHING_ROD
+    ),
     SHEAR("Scheere",
             Material.SHEARS
     );
