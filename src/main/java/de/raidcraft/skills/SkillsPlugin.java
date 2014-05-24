@@ -117,10 +117,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.levelConfig = configure(new LevelConfig(this), false);
         this.experienceConfig = configure(new ExperienceConfig(this), false);
 
-        loadEngine();
-        // lets register our permissions provider last
-        this.permissionsProvider = new SkillPermissionsProvider(this);
-
         // and commands gogogo
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
@@ -128,10 +124,17 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         // register the tab stuff
         registerTabDecoSettings();
+
         // register conv actions when all plugins loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
             public void run() {
+
+                // the skill engine needs to be loaded after all other plugins are loaded
+                // to avoid dependency hickups
+                loadEngine();
+                // lets register our permissions provider last
+                permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
 
                 try {
                     if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
