@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,7 +13,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_hero_options")
-public @Data class THeroOption {
+@Getter
+@Setter
+public class THeroOption {
 
     @Id
     private int id;

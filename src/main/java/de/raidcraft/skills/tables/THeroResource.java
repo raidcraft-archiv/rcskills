@@ -2,7 +2,8 @@ package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.skills.api.persistance.ResourceData;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,7 +15,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_hero_resources")
-public @Data class THeroResource implements ResourceData {
+@Getter
+@Setter
+public class THeroResource implements ResourceData {
 
     @Id
     private int id;

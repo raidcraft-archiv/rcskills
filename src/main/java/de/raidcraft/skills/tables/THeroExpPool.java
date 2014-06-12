@@ -1,7 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import de.raidcraft.skills.api.persistance.LevelData;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,7 +13,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_exp_pool")
-public @Data class THeroExpPool implements LevelData {
+@Getter
+@Setter
+public class THeroExpPool implements LevelData {
 
     @Id
     private int id;

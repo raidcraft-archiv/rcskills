@@ -1,17 +1,11 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -19,7 +13,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero_professions")
-public @Data class THeroProfession implements LevelData {
+@Getter
+@Setter
+public class THeroProfession implements LevelData {
 
     @Id
     private int id;

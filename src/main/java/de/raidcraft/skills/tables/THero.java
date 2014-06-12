@@ -6,7 +6,8 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.util.CollectionUtils;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_heroes")
-public @Data class THero implements LevelData, HeroData {
+@Getter
+@Setter
+public class THero implements LevelData, HeroData {
 
     @Id
     private int id;

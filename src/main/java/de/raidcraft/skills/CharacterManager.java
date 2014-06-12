@@ -232,13 +232,12 @@ public final class CharacterManager implements Listener, Component {
                 pool = new THeroExpPool();
                 pool.setPlayer(name);
                 pool.setHeroId(heroTable.getId());
-                RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
             } else {
                 pool.setHeroId(heroTable.getId());
-                RaidCraft.getDatabase(SkillsPlugin.class).update(pool);
             }
+            RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
             heroTable.setExpPool(pool);
-            RaidCraft.getDatabase(SkillsPlugin.class).update(heroTable);
+            RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
             hero = new SimpleHero(player, heroTable);
             heroes.put(name, hero);
             hero.checkArmor();
