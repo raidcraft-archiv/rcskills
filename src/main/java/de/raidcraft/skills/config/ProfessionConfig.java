@@ -76,7 +76,8 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
                 professions.add(childProf);
                 childProf.setParent(profession);
             } catch (UnknownSkillException | UnknownProfessionException e) {
-                getPlugin().getLogger().severe(e.getMessage());
+                e.printStackTrace();
+                getPlugin().getLogger().severe("Error while loading child professions: " + e.getMessage());
             }
         }
         return professions;
