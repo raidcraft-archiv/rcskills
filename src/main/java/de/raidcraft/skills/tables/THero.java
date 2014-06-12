@@ -54,43 +54,53 @@ public @Data class THero implements LevelData, HeroData {
     public List<String> getProfessionNames() {
 
         ArrayList<String> strings = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(getProfessions()))
-            getProfessions().stream().forEach((profession) -> strings.add(profession.getName()));
+        if (!CollectionUtils.isEmpty(getProfessions())) {
+            for (THeroProfession profession : getProfessions()) {
+                strings.add(profession.getName());
+            }
+        }
         return strings;
     }
 
     @Override
     public int getId() {
+
         return id;
     }
 
     @Override
     public String getName() {
+
         return player;
     }
 
     @Override
     public int getMaxLevel() {
+
         return RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().hero_max_level;
     }
 
     @Override
     public LevelData getLevelData() {
+
         return this;
     }
 
     @Override
     public double getHealth() {
+
         return health;
     }
 
     @Override
     public int getLevel() {
+
         return level;
     }
 
     @Override
     public int getExp() {
+
         return exp;
     }
 }

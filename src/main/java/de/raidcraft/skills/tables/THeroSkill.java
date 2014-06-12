@@ -53,5 +53,4 @@ public @Data class THeroSkill implements LevelData {
 
         return exp;
     }
-
 }

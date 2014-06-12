@@ -195,7 +195,7 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         if (level < 1) level = 1;
         if (level == this.level) return;
 
-        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
+        RCLevelEvent event = new RCLevelEvent(getLevelObject(), getLevel(), level);
         RaidCraft.callEvent(event);
 
         if (!event.isCancelled()) {

@@ -49,5 +49,4 @@ public @Data class THeroResource implements ResourceData {
 
         this.value = value;
     }
-
 }

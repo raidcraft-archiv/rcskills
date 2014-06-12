@@ -17,8 +17,10 @@ public @Data class THeroAttribute {
 
     @Id
     private int id;
+
     @ManyToOne
     private THero hero;
+
     private AttributeType attribute;
     private int baseValue;
     private int currentValue;

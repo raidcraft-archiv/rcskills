@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.database.Bean;
 import de.raidcraft.skills.api.persistance.LevelData;
 import lombok.Data;
 
@@ -40,7 +41,6 @@ public @Data class THeroProfession implements LevelData {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "profession_id")
     private List<THeroResource> resources;
-
 
     @Override
     public int getLevel() {
