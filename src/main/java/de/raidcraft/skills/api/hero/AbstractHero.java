@@ -134,8 +134,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     professions.put(child.getName(), child);
                 }
             } catch (UnknownSkillException | UnknownProfessionException e) {
-                e.printStackTrace();
-                RaidCraft.LOGGER.warning(e.getMessage());
+                RaidCraft.LOGGER.warning("Error while loading the hero professions of " + getName() + ": " + e.getMessage());
             }
         }
         if (virtualProfession == null) {
