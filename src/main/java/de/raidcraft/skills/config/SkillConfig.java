@@ -182,7 +182,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
                 profession = getPlugin().getProfessionManager().getProfession(hero, section.getString(key));
                 skills.add(getPlugin().getSkillManager().getSkill(hero, profession, key));
             } catch (UnknownSkillException | UnknownProfessionException e) {
-                getPlugin().getLogger().warning(e.getMessage());
+                getPlugin().getLogger().warning("Error while loading linked skills of " + getName() + ": " + e.getMessage());
             }
         }
         return skills;
