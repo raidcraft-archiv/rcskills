@@ -73,8 +73,7 @@ public class ProfessionPath implements Path<Profession> {
             try {
                 professions.add(config.getPlugin().getProfessionManager().getProfession(hero, key));
             } catch (UnknownSkillException | UnknownProfessionException e) {
-                e.printStackTrace();
-                config.getPlugin().getLogger().severe(e.getMessage());
+                config.getPlugin().getLogger().severe("Error while getting the parents of " + getName() + ": " + e.getMessage());
             }
         }
         return professions;
