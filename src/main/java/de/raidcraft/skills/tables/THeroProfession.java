@@ -1,10 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Bean;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.LevelData;
+import lombok.Data;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -20,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero_professions")
-public class THeroProfession implements Bean, LevelData {
+public @Data class THeroProfession implements LevelData {
 
     @Id
     private int id;
@@ -43,89 +41,16 @@ public class THeroProfession implements Bean, LevelData {
     @JoinColumn(name = "profession_id")
     private List<THeroResource> resources;
 
+
     @Override
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public String getName() {
-
-        return name;
-    }
-
-    public void setName(String name) {
-
-        this.name = name;
-    }
-
-    public THero getHero() {
-
-        return hero;
-    }
-
-    public void setHero(THero heroTable) {
-
-        this.hero = heroTable;
-    }
-
     public int getLevel() {
 
         return level;
     }
 
-    public void setLevel(int level) {
-
-        this.level = level;
-    }
-
+    @Override
     public int getExp() {
 
         return exp;
-    }
-
-    public void setExp(int exp) {
-
-        this.exp = exp;
-    }
-
-    public boolean isActive() {
-
-        return active;
-    }
-
-    public void setActive(boolean active) {
-
-        this.active = active;
-    }
-
-    public List<THeroSkill> getSkills() {
-
-        return skills;
-    }
-
-    public void setSkills(List<THeroSkill> skills) {
-
-        this.skills = skills;
-    }
-
-    public List<THeroResource> getResources() {
-
-        return resources;
-    }
-
-    public void setResources(List<THeroResource> resources) {
-
-        this.resources = resources;
-    }
-
-    public void delete() {
-
-        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }

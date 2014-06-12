@@ -607,7 +607,7 @@ public class AdminCommands {
         plugin.getCharacterManager().clearCacheOf(hero);
         // this will delete all references to the object
         THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId());
-        if (tHero != null) tHero.delete();
+        if (tHero != null) RaidCraft.getDatabase(SkillsPlugin.class).delete(tHero);
         // remove the player from cache
         sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }

@@ -1,7 +1,7 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.api.database.Bean;
 import de.raidcraft.api.items.AttributeType;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_attributes")
-public class THeroAttribute implements Bean {
+public @Data class THeroAttribute {
 
     @Id
     private int id;
@@ -23,53 +23,4 @@ public class THeroAttribute implements Bean {
     private int baseValue;
     private int currentValue;
 
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public THero getHero() {
-
-        return hero;
-    }
-
-    public void setHero(THero hero) {
-
-        this.hero = hero;
-    }
-
-    public AttributeType getAttribute() {
-
-        return attribute;
-    }
-
-    public void setAttribute(AttributeType attribute) {
-
-        this.attribute = attribute;
-    }
-
-    public int getBaseValue() {
-
-        return baseValue;
-    }
-
-    public void setBaseValue(int baseValue) {
-
-        this.baseValue = baseValue;
-    }
-
-    public int getCurrentValue() {
-
-        return currentValue;
-    }
-
-    public void setCurrentValue(int currentValue) {
-
-        this.currentValue = currentValue;
-    }
 }
