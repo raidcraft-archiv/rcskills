@@ -12,7 +12,8 @@ import de.raidcraft.skills.api.persistance.EffectData;
 @EffectInformation(
         name = "Tagged",
         description = "Taggs the target and gives exp to the group that tagged it on death.",
-        priority = 1.0
+        priority = 1.0,
+        global = true
 )
 public class Tagged extends ExpirableEffect<CharacterTemplate> {
 

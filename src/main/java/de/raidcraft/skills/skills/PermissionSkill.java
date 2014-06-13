@@ -66,7 +66,7 @@ public class PermissionSkill extends AbstractSkill {
         }
         if (timed) {
             try {
-                addEffect(getHolder(), TimedPermissionSkill.class);
+                addEffect(TimedPermissionSkill.class);
             } catch (CombatException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }

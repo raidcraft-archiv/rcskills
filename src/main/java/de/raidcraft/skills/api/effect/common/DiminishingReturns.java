@@ -19,7 +19,8 @@ import java.util.Map;
         name = "Diminishing Returns",
         description = "Provides protection for stun locks and more.",
         types = {EffectType.SYSTEM},
-        priority = 1.0
+        priority = 1.0,
+        global = true
 )
 public class DiminishingReturns<S> extends ExpirableEffect<S> {
 

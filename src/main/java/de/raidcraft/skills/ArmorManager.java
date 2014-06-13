@@ -83,7 +83,9 @@ public final class ArmorManager implements Triggered, Listener {
         int totalArmor = attack.getTarget().getTotalArmorValue();
         // lets check if sunder armor effect is active
         if (attack.getTarget().hasEffect(SunderingArmor.class)) {
-            totalArmor = (int) (totalArmor - totalArmor * attack.getTarget().getEffect(SunderingArmor.class).getArmorReduction());
+            for (SunderingArmor effect : attack.getTarget().getEffects(SunderingArmor.class)) {
+                totalArmor = (int) (totalArmor - totalArmor * effect.getArmorReduction());
+            }
         }
 
         double damageReduction = getDamageReduction(attack, totalArmor);

@@ -21,7 +21,8 @@ import java.util.List;
 @EffectInformation(
         name = "Casttime",
         description = "Keeps track of the casttime for a char template",
-        priority = -1.0
+        priority = -1.0,
+        global = true
 )
 public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 

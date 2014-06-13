@@ -23,7 +23,8 @@ import org.bukkit.entity.Projectile;
 @EffectInformation(
         name = "Queued-Range-Attack",
         description = "Calls back a range attack when projectile hits.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedRangedAttack extends ExpirableEffect<Skill> implements Triggered {
 

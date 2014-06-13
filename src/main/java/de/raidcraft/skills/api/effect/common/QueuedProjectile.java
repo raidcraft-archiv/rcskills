@@ -20,7 +20,8 @@ import de.raidcraft.skills.trigger.ProjectileHitTrigger;
 @EffectInformation(
         name = "QueuedProjectile",
         description = "Löst den Effekt aus wenn das Projektil den Boden trifft.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggered {
 

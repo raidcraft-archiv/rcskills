@@ -252,14 +252,14 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
 
     protected final QueuedAttack queueAttack(Callback<AttackTrigger> callback) throws CombatException {
 
-        QueuedAttack effect = addEffect(getHolder(), QueuedAttack.class);
+        QueuedAttack effect = addEffect(QueuedAttack.class);
         effect.addCallback(callback);
         return effect;
     }
 
     protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback, Action action) throws CombatException {
 
-        QueuedInteract effect = addEffect(getHolder(), QueuedInteract.class);
+        QueuedInteract effect = addEffect(QueuedInteract.class);
         effect.addCallback(callback, action);
         return effect;
     }

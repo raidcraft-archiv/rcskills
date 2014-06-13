@@ -14,7 +14,8 @@ import de.raidcraft.skills.api.skill.Skill;
  */
 @EffectInformation(
         name = "GlobalCooldown",
-        description = "Wenn du diesen Effekt hast kannst du keine aktiven Zauber wirken."
+        description = "Wenn du diesen Effekt hast kannst du keine aktiven Zauber wirken.",
+        global = true
 )
 public class GlobalCooldown extends ExpirableEffect<Skill> {
 

@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
@@ -56,6 +57,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -63,7 +65,7 @@ import java.util.Set;
 public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final ThreatTable threatTable;
-    private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    private final Map<Class<? extends Effect>, Map<Object, Effect>> effects = new HashMap<>();
     private final Map<EquipmentSlot, CustomWeapon> weapons = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, CustomArmor> armorPieces = new EnumMap<>(EquipmentSlot.class);
@@ -597,8 +599,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             throw new CombatException(CombatException.Type.INVALID_TARGET);
         }
 
-        if (hasEffect(eClass)) {
-            Effect<?> existingEffect = effects.get(eClass);
+        if (!effects.containsKey(eClass)) {
+            effects.put(eClass, new HashMap<>());
+        }
+
+        boolean globalEffect = eClass.getAnnotation(EffectInformation.class).global();
+        if (hasEffect(eClass, effect.getSource()) || (globalEffect && hasEffect(eClass))) {
+            Effect<?> existingEffect;
+            if (globalEffect) {
+                existingEffect = effects.get(eClass).values().stream().findFirst().get();
+            } else {
+                existingEffect = effects.get(eClass).get(effect.getSource());
+            }
             // lets check priorities
             if (existingEffect instanceof Stackable) {
                 // we dont replace or renew stackable effects, we increase their stacks :)
@@ -619,7 +631,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             }
         } else {
             // apply the new effect
-            effects.put(eClass, effect);
+            effects.get(eClass).put(effect.getSource(), effect);
             effect.apply();
         }
     }
@@ -650,7 +662,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        Effect removedEffect = effects.remove(effect.getClass());
+        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
         if (removedEffect != null) {
             effect.remove();
         }
@@ -663,7 +675,22 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E> void removeEffect(Class<E> eClass) throws CombatException {
 
-        Effect<?> effect = effects.remove(eClass);
+        Map<Object, Effect> effects = this.effects.remove(eClass);
+        if (effects != null) {
+            for (Effect effect : new ArrayList<>(effects.values())) {
+                effects.remove(effect.getSource()).remove();
+            }
+        }
+    }
+
+    @Override
+    public <E> void removeEffect(Class<E> eClass, Object source) throws CombatException {
+
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            removeEffect(eClass);
+            return;
+        }
+        Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
         if (effect != null) {
             effect.remove();
         }
@@ -672,24 +699,39 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void clearEffects() {
 
-        for (Effect effect : new ArrayList<>(effects.values())) {
-            try {
-                if (effect != null) {
-                    effect.remove();
+        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+            entry.values().forEach(effect -> {
+                try {
+                    if (effect != null) {
+                        effect.remove();
+                    }
+                } catch (CombatException e) {
+                    if (effect.getTarget() instanceof Hero) {
+                        ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                    }
                 }
-            } catch (CombatException e) {
-                if (effect.getTarget() instanceof Hero) {
-                    ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
-                }
-            }
+            });
         }
+        effects.clear();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E extends Effect> E getEffect(Class<E> eClass) {
+    public <E extends Effect> List<E> getEffects(Class<E> eClass) {
 
-        return (E) effects.get(eClass);
+        List<E> effects = new ArrayList<>();
+        this.effects.values().stream().forEach(entry -> effects.addAll((Collection<? extends E>) entry.values()));
+        return effects;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
+
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+        }
+        return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
     }
 
     @Override
@@ -699,44 +741,51 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
+
+        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
+    }
+
+    @Override
     public final boolean hasEffectType(EffectType type) {
 
-        for (Effect effect : effects.values()) {
-            if (effect.isOfType(type)) {
-                return true;
-            }
-        }
-        return false;
+        return effects.values().stream()
+                .anyMatch(entry -> entry.values().stream()
+                        .anyMatch(effect -> effect.isOfType(type)));
     }
 
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Effect effect : new ArrayList<>(effects.values())) {
-            if (effect.isOfType(type)) {
-                effect.remove();
-            }
+        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+            entry.values().stream().filter(effect -> effect.isOfType(type))
+                    .forEach(effect -> {
+                        try {
+                            effect.remove();
+                        } catch (CombatException e) {
+                            if (effect.getTarget() instanceof Hero) {
+                                ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                            }
+                        }
+                    });
         }
     }
 
     @Override
     public final List<Effect> getEffects() {
 
-        return new ArrayList<>(effects.values());
+        List<Effect> effects = new ArrayList<>();
+        this.effects.values().forEach(entry -> effects.addAll(entry.values()));
+        return effects;
     }
 
     @Override
     public final List<Effect> getEffects(EffectType... types) {
 
         List<Effect> effects = new ArrayList<>();
-        OUTTER: for (Effect effect : this.effects.values()) {
-            for (EffectType type : types) {
-                if (!effect.isOfType(type)) {
-                    continue OUTTER;
-                }
-            }
-            effects.add(effect);
-        }
+        this.effects.values().forEach(entry -> entry.values().stream()
+                .filter(effect -> effect.isOfAnyType(types))
+                .forEach(effects::add));
         return effects;
     }
 
@@ -748,9 +797,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         if (nearbyEntities.size() < 1) throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Keine Ziele in Reichweite von " + range + "m.");
 
-        for (LivingEntity target : nearbyEntities) {
-            targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
-        }
+        targets.addAll(nearbyEntities.stream()
+                .map(target -> RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target))
+                .collect(Collectors.toList()));
 
         return targets;
     }

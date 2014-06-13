@@ -179,6 +179,17 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     }
 
     @Override
+    public boolean isOfAnyType(EffectType... types) {
+
+        for (EffectType type : types) {
+            if (isOfType(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public double getPriority() {
 
         return priority;

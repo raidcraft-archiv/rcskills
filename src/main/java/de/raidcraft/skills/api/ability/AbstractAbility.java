@@ -142,6 +142,41 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
     }
 
+    public final <E extends Effect<S>, S> void removeEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        target.removeEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> void removeEffect(Class<E> eClass) throws CombatException {
+
+        getHolder().removeEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> boolean hasEffect(Class<E> eClass) {
+
+        return getHolder().hasEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> boolean hasEffect(CharacterTemplate target, Class<E> eClass) {
+
+        return target.hasEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.getEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> E getEffect(Class<E> eClass) throws CombatException {
+
+        return getHolder().getEffect(eClass, this);
+    }
+
+    public final <E extends Effect<S>, S> E addEffect(Class<E> eClass) throws CombatException {
+
+        return addEffect(getHolder(), eClass);
+    }
+
     @SuppressWarnings("unchecked")
     public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 

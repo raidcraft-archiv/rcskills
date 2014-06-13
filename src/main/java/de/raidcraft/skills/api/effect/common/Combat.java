@@ -21,7 +21,8 @@ import java.util.Set;
         name = "Combat",
         description = "Is applied when a character enters combat",
         types = {EffectType.SYSTEM},
-        priority = 1.0
+        priority = 1.0,
+        global = true
 )
 public class Combat<S> extends ExpirableEffect<S> {
 
