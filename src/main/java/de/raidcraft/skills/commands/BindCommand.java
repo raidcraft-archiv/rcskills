@@ -30,10 +30,7 @@ public class BindCommand {
      * Executes the command to bind or unbind a skill with an item.
      *
      * @param args   Passed command arguments
-<<<<<<< HEAD
      * @param sender The source of the command
-=======
->>>>>>> 526df3af3b2840cf1c419fc76e1244ff8132fb63
      *
      * @return true if success, otherwise false
      */
@@ -54,11 +51,7 @@ public class BindCommand {
         Player player = (Player) sender;
 
         if (!player.isOnline()) {
-<<<<<<< HEAD
             return;
-=======
-            return true;
->>>>>>> 526df3af3b2840cf1c419fc76e1244ff8132fb63
         }
 
         Hero hero = plugin.getCharacterManager().getHero(player);
