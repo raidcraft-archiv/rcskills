@@ -33,7 +33,7 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.api.ui.UserInterface;
-import de.raidcraft.skills.bindings.BindManager;
+import de.raidcraft.skills.bindings.BindingManager;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.formulas.FormulaType;
@@ -43,25 +43,23 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.CustomItemUtil;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
  */
 public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implements Hero {
 
+    @Getter
     private final int id;
+
     private final String name;
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
@@ -79,6 +77,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private long lastCombatAction;
     private boolean pvpEnabled = false;
 
+    @Getter
+    private BindingManager bindings;
+
     protected AbstractHero(Player player, HeroData data) {
 
         super(player);
@@ -88,6 +89,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
+        this.bindings = new BindingManager(this);
+
         // load some default options
         pvpEnabled = Option.PVP.isSet(this);
         // level needs to be attached fast to avoid npes when loading the skills
@@ -103,6 +106,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load the skills after the profession
         loadSkills();
+        // load the bindings after the skills
+        getBindings().load();
         // it is important to load the user interface last or lese it will run in an endless loop
         this.userInterface = new BukkitUserInterface(this);
     }
@@ -234,7 +239,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the skills after the profession
         loadSkills();
         // reload the bound items
-        RaidCraft.getComponent(BindManager.class).reloadBoundItems(getPlayer());
+        getBindings().reload();
         clearWeapons();
         Scoreboards.removeScoreboard(getPlayer());
         save();
@@ -637,13 +642,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         }
         getUserInterface().refresh();
         debug("Reseted all active stats to max");
-    }
-
-
-    @Override
-    public int getId() {
-
-        return id;
     }
 
     @Override

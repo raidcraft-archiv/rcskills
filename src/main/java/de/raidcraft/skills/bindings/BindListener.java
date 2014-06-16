@@ -1,92 +1,94 @@
 package de.raidcraft.skills.bindings;
 
-import com.sk89q.worldedit.blocks.ItemID;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.api.combat.action.SkillAction;
+import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.List;
 
 /**
  * @author Philip
  */
 public class BindListener implements Listener {
 
+    private final SkillsPlugin plugin;
+
+    public BindListener(SkillsPlugin plugin) {
+
+        this.plugin = plugin;
+
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
+        Hero hero = plugin.getCharacterManager().getHero(player);
+        Material material = player.getItemInHand().getType();
 
-        List<BoundItem> boundItems = RaidCraft.getComponent(SkillsPlugin.class).getBindManager().getBoundItems(player.getName());
-        if (boundItems == null || boundItems.size() == 0) {
+        if (hero.getBindings().isEmpty() || material == null || material.isBlock())
             return;
-        }
 
-        BoundItem boundItem = null;
-        for (BoundItem item : boundItems) {
-            if (item.getItem() == event.getPlayer().getItemInHand().getType()) {
-                boundItem = item;
-                break;
-            }
-        }
-        if (boundItem == null) {
-            return;
-        }
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            // lets switch it up and toggle the skill on a bow when left clicking
-            if (event.getItem().getTypeId() == ItemID.BOW) {
-                toggleBoundSkill(boundItem, !event.getPlayer().isSneaking());
+
+            if (Material.BOW.equals(material)) {
+
+                switchBoundSkill(hero, material, !player.isSneaking());
             } else {
-                boundItem.use();
+
+                use(hero, hero.getBindings().getSkillAction(material));
             }
+
             event.setCancelled(true);
         } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            // lets switch it up and use the skill on a bow when right clicking
-            if (event.getItem().getTypeId() == ItemID.BOW) {
-                boundItem.use();
+
+            if (Material.BOW.equals(material)) {
+
+                use(hero, hero.getBindings().getSkillAction(material));
                 event.setCancelled(event.getAction() == Action.RIGHT_CLICK_BLOCK);
             } else {
-                toggleBoundSkill(boundItem, !event.getPlayer().isSneaking());
+
+                switchBoundSkill(hero, material, !player.isSneaking());
                 event.setCancelled(true);
             }
         }
     }
 
-    private void toggleBoundSkill(BoundItem boundItem, boolean forward) {
+    private void use(Hero hero, SkillAction skillAction) {
 
-        if (boundItem.getBindings().size() < 2) {
+        if (skillAction == null)
             return;
-        }
-        if (forward) {
-            boundItem.next();
-        } else {
-            boundItem.previous();
-        }
-        if (boundItem.getCurrent().getSkill() == null) {
-            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Platzhalter selektiert.");
-        } else {
-            boundItem.getHero().sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + boundItem.getCurrent().getSkill().getFriendlyName());
+
+        try {
+
+            skillAction.run();
+
+        } catch (CombatException e) {
+
+            // dont spam the player with global cooldown
+            if (e.getType() == CombatException.Type.ON_GLOBAL_COOLDOWN) {
+
+                return;
+            }
+            hero.sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
-    @EventHandler
-    public void onLogin(PlayerJoinEvent event) {
+    private void switchBoundSkill(Hero hero, Material material, boolean forward) {
 
-        RaidCraft.getComponent(SkillsPlugin.class).getBindManager().loadBoundItems(event.getPlayer());
-    }
+        SkillAction newSkillAction = hero.getBindings().switchSkill(material, forward);
 
-    @EventHandler
-    public void onLogout(PlayerQuitEvent event) {
+        if (newSkillAction != null) {
+            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + newSkillAction.getSkill().getFriendlyName());
+        }
 
-        RaidCraft.getComponent(SkillsPlugin.class).getBindManager().unloadBoundItems(event.getPlayer().getName());
     }
 }

@@ -15,7 +15,7 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
 
         GAIN,
         LOSS,
-        NO_CHANGE;
+        NO_CHANGE
     }
 
     private final Resource resource;

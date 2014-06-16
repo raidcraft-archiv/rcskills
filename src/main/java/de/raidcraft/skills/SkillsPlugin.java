@@ -20,15 +20,8 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.bindings.BindManager;
-import de.raidcraft.skills.commands.AdminCommands;
-import de.raidcraft.skills.commands.CastCommand;
-import de.raidcraft.skills.commands.PartyCommands;
-import de.raidcraft.skills.commands.PlayerCommands;
-import de.raidcraft.skills.commands.ProfessionCommands;
-import de.raidcraft.skills.commands.PvPCommands;
-import de.raidcraft.skills.commands.SkillCommands;
-import de.raidcraft.skills.commands.SkillsCommand;
+import de.raidcraft.skills.bindings.BindListener;
+import de.raidcraft.skills.commands.*;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
@@ -52,14 +45,7 @@ import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tabdeco.TabDecoPvPSettings;
 import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
-import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroAttribute;
-import de.raidcraft.skills.tables.THeroExpPool;
-import de.raidcraft.skills.tables.THeroOption;
-import de.raidcraft.skills.tables.THeroProfession;
-import de.raidcraft.skills.tables.THeroResource;
-import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.tables.*;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -102,7 +88,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
     private LevelConfig levelConfig;
     private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
-    private BindManager bindManager;
     private BukkitEventDispatcher bukkitEventDispatcher;
 
     @Override
@@ -121,6 +106,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
         registerCommands(BaseCommands.class);
+
+        getCommand("bind").setExecutor(new BindCommand(this));
+        getCommand("autobind").setExecutor(new BindAutoCommand(this));
+        getServer().getPluginManager().registerEvents(new BindListener(this), this);
 
         // register the tab stuff
         registerTabDecoSettings();
@@ -278,7 +267,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.weaponManager = new WeaponManager(this);
         this.experienceManager = new ExperienceManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
-        this.bindManager = new BindManager(this);
         this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
     }
 
@@ -335,6 +323,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(TSkillData.class);
         classes.add(THeroResource.class);
         classes.add(THeroAttribute.class);
+        classes.add(TBinding.class);
         return classes;
     }
 
@@ -416,11 +405,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
     public ExperienceConfig getExperienceConfig() {
 
         return experienceConfig;
-    }
-
-    public BindManager getBindManager() {
-
-        return bindManager;
     }
 
     public boolean isSavingWorld(String world) {

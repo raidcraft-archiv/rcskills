@@ -48,6 +48,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         this.plugin = plugin;
         // create the config path
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
+
     }
 
     @Override

@@ -7,5 +7,5 @@ public enum CharacterType {
 
     CUSTOM_MOB,
     PLAYER,
-    NATURAL;
+    NATURAL
 }
