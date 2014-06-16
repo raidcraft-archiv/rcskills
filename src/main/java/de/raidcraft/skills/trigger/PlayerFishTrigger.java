@@ -11,25 +11,24 @@ import org.bukkit.event.player.PlayerFishEvent;
  */
 public class PlayerFishTrigger extends BukkitEventTrigger<PlayerFishEvent> implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;
+
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
 
     public PlayerFishTrigger(CharacterTemplate source, PlayerFishEvent event) {
 
         super(source, event);
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

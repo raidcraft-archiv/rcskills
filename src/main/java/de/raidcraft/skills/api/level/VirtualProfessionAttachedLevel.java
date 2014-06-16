@@ -16,9 +16,27 @@ public final class VirtualProfessionAttachedLevel extends AbstractAttachedLevel<
     }
 
     @Override
+    public LevelFormula getFormula() {
+
+        return new LevelFormula() {
+            @Override
+            public int getNeededExpForLevel(int level) {
+
+                return 1;
+            }
+        };
+    }
+
+    @Override
     public int getExp() {
 
         return 0;
+    }
+
+    @Override
+    public void setExp(int exp) {
+
+        setLevel(exp);
     }
 
     @Override
@@ -51,26 +69,8 @@ public final class VirtualProfessionAttachedLevel extends AbstractAttachedLevel<
     }
 
     @Override
-    public void setExp(int exp) {
-
-        setLevel(exp);
-    }
-
-    @Override
     public boolean canLevel() {
 
         return true;
-    }
-
-    @Override
-    public LevelFormula getFormula() {
-
-        return new LevelFormula() {
-            @Override
-            public int getNeededExpForLevel(int level) {
-
-                return 1;
-            }
-        };
     }
 }

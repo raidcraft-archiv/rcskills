@@ -16,9 +16,9 @@ public interface Attribute {
 
     public Hero getHero();
 
-    public void setBaseValue(int value);
-
     public int getBaseValue();
+
+    public void setBaseValue(int value);
 
     public int getCurrentValue();
 

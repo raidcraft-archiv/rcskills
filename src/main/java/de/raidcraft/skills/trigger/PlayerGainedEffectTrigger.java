@@ -11,6 +11,7 @@ import org.bukkit.event.Cancellable;
  */
 public class PlayerGainedEffectTrigger extends Trigger implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private final Effect<?> effect;
     private boolean cancelled = false;
 
@@ -20,10 +21,19 @@ public class PlayerGainedEffectTrigger extends Trigger implements Cancellable {
         this.effect = effect;
     }
 
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
     public Effect<?> getEffect() {
 
         return effect;
     }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
 
     @Override
     public boolean isCancelled() {
@@ -37,18 +47,7 @@ public class PlayerGainedEffectTrigger extends Trigger implements Cancellable {
         this.cancelled = cancel;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

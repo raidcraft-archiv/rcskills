@@ -40,6 +40,7 @@ public class BindingManager {
      * @param material The material of the item
      * @param skill    The skill to bind
      * @param arg      The argument to commit
+     *
      * @return true if success, otherwise false
      */
     public boolean add(@NonNull Material material, @NonNull Skill skill, String arg) {
@@ -59,8 +60,9 @@ public class BindingManager {
                     .eq("skill", stSkill)
                     .findUnique();
 
-            if (result != null)
+            if (result != null) {
                 return false;
+            }
 
         } catch (PersistenceException e) {
 
@@ -87,16 +89,35 @@ public class BindingManager {
         return true;
     }
 
+    private void addToList(Material material, SkillAction skillAction) {
+
+        ArrayList<SkillAction> skillActionList;
+
+        if (bindings.containsKey(material)) {
+
+            skillActionList = bindings.get(material);
+            skillActionList.add(skillAction);
+        } else {
+
+            skillActionList = new ArrayList<>();
+            skillActionList.add(skillAction);
+            iterators.put(material, 0);
+            bindings.put(material, skillActionList);
+        }
+    }
+
     /**
      * Unbind any skill from an item material.
      *
      * @param material The item material to unbind the skills from.
+     *
      * @return true if success, otherwise false
      */
     public boolean remove(@NonNull Material material) {
 
-        if (!bindings.containsKey(material))
+        if (!bindings.containsKey(material)) {
             return false;
+        }
 
         String item = material.toString();
         @NonNull Integer heroId = hero.getId();
@@ -108,16 +129,27 @@ public class BindingManager {
                 .eq("item", item)
                 .findList();
 
-        if (result.isEmpty())
+        if (result.isEmpty()) {
             return false;
+        }
 
         result.stream().forEach(r -> RaidCraft.getDatabase(SkillsPlugin.class).delete(r));
         bindings.remove(material);
 
-        if (iterators.containsKey(material))
+        if (iterators.containsKey(material)) {
             iterators.remove(material);
+        }
 
         return true;
+    }
+
+    /**
+     * Reloads all bindings from the database.
+     */
+    public void reload() {
+
+        clear();
+        load();
     }
 
     /**
@@ -126,6 +158,39 @@ public class BindingManager {
     public void clear() {
 
         clear(false);
+    }
+
+    /**
+     * Load all bindings from the database.
+     */
+    public void load() {
+
+        @NonNull Integer heroId = hero.getId();
+
+        List<TBinding> results = RaidCraft.getDatabase(SkillsPlugin.class)
+                .find(TBinding.class)
+                .where()
+                .eq("ownerId", heroId)
+                .findList();
+
+        if (CollectionUtils.isEmpty(results)) {
+            return;
+        }
+
+        results.stream().forEach(result -> {
+            try {
+
+                Skill skill = hero.getSkill(result.getSkill());
+                Material material = Material.getMaterial(result.getItem());
+
+                addToList(material, new SkillAction(skill, new CommandContext(result.getArgs())));
+
+            } catch (UnknownSkillException | NullPointerException e) {
+                RaidCraft.getDatabase(SkillsPlugin.class).delete(result);
+            } catch (CommandException e) {
+                // no operation
+            }
+        });
     }
 
     /**
@@ -147,52 +212,12 @@ public class BindingManager {
     }
 
     /**
-     * Reloads all bindings from the database.
-     */
-    public void reload() {
-
-        clear();
-        load();
-    }
-
-    /**
-     * Load all bindings from the database.
-     */
-    public void load() {
-
-        @NonNull Integer heroId = hero.getId();
-
-        List<TBinding> results = RaidCraft.getDatabase(SkillsPlugin.class)
-                .find(TBinding.class)
-                .where()
-                .eq("ownerId", heroId)
-                .findList();
-
-        if (CollectionUtils.isEmpty(results))
-            return;
-
-        results.stream().forEach(result -> {
-            try {
-
-                Skill skill = hero.getSkill(result.getSkill());
-                Material material = Material.getMaterial(result.getItem());
-
-                addToList(material, new SkillAction(skill, new CommandContext(result.getArgs())));
-
-            } catch (UnknownSkillException | NullPointerException e) {
-                RaidCraft.getDatabase(SkillsPlugin.class).delete(result);
-            } catch (CommandException e) {
-                // no operation
-            }
-        });
-    }
-
-    /**
      * Returns true if the list contains no bindings.
      *
      * @return true if the binding list contains no elements, else false
      */
     public boolean isEmpty() {
+
         return bindings.isEmpty();
     }
 
@@ -200,12 +225,14 @@ public class BindingManager {
      * Returns the bound skill action which the specified item is mapped, or null if there is no mapping for the item.
      *
      * @param material The item material whose associated skill action is to be returned
+     *
      * @return The skill action to which the specified item material is mapped, or null if there is no mapping for the item material
      */
     public SkillAction getSkillAction(Material material) {
 
-        if (!bindings.containsKey(material) || !iterators.containsKey(material))
+        if (!bindings.containsKey(material) || !iterators.containsKey(material)) {
             return null;
+        }
 
         return bindings.get(material).get(iterators.get(material));
     }
@@ -215,6 +242,7 @@ public class BindingManager {
      *
      * @param material The item material
      * @param forward  true to move forward, false to move backwards
+     *
      * @return the current selected action skill, otherwise null
      */
     public SkillAction switchSkill(Material material, boolean forward) {
@@ -225,35 +253,21 @@ public class BindingManager {
 
                 iterators.put(material,
                         bindings.get(material).listIterator(iterators.get(material)).nextIndex() < bindings.get(material).size() - 1 ?
-                                iterators.get(material) + 1 : 0);
+                                iterators.get(material) + 1 : 0
+                );
             } else {
 
                 iterators.put(material,
                         bindings.get(material).listIterator(iterators.get(material)).hasPrevious() ?
                                 bindings.get(material).listIterator(iterators.get(material)).previousIndex() :
-                                bindings.get(material).size() - 1);
+                                bindings.get(material).size() - 1
+                );
             }
 
             return bindings.get(material).get(iterators.get(material));
         }
 
         return null;
-    }
-
-    private void addToList(Material material, SkillAction skillAction) {
-        ArrayList<SkillAction> skillActionList;
-
-        if (bindings.containsKey(material)) {
-
-            skillActionList = bindings.get(material);
-            skillActionList.add(skillAction);
-        } else {
-
-            skillActionList = new ArrayList<>();
-            skillActionList.add(skillAction);
-            iterators.put(material, 0);
-            bindings.put(material, skillActionList);
-        }
     }
 
 }

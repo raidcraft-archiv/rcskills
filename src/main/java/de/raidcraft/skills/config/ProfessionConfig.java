@@ -41,73 +41,9 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
         this.factory = factory;
     }
 
-    @Override
-    public Map<String, Skill> loadSkills(Profession profession) {
-
-        Map<String, Skill> skills = new HashMap<>();
-        ConfigurationSection section = getSafeConfigSection("skills");
-        Set<String> keys = section.getKeys(false);
-        if (keys == null) return skills;
-        // now load the skills - when a skill does not exist in the database we will insert it
-        for (String skill : keys) {
-            if (undefinedSkills.contains(skill)) {
-                continue;
-            }
-            try {
-                Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
-                skills.put(profSkill.getName(), profSkill);
-            } catch (UnknownSkillException e) {
-                getPlugin().getLogger().warning(e.getMessage() + " in " + getName() + ".yml");
-                undefinedSkills.add(skill);
-            }
-        }
-        return skills;
-    }
-
-    @Override
-    public List<Profession> loadChildren(Profession profession) {
-
-        List<Profession> professions = new ArrayList<>();
-        List<String> childs = getStringList("childs");
-        if (childs == null) return professions;
-        for (String prof : childs) {
-            try {
-                Profession childProf = getPlugin().getProfessionManager().getProfession(profession, prof);
-                professions.add(childProf);
-                childProf.setParent(profession);
-            } catch (UnknownSkillException | UnknownProfessionException e) {
-                getPlugin().getLogger().severe("Error while loading child professions: " + e.getMessage());
-            }
-        }
-        return professions;
-    }
-
     public List<String> getChildren() {
 
         return getStringList("childs");
-    }
-
-    @Override
-    public List<Requirement<Hero>> loadRequirements(Profession profession) {
-
-        return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
-    }
-
-    @Override
-    public LevelFormula getLevelFormula() {
-
-        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
-                LevelConfig.Type.PROFESSIONS, getOverrideString("formula", "default")
-        );
-        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
-
-        return formulaType.create(config);
-    }
-
-    @Override
-    public String getName() {
-
-        return factory.getProfessionName();
     }
 
     @Override
@@ -155,6 +91,17 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
+    public LevelFormula getLevelFormula() {
+
+        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
+                LevelConfig.Type.PROFESSIONS, getOverrideString("formula", "default")
+        );
+        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
+
+        return formulaType.create(config);
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return getOverride("max-level", 60);
@@ -185,6 +132,53 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
+    public Map<String, Skill> loadSkills(Profession profession) {
+
+        Map<String, Skill> skills = new HashMap<>();
+        ConfigurationSection section = getSafeConfigSection("skills");
+        Set<String> keys = section.getKeys(false);
+        if (keys == null) return skills;
+        // now load the skills - when a skill does not exist in the database we will insert it
+        for (String skill : keys) {
+            if (undefinedSkills.contains(skill)) {
+                continue;
+            }
+            try {
+                Skill profSkill = getPlugin().getSkillManager().getSkill(profession.getHero(), profession, skill);
+                skills.put(profSkill.getName(), profSkill);
+            } catch (UnknownSkillException e) {
+                getPlugin().getLogger().warning(e.getMessage() + " in " + getName() + ".yml");
+                undefinedSkills.add(skill);
+            }
+        }
+        return skills;
+    }
+
+    @Override
+    public List<Requirement<Hero>> loadRequirements(Profession profession) {
+
+        return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
+    }
+
+    @Override
+    public List<Profession> loadChildren(Profession profession) {
+
+        List<Profession> professions = new ArrayList<>();
+        List<String> childs = getStringList("childs");
+        if (childs == null) return professions;
+        for (String prof : childs) {
+            try {
+                Profession childProf = getPlugin().getProfessionManager().getProfession(profession, prof);
+                professions.add(childProf);
+                childProf.setParent(profession);
+            } catch (UnknownSkillException | UnknownProfessionException e) {
+                getPlugin().getLogger().severe("Error while loading child professions: " + e.getMessage());
+            }
+        }
+        return professions;
+    }
+
+    @Override
     public Map<WeaponType, Integer> getAllowedWeapons() {
 
         Map<WeaponType, Integer> weapons = new EnumMap<>(WeaponType.class);
@@ -210,5 +204,11 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
             }
         }
         return weapons;
+    }
+
+    @Override
+    public String getName() {
+
+        return factory.getProfessionName();
     }
 }

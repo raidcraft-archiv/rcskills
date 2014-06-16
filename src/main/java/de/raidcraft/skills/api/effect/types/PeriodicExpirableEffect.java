@@ -40,11 +40,6 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
         return super.getPriority() + getRemainingTicks();
     }
 
-    public long getDuration() {
-
-        return duration;
-    }
-
     public long getRemainingTicks() {
 
         return remainingTicks;
@@ -53,6 +48,11 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
     public int getTickCount() {
 
         return (int) (getDuration() / getInterval());
+    }
+
+    public long getDuration() {
+
+        return duration;
     }
 
     @Override

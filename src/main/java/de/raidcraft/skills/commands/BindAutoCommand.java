@@ -38,7 +38,10 @@ public class BindAutoCommand {
      * Executes the command to auto bind all skills to items.
      *
      * @param args   Passed command arguments
+<<<<<<< HEAD
      * @param sender The source of the command
+=======
+>>>>>>> 526df3af3b2840cf1c419fc76e1244ff8132fb63
      *
      * @return true if success, otherwise false
      */
@@ -98,7 +101,10 @@ public class BindAutoCommand {
             throw new CommandException(ChatColor.YELLOW + "Du benötigst Gegenstände in der Inventarleise um Fähigkeiten automatisch binden zu können.");
         }
         if (noItem) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 526df3af3b2840cf1c419fc76e1244ff8132fb63
             player.sendMessage(ChatColor.YELLOW + "Du hast nicht genug Gegenstände in der Inventarleise um alle Fähigkeiten zu binden.");
         }
 

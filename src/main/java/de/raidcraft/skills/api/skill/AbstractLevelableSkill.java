@@ -25,6 +25,12 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
+    public final boolean isMastered() {
+
+        return getAttachedLevel().hasReachedMaxLevel();
+    }
+
+    @Override
     public final AttachedLevel<LevelableSkill> getAttachedLevel() {
 
         return attachedLevel;
@@ -43,9 +49,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public final boolean isMastered() {
+    public void onExpGain(int exp) {
+        //TODO: implement
+    }
 
-        return getAttachedLevel().hasReachedMaxLevel();
+    @Override
+    public void onExpLoss(int exp) {
+        //TODO: implement
     }
 
     @Override
@@ -68,23 +78,6 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     }
 
     @Override
-    public void onExpGain(int exp) {
-        //TODO: implement
-    }
-
-    @Override
-    public void onExpLoss(int exp) {
-        //TODO: implement
-    }
-
-    @Override
-    public final void save() {
-
-        super.save();
-        attachedLevel.saveLevelProgress();
-    }
-
-    @Override
     public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
 
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
@@ -96,6 +89,13 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
             RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
         }
+    }
+
+    @Override
+    public final void save() {
+
+        super.save();
+        attachedLevel.saveLevelProgress();
     }
 
     @Override

@@ -59,6 +59,11 @@ public final class EffectFactory<E extends Effect> {
         data.getEffectPriority();
     }
 
+    public <S> E create(S source, CharacterTemplate target) throws UnknownEffectException {
+
+        return create(source, target, defaultConfig);
+    }
+
     @SuppressWarnings("unchecked")
     private <S> E create(S source, CharacterTemplate target, EffectConfig config) throws UnknownEffectException {
 
@@ -75,11 +80,6 @@ public final class EffectFactory<E extends Effect> {
             e.printStackTrace();
         }
         throw new UnknownEffectException("Error when loading effect for class: " + eClass.getCanonicalName());
-    }
-
-    public <S> E create(S source, CharacterTemplate target) throws UnknownEffectException {
-
-        return create(source, target, defaultConfig);
     }
 
     public <S> E create(S source, CharacterTemplate target, Ability ability) throws UnknownEffectException {

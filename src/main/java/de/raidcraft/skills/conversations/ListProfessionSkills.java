@@ -36,12 +36,11 @@ public class ListProfessionSkills extends AbstractAction {
             String output = "";
             int i = 0;
             ChatColor color;
-            for(Skill skill : profession.getSkills()) {
+            for (Skill skill : profession.getSkills()) {
                 i++;
-                if(i%2 == 0) {
+                if (i % 2 == 0) {
                     color = ChatColor.YELLOW;
-                }
-                else {
+                } else {
                     color = ChatColor.WHITE;
                 }
                 output += color + skill.getFriendlyName() + ", ";

@@ -11,9 +11,20 @@ import org.bukkit.event.HandlerList;
 public class RCSkillLevelEvent extends RCLevelEvent<LevelableSkill> implements Cancellable {
 
 
+    private static final HandlerList handlers = new HandlerList();
+
     public RCSkillLevelEvent(LevelableSkill source, int oldLevel, int newLevel) {
 
         super(source, oldLevel, newLevel);
+    }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
     }
 
     public Hero getHero() {
@@ -21,18 +32,7 @@ public class RCSkillLevelEvent extends RCLevelEvent<LevelableSkill> implements C
         return getSource().getHolder();
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

@@ -55,12 +55,19 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
         }
     }
 
-    public int getStacks(DiminishingReturnType type) {
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
 
-        if (!stacks.containsKey(type)) {
-            return 0;
-        }
-        return stacks.get(type);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
     }
 
     public void increase(DiminishingReturnType type) {
@@ -88,18 +95,11 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
         return reduction.get(type).get(getStacks(type));
     }
 
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    public int getStacks(DiminishingReturnType type) {
 
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
+        if (!stacks.containsKey(type)) {
+            return 0;
+        }
+        return stacks.get(type);
     }
 }

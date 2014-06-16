@@ -10,23 +10,23 @@ import org.bukkit.event.block.BlockBreakEvent;
  */
 public class BlockBreakTrigger extends BukkitEventTrigger<BlockBreakEvent> {
 
-    public BlockBreakTrigger(Hero hero, BlockBreakEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public BlockBreakTrigger(Hero hero, BlockBreakEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

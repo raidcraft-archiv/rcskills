@@ -6,11 +6,12 @@ import com.avaje.ebean.validation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Container for a binding.
- *
  */
 @Entity
 @Table(name = "skills_bindings")

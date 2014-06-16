@@ -11,25 +11,24 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
  */
 public class PlayerConsumeTrigger extends BukkitEventTrigger<PlayerItemConsumeEvent> implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;
+
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
 
     public PlayerConsumeTrigger(CharacterTemplate source, PlayerItemConsumeEvent event) {
 
         super(source, event);
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

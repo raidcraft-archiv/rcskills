@@ -24,6 +24,12 @@ public class CreatureAttachedLevel<T extends Levelable<T>> extends AbstractAttac
     }
 
     @Override
+    public void setLevel(int level) {
+
+        this.level = level;
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return level;
@@ -33,6 +39,11 @@ public class CreatureAttachedLevel<T extends Levelable<T>> extends AbstractAttac
     public int getExp() {
 
         return 0;
+    }
+
+    @Override
+    public void setExp(int exp) {
+
     }
 
     @Override
@@ -49,17 +60,6 @@ public class CreatureAttachedLevel<T extends Levelable<T>> extends AbstractAttac
     @Override
     public void removeExp(int exp) {
 
-    }
-
-    @Override
-    public void setExp(int exp) {
-
-    }
-
-    @Override
-    public void setLevel(int level) {
-
-        this.level = level;
     }
 
     @Override

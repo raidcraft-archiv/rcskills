@@ -10,23 +10,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
  */
 public class PlayerInteractTrigger extends BukkitEventTrigger<PlayerInteractEvent> {
 
-    public PlayerInteractTrigger(Hero hero, PlayerInteractEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public PlayerInteractTrigger(Hero hero, PlayerInteractEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

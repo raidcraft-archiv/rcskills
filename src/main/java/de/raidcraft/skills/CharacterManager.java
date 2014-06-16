@@ -75,36 +75,57 @@ public final class CharacterManager implements Listener, Component {
     private void startRefreshTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
+                    @Override
+                    public void run() {
 
-                for (Hero hero : getCachedHeroes()) {
-                    if (hero.isOnline()) {
-                        hero.getUserInterface().refresh();
+                        for (Hero hero : getCachedHeroes()) {
+                            if (hero.isOnline()) {
+                                hero.getUserInterface().refresh();
+                            }
+                        }
                     }
-                }
-            }
-        },
-        plugin.getCommonConfig().userinterface_refresh_interval,
-        plugin.getCommonConfig().userinterface_refresh_interval);
+                },
+                plugin.getCommonConfig().userinterface_refresh_interval,
+                plugin.getCommonConfig().userinterface_refresh_interval
+        );
     }
 
     private void startValidationTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
+                    @Override
+                    public void run() {
 
-                for (CharacterTemplate character : new ArrayList<>(characters.values())) {
-                    if (character.getEntity() == null || !character.getEntity().isValid()) {
-                        TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
-                        if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                        for (CharacterTemplate character : new ArrayList<>(characters.values())) {
+                            if (character.getEntity() == null || !character.getEntity().isValid()) {
+                                TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
+                                if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                            }
+                        }
                     }
-                }
-            }
-        },
-        plugin.getCommonConfig().character_invalidation_interval,
-        plugin.getCommonConfig().character_invalidation_interval);
+                },
+                plugin.getCommonConfig().character_invalidation_interval,
+                plugin.getCommonConfig().character_invalidation_interval
+        );
+    }
+
+    public Collection<Hero> getCachedHeroes() {
+
+        return heroes.values();
+    }
+
+    public static void refreshPlayerTag(CharacterTemplate template) {
+
+        if (Bukkit.getPluginManager().getPlugin("TagAPI") == null) {
+            return;
+        }
+        if (!(template instanceof Hero) || !((Hero) template).isOnline()) {
+            return;
+        }
+        // lets refresh all online players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            TagAPI.refreshPlayer(player);
+        }
     }
 
     public boolean isPvPToggleQueued(final Hero hero) {
@@ -142,6 +163,8 @@ public final class CharacterManager implements Listener, Component {
         pausedExpPlayers.remove(player.getName().toLowerCase());
     }
 
+    // handle some tag api stuff here
+
     public boolean isPausingPlayerExpUpdate(Player player) {
 
         return pausedExpPlayers.contains(player.getName().toLowerCase());
@@ -152,21 +175,7 @@ public final class CharacterManager implements Listener, Component {
         return heroes.containsKey(name);
     }
 
-    // handle some tag api stuff here
-
-    public static void refreshPlayerTag(CharacterTemplate template) {
-
-        if (Bukkit.getPluginManager().getPlugin("TagAPI") == null) {
-            return;
-        }
-        if (!(template instanceof Hero) || !((Hero) template).isOnline()) {
-            return;
-        }
-        // lets refresh all online players
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            TagAPI.refreshPlayer(player);
-        }
-    }
+    // tag api end
 
     @EventHandler(ignoreCancelled = true)
     public void onNameTagChange(AsyncPlayerReceiveNameTagEvent event) {
@@ -190,11 +199,14 @@ public final class CharacterManager implements Listener, Component {
         }
     }
 
-    // tag api end
+    public Hero getHero(Player player) {
 
-    public Collection<Hero> getCachedHeroes() {
-
-        return heroes.values();
+        try {
+            return getHero(player, player.getName());
+        } catch (UnknownPlayerException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Hero getHero(Player player, String name) throws UnknownPlayerException {
@@ -216,7 +228,9 @@ public final class CharacterManager implements Listener, Component {
         Hero hero;
         if (!heroes.containsKey(name)) {
 
-            if (heroTable == null) heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().eq("player", name).findUnique();
+            if (heroTable == null) {
+                heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().eq("player", name).findUnique();
+            }
             if (heroTable == null) {
                 // create a new entry
                 heroTable = new THero();
@@ -253,53 +267,15 @@ public final class CharacterManager implements Listener, Component {
         return getHero(Bukkit.getPlayer(name), name);
     }
 
-    public Hero getHero(Player player) {
-
-        try {
-            return getHero(player, player.getName());
-        } catch (UnknownPlayerException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public CharacterTemplate getCharacter(LivingEntity entity) {
-
-        if (entity == null) {
-            return null;
-        }
-        if (!entity.hasMetadata("NPC") && entity instanceof Player) {
-            return getHero((Player) entity);
-        }
-
-        CharacterTemplate creature;
-        if (!characters.containsKey(entity.getUniqueId())) {
-            creature = new Creature(entity);
-            // load all custom properties
-            DamageManager damageManager = plugin.getDamageManager();
-            EntityType entityType = creature.getEntity().getType();
-            // lets set the health and damage of the entity
-            int creatureHealth = damageManager.getCreatureHealth(entityType);
-            creature.setMaxHealth(creatureHealth);
-            creature.setHealth(creatureHealth);
-            creature.setDamage(damageManager.getCreatureDamage(entityType));
-            creature.setInCombat(false);
-            // cache the character
-            characters.put(entity.getUniqueId(), creature);
-        } else {
-            return characters.get(entity.getUniqueId());
-        }
-        return creature;
-    }
-
     /**
      * Spawns a new entity with a custom defined class.
      *
-     * @param entityType to spawn
-     * @param location to spawn the entity at
+     * @param entityType    to spawn
+     * @param location      to spawn the entity at
      * @param creatureClazz that defines the entity
-     * @param args to pass to the constructor
-     * @param <T> type of the entity to spawn
+     * @param args          to pass to the constructor
+     * @param <T>           type of the entity to spawn
+     *
      * @return spawned entity of the defined class
      */
     @SuppressWarnings("unchecked")
@@ -351,24 +327,17 @@ public final class CharacterManager implements Listener, Component {
         return null;
     }
 
-    public void queueHeroLogout(final Hero hero) {
+    @EventHandler(ignoreCancelled = true)
+    public void onChunkUnload(ChunkUnloadEvent event) {
 
-        hero.save();
-        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
-        if (task != null) {
-            task.cancel();
-        }
-        if (plugin.getCommonConfig().hero_cache_timeout > 0) {
-            task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                @Override
-                public void run() {
-
-                    clearCacheOf(hero);
-                }
-            }, plugin.getCommonConfig().hero_cache_timeout * 20);
-            queuedLoggedOutHeroes.put(hero.getName(), task);
-        } else {
-            clearCacheOf(hero);
+        // remove the cached entities
+        for (Entity entity : event.getChunk().getEntities()) {
+            if (entity instanceof Player && !entity.hasMetadata("NPC")) {
+                continue;
+            }
+            if (entity instanceof LivingEntity) {
+                clearCacheOf(getCharacter((LivingEntity) entity));
+            }
         }
     }
 
@@ -403,23 +372,38 @@ public final class CharacterManager implements Listener, Component {
         plugin.getSkillManager().clearSkillCache(character.getName());
     }
 
+    public CharacterTemplate getCharacter(LivingEntity entity) {
+
+        if (entity == null) {
+            return null;
+        }
+        if (!entity.hasMetadata("NPC") && entity instanceof Player) {
+            return getHero((Player) entity);
+        }
+
+        CharacterTemplate creature;
+        if (!characters.containsKey(entity.getUniqueId())) {
+            creature = new Creature(entity);
+            // load all custom properties
+            DamageManager damageManager = plugin.getDamageManager();
+            EntityType entityType = creature.getEntity().getType();
+            // lets set the health and damage of the entity
+            int creatureHealth = damageManager.getCreatureHealth(entityType);
+            creature.setMaxHealth(creatureHealth);
+            creature.setHealth(creatureHealth);
+            creature.setDamage(damageManager.getCreatureDamage(entityType));
+            creature.setInCombat(false);
+            // cache the character
+            characters.put(entity.getUniqueId(), creature);
+        } else {
+            return characters.get(entity.getUniqueId());
+        }
+        return creature;
+    }
+
     /*/////////////////////////////////////////////////////////////////////////
     //    Bukkit Events are called beyond this line - put your buckets on!
     /////////////////////////////////////////////////////////////////////////*/
-
-    @EventHandler(ignoreCancelled = true)
-    public void onChunkUnload(ChunkUnloadEvent event) {
-
-        // remove the cached entities
-        for (Entity entity : event.getChunk().getEntities()) {
-            if (entity instanceof Player && !entity.hasMetadata("NPC")) {
-                continue;
-            }
-            if (entity instanceof LivingEntity) {
-                clearCacheOf(getCharacter((LivingEntity) entity));
-            }
-        }
-    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDeath(final EntityDeathEvent event) {
@@ -460,6 +444,27 @@ public final class CharacterManager implements Listener, Component {
         Hero hero = getHero(event.getPlayer());
         Scoreboards.updatePlayerTeam(hero);
         queueHeroLogout(hero);
+    }
+
+    public void queueHeroLogout(final Hero hero) {
+
+        hero.save();
+        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
+        if (task != null) {
+            task.cancel();
+        }
+        if (plugin.getCommonConfig().hero_cache_timeout > 0) {
+            task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+
+                    clearCacheOf(hero);
+                }
+            }, plugin.getCommonConfig().hero_cache_timeout * 20);
+            queuedLoggedOutHeroes.put(hero.getName(), task);
+        } else {
+            clearCacheOf(hero);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

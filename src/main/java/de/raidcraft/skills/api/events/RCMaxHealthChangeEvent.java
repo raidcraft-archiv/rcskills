@@ -9,6 +9,7 @@ import org.bukkit.event.HandlerList;
  */
 public class RCMaxHealthChangeEvent extends Event {
 
+    private static final HandlerList handlers = new HandlerList();
     private final CharacterTemplate character;
     private double value;
 
@@ -18,10 +19,19 @@ public class RCMaxHealthChangeEvent extends Event {
         this.value = value;
     }
 
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
     public CharacterTemplate getCharacter() {
 
         return character;
     }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
 
     public double getValue() {
 
@@ -33,18 +43,7 @@ public class RCMaxHealthChangeEvent extends Event {
         this.value = value;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

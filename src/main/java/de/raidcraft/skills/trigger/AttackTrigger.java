@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class AttackTrigger extends Trigger implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private final Attack<?, CharacterTemplate> attack;
     private final EntityDamageEvent.DamageCause cause;
     private boolean cancelled = false;
@@ -24,6 +25,15 @@ public class AttackTrigger extends Trigger implements Cancellable {
         this.cause = cause;
     }
 
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
+
     public Attack<?, CharacterTemplate> getAttack() {
 
         return attack;
@@ -34,18 +44,7 @@ public class AttackTrigger extends Trigger implements Cancellable {
         return cause;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

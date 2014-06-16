@@ -45,16 +45,6 @@ public class PermissionSkill extends AbstractSkill {
         globalPermissions.addAll(data.getStringList("global"));
     }
 
-    public Map<String, Set<String>> getWorldPermissions() {
-
-        return worldPermissions;
-    }
-
-    public Set<String> getGlobalPermissions() {
-
-        return globalPermissions;
-    }
-
     @Override
     public void apply() {
 
@@ -69,5 +59,15 @@ public class PermissionSkill extends AbstractSkill {
         if (getHolder().isOnline()) {
             RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().removePlayerFromGroup(getHolder().getName(), getName());
         }
+    }
+
+    public Map<String, Set<String>> getWorldPermissions() {
+
+        return worldPermissions;
+    }
+
+    public Set<String> getGlobalPermissions() {
+
+        return globalPermissions;
     }
 }

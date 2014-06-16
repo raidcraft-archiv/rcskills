@@ -21,7 +21,16 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.bindings.BindListener;
-import de.raidcraft.skills.commands.*;
+import de.raidcraft.skills.commands.AdminCommands;
+import de.raidcraft.skills.commands.BindAutoCommand;
+import de.raidcraft.skills.commands.BindCommand;
+import de.raidcraft.skills.commands.CastCommand;
+import de.raidcraft.skills.commands.PartyCommands;
+import de.raidcraft.skills.commands.PlayerCommands;
+import de.raidcraft.skills.commands.ProfessionCommands;
+import de.raidcraft.skills.commands.PvPCommands;
+import de.raidcraft.skills.commands.SkillCommands;
+import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
@@ -45,7 +54,15 @@ import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
 import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tabdeco.TabDecoPvPSettings;
 import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
-import de.raidcraft.skills.tables.*;
+import de.raidcraft.skills.tables.TBinding;
+import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroAttribute;
+import de.raidcraft.skills.tables.THeroExpPool;
+import de.raidcraft.skills.tables.THeroOption;
+import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroResource;
+import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -155,7 +172,37 @@ public class SkillsPlugin extends BasePlugin implements Component {
         }
     }
 
+    @Override
+    public void reload() {
+
+        // clear the cache of all heroes, saving them to the database
+        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
+            hero.save();
+        }
+        // cancel all tasks
+        Bukkit.getScheduler().cancelTasks(this);
+        // and reload all of our managers and configs
+        this.configuration.reload();
+        this.pathConfig.reload();
+        this.levelConfig.reload();
+        this.experienceConfig.reload();
+        // before reloading the managers we need to unregister all listeners
+        TriggerManager.unregisterAll();
+        // also unregister all of our bukkit events
+        HandlerList.unregisterAll(this);
+        // and reload the complete engine leaving all the stuff to the garbage collector
+        loadEngine();
+        // reload the skill permissions provider
+        permissionsProvider.reload();
+    }
+
+    public CharacterManager getCharacterManager() {
+
+        return characterManager;
+    }
+
     private void setupDatabase() {
+
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
                 getDatabase().find(clazz).findRowCount();
@@ -176,11 +223,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 try {
                     //Check if TabDeco has been loaded
                     Plugin tabDeco = getServer().getPluginManager().getPlugin("TabDeco");
-                    if (tabDeco != null)
-                    {
+                    if (tabDeco != null) {
                         //Check if the settings already have been loaded
                         //This event loads multiple times for each plugin
-                        if(!loadedTabDecoSettings){
+                        if (!loadedTabDecoSettings) {
 
                             TabDecoRegistry.registerNewSetting("attribute\\(([a-zA-Z0-9]+)\\)",
                                     new TabDecoAttributeSettings(SkillsPlugin.this), SkillsPlugin.this);
@@ -224,22 +270,13 @@ public class SkillsPlugin extends BasePlugin implements Component {
                             loadedTabDecoSettings = true;
                         }
                     }
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     //Let the user know that something didn't work as it should and
                     //print out the error
                     getLogger().severe("Couldn't load settings for TabDeco");
                 }
             }
         });
-    }
-
-    private void registerConversationActions() {
-
-        ActionManager.registerAction(new ChooseProfessionAction());
-        ActionManager.registerAction(new ListProfessionSkills());
-        ActionManager.registerAction(new MaxOutHeroAction());
-        ActionManager.registerAction(new CanChooseProfessionAction());
-        ActionManager.registerAction(new LinkExpPoolAction());
     }
 
     private void loadEngine() {
@@ -270,45 +307,18 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
     }
 
-    private void registerRequirements() {
+    private void registerConversationActions() {
 
-        RequirementManager.registerRequirementType(ItemRequirement.class);
-        RequirementManager.registerRequirementType(ProfessionLevelRequirement.class);
-        RequirementManager.registerRequirementType(SkillLevelRequirement.class);
-        RequirementManager.registerRequirementType(SkillRequirement.class);
+        ActionManager.registerAction(new ChooseProfessionAction());
+        ActionManager.registerAction(new ListProfessionSkills());
+        ActionManager.registerAction(new MaxOutHeroAction());
+        ActionManager.registerAction(new CanChooseProfessionAction());
+        ActionManager.registerAction(new LinkExpPoolAction());
     }
 
-    private void registerSkills() {
+    public SkillManager getSkillManager() {
 
-        try {
-            getSkillManager().registerClass(PermissionSkill.class);
-        } catch (UnknownSkillException e) {
-            getLogger().warning(e.getMessage());
-        }
-    }
-
-    @Override
-    public void reload() {
-
-        // clear the cache of all heroes, saving them to the database
-        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
-            hero.save();
-        }
-        // cancel all tasks
-        Bukkit.getScheduler().cancelTasks(this);
-        // and reload all of our managers and configs
-        this.configuration.reload();
-        this.pathConfig.reload();
-        this.levelConfig.reload();
-        this.experienceConfig.reload();
-        // before reloading the managers we need to unregister all listeners
-        TriggerManager.unregisterAll();
-        // also unregister all of our bukkit events
-        HandlerList.unregisterAll(this);
-        // and reload the complete engine leaving all the stuff to the garbage collector
-        loadEngine();
-        // reload the skill permissions provider
-        permissionsProvider.reload();
+        return skillManager;
     }
 
     @Override
@@ -327,9 +337,21 @@ public class SkillsPlugin extends BasePlugin implements Component {
         return classes;
     }
 
-    public SkillManager getSkillManager() {
+    private void registerRequirements() {
 
-        return skillManager;
+        RequirementManager.registerRequirementType(ItemRequirement.class);
+        RequirementManager.registerRequirementType(ProfessionLevelRequirement.class);
+        RequirementManager.registerRequirementType(SkillLevelRequirement.class);
+        RequirementManager.registerRequirementType(SkillRequirement.class);
+    }
+
+    private void registerSkills() {
+
+        try {
+            getSkillManager().registerClass(PermissionSkill.class);
+        } catch (UnknownSkillException e) {
+            getLogger().warning(e.getMessage());
+        }
     }
 
     public AbilityManager getAbilityManager() {
@@ -350,11 +372,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
     public AliasManager getAliasManager() {
 
         return aliasManager;
-    }
-
-    public CharacterManager getCharacterManager() {
-
-        return characterManager;
     }
 
     public CombatManager getCombatManager() {
@@ -387,11 +404,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         return bukkitEnvironmentManager;
     }
 
-    public LocalConfiguration getCommonConfig() {
-
-        return configuration;
-    }
-
     public PathConfig getPathConfig() {
 
         return pathConfig;
@@ -410,6 +422,11 @@ public class SkillsPlugin extends BasePlugin implements Component {
     public boolean isSavingWorld(String world) {
 
         return !getCommonConfig().getIgnoredWorlds().contains(world);
+    }
+
+    public LocalConfiguration getCommonConfig() {
+
+        return configuration;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<SkillsPlugin> {
@@ -567,7 +584,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
             hero.setPvPEnabled(!hero.isPvPEnabled());
             sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
                     getTranslationProvider().tr(sender, "pvp.toggled", "PvP has been "
-                    + (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "enabled.")
+                            + (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "enabled.")
                             : getTranslationProvider().var(sender, "pvp.disabled", "disabled.")), hero.isPvPEnabled()));
         }
 

@@ -10,23 +10,23 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
  */
 public class PlayerShearTrigger extends BukkitEventTrigger<PlayerShearEntityEvent> {
 
-    public PlayerShearTrigger(CharacterTemplate source, PlayerShearEntityEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public PlayerShearTrigger(CharacterTemplate source, PlayerShearEntityEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

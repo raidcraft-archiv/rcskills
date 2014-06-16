@@ -11,23 +11,23 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockPlaceTrigger extends BukkitEventTrigger<BlockPlaceEvent> {
 
 
-    public BlockPlaceTrigger(Hero hero, BlockPlaceEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public BlockPlaceTrigger(Hero hero, BlockPlaceEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

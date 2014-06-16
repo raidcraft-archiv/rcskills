@@ -10,23 +10,23 @@ import org.bukkit.event.inventory.BrewEvent;
  */
 public class BrewTrigger extends BukkitEventTrigger<BrewEvent> {
 
-    public BrewTrigger(Hero hero, BrewEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public BrewTrigger(Hero hero, BrewEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

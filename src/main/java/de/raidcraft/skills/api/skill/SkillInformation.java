@@ -19,9 +19,9 @@ public @interface SkillInformation {
     public String name();
 
     public String description();
-    
+
     public String[] configUsage() default {};
-    
+
     public Class<? extends Effect>[] effects() default {};
 
     public EffectType[] types() default {};

@@ -11,23 +11,23 @@ import org.bukkit.event.HandlerList;
 public class RCHeroLevelEvent extends RCLevelEvent<CharacterTemplate> implements Cancellable {
 
 
-    public RCHeroLevelEvent(Hero source, int oldLevel, int newLevel) {
-
-        super(source, oldLevel, newLevel);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Bukkit Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public RCHeroLevelEvent(Hero source, int oldLevel, int newLevel) {
 
-    public HandlerList getHandlers() {
+        super(source, oldLevel, newLevel);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

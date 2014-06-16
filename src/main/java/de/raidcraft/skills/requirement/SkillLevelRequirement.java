@@ -27,6 +27,12 @@ public class SkillLevelRequirement extends LevelRequirement {
     }
 
     @Override
+    protected Levelable getLevelable() {
+
+        return requiredSkill;
+    }
+
+    @Override
     protected void load(ConfigurationSection data) {
 
         String skillName = data.getString("skill");
@@ -44,9 +50,9 @@ public class SkillLevelRequirement extends LevelRequirement {
     }
 
     @Override
-    protected Levelable getLevelable() {
+    public String getShortReason() {
 
-        return requiredSkill;
+        return "Skill " + requiredSkill.getFriendlyName() + " auf Level " + getRequiredLevel();
     }
 
     @Override
@@ -55,11 +61,5 @@ public class SkillLevelRequirement extends LevelRequirement {
         return ChatColor.RED +
                 "Du musst erst deinen Skill " + ChatColor.AQUA + requiredSkill.getFriendlyName() +
                 ChatColor.RED + " auf Level " + ChatColor.AQUA + getRequiredLevel() + ChatColor.RED + " bringen.";
-    }
-
-    @Override
-    public String getShortReason() {
-
-        return "Skill " + requiredSkill.getFriendlyName() + " auf Level " + getRequiredLevel();
     }
 }

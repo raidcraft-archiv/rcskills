@@ -33,6 +33,7 @@ public interface Path<T extends Parent> {
      * The parent/child inheritance will take over from there.
      *
      * @param hero the hero the get the parents for
+     *
      * @return root parents from which more childs fork off
      */
     public List<T> getParents(Hero hero);

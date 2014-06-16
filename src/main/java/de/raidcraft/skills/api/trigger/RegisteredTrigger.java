@@ -35,11 +35,6 @@ public abstract class RegisteredTrigger {
         return info.priority();
     }
 
-    public boolean isIgnoringCancelled() {
-
-        return info.ignoreCancelled();
-    }
-
     /**
      * Calls the event executor
      *
@@ -51,6 +46,11 @@ public abstract class RegisteredTrigger {
             return;
         }
         call(trigger);
+    }
+
+    public boolean isIgnoringCancelled() {
+
+        return info.ignoreCancelled();
     }
 
     protected abstract void call(final Trigger trigger) throws CombatException, EventException;

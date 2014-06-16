@@ -65,6 +65,95 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
+    public boolean canUseAbility() {
+
+        try {
+            checkUsage(new SkillAction(this));
+            return true;
+        } catch (CombatException ignored) {
+        }
+        return false;
+    }
+
+    private List<Requirement<Hero>> getUseRequirements() {
+
+        if (useRequirements.size() < 1) {
+            useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
+        }
+        return useRequirements;
+    }
+
+    @Override
+    public double getTotalDamage() {
+
+        double damage = super.getTotalDamage();
+        for (Attribute attribute : getHolder().getAttributes()) {
+            for (EffectType type : getTypes()) {
+                damage += attribute.getBonusDamage(type);
+            }
+        }
+        return damage;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return obj instanceof Skill
+                && ((Skill) obj).getId() != 0 && getId() != 0
+                && ((Skill) obj).getId() == getId();
+    }
+
+    protected final void addPermission(String node) {
+
+        RaidCraft.getPermissions().playerAdd(getHolder().getPlayer(), node);
+    }
+
+    protected final void removePermission(String node) {
+
+        RaidCraft.getPermissions().playerRemove(getHolder().getPlayer(), node);
+    }
+
+    protected final <V> void setData(String key, V value) {
+
+        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        if (data == null) {
+            data = new TSkillData();
+            data.setDataKey(key);
+            data.setSkill(RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId()));
+        }
+        data.setDataValue(value.toString());
+
+        // dont save when the player is in a blacklist world
+        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
+            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
+        }
+    }
+
+    @Override
+    public final int getId() {
+
+        return id;
+    }
+
+    @Override
+    public final boolean isHidden() {
+
+        return getSkillProperties().isHidden();
+    }
+
+    @Override
+    public final boolean isEnabled() {
+
+        return properties.isEnabled();
+    }
+
+    @Override
+    public final void setEnabled(boolean enabled) {
+
+        properties.setEnabled(enabled);
+    }
+
+    @Override
     public final void checkUsage(SkillAction action) throws CombatException {
 
         if (this instanceof Passive) {
@@ -142,167 +231,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
     }
 
-    private List<Requirement<Hero>> getUseRequirements() {
-
-        if (useRequirements.size() < 1) {
-            useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
-        }
-        return useRequirements;
-    }
-
-    @Override
-    public double getTotalDamage() {
-
-        double damage = super.getTotalDamage();
-        for (Attribute attribute : getHolder().getAttributes()) {
-            for (EffectType type : getTypes()) {
-                damage += attribute.getBonusDamage(type);
-            }
-        }
-        return damage;
-    }
-
-    @Override
-    public boolean canUseAbility() {
-
-        try {
-            checkUsage(new SkillAction(this));
-            return true;
-        } catch (CombatException ignored) {
-        }
-        return false;
-    }
-
-    protected final void addPermission(String node) {
-
-        RaidCraft.getPermissions().playerAdd(getHolder().getPlayer(), node);
-    }
-
-    protected final void removePermission(String node) {
-
-        RaidCraft.getPermissions().playerRemove(getHolder().getPlayer(), node);
-    }
-
-    @Override
-    public double getTotalResourceCost(String resource) {
-
-        return ConfigUtil.getTotalValue(this, getSkillProperties().getResourceCost(resource));
-    }
-
-    @Override
-    public int getUseExp() {
-
-        return (int) ConfigUtil.getTotalValue(this, properties.getUseExp());
-    }
-
-    @Override
-    public final boolean isHidden() {
-
-        return getSkillProperties().isHidden();
-    }
-
-    protected final <V> void setData(String key, V value) {
-
-        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
-        if (data == null) {
-            data = new TSkillData();
-            data.setDataKey(key);
-            data.setSkill(RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId()));
-        }
-        data.setDataValue(value.toString());
-
-        // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
-        }
-    }
-
-    protected final void removeData(String key) {
-
-        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
-        if (data != null) {
-            RaidCraft.getDatabase(SkillsPlugin.class).delete(data);
-        }
-    }
-
-    protected final String getData(String key) {
-
-        return RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
-    }
-
-    protected final int getDataInt(String key) {
-
-        return Integer.parseInt(getData(key));
-    }
-
-    protected final double getDataDouble(String key) {
-
-        return Double.parseDouble(getData(key));
-    }
-
-    protected final String getDataString(String key) {
-
-        return getData(key);
-    }
-
-    protected final boolean getDataBool(String key) {
-
-        return Boolean.parseBoolean(getData(key));
-    }
-
-    protected final QueuedAttack queueAttack(Callback<AttackTrigger> callback) throws CombatException {
-
-        QueuedAttack effect = addEffect(getHolder(), QueuedAttack.class);
-        effect.addCallback(callback);
-        return effect;
-    }
-
-    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback, Action action) throws CombatException {
-
-        QueuedInteract effect = addEffect(getHolder(), QueuedInteract.class);
-        effect.addCallback(callback, action);
-        return effect;
-    }
-
-    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback) throws CombatException {
-
-        return queueInteract(callback, null);
-    }
-
-    /*/////////////////////////////////////////////////////////////////
-    //    There are only getter and (setter) beyond this point
-    /////////////////////////////////////////////////////////////////*/
-
-    @Override
-    public final int getId() {
-
-        return id;
-    }
-
-    @Override
-    public SkillProperties getSkillProperties() {
-
-        return properties;
-    }
-
-    @Override
-    public final boolean isEnabled() {
-
-        return properties.isEnabled();
-    }
-
-    @Override
-    public final void setEnabled(boolean enabled) {
-
-        properties.setEnabled(enabled);
-    }
-
-    @SuppressWarnings("unused")
-    protected final void setDescription(String description) {
-
-        this.description = description;
-    }
-
     @Override
     public final boolean isActive() {
 
@@ -349,15 +277,113 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public Hero getObject() {
+    public double getTotalResourceCost(String resource) {
 
-        return getHolder();
+        return ConfigUtil.getTotalValue(this, getSkillProperties().getResourceCost(resource));
     }
+
+    @Override
+    public int getUseExp() {
+
+        return (int) ConfigUtil.getTotalValue(this, properties.getUseExp());
+    }
+
+    @Override
+    public SkillProperties getSkillProperties() {
+
+        return properties;
+    }
+
+    /*/////////////////////////////////////////////////////////////////
+    //    There are only getter and (setter) beyond this point
+    /////////////////////////////////////////////////////////////////*/
 
     @Override
     public final Profession getProfession() {
 
         return profession;
+    }
+
+    @Override
+    public void save() {
+
+        if (getHolder().getPlayer() == null) {
+            return;
+        }
+
+        THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
+        if (skill == null) return;
+        skill.setUnlockTime(unlockTime);
+        skill.setUnlocked(isUnlocked());
+        // dont save when the player is in a blacklist world
+        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
+            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
+        }
+    }
+
+    protected final void removeData(String key) {
+
+        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
+        if (data != null) {
+            RaidCraft.getDatabase(SkillsPlugin.class).delete(data);
+        }
+    }
+
+    protected final int getDataInt(String key) {
+
+        return Integer.parseInt(getData(key));
+    }
+
+    protected final String getData(String key) {
+
+        return RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
+    }
+
+    protected final double getDataDouble(String key) {
+
+        return Double.parseDouble(getData(key));
+    }
+
+    protected final String getDataString(String key) {
+
+        return getData(key);
+    }
+
+    protected final boolean getDataBool(String key) {
+
+        return Boolean.parseBoolean(getData(key));
+    }
+
+    protected final QueuedAttack queueAttack(Callback<AttackTrigger> callback) throws CombatException {
+
+        QueuedAttack effect = addEffect(getHolder(), QueuedAttack.class);
+        effect.addCallback(callback);
+        return effect;
+    }
+
+    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback) throws CombatException {
+
+        return queueInteract(callback, null);
+    }
+
+    protected final QueuedInteract queueInteract(Callback<PlayerInteractTrigger> callback, Action action) throws CombatException {
+
+        QueuedInteract effect = addEffect(getHolder(), QueuedInteract.class);
+        effect.addCallback(callback, action);
+        return effect;
+    }
+
+    @SuppressWarnings("unused")
+    protected final void setDescription(String description) {
+
+        this.description = description;
+    }
+
+    @Override
+    public Hero getObject() {
+
+        return getHolder();
     }
 
     @Override
@@ -392,32 +418,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
-    }
-
-    @Override
-    public void save() {
-
-        if (getHolder().getPlayer() == null) {
-            return;
-        }
-
-        THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
-        if (skill == null) return;
-        skill.setUnlockTime(unlockTime);
-        skill.setUnlocked(isUnlocked());
-        // dont save when the player is in a blacklist world
-        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        return obj instanceof Skill
-                && ((Skill) obj).getId() != 0 && getId() != 0
-                && ((Skill) obj).getId() == getId();
     }
 
     @Override

@@ -71,7 +71,7 @@ public final class ArmorManager implements Triggered, Listener {
     @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) {
 
-        Attack<?,CharacterTemplate> attack = trigger.getAttack();
+        Attack<?, CharacterTemplate> attack = trigger.getAttack();
         // dont reduce environment or non physical damage
         if (attack.hasSource(AttackSource.ENVIRONMENT)) {
             return;
@@ -91,7 +91,7 @@ public final class ArmorManager implements Triggered, Listener {
         double reducedDamage = damage * damageReduction;
         attack.setDamage(damage - reducedDamage);
         if (reducedDamage > 0) {
-            attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int)(damageReduction * 10000)/100.0) + "%) verringert.");
+            attack.combatLog("Rüstung", "Schaden wurde um " + reducedDamage + "(" + ((int) (damageReduction * 10000) / 100.0) + "%) verringert.");
         }
     }
 
@@ -99,9 +99,9 @@ public final class ArmorManager implements Triggered, Listener {
      * This reduction formula is based on the WoW Armor Reduction formula for characters up to level 59.
      * %Reduction = (Armor / ([45 * Attacker_Level] + Armor + 200)) * 100
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
-     *
+     * <p/>
      * The level of the attacker is taken from the hero or the attacking mob (defaults to 60).
-     *
+     * <p/>
      * Since we have about half the armor items (4 opposed to 8) the formula is halfed.
      *
      * @return damage reduction in percent

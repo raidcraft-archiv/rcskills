@@ -40,19 +40,6 @@ public class Weakness<S extends Skill> extends ExpirableEffect<S> implements Tri
         config = data.getConfigurationSection("reduction");
     }
 
-    private double getReduction() {
-
-        return ConfigUtil.getTotalValue(getSource(), config);
-    }
-
-    @TriggerHandler
-    public void onAttack(AttackTrigger trigger) {
-
-        double damage = trigger.getAttack().getDamage();
-        int newDamage = (int) (damage - damage * getReduction());
-        trigger.getAttack().setDamage(newDamage);
-    }
-
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
@@ -69,5 +56,18 @@ public class Weakness<S extends Skill> extends ExpirableEffect<S> implements Tri
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(weakness);
+    }
+
+    @TriggerHandler
+    public void onAttack(AttackTrigger trigger) {
+
+        double damage = trigger.getAttack().getDamage();
+        int newDamage = (int) (damage - damage * getReduction());
+        trigger.getAttack().setDamage(newDamage);
+    }
+
+    private double getReduction() {
+
+        return ConfigUtil.getTotalValue(getSource(), config);
     }
 }

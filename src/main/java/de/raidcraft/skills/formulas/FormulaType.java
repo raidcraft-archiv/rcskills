@@ -28,6 +28,19 @@ public enum FormulaType {
         this.fClass = fClass;
     }
 
+    public static FormulaType fromName(String name) {
+
+        FormulaType type = EnumUtils.getEnumFromString(FormulaType.class, name);
+        if (type == null) {
+            for (FormulaType formulaType : FormulaType.values()) {
+                if (formulaType.name.equalsIgnoreCase(name)) {
+                    return formulaType;
+                }
+            }
+        }
+        return type;
+    }
+
     public LevelFormula create(ConfigurationSection config) {
 
         try {
@@ -41,18 +54,5 @@ public enum FormulaType {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static FormulaType fromName(String name) {
-
-        FormulaType type = EnumUtils.getEnumFromString(FormulaType.class, name);
-        if (type == null) {
-            for (FormulaType formulaType : FormulaType.values()) {
-                if (formulaType.name.equalsIgnoreCase(name)) {
-                    return formulaType;
-                }
-            }
-        }
-        return type;
     }
 }

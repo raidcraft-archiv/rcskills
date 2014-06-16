@@ -10,23 +10,23 @@ import org.bukkit.event.entity.ProjectileHitEvent;
  */
 public class ProjectileHitTrigger extends BukkitEventTrigger<ProjectileHitEvent> {
 
-    public ProjectileHitTrigger(CharacterTemplate source, ProjectileHitEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public ProjectileHitTrigger(CharacterTemplate source, ProjectileHitEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

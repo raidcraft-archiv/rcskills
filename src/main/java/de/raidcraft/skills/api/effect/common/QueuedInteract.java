@@ -44,20 +44,39 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
         this.deactivateMessage = data.getString("deactivate-message");
     }
 
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        info(activateMessage);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        if (!triggered) {
+            info(deactivateMessage);
+        }
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
     public void sendInfo(String msg) {
 
         info(msg);
+    }
+
+    public void addCallback(Callback<PlayerInteractTrigger> callback) {
+
+        addCallback(callback, null);
     }
 
     public void addCallback(Callback<PlayerInteractTrigger> callback, Action action) {
 
         this.callback = callback;
         this.action = action;
-    }
-
-    public void addCallback(Callback<PlayerInteractTrigger> callback) {
-
-        addCallback(callback, null);
     }
 
     @TriggerHandler
@@ -76,24 +95,5 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
         }
         triggered = true;
         remove();
-    }
-
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        info(activateMessage);
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        if (!triggered) {
-            info(deactivateMessage);
-        }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

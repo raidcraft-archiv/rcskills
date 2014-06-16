@@ -53,6 +53,18 @@ public final class VirtualProfession extends AbstractProfession {
     }
 
     @Override
+    public boolean isActive() {
+
+        return true;
+    }
+
+    @Override
+    public boolean isMastered() {
+
+        return true;
+    }
+
+    @Override
     public void addSkill(Skill skill) {
 
         this.skills.put(skill.getName(), skill);
@@ -66,18 +78,6 @@ public final class VirtualProfession extends AbstractProfession {
         this.skills.remove(skill.getName());
         skill.lock();
         skill.save();
-    }
-
-    @Override
-    public boolean isActive() {
-
-        return true;
-    }
-
-    @Override
-    public boolean isMastered() {
-
-        return true;
     }
 
     @Override

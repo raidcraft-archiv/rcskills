@@ -11,23 +11,23 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 public class ItemHeldTrigger extends BukkitEventTrigger<PlayerItemHeldEvent> {
 
 
-    public ItemHeldTrigger(Hero hero, PlayerItemHeldEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public ItemHeldTrigger(Hero hero, PlayerItemHeldEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

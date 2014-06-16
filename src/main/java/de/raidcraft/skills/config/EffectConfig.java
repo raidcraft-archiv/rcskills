@@ -64,12 +64,6 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     }
 
     @Override
-    public ConfigurationSection getDataMap() {
-
-        return getOverrideSection("custom");
-    }
-
-    @Override
     public EffectInformation getInformation() {
 
         return factory.getInformation();
@@ -79,6 +73,12 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
     public boolean isEnabled() {
 
         return getBoolean("enabled", true);
+    }
+
+    @Override
+    public ConfigurationSection getDataMap() {
+
+        return getOverrideSection("custom");
     }
 
     @Override

@@ -38,15 +38,6 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
         load();
     }
 
-    public void reload() {
-
-        groups.clear();
-        defaultGroup = null;
-        load();
-        // reload the permissions
-        RaidCraft.getComponent(PermissionsPlugin.class).reload();
-    }
-
     private void load() {
 
         String defaultGroup = plugin.getCommonConfig().default_permission_group;
@@ -71,6 +62,15 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
         if (this.defaultGroup == null) {
             plugin.getLogger().warning("The default group defined in the config does not exist!");
         }
+    }
+
+    public void reload() {
+
+        groups.clear();
+        defaultGroup = null;
+        load();
+        // reload the permissions
+        RaidCraft.getComponent(PermissionsPlugin.class).reload();
     }
 
     @Override

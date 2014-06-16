@@ -12,9 +12,9 @@ public interface Party {
 
     public CharacterTemplate getOwner();
 
-    public boolean isOwner(CharacterTemplate character);
-
     public void setOwner(CharacterTemplate owner);
+
+    public boolean isOwner(CharacterTemplate character);
 
     public void sendMessage(String... msg);
 

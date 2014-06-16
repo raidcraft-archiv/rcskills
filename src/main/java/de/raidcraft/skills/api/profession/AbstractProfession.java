@@ -31,6 +31,7 @@ import java.util.Set;
  */
 public abstract class AbstractProfession implements Profession {
 
+    protected final Map<String, Skill> skills = new CaseInsensitiveMap<>();
     private final int id;
     private final ProfessionProperties properties;
     private final Hero hero;
@@ -39,8 +40,6 @@ public abstract class AbstractProfession implements Profession {
     // list of requirements to unlock this profession
     private final List<Requirement<Hero>> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
-    protected final Map<String, Skill> skills = new CaseInsensitiveMap<>();
-
     private boolean active = false;
     // can be null - if it is this profession has no parents :*(
     private Profession parent;
@@ -92,49 +91,6 @@ public abstract class AbstractProfession implements Profession {
         }
     }
 
-    public void loadSkills() {
-
-        this.skills.clear();
-        this.skills.putAll(properties.loadSkills(this));
-        checkSkillsForUnlock();
-    }
-
-    @Override
-    public final AttachedLevel<Profession> getAttachedLevel() {
-
-        return attachedLevel;
-    }
-
-    @Override
-    public final void attachLevel(AttachedLevel<Profession> attachedLevel) {
-
-        this.attachedLevel = attachedLevel;
-    }
-
-    @Override
-    public int getTotalMaxLevel() {
-
-        int maxLevel = getMaxLevel();
-        Profession profession = this;
-        while (profession.hasParent()) {
-            profession = profession.getParent();
-            maxLevel += profession.getMaxLevel();
-        }
-        return maxLevel;
-    }
-
-    @Override
-    public int getTotalLevel() {
-
-        int level = getAttachedLevel().getLevel();
-        Profession profession = this;
-        while (profession.hasParent()) {
-            profession = profession.getParent();
-            level += profession.getAttachedLevel().getLevel();
-        }
-        return level;
-    }
-
     @Override
     public int getId() {
 
@@ -151,18 +107,6 @@ public abstract class AbstractProfession implements Profession {
     public String getFriendlyName() {
 
         return getProperties().getFriendlyName();
-    }
-
-    @Override
-    public ProfessionProperties getProperties() {
-
-        return properties;
-    }
-
-    @Override
-    public Path getPath() {
-
-        return path;
     }
 
     @Override
@@ -197,27 +141,21 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public int getMaxLevel() {
+    public Set<Resource> getResources() {
 
-        return getProperties().getMaxLevel();
+        return new HashSet<>(resources.values());
+    }
+
+    @Override
+    public ProfessionProperties getProperties() {
+
+        return properties;
     }
 
     @Override
     public Collection<Skill> getSkills() {
 
         return skills.values();
-    }
-
-    @Override
-    public boolean hasSkill(String id) {
-
-        return skills.containsKey(id);
-    }
-
-    @Override
-    public Skill getSkill(String id) {
-
-        return skills.get(id);
     }
 
     @Override
@@ -233,9 +171,132 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public Set<Resource> getResources() {
+    public void save() {
 
-        return new HashSet<>(resources.values());
+        saveLevelProgress(getAttachedLevel());
+
+        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
+        profession.setActive(isActive());
+
+        // dont save when the player is in a blacklist world
+        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
+        }
+    }
+
+    @Override
+    public void checkSkillsForUnlock() {
+
+        for (Skill skill : getSkills()) {
+            // check all skills and if we need to unlock any
+            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero())) {
+                skill.unlock();
+            }
+            // check if we need to lock any skills
+            if (skill.isUnlocked() && !skill.isMeetingAllRequirements(getHero())) {
+                skill.lock();
+            }
+        }
+    }
+
+    @Override
+    public boolean hasSkill(String id) {
+
+        return skills.containsKey(id);
+    }
+
+    @Override
+    public Skill getSkill(String id) {
+
+        return skills.get(id);
+    }
+
+    @Override
+    public int getTotalMaxLevel() {
+
+        int maxLevel = getMaxLevel();
+        Profession profession = this;
+        while (profession.hasParent()) {
+            profession = profession.getParent();
+            maxLevel += profession.getMaxLevel();
+        }
+        return maxLevel;
+    }
+
+    @Override
+    public int getTotalLevel() {
+
+        int level = getAttachedLevel().getLevel();
+        Profession profession = this;
+        while (profession.hasParent()) {
+            profession = profession.getParent();
+            level += profession.getAttachedLevel().getLevel();
+        }
+        return level;
+    }
+
+    @Override
+    public final AttachedLevel<Profession> getAttachedLevel() {
+
+        return attachedLevel;
+    }
+
+    @Override
+    public final void attachLevel(AttachedLevel<Profession> attachedLevel) {
+
+        this.attachedLevel = attachedLevel;
+    }
+
+    @Override
+    public int getMaxLevel() {
+
+        return getProperties().getMaxLevel();
+    }
+
+    @Override
+    public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
+
+        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
+        profession.setLevel(attachedLevel.getLevel());
+        profession.setExp(attachedLevel.getExp());
+
+        // dont save when the player is in a blacklist world
+        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
+                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
+            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
+        }
+    }
+
+    public void loadSkills() {
+
+        this.skills.clear();
+        this.skills.putAll(properties.loadSkills(this));
+        checkSkillsForUnlock();
+    }
+
+    @Override
+    public Path getPath() {
+
+        return path;
+    }
+
+    @Override
+    public boolean hasChildren() {
+
+        return children != null && children.size() > 0;
+    }
+
+    @Override
+    public List<Profession> getChildren() {
+
+        return children;
+    }
+
+    @Override
+    public Hero getObject() {
+
+        return getHero();
     }
 
     @Override
@@ -245,12 +306,6 @@ public abstract class AbstractProfession implements Profession {
             requirements.addAll(getProperties().loadRequirements(this));
         }
         return requirements;
-    }
-
-    @Override
-    public Hero getObject() {
-
-        return getHero();
     }
 
     @Override
@@ -294,53 +349,6 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public boolean hasChildren() {
-
-        return children != null && children.size() > 0;
-    }
-
-    @Override
-    public List<Profession> getChildren() {
-
-        return children;
-    }
-
-    @Override
-    public void save() {
-
-        saveLevelProgress(getAttachedLevel());
-
-        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
-        profession.setActive(isActive());
-
-        // dont save when the player is in a blacklist world
-        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
-        }
-    }
-
-    @Override
-    public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
-
-        THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
-        profession.setLevel(attachedLevel.getLevel());
-        profession.setExp(attachedLevel.getExp());
-
-        // dont save when the player is in a blacklist world
-        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        return getProperties().getFriendlyName();
-    }
-
-    @Override
     public int compareTo(Profession o) {
 
         return o.getProperties().getFriendlyName().compareTo(getProperties().getFriendlyName());
@@ -355,17 +363,8 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public void checkSkillsForUnlock() {
+    public String toString() {
 
-        for (Skill skill : getSkills()) {
-            // check all skills and if we need to unlock any
-            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero())) {
-                skill.unlock();
-            }
-            // check if we need to lock any skills
-            if (skill.isUnlocked() && !skill.isMeetingAllRequirements(getHero())) {
-                skill.lock();
-            }
-        }
+        return getProperties().getFriendlyName();
     }
 }

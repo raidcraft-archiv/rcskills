@@ -11,23 +11,23 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 public class InventoryCloseTrigger extends BukkitEventTrigger<InventoryCloseEvent> {
 
 
-    public InventoryCloseTrigger(Hero hero, InventoryCloseEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public InventoryCloseTrigger(Hero hero, InventoryCloseEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

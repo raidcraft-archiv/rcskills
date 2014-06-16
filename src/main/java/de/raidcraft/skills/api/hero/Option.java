@@ -1,8 +1,8 @@
 package de.raidcraft.skills.api.hero;
 
 /**
-* @author Silthus
-*/
+ * @author Silthus
+ */
 public enum Option {
 
     DEBUGGING("debug", false),
@@ -35,6 +35,11 @@ public enum Option {
         hero.getOptions().set(this, value);
     }
 
+    public boolean isSet(Hero hero) {
+
+        return Boolean.parseBoolean(get(hero));
+    }
+
     public String get(Hero hero) {
 
         String result = hero.getOptions().get(this);
@@ -42,10 +47,5 @@ public enum Option {
             result = defaultValue.toString();
         }
         return result;
-    }
-
-    public boolean isSet(Hero hero) {
-
-        return Boolean.parseBoolean(get(hero));
     }
 }

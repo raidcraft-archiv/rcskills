@@ -59,14 +59,14 @@ public final class ProfessionFactory {
         return database;
     }
 
-    public SkillsPlugin getPlugin() {
-
-        return plugin;
-    }
-
     public String getProfessionName() {
 
         return professionName;
+    }
+
+    public SkillsPlugin getPlugin() {
+
+        return plugin;
     }
 
     public ProfessionConfig getConfig() {

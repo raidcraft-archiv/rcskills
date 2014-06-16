@@ -59,6 +59,35 @@ public class ChannelTime extends PeriodicExpirableEffect<SkillAction> {
     }
 
     @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        if (isPlayer) {
+            nullExp();
+            RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().unpausePlayerExpUpdate(player);
+        }
+        if (!casted) {
+            warn(getSource().getSource(), "Kanalisierungs Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
+        } else {
+            getSource().run();
+        }
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        // nothing we need to do here
+    }
+
+    private void nullExp() {
+
+        if (isPlayer) {
+            player.setExp(0.0F);
+            player.setLevel(0);
+            player.setTotalExperience(0);
+        }
+    }
+
+    @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
         if (isPlayer) {
@@ -74,35 +103,6 @@ public class ChannelTime extends PeriodicExpirableEffect<SkillAction> {
         }
         for (AmbientEffect effect : ambientEffects) {
             effect.run(getTarget().getEntity().getLocation());
-        }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        // nothing we need to do here
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        if (isPlayer) {
-            nullExp();
-            RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().unpausePlayerExpUpdate(player);
-        }
-        if (!casted) {
-            warn(getSource().getSource(), "Kanalisierungs Zauber " + getSource().getSkill().getFriendlyName() + " wurde unterbrochen.");
-        } else {
-            getSource().run();
-        }
-    }
-
-    private void nullExp() {
-
-        if (isPlayer) {
-            player.setExp(0.0F);
-            player.setLevel(0);
-            player.setTotalExperience(0);
         }
     }
 }

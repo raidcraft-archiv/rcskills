@@ -16,9 +16,9 @@ import org.bukkit.scheduler.BukkitTask;
  */
 public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
 
-    private BukkitTask removalTask = null;
     protected long delay = 0;
     protected long duration = 0;
+    private BukkitTask removalTask = null;
 
     public DelayedExpirableEffect(S source, CharacterTemplate target, EffectData data) {
 
@@ -47,27 +47,30 @@ public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
         this.removalTask = task;
     }
 
-    private void stopRemovalTask() {
+    @Override
+    public void apply() throws CombatException {
 
-        if (removalTask != null) {
-            removalTask.cancel();
-            removalTask = null;
+        if (!isRemovalScheduled() && !isStarted()) {
+            startTask();
+        } else if (!isRemovalScheduled() && isStarted()) {
+            // stop the applying task
+            stopTask();
+            // stop the removal task
+            stopRemovalTask();
+            // start the task that will the remove the applied effect
+            setRemovalTask(Bukkit.getScheduler().runTaskLater(
+                    RaidCraft.getComponent(SkillsPlugin.class),
+                    this,
+                    getDuration()
+            ));
+            // apply the effect
+            super.apply();
         }
     }
 
     private boolean isRemovalScheduled() {
 
         return removalTask != null && !isStarted();
-    }
-
-    public long getDelay() {
-
-        return delay;
-    }
-
-    public long getDuration() {
-
-        return duration;
     }
 
     @Override
@@ -91,25 +94,22 @@ public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
         }
     }
 
-    @Override
-    public void apply() throws CombatException {
+    private void stopRemovalTask() {
 
-        if (!isRemovalScheduled() && !isStarted()) {
-            startTask();
-        } else if (!isRemovalScheduled() && isStarted()) {
-            // stop the applying task
-            stopTask();
-            // stop the removal task
-            stopRemovalTask();
-            // start the task that will the remove the applied effect
-            setRemovalTask(Bukkit.getScheduler().runTaskLater(
-                    RaidCraft.getComponent(SkillsPlugin.class),
-                    this,
-                    getDuration()
-            ));
-            // apply the effect
-            super.apply();
+        if (removalTask != null) {
+            removalTask.cancel();
+            removalTask = null;
         }
+    }
+
+    public long getDuration() {
+
+        return duration;
+    }
+
+    public long getDelay() {
+
+        return delay;
     }
 
     @Override

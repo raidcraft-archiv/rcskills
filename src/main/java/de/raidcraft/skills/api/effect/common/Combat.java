@@ -76,14 +76,14 @@ public class Combat<S> extends ExpirableEffect<S> {
         target.setInCombat(true);
     }
 
-    public boolean isInvolved(CharacterTemplate character) {
-
-        return involvedCharacters.contains(character);
-    }
-
     public void addInvolvedCharacter(CharacterTemplate character) {
 
         involvedCharacters.add(character);
+    }
+
+    public boolean isInvolved(CharacterTemplate character) {
+
+        return involvedCharacters.contains(character);
     }
 
     public Set<CharacterTemplate> getInvolvedCharacters() {
