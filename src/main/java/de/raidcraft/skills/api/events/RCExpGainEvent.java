@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
  */
 public class RCExpGainEvent extends Event implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private final AttachedLevel attachedLevel;
     private int gainedExp;
     private boolean cancelled = false;
@@ -20,10 +21,19 @@ public class RCExpGainEvent extends Event implements Cancellable {
         this.gainedExp = gainedExp;
     }
 
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
     public AttachedLevel getAttachedLevel() {
 
         return attachedLevel;
     }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
 
     public int getGainedExp() {
 
@@ -35,18 +45,7 @@ public class RCExpGainEvent extends Event implements Cancellable {
         this.gainedExp = gainedExp;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

@@ -77,14 +77,56 @@ public final class ConfigUtil {
         return map;
     }
 
-    private static double getSkillLevelModifier(Ability ability, ConfigurationSection section) {
+    public static double getTotalValue(Ability ability, ConfigurationSection section) {
 
-        if (ability == null) {
+        return getTotalValue(ability.getHolder(), ability, null, section, 0.0);
+    }
+
+    public static double getTotalValue(CharacterTemplate holder, Ability ability, Profession profession, ConfigurationSection section, double defautValue) {
+
+        if (section == null) {
             return 0.0;
         }
-        double value = 0.0;
-        if (ability instanceof LevelableSkill) {
-            value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) ability).getAttachedLevel().getLevel();
+        Set<String> availableModifier = section.getKeys(false);
+        double value = section.getDouble("base", 0.0);
+        double cap = section.getDouble("cap", 0);
+        double low = section.getDouble("low", 0);
+        boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
+
+        if (ability != null && profession == null && ability instanceof Skill) {
+            profession = ((Skill) ability).getProfession();
+        }
+
+        value += section.getDouble("level-modifier", 0.0) * holder.getAttachedLevel().getLevel();
+        availableModifier.remove("level-modifier");
+        // profession level
+        value += getProfessionValue(profession, section);
+        availableModifier.remove("prof-level-modifier");
+        // path level
+        value += getTotalPathValue(profession, section);
+        availableModifier.remove("path-level-modifier");
+        // skill level
+        value += getSkillLevelModifier(ability, section);
+        availableModifier.remove("skill-level-modifier");
+        // uses resources as value modifiers
+        value += getResourceValues(holder, section, availableModifier);
+        // also add attributes values
+        value += getAttributeValues(holder, section, availableModifier);
+        // makes it possible to to use skills dynamically as config values
+        getExtraValues(holder, section, availableModifier);
+
+        if (addWeaponDamage) {
+            value += holder.getTotalWeaponDamage();
+        }
+
+        if (cap > 0.0 && value > cap) {
+            value = cap;
+        }
+        if (low != 0.0 && value < low) {
+            value = low;
+        }
+        if (value == 0.0) {
+            value = defautValue;
         }
         return value;
     }
@@ -103,6 +145,18 @@ public final class ConfigUtil {
             return 0.0;
         }
         return section.getDouble("path-level-modifier", 0.0) * profession.getPath().getTotalPathLevel(profession.getHero());
+    }
+
+    private static double getSkillLevelModifier(Ability ability, ConfigurationSection section) {
+
+        if (ability == null) {
+            return 0.0;
+        }
+        double value = 0.0;
+        if (ability instanceof LevelableSkill) {
+            value += section.getDouble("skill-level-modifier", 0.0) * ((LevelableSkill) ability).getAttachedLevel().getLevel();
+        }
+        return value;
     }
 
     private static double getResourceValues(CharacterTemplate holder, ConfigurationSection section, Set<String> availableModifiers) {
@@ -176,60 +230,6 @@ public final class ConfigUtil {
             }
         }
         return value;
-    }
-
-    public static double getTotalValue(CharacterTemplate holder, Ability ability, Profession profession, ConfigurationSection section, double defautValue) {
-
-        if (section == null) {
-            return 0.0;
-        }
-        Set<String> availableModifier = section.getKeys(false);
-        double value = section.getDouble("base", 0.0);
-        double cap = section.getDouble("cap", 0);
-        double low = section.getDouble("low", 0);
-        boolean addWeaponDamage = section.getBoolean("weapon-damage", false);
-
-        if (ability != null && profession == null && ability instanceof Skill) {
-            profession = ((Skill) ability).getProfession();
-        }
-
-        value += section.getDouble("level-modifier", 0.0) * holder.getAttachedLevel().getLevel();
-        availableModifier.remove("level-modifier");
-        // profession level
-        value += getProfessionValue(profession, section);
-        availableModifier.remove("prof-level-modifier");
-        // path level
-        value += getTotalPathValue(profession, section);
-        availableModifier.remove("path-level-modifier");
-        // skill level
-        value += getSkillLevelModifier(ability, section);
-        availableModifier.remove("skill-level-modifier");
-        // uses resources as value modifiers
-        value += getResourceValues(holder, section, availableModifier);
-        // also add attributes values
-        value += getAttributeValues(holder, section, availableModifier);
-        // makes it possible to to use skills dynamically as config values
-        getExtraValues(holder, section, availableModifier);
-
-        if (addWeaponDamage) {
-            value += holder.getTotalWeaponDamage();
-        }
-
-        if (cap > 0.0 && value > cap) {
-            value = cap;
-        }
-        if (low != 0.0 && value < low) {
-            value = low;
-        }
-        if (value == 0.0) {
-            value = defautValue;
-        }
-        return value;
-    }
-
-    public static double getTotalValue(Ability ability, ConfigurationSection section) {
-
-        return getTotalValue(ability.getHolder(), ability, null, section, 0.0);
     }
 
     public static double getTotalValue(Profession profession, ConfigurationSection section) {

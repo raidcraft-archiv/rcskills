@@ -33,8 +33,9 @@ public class BindListener implements Listener {
         Hero hero = plugin.getCharacterManager().getHero(player);
         Material material = player.getItemInHand().getType();
 
-        if (hero.getBindings().isEmpty() || material == null || material.isBlock())
+        if (hero.getBindings().isEmpty() || material == null || material.isBlock()) {
             return;
+        }
 
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -62,10 +63,21 @@ public class BindListener implements Listener {
         }
     }
 
+    private void switchBoundSkill(Hero hero, Material material, boolean forward) {
+
+        SkillAction newSkillAction = hero.getBindings().switchSkill(material, forward);
+
+        if (newSkillAction != null) {
+            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + newSkillAction.getSkill().getFriendlyName());
+        }
+
+    }
+
     private void use(Hero hero, SkillAction skillAction) {
 
-        if (skillAction == null)
+        if (skillAction == null) {
             return;
+        }
 
         try {
 
@@ -80,15 +92,5 @@ public class BindListener implements Listener {
             }
             hero.sendMessage(ChatColor.RED + e.getMessage());
         }
-    }
-
-    private void switchBoundSkill(Hero hero, Material material, boolean forward) {
-
-        SkillAction newSkillAction = hero.getBindings().switchSkill(material, forward);
-
-        if (newSkillAction != null) {
-            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + newSkillAction.getSkill().getFriendlyName());
-        }
-
     }
 }

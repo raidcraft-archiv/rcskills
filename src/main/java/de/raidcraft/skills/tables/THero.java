@@ -9,7 +9,14 @@ import de.raidcraft.skills.util.CollectionUtils;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,18 +61,6 @@ public class THero implements LevelData, HeroData {
     private List<THeroAttribute> attributes;
 
     @Override
-    public List<String> getProfessionNames() {
-
-        ArrayList<String> strings = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(getProfessions())) {
-            for (THeroProfession profession : getProfessions()) {
-                strings.add(profession.getName());
-            }
-        }
-        return strings;
-    }
-
-    @Override
     public int getId() {
 
         return id;
@@ -78,21 +73,33 @@ public class THero implements LevelData, HeroData {
     }
 
     @Override
+    public double getHealth() {
+
+        return health;
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().hero_max_level;
     }
 
     @Override
-    public LevelData getLevelData() {
+    public List<String> getProfessionNames() {
 
-        return this;
+        ArrayList<String> strings = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(getProfessions())) {
+            for (THeroProfession profession : getProfessions()) {
+                strings.add(profession.getName());
+            }
+        }
+        return strings;
     }
 
     @Override
-    public double getHealth() {
+    public LevelData getLevelData() {
 
-        return health;
+        return this;
     }
 
     @Override

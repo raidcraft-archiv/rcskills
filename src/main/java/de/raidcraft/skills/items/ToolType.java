@@ -52,29 +52,9 @@ public enum ToolType {
         this.armor = armor;
     }
 
-    public String getFriendlyName() {
+    public static ToolType fromMaterial(Material material) {
 
-        return friendlyName;
-    }
-
-    public Material[] getTools() {
-
-        return armor;
-    }
-
-    public boolean isOfType(int itemId) {
-
-        for (Material mat : getTools()) {
-            if (mat.getId() == itemId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isOfType(Material material) {
-
-        return isOfType(material.getId());
+        return fromItemId(material.getId());
     }
 
     public static ToolType fromItemId(int itemId) {
@@ -89,13 +69,33 @@ public enum ToolType {
         return null;
     }
 
-    public static ToolType fromMaterial(Material material) {
+    public Material[] getTools() {
 
-        return fromItemId(material.getId());
+        return armor;
     }
 
     public static ToolType fromName(String toolName) {
 
         return EnumUtils.getEnumFromString(ToolType.class, toolName);
+    }
+
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    public boolean isOfType(Material material) {
+
+        return isOfType(material.getId());
+    }
+
+    public boolean isOfType(int itemId) {
+
+        for (Material mat : getTools()) {
+            if (mat.getId() == itemId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

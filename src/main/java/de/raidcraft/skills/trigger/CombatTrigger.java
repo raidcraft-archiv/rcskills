@@ -10,23 +10,23 @@ import de.raidcraft.skills.api.trigger.HandlerList;
  */
 public class CombatTrigger extends BukkitEventTrigger<RCCombatEvent> {
 
-    public CombatTrigger(CharacterTemplate source, RCCombatEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public CombatTrigger(CharacterTemplate source, RCCombatEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

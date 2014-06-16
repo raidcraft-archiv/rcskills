@@ -27,11 +27,15 @@ public class SkillAction extends AbilityAction<Hero> {
     private final Skill skill;
     private final CommandContext args;
     private final Map<String, Double> resourceCosts = new HashMap<>();
+    private final PlayerCastSkillTrigger trigger;
     private double castTime;
     private double cooldown;
     private boolean delayed = false;
 
-    private final PlayerCastSkillTrigger trigger;
+    public SkillAction(Skill skill) {
+
+        this(skill, null);
+    }
 
     public SkillAction(Skill skill, CommandContext args) {
 
@@ -48,16 +52,6 @@ public class SkillAction extends AbilityAction<Hero> {
         this.trigger = TriggerManager.callSafeTrigger(new PlayerCastSkillTrigger(this));
         // set the variable after the trigger call
         this.delayed = castTime > 0;
-    }
-
-    public SkillAction(Skill skill) {
-
-        this(skill, null);
-    }
-
-    public Skill getSkill() {
-
-        return skill;
     }
 
     public double getResourceCost(String resource) {
@@ -161,5 +155,10 @@ public class SkillAction extends AbilityAction<Hero> {
 
         // lets inform the player that his skill was executed
         skill.getHolder().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
+    }
+
+    public Skill getSkill() {
+
+        return skill;
     }
 }

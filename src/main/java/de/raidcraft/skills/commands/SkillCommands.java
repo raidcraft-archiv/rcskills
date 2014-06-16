@@ -40,7 +40,7 @@ public class SkillCommands {
 
         sender.sendMessage(SkillUtil.formatHeader(skill));
         SkillUtil.formatBody(skill).forEach(sender::sendMessage);
-        
+
         if (args.hasFlag('c')) {
             String[] configUsage = skill.getSkillProperties().getInformation().configUsage();
             if (configUsage.length > 0) {

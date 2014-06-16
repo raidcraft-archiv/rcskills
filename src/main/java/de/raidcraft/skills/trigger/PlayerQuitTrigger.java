@@ -10,23 +10,23 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerQuitTrigger extends BukkitEventTrigger<PlayerQuitEvent> {
 
-    public PlayerQuitTrigger(CharacterTemplate source, PlayerQuitEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public PlayerQuitTrigger(CharacterTemplate source, PlayerQuitEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

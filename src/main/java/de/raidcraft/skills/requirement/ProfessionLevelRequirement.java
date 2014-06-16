@@ -43,16 +43,16 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     }
 
     @Override
+    public String getShortReason() {
+
+        return profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName() + " auf Level " + getRequiredLevel();
+    }
+
+    @Override
     public String getLongReason() {
 
         return ChatColor.RED + "Du musst erst deine " + profession.getPath().getFriendlyName() + " Spezialisierung " +
                 ChatColor.AQUA + profession.getFriendlyName() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
                 + getRequiredLevel() + ChatColor.RED + " bringen.";
-    }
-
-    @Override
-    public String getShortReason() {
-
-        return profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName() + " auf Level " + getRequiredLevel();
     }
 }

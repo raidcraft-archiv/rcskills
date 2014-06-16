@@ -28,6 +28,7 @@ import java.util.Map;
  */
 public abstract class AbstractEffect<S> implements Effect<S> {
 
+    protected final Map<EffectEffectStage, List<AmbientEffect>> visualEffects;
     private final EffectInformation info;
     private final String name;
     private final String friendlyName;
@@ -41,8 +42,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     private int stacks;
     private int maxStacks;
     private double priority;
-
-    protected final Map<EffectEffectStage, List<AmbientEffect>> visualEffects;
 
     public AbstractEffect(S source, CharacterTemplate target, EffectData data) {
 
@@ -66,6 +65,11 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         load(data);
     }
 
+    private String convertName(String name) {
+
+        return name.toLowerCase().replace(" ", "-").trim();
+    }
+
     private void load(EffectData data) {
 
         if (getSource() instanceof Skill) {
@@ -73,29 +77,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         } else {
             damage = data.getEffectDamage().getInt("base", 0);
         }
-    }
-
-    @Override
-    public void executeAmbientEffects(EffectEffectStage stage, Location location) {
-
-        for (AmbientEffect effect : getAmbientEffects(stage)) {
-            effect.run(location);
-        }
-    }
-
-    @Override
-    public List<AmbientEffect> getAmbientEffects(EffectEffectStage stage) {
-
-        List<AmbientEffect> effects = visualEffects.get(stage);
-        if (effects == null) {
-            return new ArrayList<>();
-        }
-        return effects;
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-        // override if needed
     }
 
     public int getStacks() {
@@ -112,6 +93,42 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     public int getMaxStacks() {
 
         return maxStacks;
+    }
+
+    public DiminishingReturnType getDiminishingReturnType() {
+
+        return info.diminishingReturn();
+    }
+
+    private Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
+
+        try {
+            return clazz.getDeclaredField(name);
+        } catch (NoSuchFieldException e) {
+            Class<?> superclass = clazz.getSuperclass();
+            if (superclass == null) {
+                throw e;
+            }
+            return getField(superclass, name);
+        }
+    }
+
+    protected abstract void apply(CharacterTemplate target) throws CombatException;
+
+    protected void debug(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getSource() instanceof Hero) {
+            ((Hero) getSource()).debug("You->" + getTarget().getName() + ": " + message + " - " + getName());
+        }
+        if (getTarget() instanceof Hero) {
+            ((Hero) getTarget()).debug(
+                    (getSource() instanceof CharacterTemplate ? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
+                            "->You: " + message + " - " + getName()
+            );
+        }
     }
 
     @Override
@@ -142,11 +159,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     public EffectElement[] getElements() {
 
         return info.elements();
-    }
-
-    public DiminishingReturnType getDiminishingReturnType() {
-
-        return info.diminishingReturn();
     }
 
     @Override
@@ -203,6 +215,29 @@ public abstract class AbstractEffect<S> implements Effect<S> {
     }
 
     @Override
+    public void executeAmbientEffects(EffectEffectStage stage, Location location) {
+
+        for (AmbientEffect effect : getAmbientEffects(stage)) {
+            effect.run(location);
+        }
+    }
+
+    @Override
+    public List<AmbientEffect> getAmbientEffects(EffectEffectStage stage) {
+
+        List<AmbientEffect> effects = visualEffects.get(stage);
+        if (effects == null) {
+            return new ArrayList<>();
+        }
+        return effects;
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+        // override if needed
+    }
+
+    @Override
     public void apply() throws CombatException {
 
         if (getDiminishingReturnType() != DiminishingReturnType.NULL) {
@@ -239,19 +274,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         }
     }
 
-    private Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
-
-        try {
-            return clazz.getDeclaredField(name);
-        } catch (NoSuchFieldException e) {
-            Class<?> superclass = clazz.getSuperclass();
-            if (superclass == null) {
-                throw e;
-            }
-            return getField(superclass, name);
-        }
-    }
-
     @Override
     public void remove() throws CombatException {
 
@@ -285,25 +307,26 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         }
     }
 
-    protected abstract void apply(CharacterTemplate target) throws CombatException;
+    protected abstract void renew(CharacterTemplate target) throws CombatException;
 
     protected abstract void remove(CharacterTemplate target) throws CombatException;
 
-    protected abstract void renew(CharacterTemplate target) throws CombatException;
-
-    protected void debug(String message) {
+    protected void info(String message) {
 
         if (message == null || message.equals("")) {
             return;
         }
-        if (getSource() instanceof Hero) {
-            ((Hero) getSource()).debug("You->" + getTarget().getName() + ": " + message + " - " + getName());
-        }
         if (getTarget() instanceof Hero) {
-            ((Hero) getTarget()).debug(
-                    (getSource() instanceof CharacterTemplate ? ((CharacterTemplate) getSource()).getName() : "UNKNOWN") +
-                            "->You: " + message + " - " + getName());
+            info((Hero) getTarget(), message);
         }
+    }
+
+    protected void info(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage("" + ChatColor.GRAY + message);
     }
 
     protected void warn(Throwable e) {
@@ -329,24 +352,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
             return;
         }
         hero.sendMessage(ChatColor.RED + message);
-    }
-
-    protected void info(String message) {
-
-        if (message == null || message.equals("")) {
-            return;
-        }
-        if (getTarget() instanceof Hero) {
-            info((Hero) getTarget(), message);
-        }
-    }
-
-    protected void info(Hero hero, String message) {
-
-        if (message == null || message.equals("")) {
-            return;
-        }
-        hero.sendMessage("" + ChatColor.GRAY + message);
     }
 
     protected void msg(String message) {
@@ -375,11 +380,6 @@ public abstract class AbstractEffect<S> implements Effect<S> {
         if (getTarget() instanceof Hero) {
             ((Hero) getTarget()).combatLog(this, message);
         }
-    }
-
-    private String convertName(String name) {
-
-        return name.toLowerCase().replace(" ", "-").trim();
     }
 
     @Override

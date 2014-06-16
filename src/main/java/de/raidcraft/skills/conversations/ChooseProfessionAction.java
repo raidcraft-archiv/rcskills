@@ -38,8 +38,8 @@ public class ChooseProfessionAction extends AbstractAction {
                 cost = ProfessionUtil.getProfessionChangeCost(profession);
             }
 
-            if(!forced) {
-                if(hero.hasProfession(profession) && profession.isActive()) {
+            if (!forced) {
+                if (hero.hasProfession(profession) && profession.isActive()) {
                     hero.sendMessage("", ChatColor.AQUA + "Du besitzt die " + profession.getPath().getFriendlyName() + " Spezialisierung '"
                             + profession.getFriendlyName() + "' bereits!");
                     conversation.endConversation(EndReason.INFORM);
@@ -51,14 +51,13 @@ public class ChooseProfessionAction extends AbstractAction {
                 conversation.endConversation(EndReason.INFORM);
                 return;
             }
-            if(forced) {
+            if (forced) {
                 hero.changeProfession(profession);
-                if(!quite) {
+                if (!quite) {
                     hero.sendMessage("", ChatColor.GREEN + "Du besitzt nun die " + profession.getPath().getFriendlyName()
                             + " Spezialisierung " + profession.getFriendlyName() + "!");
                 }
-            }
-            else {
+            } else {
                 if (args.getBoolean("confirmed")) {
 
                     hero.sendMessage("");
@@ -68,13 +67,13 @@ public class ChooseProfessionAction extends AbstractAction {
                     }
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {
-                    if(cost <= 0.0 || RaidCraft.getEconomy().hasEnough(hero.getName(), cost)) {
+                    if (cost <= 0.0 || RaidCraft.getEconomy().hasEnough(hero.getName(), cost)) {
                         conversation.triggerStage(createConfirmStage(
                                 "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
                                         + profession.getFriendlyName() + " wählen willst?" +
-                                        (cost > 0.0 ? "\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""), args));
-                    }
-                    else {
+                                        (cost > 0.0 ? "\n Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""), args
+                        ));
+                    } else {
                         hero.sendMessage(ChatColor.RED + "Du benötigst hierfür mindestens " + RaidCraft.getEconomy().getFormattedAmount(cost));
                         conversation.endConversation(EndReason.INFORM);
                     }

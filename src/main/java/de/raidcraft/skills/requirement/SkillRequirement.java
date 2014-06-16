@@ -54,14 +54,14 @@ public class SkillRequirement extends AbstractRequirement<Hero> {
     }
 
     @Override
-    public String getLongReason() {
-
-        return ChatColor.RED + "Du benötigst den Skill " + ChatColor.AQUA + requiredSkill + ChatColor.RED + ".";
-    }
-
-    @Override
     public String getShortReason() {
 
         return "Freigeschalteter Skill: " + requiredSkill;
+    }
+
+    @Override
+    public String getLongReason() {
+
+        return ChatColor.RED + "Du benötigst den Skill " + ChatColor.AQUA + requiredSkill + ChatColor.RED + ".";
     }
 }

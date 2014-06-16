@@ -40,21 +40,15 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public AbilityInformation getInformation() {
-
-        return information;
-    }
-
-    @Override
     public String getFriendlyName() {
 
         return getOverride("name", getName());
+    }
+
+    @Override
+    public String getName() {
+
+        return name;
     }
 
     @Override
@@ -127,7 +121,7 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
-         public Set<EffectType> getTypes() {
+    public Set<EffectType> getTypes() {
 
         HashSet<EffectType> types = new HashSet<>();
         for (String str : getStringList("types")) {
@@ -163,6 +157,12 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
+    public AbilityInformation getInformation() {
+
+        return information;
+    }
+
+    @Override
     public ConfigurationSection getDamage() {
 
         return getOverrideSection("damage");
@@ -175,14 +175,14 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
-    public ConfigurationSection getCooldown() {
-
-        return getOverrideSection("cooldown");
-    }
-
-    @Override
     public ConfigurationSection getRange() {
 
         return getOverrideSection("range");
+    }
+
+    @Override
+    public ConfigurationSection getCooldown() {
+
+        return getOverrideSection("cooldown");
     }
 }

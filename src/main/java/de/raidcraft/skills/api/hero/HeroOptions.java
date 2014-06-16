@@ -26,17 +26,17 @@ class HeroOptions {
         }
     }
 
+    public void set(Option option, boolean value) {
+
+        set(option, Boolean.toString(value));
+    }
+
     public void set(Option option, String value) {
 
         options.put(option.getKey(), value);
         if (option == Option.PVP) {
             CharacterManager.refreshPlayerTag(hero);
         }
-    }
-
-    public void set(Option option, boolean value) {
-
-        set(option, Boolean.toString(value));
     }
 
     public String get(Option option) {

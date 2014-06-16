@@ -33,6 +33,12 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
         super(source, target, data);
     }
 
+    @TriggerHandler
+    public void onItemHeld(ItemHeldTrigger trigger) {
+
+        checkItem();
+    }
+
     private void checkItem() {
 
         if (getTarget() instanceof Hero) {
@@ -42,12 +48,6 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
                 CustomItemUtil.moveItem(player, player.getInventory().getHeldItemSlot(), inHand);
             }
         }
-    }
-
-    @TriggerHandler
-    public void onItemHeld(ItemHeldTrigger trigger) {
-
-        checkItem();
     }
 
     @TriggerHandler

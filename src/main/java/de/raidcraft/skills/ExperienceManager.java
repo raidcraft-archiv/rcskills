@@ -50,14 +50,6 @@ public final class ExperienceManager implements Listener {
         plugin.registerEvents(this);
     }
 
-    public void sendPacket(final Player player, Entity dead, short exp) {
-
-        if (!player.isOnline()) {
-            return;
-        }
-        // TODO: readd visual experience effect
-    }
-
     public WrappedDataWatcher getDefaultWatcher(World world, EntityType type) {
 
         Entity entity = world.spawnEntity(new Location(world, 0, 256, 0), type);
@@ -120,6 +112,14 @@ public final class ExperienceManager implements Listener {
                 sendPacket(expToAdd.getPlayer(), character.getEntity(), (short) exp);
             }
         }
+    }
+
+    public void sendPacket(final Player player, Entity dead, short exp) {
+
+        if (!player.isOnline()) {
+            return;
+        }
+        // TODO: readd visual experience effect
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

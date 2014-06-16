@@ -33,6 +33,22 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
+    public void applyAttachment(Player player) throws CustomItemException {
+
+        try {
+            skill = plugin.getCharacterManager().getHero(player).getSkill(skillName);
+        } catch (UnknownSkillException e) {
+            throw new CustomItemException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeAttachment(Player player) throws CustomItemException {
+
+
+    }
+
+    @Override
     public String getName() {
 
         return "skill";
@@ -66,21 +82,5 @@ public class SkillRequirementAttachment implements RequiredItemAttachment {
         }
         msg += ".";
         return msg;
-    }
-
-    @Override
-    public void applyAttachment(Player player) throws CustomItemException {
-
-        try {
-            skill = plugin.getCharacterManager().getHero(player).getSkill(skillName);
-        } catch (UnknownSkillException e) {
-            throw new CustomItemException(e.getMessage());
-        }
-    }
-
-    @Override
-    public void removeAttachment(Player player) throws CustomItemException {
-
-
     }
 }

@@ -24,12 +24,26 @@ public class ProfessionPath implements Path<Profession> {
     }
 
     @Override
+    public int hashCode() {
+
+        return name.hashCode();
+    }    @Override
     public String getName() {
 
         return name;
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProfessionPath that = (ProfessionPath) o;
+
+        return name.equals(that.name);
+
+    }    @Override
     public String getFriendlyName() {
 
         return config.getFriendlyName(getName());
@@ -85,21 +99,7 @@ public class ProfessionPath implements Path<Profession> {
         return config.getParents(getName());
     }
 
-    @Override
-    public boolean equals(Object o) {
 
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        ProfessionPath that = (ProfessionPath) o;
 
-        return name.equals(that.name);
-
-    }
-
-    @Override
-    public int hashCode() {
-
-        return name.hashCode();
-    }
 }

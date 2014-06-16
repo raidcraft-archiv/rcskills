@@ -52,6 +52,29 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
         cancelSkills = data.getBoolean("cancel-skills", true);
     }
 
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        // lets set the original location of the target
+        this.location = target.getEntity().getLocation();
+        renew(target);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
+        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
+        this.location = null;
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().addPotionEffect(jumpBlock);
+        target.getEntity().addPotionEffect(moveBlock);
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
@@ -87,28 +110,5 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
             target.getEntity().getLocation().setPitch(location.getPitch());
             target.getEntity().getLocation().setYaw(location.getYaw());
         }
-    }
-
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        // lets set the original location of the target
-        this.location = target.getEntity().getLocation();
-        renew(target);
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().addPotionEffect(jumpBlock);
-        target.getEntity().addPotionEffect(moveBlock);
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
-        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
-        this.location = null;
     }
 }

@@ -31,6 +31,7 @@ public class BindCommand implements CommandExecutor {
      * @param cmd    The command which was executed
      * @param label  The alias of the command which was used
      * @param args   Passed command arguments
+     *
      * @return true if success, otherwise false
      */
     @Override
@@ -43,8 +44,9 @@ public class BindCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!player.isOnline())
+        if (!player.isOnline()) {
             return true;
+        }
 
         Hero hero = plugin.getCharacterManager().getHero(player);
         Material material = player.getItemInHand().getType();

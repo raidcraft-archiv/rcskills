@@ -10,23 +10,23 @@ import org.bukkit.event.inventory.FurnaceExtractEvent;
  */
 public class FurnaceExtractTrigger extends BukkitEventTrigger<FurnaceExtractEvent> {
 
-    public FurnaceExtractTrigger(CharacterTemplate source, FurnaceExtractEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public FurnaceExtractTrigger(CharacterTemplate source, FurnaceExtractEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

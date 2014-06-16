@@ -22,8 +22,7 @@ public class RegisteredEffectTrigger extends RegisteredTrigger {
      *
      * @param trigger The event
      *
-     * @throws org.bukkit.event.EventException
-     *          If an event handler throws an exception.
+     * @throws org.bukkit.event.EventException If an event handler throws an exception.
      */
     protected void call(final Trigger trigger) throws CombatException, EventException {
 

@@ -62,17 +62,6 @@ public final class ProfessionUtil {
         return strings;
     }
 
-    public static String formatHeader(Profession profession) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.YELLOW).append("------- [");
-        sb.append(ChatColor.AQUA).append(profession.getAttachedLevel().getLevel());
-        sb.append(ChatColor.YELLOW).append("] ").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED);
-        sb.append(profession.getFriendlyName());
-        sb.append(ChatColor.YELLOW).append(" -------");
-        return sb.toString();
-    }
-
     public static List<String> formatBody(Profession profession) {
 
         List<String> body = new ArrayList<>();
@@ -126,6 +115,17 @@ public final class ProfessionUtil {
         body.add(sb.toString());
 
         return body;
+    }
+
+    public static String formatHeader(Profession profession) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.YELLOW).append("------- [");
+        sb.append(ChatColor.AQUA).append(profession.getAttachedLevel().getLevel());
+        sb.append(ChatColor.YELLOW).append("] ").append(profession.isActive() ? ChatColor.GREEN : ChatColor.RED);
+        sb.append(profession.getFriendlyName());
+        sb.append(ChatColor.YELLOW).append(" -------");
+        return sb.toString();
     }
 
     public static double getProfessionChangeCost(Profession profession) {

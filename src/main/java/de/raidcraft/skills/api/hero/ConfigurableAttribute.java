@@ -54,15 +54,6 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
-    public double getBonusDamage(EffectType type) {
-
-        if (!damageModifier.containsKey(type)) {
-            return 0;
-        }
-        return damageModifier.get(type) * getCurrentValue();
-    }
-
-    @Override
     public Hero getHero() {
 
         return hero;
@@ -110,6 +101,21 @@ public class ConfigurableAttribute implements Attribute {
     }
 
     @Override
+    public double getBonusDamage(EffectType type) {
+
+        if (!damageModifier.containsKey(type)) {
+            return 0;
+        }
+        return damageModifier.get(type) * getCurrentValue();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return type.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;
@@ -119,11 +125,5 @@ public class ConfigurableAttribute implements Attribute {
 
         return type == that.type;
 
-    }
-
-    @Override
-    public int hashCode() {
-
-        return type.hashCode();
     }
 }

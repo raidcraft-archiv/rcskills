@@ -21,6 +21,8 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
 
     public String getName();
 
+    public boolean isMastered();
+
     public String getFriendlyName();
 
     public Hero getHero();
@@ -28,8 +30,6 @@ public interface Profession extends Levelable<Profession>, Comparable<Profession
     public boolean isActive();
 
     public void setActive(boolean active);
-
-    public boolean isMastered();
 
     public Set<Resource> getResources();
 

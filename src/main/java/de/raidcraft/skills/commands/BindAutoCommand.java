@@ -14,7 +14,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Auto bind all skills to items.
@@ -24,6 +28,7 @@ public class BindAutoCommand implements CommandExecutor {
     private final SkillsPlugin plugin;
 
     public BindAutoCommand(SkillsPlugin plugin) {
+
         this.plugin = plugin;
     }
 
@@ -34,6 +39,7 @@ public class BindAutoCommand implements CommandExecutor {
      * @param cmd    The command which was executed
      * @param label  The alias of the command which was used
      * @param args   Passed command arguments
+     *
      * @return true if success, otherwise false
      */
     @Override
@@ -89,8 +95,9 @@ public class BindAutoCommand implements CommandExecutor {
             player.sendMessage(ChatColor.YELLOW + "Du benötigst Gegenstände in der Inventarleise um Fähigkeiten automatisch binden zu können.");
             return true;
         }
-        if (noItem)
+        if (noItem) {
             player.sendMessage(ChatColor.YELLOW + "Du hast nicht genug Gegenstände in der Inventarleise um alle Fähigkeiten zu binden.");
+        }
 
         player.sendMessage(ChatColor.DARK_GREEN + "Folgende Fähigkeiten konnten erfolgreich an Gegenstände gebunden werden:");
         StringBuilder stringBuilder = new StringBuilder();

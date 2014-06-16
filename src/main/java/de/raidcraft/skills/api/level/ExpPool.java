@@ -24,6 +24,11 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
     }
 
     @Override
+    public void setLevel(int level) {
+
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return 1;
@@ -44,11 +49,6 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
     public int getExpToNextLevel() {
 
         return 1;
-    }
-
-    @Override
-    public void setLevel(int level) {
-
     }
 
     @Override

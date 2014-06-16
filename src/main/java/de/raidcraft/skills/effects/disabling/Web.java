@@ -50,6 +50,37 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
         abortKnockback = data.getBoolean("abort-knockback", true);
     }
 
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        renew(target);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        for (Block block : blocks) {
+            block.setType(Material.AIR);
+        }
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        setWebBlock(target.getEntity().getLocation());
+    }
+
+    private void setWebBlock(Location location) {
+
+        Block web = location.getBlock();
+        while (web.getType() == Material.AIR) {
+            web = web.getRelative(BlockFace.DOWN);
+        }
+        web = web.getRelative(BlockFace.UP);
+        web.setType(Material.WEB);
+        blocks.add(web);
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST, filterTargets = false)
     public void onBlockDestroy(BlockBreakTrigger trigger) throws CombatException {
 
@@ -84,39 +115,8 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        renew(target);
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        for (Block block : blocks) {
-            block.setType(Material.AIR);
-        }
-    }
-
-    @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
         renew(target);
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        setWebBlock(target.getEntity().getLocation());
-    }
-
-    private void setWebBlock(Location location) {
-
-        Block web = location.getBlock();
-        while (web.getType() == Material.AIR) {
-            web = web.getRelative(BlockFace.DOWN);
-        }
-        web = web.getRelative(BlockFace.UP);
-        web.setType(Material.WEB);
-        blocks.add(web);
     }
 }

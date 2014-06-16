@@ -10,23 +10,23 @@ import de.raidcraft.skills.api.trigger.HandlerList;
  */
 public class EntityDeathTrigger extends BukkitEventTrigger<RCEntityDeathEvent> {
 
-    public EntityDeathTrigger(CharacterTemplate source, RCEntityDeathEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public EntityDeathTrigger(CharacterTemplate source, RCEntityDeathEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

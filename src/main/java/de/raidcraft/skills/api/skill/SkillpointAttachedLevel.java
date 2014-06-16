@@ -30,6 +30,12 @@ public class SkillpointAttachedLevel extends SkillAttachedLevel {
     }
 
     @Override
+    public int getExp() {
+
+        return 0;
+    }
+
+    @Override
     public void setExp(int exp) {
 
     }
@@ -38,11 +44,5 @@ public class SkillpointAttachedLevel extends SkillAttachedLevel {
     public int getMaxExp() {
 
         return 1;
-    }
-
-    @Override
-    public int getExp() {
-
-        return 0;
     }
 }

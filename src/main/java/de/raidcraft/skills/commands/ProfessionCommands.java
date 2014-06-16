@@ -122,7 +122,7 @@ public class ProfessionCommands {
                     sender.sendMessage(ChatColor.RED +
                             "Das wechseln deiner " + ChatColor.AQUA + profession.getPath().getFriendlyName() + ChatColor.RED +
                             " Spezialisierung zum " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + ChatColor.RED +
-                                    " kostet dich " + RaidCraft.getEconomy().getFormattedAmount(cost));
+                            " kostet dich " + RaidCraft.getEconomy().getFormattedAmount(cost));
                 }
                 new QueuedCommand(sender, this, "chooseProfession", hero, profession);
             }
@@ -131,6 +131,27 @@ public class ProfessionCommands {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             throw new CommandException(e.getMessage());
+        }
+    }
+
+    public void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
+
+        if (!profession.isMeetingAllRequirements(hero)) {
+            return;
+        }
+
+        double cost = 0.0;
+        if (profession.getAttachedLevel().getLevel() > 1) {
+            cost = ProfessionUtil.getProfessionChangeCost(profession);
+        }
+        hero.changeProfession(profession);
+        hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
+                ChatColor.YELLOW + " Spezialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
+
+        if (RaidCraft.getEconomy() != null && cost > 0.0) {
+            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
+                    + ChatColor.RED + " vom Konto abgezogen.");
+            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
         }
     }
 
@@ -158,26 +179,5 @@ public class ProfessionCommands {
 
         Collection<String> strings = ProfessionUtil.renderProfessionInformation(profession);
         sender.sendMessage(strings.toArray(new String[strings.size()]));
-    }
-
-    public void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
-
-        if (!profession.isMeetingAllRequirements(hero)) {
-            return;
-        }
-
-        double cost = 0.0;
-        if (profession.getAttachedLevel().getLevel() > 1) {
-            cost = ProfessionUtil.getProfessionChangeCost(profession);
-        }
-        hero.changeProfession(profession);
-        hero.sendMessage(ChatColor.YELLOW + "Du hast deine " + ChatColor.AQUA + profession.getPath().getFriendlyName() +
-                ChatColor.YELLOW + " Spezialisierung erfolgreich zu " + ChatColor.AQUA + profession.getProperties().getFriendlyName() + " gewechselt.");
-
-        if (RaidCraft.getEconomy() != null && cost > 0.0) {
-            hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
-                    + ChatColor.RED + " vom Konto abgezogen.");
-            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
-        }
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.event.HandlerList;
  */
 public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private final S source;
     private final int oldLevel;
     private final int newLevel;
@@ -21,6 +22,11 @@ public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cance
         this.source = source;
         this.oldLevel = oldLevel;
         this.newLevel = newLevel;
+    }
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
     }
 
     public S getSource() {
@@ -43,6 +49,10 @@ public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cance
         return newLevel;
     }
 
+        /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
+
     @Override
     public boolean isCancelled() {
 
@@ -55,18 +65,7 @@ public class RCLevelEvent<S extends Levelable<S>> extends Event implements Cance
         this.cancelled = cancelled;
     }
 
-        /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

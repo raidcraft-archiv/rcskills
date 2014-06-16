@@ -52,30 +52,15 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public LevelFormula getLevelFormula() {
-
-        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
-                LevelConfig.Type.SKILLS, getOverrideString("formula", "default"));
-        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
-        return formulaType.create(config);
-    }
-
-    @Override
-    public SkillInformation getInformation() {
-
-        return information;
-    }
-
-    @Override
     public String getFriendlyName() {
 
         return getOverride("name", getName());
+    }
+
+    @Override
+    public String getName() {
+
+        return name;
     }
 
     @Override
@@ -98,22 +83,16 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public boolean isLevelable() {
-
-        return getOverrideBool("levelable", true);
-    }
-
-    @Override
-    public boolean isCastable() {
-
-        return getOverrideBool("castable", true);
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
 
         set("enabled", enabled);
         save();
+    }
+
+    @Override
+    public boolean isLevelable() {
+
+        return getOverrideBool("levelable", true);
     }
 
     @Override
@@ -154,6 +133,84 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public Set<EffectType> getTypes() {
+
+        HashSet<EffectType> types = new HashSet<>();
+        for (String str : getStringList("types")) {
+            EffectType type = EffectType.fromString(str);
+            if (type == null) {
+                getPlugin().getLogger().warning("Wrong effect type " + str + " defined in config " + getName());
+                continue;
+            }
+            types.add(type);
+        }
+        return types;
+    }
+
+    @Override
+    public Set<EffectElement> getElements() {
+
+        HashSet<EffectElement> elements = new HashSet<>();
+        for (String str : getStringList("elements")) {
+            EffectElement element = EffectElement.fromString(str);
+            if (element == null) {
+                getPlugin().getLogger().warning("Wrong effect element " + str + " defined in config " + getName());
+                continue;
+            }
+            elements.add(element);
+        }
+        return elements;
+    }
+
+    @Override
+    public ConfigurationSection getData() {
+
+        return getOverrideSection("custom");
+    }
+
+    @Override
+    public SkillInformation getInformation() {
+
+        return information;
+    }
+
+    @Override
+    public ConfigurationSection getDamage() {
+
+        return getOverrideSection("damage");
+    }
+
+    @Override
+    public ConfigurationSection getCastTime() {
+
+        return getOverrideSection("casttime");
+    }
+
+    @Override
+    public ConfigurationSection getRange() {
+
+        return getOverrideSection("range");
+    }
+
+    @Override
+    public ConfigurationSection getCooldown() {
+
+        return getOverrideSection("cooldown");
+    }
+
+    @Override
+    public List<Requirement<Hero>> loadRequirements(Skill skill) {
+
+        return RequirementManager.createRequirements(skill, getOverrideSection("requirements"));
+    }
+
+    @Override
+    public List<Requirement<Hero>> loadUseRequirements(Skill skill) {
+
+        return RequirementManager.createRequirements(skill, getOverrideSection("use-requirements"));
+    }
+
+    @Override
     public ItemStack[] getReagents() {
 
         ConfigurationSection section = getOverrideSection("reagents");
@@ -189,63 +246,24 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public Set<EffectType> getTypes() {
-
-        HashSet<EffectType> types = new HashSet<>();
-        for (String str : getStringList("types")) {
-            EffectType type = EffectType.fromString(str);
-            if (type == null) {
-                getPlugin().getLogger().warning("Wrong effect type " + str + " defined in config " + getName());
-                continue;
-            }
-            types.add(type);
-        }
-        return types;
-    }
-
-    @Override
-    public Set<EffectElement> getElements() {
-
-        HashSet<EffectElement> elements = new HashSet<>();
-        for (String str : getStringList("elements")) {
-            EffectElement element = EffectElement.fromString(str);
-            if (element == null) {
-                getPlugin().getLogger().warning("Wrong effect element " + str + " defined in config " + getName());
-                continue;
-            }
-            elements.add(element);
-        }
-        return elements;
-    }
-
-    @Override
     public boolean isHidden() {
 
         return getOverride("hidden", false);
     }
 
     @Override
-    public List<Requirement<Hero>> loadRequirements(Skill skill) {
+    public boolean isCastable() {
 
-        return RequirementManager.createRequirements(skill, getOverrideSection("requirements"));
+        return getOverrideBool("castable", true);
     }
 
     @Override
-    public List<Requirement<Hero>> loadUseRequirements(Skill skill) {
+    public LevelFormula getLevelFormula() {
 
-        return RequirementManager.createRequirements(skill, getOverrideSection("use-requirements"));
-    }
-
-    @Override
-    public ConfigurationSection getData() {
-
-        return getOverrideSection("custom");
-    }
-
-    @Override
-    public int getRequiredLevel() {
-
-        return getOverride("level", 1);
+        ConfigurationSection config = getPlugin().getLevelConfig().getConfigFor(
+                LevelConfig.Type.SKILLS, getOverrideString("formula", "default"));
+        FormulaType formulaType = FormulaType.fromName(config.getString("type", "static"));
+        return formulaType.create(config);
     }
 
     @Override
@@ -255,33 +273,15 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public ConfigurationSection getDamage() {
-
-        return getOverrideSection("damage");
-    }
-
-    @Override
-    public ConfigurationSection getCastTime() {
-
-        return getOverrideSection("casttime");
-    }
-
-    @Override
     public ConfigurationSection getResourceCost(String resource) {
 
         return getOverrideSection("resources." + resource);
     }
 
     @Override
-    public ConfigurationSection getCooldown() {
+    public int getRequiredLevel() {
 
-        return getOverrideSection("cooldown");
-    }
-
-    @Override
-    public ConfigurationSection getRange() {
-
-        return getOverrideSection("range");
+        return getOverride("level", 1);
     }
 
     @Override

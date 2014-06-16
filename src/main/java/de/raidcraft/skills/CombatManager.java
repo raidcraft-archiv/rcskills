@@ -49,13 +49,24 @@ import java.util.Set;
 public final class CombatManager implements Listener, Triggered {
 
     public static final Set<EntityDamageByEntityEvent> FAKED_EVENTS = new HashSet<>();
+    private final SkillsPlugin plugin;
+    private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
+    private final Map<Integer, SourcedRangeCallback> rangedAttacks = new HashMap<>();
+
+    protected CombatManager(SkillsPlugin plugin) {
+
+        this.plugin = plugin;
+        plugin.registerEvents(this);
+        TriggerManager.registerListeners(this);
+    }
 
     public static EntityDamageByEntityEvent fakeDamageEvent(Attack<CharacterTemplate, CharacterTemplate> action) {
 
         return fakeDamageEvent(action.getSource(), action);
     }
 
-    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack <?, CharacterTemplate> action) {
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack<?, CharacterTemplate> action) {
 
         if (action.isOfAttackType(EffectType.MAGICAL)) {
             return fakeDamageEvent(attacker, action, EntityDamageEvent.DamageCause.MAGIC);
@@ -64,7 +75,7 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
-    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack <?, CharacterTemplate> action, EntityDamageByEntityEvent.DamageCause cause) {
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, Attack<?, CharacterTemplate> action, EntityDamageByEntityEvent.DamageCause cause) {
 
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
                 attacker.getEntity(),
@@ -76,34 +87,6 @@ public final class CombatManager implements Listener, Triggered {
         RaidCraft.callEvent(event);
         FAKED_EVENTS.remove(event);
         return event;
-    }
-
-    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, CharacterTemplate victim) {
-
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-                attacker.getEntity(),
-                victim.getEntity(),
-                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-                1
-        );
-        // we need to check for our own faked events to avoid loops
-        FAKED_EVENTS.add(event);
-        RaidCraft.callEvent(event);
-        FAKED_EVENTS.remove(event);
-        return event;
-    }
-
-    private final SkillsPlugin plugin;
-    private final Map<Integer, SourcedRangeCallback<RangedCallback>> entityHitCallbacks = new HashMap<>();
-    private final Map<Integer, SourcedRangeCallback<LocationCallback>> locationCallbacks = new HashMap<>();
-
-    private final Map<Integer, SourcedRangeCallback> rangedAttacks = new HashMap<>();
-
-    protected CombatManager(SkillsPlugin plugin) {
-
-        this.plugin = plugin;
-        plugin.registerEvents(this);
-        TriggerManager.registerListeners(this);
     }
 
     public void queueRangedAttack(final SourcedRangeCallback rangedAttack) {
@@ -159,6 +142,12 @@ public final class CombatManager implements Listener, Triggered {
         }
     }
 
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        checkPvPAttack(trigger.getSource(), trigger.getAttack().getTarget());
+    }
+
     public void checkPvPAttack(CharacterTemplate attackerChar, CharacterTemplate victimChar) throws CombatException {
 
         if (!(attackerChar instanceof Hero) || !(victimChar instanceof Hero)) {
@@ -182,12 +171,6 @@ public final class CombatManager implements Listener, Triggered {
     /*//////////////////////////////////////////////////////////////////////////////
     //      Hooked Bukkit events for handling all the combat stuff
     //////////////////////////////////////////////////////////////////////////////*/
-
-    @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
-    public void onAttack(AttackTrigger trigger) throws CombatException {
-
-        checkPvPAttack(trigger.getSource(), trigger.getAttack().getTarget());
-    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onTarget(EntityTargetLivingEntityEvent event) {
@@ -441,5 +424,20 @@ public final class CombatManager implements Listener, Triggered {
                 event.setCancelled(true);
             }
         }
+    }
+
+    public static EntityDamageByEntityEvent fakeDamageEvent(CharacterTemplate attacker, CharacterTemplate victim) {
+
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
+                attacker.getEntity(),
+                victim.getEntity(),
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+                1
+        );
+        // we need to check for our own faked events to avoid loops
+        FAKED_EVENTS.add(event);
+        RaidCraft.callEvent(event);
+        FAKED_EVENTS.remove(event);
+        return event;
     }
 }

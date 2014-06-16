@@ -19,11 +19,6 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
         this.effect = effect;
     }
 
-    public Effect getEffect() {
-
-        return effect;
-    }
-
     @Override
     public OfflinePlayer getScoreName() {
 
@@ -38,5 +33,10 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
             name = name.substring(0, 15);
         }
         return Bukkit.getOfflinePlayer(name);
+    }
+
+    public Effect getEffect() {
+
+        return effect;
     }
 }

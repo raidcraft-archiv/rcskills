@@ -22,16 +22,14 @@ public abstract class RefreshingDisplay implements Runnable {
         task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), this, 1, 20);
     }
 
-    public abstract OfflinePlayer getScoreName();
+    public int getRemainingDuration() {
+
+        return remainingDuration;
+    }
 
     public void setRemainingDuration(int remainingDuration) {
 
         this.remainingDuration = remainingDuration;
-    }
-
-    public int getRemainingDuration() {
-
-        return remainingDuration;
     }
 
     @Override
@@ -57,4 +55,6 @@ public abstract class RefreshingDisplay implements Runnable {
         task.cancel();
         userInterface.removeSidebarScore(getScoreName());
     }
+
+    public abstract OfflinePlayer getScoreName();
 }

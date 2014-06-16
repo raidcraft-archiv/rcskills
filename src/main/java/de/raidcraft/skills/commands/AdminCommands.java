@@ -336,7 +336,7 @@ public class AdminCommands {
                         hero.getName() + "'s " + ChatColor.GREEN + "EXP Pool "
                         + ChatColor.AQUA + exp + "xp" + ChatColor.GREEN + " hinzugefügt.");
                 hero.sendMessage(ChatColor.GREEN + "Ein Admin hat deinem EXP Pool " + ChatColor.AQUA +
-                        + exp + "exp" + ChatColor.GREEN + " hinzugefügt.");
+                        +exp + "exp" + ChatColor.GREEN + " hinzugefügt.");
             }
         } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
@@ -392,7 +392,7 @@ public class AdminCommands {
                         hero.getName() + "'s " + ChatColor.RED + "EXP Pool "
                         + ChatColor.AQUA + exp + "xp" + ChatColor.RED + " entfernt.");
                 hero.sendMessage(ChatColor.RED + "Ein Admin hat deinem EXP Pool " + ChatColor.AQUA +
-                        + exp + "exp" + ChatColor.RED + " entfernt.");
+                        +exp + "exp" + ChatColor.RED + " entfernt.");
             }
         } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
@@ -573,6 +573,21 @@ public class AdminCommands {
         }
     }
 
+    private void purgeHero(CommandSender sender, Hero hero) {
+
+        // kick the player if he is online
+        // kicking will clear the cache of that player
+        if (hero.getPlayer() != null) {
+            hero.getPlayer().kickPlayer("Dein RPG Profil wird zurück gesetzt bitte warte kurz.");
+        }
+        plugin.getCharacterManager().clearCacheOf(hero);
+        // this will delete all references to the object
+        THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId());
+        if (tHero != null) RaidCraft.getDatabase(SkillsPlugin.class).delete(tHero);
+        // remove the player from cache
+        sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
+    }
+
     @Command(
             aliases = "kick",
             desc = "Kicks the player and clears his cache",
@@ -595,20 +610,5 @@ public class AdminCommands {
         } catch (UnknownPlayerException e) {
             throw new CommandException(e.getMessage());
         }
-    }
-
-    private void purgeHero(CommandSender sender, Hero hero) {
-
-        // kick the player if he is online
-        // kicking will clear the cache of that player
-        if (hero.getPlayer() != null) {
-            hero.getPlayer().kickPlayer("Dein RPG Profil wird zurück gesetzt bitte warte kurz.");
-        }
-        plugin.getCharacterManager().clearCacheOf(hero);
-        // this will delete all references to the object
-        THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId());
-        if (tHero != null) RaidCraft.getDatabase(SkillsPlugin.class).delete(tHero);
-        // remove the player from cache
-        sender.sendMessage(ChatColor.GREEN + "Alle Daten von " + hero.getName() + " wurden erfolgreich gelöscht.");
     }
 }

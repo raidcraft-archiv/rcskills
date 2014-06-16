@@ -22,9 +22,9 @@ import java.util.Set;
  */
 public class SimpleParty implements Party {
 
-    private CharacterTemplate owner;
     private final Set<CharacterTemplate> members = new HashSet<>();
     private final Map<Hero, BukkitTask> invitedMembers = new HashMap<>();
+    private CharacterTemplate owner;
 
     public SimpleParty(CharacterTemplate owner) {
 
@@ -39,16 +39,16 @@ public class SimpleParty implements Party {
     }
 
     @Override
-    public boolean isOwner(CharacterTemplate character) {
-
-        return character.equals(getOwner());
-    }
-
-    @Override
     public void setOwner(CharacterTemplate owner) {
 
         this.owner = owner;
         addMember(owner);
+    }
+
+    @Override
+    public boolean isOwner(CharacterTemplate character) {
+
+        return character.equals(getOwner());
     }
 
     @Override
@@ -99,7 +99,8 @@ public class SimpleParty implements Party {
 
         member.sendMessage(ChatColor.YELLOW + getOwner().getName() + " hat dich in eine Gruppe eingeladen.",
                 ChatColor.YELLOW + "Gebe " + ChatColor.GREEN + "/party accept" + ChatColor.YELLOW + " ein um die Einladung anzunehmen." +
-                        " Gebe " + ChatColor.DARK_RED +"/party deny" + ChatColor.YELLOW + " ein um abzulehnen.");
+                        " Gebe " + ChatColor.DARK_RED + "/party deny" + ChatColor.YELLOW + " ein um abzulehnen."
+        );
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
         BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
