@@ -78,7 +78,7 @@ public class BindCommand {
             }
             if (hero.getBindings().add(material, skill, args.argsLength() > 1 ? args.getString(1) : null)) {
 
-                player.sendMessage(ChatColor.DARK_GREEN + "Die Fähigkeit wurde erfolgreich an den Gegenstand gebunden.");
+                player.sendMessage(ChatColor.DARK_GREEN + "Die Fähigkeit " + skill.getFriendlyName() + " wurde erfolgreich an den Gegenstand gebunden.");
                 return;
             } else {
 

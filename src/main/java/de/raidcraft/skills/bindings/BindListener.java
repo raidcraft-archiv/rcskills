@@ -4,6 +4,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
+import lombok.NonNull;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,7 +46,7 @@ public class BindListener implements Listener {
                 switchBoundSkill(hero, material, !player.isSneaking());
             } else {
 
-                use(hero, hero.getBindings().getSkillAction(material));
+                use(hero, hero.getBindings().getBindingWrapper(material));
             }
 
             event.setCancelled(true);
@@ -53,7 +54,7 @@ public class BindListener implements Listener {
 
             if (Material.BOW.equals(material)) {
 
-                use(hero, hero.getBindings().getSkillAction(material));
+                use(hero, hero.getBindings().getBindingWrapper(material));
                 event.setCancelled(event.getAction() == Action.RIGHT_CLICK_BLOCK);
             } else {
 
@@ -65,23 +66,19 @@ public class BindListener implements Listener {
 
     private void switchBoundSkill(Hero hero, Material material, boolean forward) {
 
-        SkillAction newSkillAction = hero.getBindings().switchSkill(material, forward);
+        BindingWrapper bindingWrapper = hero.getBindings().switchSkill(material, forward);
 
-        if (newSkillAction != null) {
-            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + newSkillAction.getSkill().getFriendlyName());
+        if (bindingWrapper != null) {
+            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + bindingWrapper.getSkill().getFriendlyName());
         }
 
     }
 
-    private void use(Hero hero, SkillAction skillAction) {
-
-        if (skillAction == null) {
-            return;
-        }
+    private void use(Hero hero, @NonNull BindingWrapper bindingWrapper) {
 
         try {
 
-            skillAction.run();
+            new SkillAction(bindingWrapper.getSkill(), bindingWrapper.getCommandContext()).run();
 
         } catch (CombatException e) {
 

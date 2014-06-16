@@ -27,7 +27,7 @@ public class BindingManager {
 
     private final Hero hero;
     private Map<Material, Integer> iterators = new HashMap<>(5);
-    private Map<Material, ArrayList<SkillAction>> bindings = new HashMap<>(5);
+    private Map<Material, ArrayList<BindingWrapper>> bindings = new HashMap<>(5);
 
     public BindingManager(Hero hero) {
 
@@ -80,7 +80,7 @@ public class BindingManager {
 
         try {
 
-            addToList(material, new SkillAction(skill, new CommandContext(arg)));
+            addToList(material, new BindingWrapper(skill, new CommandContext(arg)));
         } catch (CommandException e) {
 
             // no operation
@@ -89,20 +89,20 @@ public class BindingManager {
         return true;
     }
 
-    private void addToList(Material material, SkillAction skillAction) {
+    private void addToList(Material material, BindingWrapper bindingWrapper) {
 
-        ArrayList<SkillAction> skillActionList;
+        ArrayList<BindingWrapper> bindingWrapperArrayList;
 
         if (bindings.containsKey(material)) {
 
-            skillActionList = bindings.get(material);
-            skillActionList.add(skillAction);
+            bindingWrapperArrayList = bindings.get(material);
+            bindingWrapperArrayList.add(bindingWrapper);
         } else {
 
-            skillActionList = new ArrayList<>();
-            skillActionList.add(skillAction);
+            bindingWrapperArrayList = new ArrayList<>();
+            bindingWrapperArrayList.add(bindingWrapper);
             iterators.put(material, 0);
-            bindings.put(material, skillActionList);
+            bindings.put(material, bindingWrapperArrayList);
         }
     }
 
@@ -183,7 +183,7 @@ public class BindingManager {
                 Skill skill = hero.getSkill(result.getSkill());
                 Material material = Material.getMaterial(result.getItem());
 
-                addToList(material, new SkillAction(skill, new CommandContext(result.getArgs())));
+                addToList(material, new BindingWrapper(skill, new CommandContext(result.getArgs())));
 
             } catch (UnknownSkillException | NullPointerException e) {
                 RaidCraft.getDatabase(SkillsPlugin.class).delete(result);
@@ -222,13 +222,13 @@ public class BindingManager {
     }
 
     /**
-     * Returns the bound skill action which the specified item is mapped, or null if there is no mapping for the item.
+     * Returns the bound wrapper which the specified item is mapped, or null if there is no mapping for the item.
      *
      * @param material The item material whose associated skill action is to be returned
      *
-     * @return The skill action to which the specified item material is mapped, or null if there is no mapping for the item material
+     * @return The wrapper to which the specified item material is mapped, or null if there is no mapping for the item material
      */
-    public SkillAction getSkillAction(Material material) {
+    public BindingWrapper getBindingWrapper(Material material) {
 
         if (!bindings.containsKey(material) || !iterators.containsKey(material)) {
             return null;
@@ -243,9 +243,9 @@ public class BindingManager {
      * @param material The item material
      * @param forward  true to move forward, false to move backwards
      *
-     * @return the current selected action skill, otherwise null
+     * @return the current selected wrapper, otherwise null
      */
-    public SkillAction switchSkill(Material material, boolean forward) {
+    public BindingWrapper switchSkill(Material material, boolean forward) {
 
         if (bindings.containsKey(material) && bindings.get(material).size() > 1 && iterators.containsKey(material)) {
 
