@@ -1,5 +1,9 @@
 package de.raidcraft.skills.commands;
 
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
@@ -8,40 +12,46 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Auto bind all skills to items.
  */
-public class BindAutoCommand implements CommandExecutor {
+public class BindAutoCommand {
 
     private final SkillsPlugin plugin;
 
     public BindAutoCommand(SkillsPlugin plugin) {
+
         this.plugin = plugin;
     }
 
     /**
      * Executes the command to auto bind all skills to items.
      *
-     * @param sender The source of the command
-     * @param cmd    The command which was executed
-     * @param label  The alias of the command which was used
      * @param args   Passed command arguments
+     * @param sender The source of the command
+     *
      * @return true if success, otherwise false
      */
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    @Command(
+            aliases = "autobind",
+            desc = "Bindet alle verfügbaren Fähigkeiten an freie Gegenstände."
+    )
+    @CommandPermissions("rcskills.player.autobind")
+    public void onCommand(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Nur Spieler können dieses Befehl nutzen.");
-            return true;
+            sender.sendMessage("Nur Spieler können diesen Befehl nutzen.");
+            return;
         }
 
         Player player = (Player) sender;
@@ -81,16 +91,16 @@ public class BindAutoCommand implements CommandExecutor {
 
         if (assignments.size() == 0 && !noItem) {
 
-            player.sendMessage(ChatColor.YELLOW + "Du verfügst über keine Fähigkeiten die gebunden werden können.");
-            return true;
+            throw new CommandException(ChatColor.YELLOW + "Du verfügst über keine Fähigkeiten die gebunden werden können.");
         }
         if (usedItems < 1) {
 
-            player.sendMessage(ChatColor.YELLOW + "Du benötigst Gegenstände in der Inventarleise um Fähigkeiten automatisch binden zu können.");
-            return true;
+            throw new CommandException(ChatColor.YELLOW + "Du benötigst Gegenstände in der Inventarleise um Fähigkeiten automatisch binden zu können.");
         }
-        if (noItem)
+        if (noItem) {
+
             player.sendMessage(ChatColor.YELLOW + "Du hast nicht genug Gegenstände in der Inventarleise um alle Fähigkeiten zu binden.");
+        }
 
         player.sendMessage(ChatColor.DARK_GREEN + "Folgende Fähigkeiten konnten erfolgreich an Gegenstände gebunden werden:");
         StringBuilder stringBuilder = new StringBuilder();
@@ -105,7 +115,6 @@ public class BindAutoCommand implements CommandExecutor {
             stringBuilder.append(": ");
 
             Skill lastSkill = entry.getValue().get(entry.getValue().size() - 1);
-            colorToggle = !colorToggle;
             for (Skill skill : entry.getValue()) {
 
                 hero.getBindings().add(entry.getKey(), skill, null);
@@ -122,7 +131,7 @@ public class BindAutoCommand implements CommandExecutor {
 
         player.sendMessage(stringBuilder.toString());
 
-        return true;
+        return;
     }
 
     private boolean bindSkill(int slot, Skill skill, Map<Material, List<Skill>> boundSkills) {

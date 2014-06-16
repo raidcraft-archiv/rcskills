@@ -106,9 +106,9 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(SkillsCommand.class);
         registerCommands(CastCommand.class);
         registerCommands(BaseCommands.class);
+        registerCommands(BindCommand.class);
+        registerCommands(BindAutoCommand.class);
 
-        getCommand("bind").setExecutor(new BindCommand(this));
-        getCommand("autobind").setExecutor(new BindAutoCommand(this));
         getServer().getPluginManager().registerEvents(new BindListener(this), this);
 
         // register the tab stuff

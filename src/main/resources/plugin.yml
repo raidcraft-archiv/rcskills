@@ -59,15 +59,3 @@ permissions:
       rcskills.admin.purge: true
       rcskills.admin.skill.add: true
       rcskills.admin.skill.remove: true
-commands:
-  bind:
-    aliases: unbind
-    description: Bindet eine Fähigkeit an ein Gegenstand.
-    usage: §e/<command> §9<skill>
-    permission: rcskills.player.bind
-    permission-message: Du besitzt nicht die nötigen Rechte um diesen Befehl auszuführen.
-  autobind:
-    description: Bindet alle verfügbaren Fähigkeiten an freie Gegenstände.
-    usage: §e/<command>
-    permission: rcskills.player.autobind
-    permission-message: Du besitzt nicht die nötigen Rechte um diesen Befehl auszuführen.
