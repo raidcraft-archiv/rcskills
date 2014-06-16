@@ -21,6 +21,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     private T callback;
     private Projectile projectile;
     private Vector velocity;
+    private Location spawnLocation;
     private float force = 1.0F;
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, double damage) {
@@ -114,11 +115,21 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         return super.getDamage() * getForce();
     }
 
+    public Location getSpawnLocation() {
+
+        return spawnLocation;
+    }
+
+    public void setSpawnLocation(Location spawnLocation) {
+
+        this.spawnLocation = spawnLocation;
+    }
+
     @Override
     public void run() throws CombatException {
 
         if (projectile == null) {
-            projectile = projectileType.spawn(getSource());
+            projectile = (getSpawnLocation() != null ? projectileType.spawn(getSpawnLocation(), getSource()) : projectileType.spawn(getSource()));
             projectile.setBounce(false);
             projectile.setFireTicks(0);
             if (projectile instanceof Explosive) {

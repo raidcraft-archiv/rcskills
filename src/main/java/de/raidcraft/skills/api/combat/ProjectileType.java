@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
@@ -48,6 +49,13 @@ public enum ProjectileType {
 
         Projectile projectile = character.getEntity().launchProjectile(getClazz());
         projectile.setShooter(character.getEntity());
+        return projectile;
+    }
+
+    public Projectile spawn(Location location, CharacterTemplate source) {
+
+        Projectile projectile = location.getWorld().spawn(location, getClazz());
+        projectile.setShooter(source.getEntity());
         return projectile;
     }
 
