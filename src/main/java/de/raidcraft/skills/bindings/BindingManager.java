@@ -5,7 +5,6 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -214,11 +213,23 @@ public class BindingManager {
     /**
      * Returns true if the list contains no bindings.
      *
-     * @return true if the binding list contains no elements, else false
+     * @return true if the binding list contains no elements, otherwise false
      */
     public boolean isEmpty() {
 
         return bindings.isEmpty();
+    }
+
+    /**
+     * Returns true if bindings know about the specified material.
+     *
+     * @param material The item material
+     *
+     * @return true if bindings contains the specified material, otherwise false
+     */
+    public boolean containsMaterial(Material material) {
+
+        return !bindings.isEmpty() && bindings.containsKey(material);
     }
 
     /**

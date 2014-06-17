@@ -34,10 +34,9 @@ public class BindListener implements Listener {
         Hero hero = plugin.getCharacterManager().getHero(player);
         Material material = player.getItemInHand().getType();
 
-        if (hero.getBindings().isEmpty() || material == null || material.isBlock()) {
+        if (hero.getBindings().isEmpty() || material == null || !hero.getBindings().containsMaterial(material) || material.isBlock()) {
             return;
         }
-
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 
