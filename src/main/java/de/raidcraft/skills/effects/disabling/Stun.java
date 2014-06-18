@@ -45,14 +45,6 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        removeOnDamage = data.getBoolean("remove-on-damage", false);
-        cancelAttacks = data.getBoolean("cancel-attacks", true);
-        cancelSkills = data.getBoolean("cancel-skills", true);
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // lets set the original location of the target
@@ -61,11 +53,11 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
-        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
-        this.location = null;
+        removeOnDamage = data.getBoolean("remove-on-damage", false);
+        cancelAttacks = data.getBoolean("cancel-attacks", true);
+        cancelSkills = data.getBoolean("cancel-skills", true);
     }
 
     @Override
@@ -73,6 +65,14 @@ public class Stun<S> extends PeriodicExpirableEffect<S> implements Triggered {
 
         target.getEntity().addPotionEffect(jumpBlock);
         target.getEntity().addPotionEffect(moveBlock);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
+        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
+        this.location = null;
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)

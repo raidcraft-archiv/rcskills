@@ -71,15 +71,15 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!attacked) {
             info("Du senkst deine Waffe.");
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

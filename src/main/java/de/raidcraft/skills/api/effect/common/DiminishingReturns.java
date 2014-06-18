@@ -33,6 +33,11 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         if (!reduction.isEmpty()) {
@@ -57,17 +62,12 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 

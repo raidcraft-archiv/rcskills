@@ -104,6 +104,12 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
+    public boolean isMastered() {
+
+        return getAttachedLevel().hasReachedMaxLevel();
+    }
+
+    @Override
     public String getFriendlyName() {
 
         return getProperties().getFriendlyName();
@@ -132,12 +138,6 @@ public abstract class AbstractProfession implements Profession {
                 getHero().detachResource(resource.getName());
             }
         }
-    }
-
-    @Override
-    public boolean isMastered() {
-
-        return getAttachedLevel().hasReachedMaxLevel();
     }
 
     @Override

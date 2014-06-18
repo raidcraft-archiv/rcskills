@@ -29,13 +29,6 @@ public class KnockBack extends AbstractEffect<Location> {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        this.interrupt = data.getBoolean("interrupt", false);
-        this.power = data.getDouble("power", 0.4);
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         Vector directionVector = getSource().getDirection().normalize();
@@ -48,12 +41,19 @@ public class KnockBack extends AbstractEffect<Location> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-        // not much to do here
+    public void load(ConfigurationSection data) {
+
+        this.interrupt = data.getBoolean("interrupt", false);
+        this.power = data.getDouble("power", 0.4);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+        // not much to do here
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
         // not much to do here
     }
 }

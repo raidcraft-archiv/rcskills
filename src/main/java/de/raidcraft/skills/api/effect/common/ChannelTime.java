@@ -60,6 +60,12 @@ public class ChannelTime extends PeriodicExpirableEffect<SkillAction> {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        // nothing we need to do here
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (isPlayer) {
@@ -71,12 +77,6 @@ public class ChannelTime extends PeriodicExpirableEffect<SkillAction> {
         } else {
             getSource().run();
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        // nothing we need to do here
     }
 
     private void nullExp() {

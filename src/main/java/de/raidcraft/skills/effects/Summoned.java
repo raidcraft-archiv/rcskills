@@ -69,14 +69,14 @@ public class Summoned extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.getEntity().setCustomNameVisible(false);
         target.kill();
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

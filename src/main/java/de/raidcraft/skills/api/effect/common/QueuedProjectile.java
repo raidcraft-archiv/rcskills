@@ -77,15 +77,15 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!attacked) {
             info("Du senkst deine Fernkampf Waffe.");
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

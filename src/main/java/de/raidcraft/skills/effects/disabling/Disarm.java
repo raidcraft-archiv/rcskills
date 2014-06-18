@@ -67,13 +67,13 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
-        warn("Du bist nicht mehr entwaffnet und kannst wieder angreifen.");
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
+        warn("Du bist nicht mehr entwaffnet und kannst wieder angreifen.");
     }
 }

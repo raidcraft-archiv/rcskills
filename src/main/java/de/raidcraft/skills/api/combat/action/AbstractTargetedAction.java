@@ -19,16 +19,17 @@ public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> imp
     public boolean isCancelled() {
 
         return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+
+        this.cancelled = cancelled;
     }    @Override
     public T getTarget() {
 
         return target;
     }
 
-    public void setCancelled(boolean cancelled) {
-
-        this.cancelled = cancelled;
-    }
 
 
 

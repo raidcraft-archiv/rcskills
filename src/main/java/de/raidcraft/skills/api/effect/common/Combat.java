@@ -55,6 +55,13 @@ public class Combat<S> extends ExpirableEffect<S> {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) {
+
+        // silently set in combat again
+        target.setInCombat(true);
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.setInCombat(false);
@@ -68,13 +75,6 @@ public class Combat<S> extends ExpirableEffect<S> {
             // TODO: unset aggro range
         }
         info("Du hast den Kampf verlassen.");
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) {
-
-        // silently set in combat again
-        target.setInCombat(true);
     }
 
     public void addInvolvedCharacter(CharacterTemplate character) {

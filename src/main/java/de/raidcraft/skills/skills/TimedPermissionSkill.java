@@ -28,14 +28,14 @@ public class TimedPermissionSkill extends ExpirableEffect<PermissionSkill> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        getSource().remove();
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
 
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        getSource().remove();
     }
 }

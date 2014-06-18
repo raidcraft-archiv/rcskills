@@ -44,14 +44,14 @@ public class Poison extends PeriodicExpirableEffect<Ability> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.POISON);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(potionEffect, true);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.POISON);
     }
 }

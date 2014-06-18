@@ -28,12 +28,12 @@ public class Tagged extends ExpirableEffect<CharacterTemplate> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
         //TODO: implement
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
         //TODO: implement
     }
 }

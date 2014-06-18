@@ -35,6 +35,12 @@ public class Blind<S> extends ExpirableEffect<S> {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) getDuration(), 1));
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         for (PotionEffect potionEffect : target.getEntity().getActivePotionEffects()) {
@@ -42,11 +48,5 @@ public class Blind<S> extends ExpirableEffect<S> {
                 target.getEntity().removePotionEffect(PotionEffectType.BLINDNESS);
             }
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) getDuration(), 1));
     }
 }
