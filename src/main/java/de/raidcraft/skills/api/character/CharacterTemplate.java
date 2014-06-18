@@ -133,11 +133,17 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public <E> void removeEffect(Class<E> eClass) throws CombatException;
 
+    public <E> void removeEffect(Class<E> eClass, Object source) throws CombatException;
+
     public void removeEffect(Effect effect) throws CombatException;
 
     public <E extends Effect> boolean hasEffect(Class<E> eClass);
 
-    public <E extends Effect> E getEffect(Class<E> eClass);
+    public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source);
+
+    public <E extends Effect> List<E> getEffects(Class<E> eClass);
+
+    public <E extends Effect> E getEffect(Class<E> eClass, Object source);
 
     public boolean hasEffectType(EffectType type);
 

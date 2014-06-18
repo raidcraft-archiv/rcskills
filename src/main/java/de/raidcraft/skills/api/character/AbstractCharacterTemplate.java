@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
@@ -56,6 +57,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -63,14 +65,13 @@ import java.util.Set;
 public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final ThreatTable threatTable;
-    private final Map<Class<? extends Effect>, Effect> effects = new HashMap<>();
+    private final Map<Class<? extends Effect>, Map<Object, Effect>> effects = new HashMap<>();
     private final Map<EquipmentSlot, CustomWeapon> weapons = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, CustomArmor> armorPieces = new EnumMap<>(EquipmentSlot.class);
     private final Set<HealthDisplay> healthDisplays = new HashSet<>();
-    protected int maxLevel;
-    protected boolean usingHealthBar = true;
     private String name;
+    protected int maxLevel;
     // every player is member of his own party by default
     private Party party;
     private LivingEntity entity;
@@ -79,6 +80,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
+    protected boolean usingHealthBar = true;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -96,79 +98,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             this.name = "UNKNOWN";
         }
         this.party = new SimpleParty(this);
-    }
-
-    protected float getSoundStrength(LivingEntity target) {
-
-        if (!(target instanceof Ageable)) {
-            return 1.0F;
-        }
-        if (((Ageable) target).isAdult()) {
-            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.0F;
-        } else {
-            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.5F;
-        }
-    }
-
-    protected Sound getDeathSound(EntityType type) {
-
-        switch (type) {
-
-            case COW:
-                return Sound.COW_IDLE;
-            case BLAZE:
-                return Sound.BLAZE_DEATH;
-            case CHICKEN:
-                return Sound.CHICKEN_HURT;
-            case CREEPER:
-                return Sound.CREEPER_DEATH;
-            case SKELETON:
-                return Sound.SKELETON_DEATH;
-            case IRON_GOLEM:
-                return Sound.IRONGOLEM_DEATH;
-            case GHAST:
-                return Sound.GHAST_DEATH;
-            case PIG:
-                return Sound.PIG_DEATH;
-            case OCELOT:
-                return Sound.CAT_HIT;
-            case SHEEP:
-                return Sound.SHEEP_IDLE;
-            case SPIDER:
-            case CAVE_SPIDER:
-                return Sound.SPIDER_DEATH;
-            case WOLF:
-                return Sound.WOLF_DEATH;
-            case ZOMBIE:
-                return Sound.ZOMBIE_DEATH;
-            case PIG_ZOMBIE:
-                return Sound.ZOMBIE_PIG_DEATH;
-            default:
-                return Sound.HURT_FLESH;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-
-        return entity != null ? entity.hashCode() : 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (!(o instanceof AbstractCharacterTemplate)) return false;
-
-        AbstractCharacterTemplate that = (AbstractCharacterTemplate) o;
-
-        return !(entity != null ? !entity.equals(that.entity) : that.entity != null);
-    }
-
-    @Override
-    public String toString() {
-
-        return getName();
     }
 
     @Override
@@ -209,21 +138,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Attack getLastDamageCause() {
-
-        return lastAttack;
-    }
-
-    @Override
     public CustomWeapon getWeapon(EquipmentSlot slot) {
 
         return weapons.get(slot);
     }
 
     @Override
-    public Collection<CustomWeapon> getWeapons() {
+    public CustomWeapon removeWeapon(EquipmentSlot slot) {
 
-        return weapons.values();
+        return weapons.remove(slot);
     }
 
     @Override
@@ -246,57 +169,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             weapons.remove(EquipmentSlot.SHIELD_HAND);
         }
         weapons.put(weapon.getEquipmentSlot(), weapon);
-    }
-
-    @Override
-    public CustomWeapon removeWeapon(EquipmentSlot slot) {
-
-        return weapons.remove(slot);
-    }
-
-    @Override
-    public void clearWeapons() {
-
-        for (CustomWeapon weapon : getWeapons()) {
-            removeWeapon(weapon.getEquipmentSlot());
-        }
-    }
-
-    @Override
-    public boolean canAttack() {
-
-        // TODO: check if this fixes #824
-        // if (!(getEntity() instanceof Player)) return true;
-        if (!hasWeaponsEquiped()) return canSwing(EquipmentSlot.HANDS);
-        for (EquipmentSlot slot : weapons.keySet()) {
-            if (canSwing(slot)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int getWeaponDamage(EquipmentSlot slot) {
-
-        if (!hasWeapon(slot)) {
-            return 0;
-        }
-        CustomWeapon weapon = getWeapon(slot);
-        if (weapon == null) {
-            return 0;
-        }
-        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
-    }
-
-    @Override
-    public int getTotalWeaponDamage() {
-
-        int damage = 0;
-        for (EquipmentSlot slot : weapons.keySet()) {
-            damage += getWeaponDamage(slot);
-        }
-        return damage;
     }
 
     @Override
@@ -323,6 +195,19 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             }
         }
         return damage;
+    }
+
+    @Override
+    public int getWeaponDamage(EquipmentSlot slot) {
+
+        if (!hasWeapon(slot)) {
+            return 0;
+        }
+        CustomWeapon weapon = getWeapon(slot);
+        if (weapon == null) {
+            return 0;
+        }
+        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
     }
 
     @Override
@@ -359,18 +244,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Collection<CustomArmor> getArmor() {
-
-        return armorPieces.values();
-    }
-
-    @Override
     public void setArmor(CustomArmor armor) {
 
         armorPieces.put(armor.getEquipmentSlot(), armor);
         // if hero update the user interface
         if (this instanceof Hero) {
-            ((Hero) this).getUserInterface().refresh();
+            ((Hero)this).getUserInterface().refresh();
         }
     }
 
@@ -381,12 +260,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public Collection<CustomArmor> getArmor() {
+
+        return armorPieces.values();
+    }
+
+    @Override
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
         CustomArmor remove = armorPieces.remove(slot);
         // if hero update the user interface
         if (this instanceof Hero) {
-            ((Hero) this).getUserInterface().refresh();
+            ((Hero)this).getUserInterface().refresh();
         }
         return remove;
     }
@@ -420,33 +305,47 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Party getParty() {
+    public void clearWeapons() {
 
-        return party;
-    }
-
-    @Override
-    public boolean isInParty(Party party) {
-
-        return party.contains(this);
-    }
-
-    @Override
-    public void joinParty(Party party) {
-
-        if (!this.party.equals(party)) {
-            this.party = party;
-            party.addMember(this);
+        for (CustomWeapon weapon : getWeapons()) {
+            removeWeapon(weapon.getEquipmentSlot());
         }
     }
 
     @Override
-    public void leaveParty() {
+    public Attack getLastDamageCause() {
 
-        if (this.party != null) {
-            party.removeMember(this);
+        return lastAttack;
+    }
+
+    @Override
+    public Collection<CustomWeapon> getWeapons() {
+
+        return weapons.values();
+    }
+
+    @Override
+    public int getTotalWeaponDamage() {
+
+        int damage = 0;
+        for (EquipmentSlot slot : weapons.keySet()) {
+            damage += getWeaponDamage(slot);
         }
-        this.party = new SimpleParty(this);
+        return damage;
+    }
+
+    @Override
+    public boolean canAttack() {
+
+        // TODO: check if this fixes #824
+        // if (!(getEntity() instanceof Player)) return true;
+        if (!hasWeaponsEquiped()) return canSwing(EquipmentSlot.HANDS);
+        for (EquipmentSlot slot : weapons.keySet()) {
+            if (canSwing(slot)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -563,7 +462,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void damage(Attack attack) throws CombatException {
+    public void damage(Attack attack) throws CombatException{
 
         if (getEntity().isDead()) {
             throw new CombatException(CombatException.Type.DEAD);
@@ -690,19 +589,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().damage(getMaxHealth());
     }
 
-    @Override
-    public boolean isFriendly(CharacterTemplate source) {
-
-        return source.equals(this) || getParty().contains(source);
-    }
-
-    @Override
-    public boolean isBehind(CharacterTemplate target) {
-
-        // we asume that if the target cannot see us we are behind it
-        return target.getEntity().hasLineOfSight(getEntity());
-    }
-
     public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException {
 
         // lets fire an event/trigger
@@ -713,8 +599,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             throw new CombatException(CombatException.Type.INVALID_TARGET);
         }
 
-        if (hasEffect(eClass)) {
-            Effect<?> existingEffect = effects.get(eClass);
+        if (!effects.containsKey(eClass)) {
+            effects.put(eClass, new HashMap<>());
+        }
+
+        boolean globalEffect = eClass.getAnnotation(EffectInformation.class).global();
+        if (hasEffect(eClass, effect.getSource()) || (globalEffect && hasEffect(eClass))) {
+            Effect<?> existingEffect;
+            if (globalEffect) {
+                existingEffect = effects.get(eClass).values().stream().findFirst().get();
+            } else {
+                existingEffect = effects.get(eClass).get(effect.getSource());
+            }
             // lets check priorities
             if (existingEffect instanceof Stackable) {
                 // we dont replace or renew stackable effects, we increase their stacks :)
@@ -735,7 +631,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             }
         } else {
             // apply the new effect
-            effects.put(eClass, effect);
+            effects.get(eClass).put(effect.getSource(), effect);
             effect.apply();
         }
     }
@@ -764,18 +660,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public <E> void removeEffect(Class<E> eClass) throws CombatException {
-
-        Effect<?> effect = effects.remove(eClass);
-        if (effect != null) {
-            effect.remove();
-        }
-    }
-
-    @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        Effect removedEffect = effects.remove(effect.getClass());
+        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
         if (removedEffect != null) {
             effect.remove();
         }
@@ -786,140 +673,147 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public <E> void removeEffect(Class<E> eClass) throws CombatException {
+
+        Map<Object, Effect> effects = this.effects.remove(eClass);
+        if (effects != null) {
+            for (Effect effect : new ArrayList<>(effects.values())) {
+                effects.remove(effect.getSource()).remove();
+            }
+        }
+    }
+
+    @Override
+    public <E> void removeEffect(Class<E> eClass, Object source) throws CombatException {
+
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            removeEffect(eClass);
+            return;
+        }
+        Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
+        if (effect != null) {
+            effect.remove();
+        }
+    }
+
+    @Override
+    public final void clearEffects() {
+
+        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+            entry.values().forEach(effect -> {
+                try {
+                    if (effect != null) {
+                        effect.remove();
+                    }
+                } catch (CombatException e) {
+                    if (effect.getTarget() instanceof Hero) {
+                        ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                    }
+                }
+            });
+        }
+        effects.clear();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E extends Effect> List<E> getEffects(Class<E> eClass) {
+
+        List<E> effects = new ArrayList<>();
+        this.effects.values().stream().forEach(entry -> effects.addAll((Collection<? extends E>) entry.values()));
+        return effects;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
+
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+        }
+        return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
+    }
+
+    @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
         return effects.containsKey(eClass);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <E extends Effect> E getEffect(Class<E> eClass) {
+    public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
 
-        return (E) effects.get(eClass);
+        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
     }
 
     @Override
     public final boolean hasEffectType(EffectType type) {
 
-        for (Effect effect : effects.values()) {
-            if (effect.isOfType(type)) {
-                return true;
-            }
-        }
-        return false;
+        return effects.values().stream()
+                .anyMatch(entry -> entry.values().stream()
+                        .anyMatch(effect -> effect.isOfType(type)));
     }
 
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Effect effect : new ArrayList<>(effects.values())) {
-            if (effect.isOfType(type)) {
-                effect.remove();
-            }
+        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+            entry.values().stream().filter(effect -> effect.isOfType(type))
+                    .forEach(effect -> {
+                        try {
+                            effect.remove();
+                        } catch (CombatException e) {
+                            if (effect.getTarget() instanceof Hero) {
+                                ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                            }
+                        }
+                    });
         }
     }
 
     @Override
     public final List<Effect> getEffects() {
 
-        return new ArrayList<>(effects.values());
+        List<Effect> effects = new ArrayList<>();
+        this.effects.values().forEach(entry -> effects.addAll(entry.values()));
+        return effects;
     }
 
     @Override
     public final List<Effect> getEffects(EffectType... types) {
 
         List<Effect> effects = new ArrayList<>();
-        OUTTER:
-        for (Effect effect : this.effects.values()) {
-            for (EffectType type : types) {
-                if (!effect.isOfType(type)) {
-                    continue OUTTER;
-                }
-            }
-            effects.add(effect);
-        }
+        this.effects.values().forEach(entry -> entry.values().stream()
+                .filter(effect -> effect.isOfAnyType(types))
+                .forEach(effects::add));
         return effects;
     }
 
     @Override
-    public final void clearEffects() {
+    public List<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException {
 
-        for (Effect effect : new ArrayList<>(effects.values())) {
-            try {
-                if (effect != null) {
-                    effect.remove();
-                }
-            } catch (CombatException e) {
-                if (effect.getTarget() instanceof Hero) {
-                    ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
-                }
-            }
-        }
+        List<CharacterTemplate> targets = new ArrayList<>();
+        List<LivingEntity> nearbyEntities = BukkitUtil.getLivingEntitiesInCone(getEntity(), range, degrees);
+
+        if (nearbyEntities.size() < 1) throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Keine Ziele in Reichweite von " + range + "m.");
+
+        targets.addAll(nearbyEntities.stream()
+                .map(target -> RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target))
+                .collect(Collectors.toList()));
+
+        return targets;
     }
 
     @Override
-    public boolean isInCombat() {
+    public List<CharacterTemplate> getTargetsInFront(int range) throws CombatException {
 
-        return inCombat;
+        return getTargetsInFront(range, 45.0F);
     }
 
     @Override
-    public void setInCombat(boolean inCombat) {
+    public List<CharacterTemplate> getTargetsInFront() throws CombatException {
 
-        if (inCombat != this.inCombat) {
-            CharacterManager.refreshPlayerTag(this);
-        }
-        this.inCombat = inCombat;
-        if (!inCombat) {
-            getThreatTable().reset();
-            if (recalculateHealth) recalculateHealth();
-        }
-    }
-
-    @Override
-    public void triggerCombat(Object source) throws CombatException {
-
-        addEffect(source, Combat.class);
-    }
-
-    @Override
-    public CharacterTemplate getTarget(int range) throws CombatException {
-
-        LivingEntity target = BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class);
-        if (target == null) {
-            throw new CombatException(CombatException.Type.INVALID_TARGET, "Du hast kein Ziel anvisiert!");
-        }
-        if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
-            throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
-        }
-        // check the line of sight between entities
-        if (!getEntity().hasLineOfSight(target)) {
-            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel ist nicht im Sichtfeld.");
-        }
-        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
-    }
-
-    @Override
-    public Location getBlockTarget(int range) throws CombatException {
-
-        Block block = getEntity().getTargetBlock(BlockUtil.TRANSPARENT_BLOCKS, range);
-        if (block == null
-                || LocationUtil.getBlockDistance(block.getLocation(), getEntity().getLocation()) > range) {
-            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
-        }
-        return block.getLocation();
-    }
-
-    @Override
-    public Location getBlockTarget() throws CombatException {
-
-        return getBlockTarget(100);
-    }
-
-    @Override
-    public CharacterTemplate getTarget() throws CombatException {
-
-        return getTarget(100);
+        return getTargetsInFront(15, 45.0F);
     }
 
     @Override
@@ -933,9 +827,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         List<CharacterTemplate> targets = new ArrayList<>();
         List<LivingEntity> nearbyEntities = BukkitUtil.getNearbyEntities(getEntity(), range);
-        if (nearbyEntities.size() < 1) {
-            throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Keine Ziele in Reichweite von " + range + "m.");
-        }
+        if (nearbyEntities.size() < 1) throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Keine Ziele in Reichweite von " + range + "m.");
         for (LivingEntity target : nearbyEntities) {
             if (target.equals(getEntity())) {
                 continue;
@@ -970,32 +862,172 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public List<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException {
+    public CharacterTemplate getTarget() throws CombatException {
 
-        List<CharacterTemplate> targets = new ArrayList<>();
-        List<LivingEntity> nearbyEntities = BukkitUtil.getLivingEntitiesInCone(getEntity(), range, degrees);
-
-        if (nearbyEntities.size() < 1) {
-            throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Keine Ziele in Reichweite von " + range + "m.");
-        }
-
-        for (LivingEntity target : nearbyEntities) {
-            targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
-        }
-
-        return targets;
+        return getTarget(100);
     }
 
     @Override
-    public List<CharacterTemplate> getTargetsInFront(int range) throws CombatException {
+    public CharacterTemplate getTarget(int range) throws CombatException {
 
-        return getTargetsInFront(range, 45.0F);
+        LivingEntity target = BukkitUtil.getTargetEntity(getEntity(), LivingEntity.class);
+        if (target == null) {
+            throw new CombatException(CombatException.Type.INVALID_TARGET, "Du hast kein Ziel anvisiert!");
+        }
+        if (LocationUtil.getBlockDistance(target.getLocation(), getEntity().getLocation()) > range) {
+            throw new CombatException(CombatException.Type.OUT_OF_RANGE, "Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
+        }
+        // check the line of sight between entities
+        if (!getEntity().hasLineOfSight(target)) {
+            throw new CombatException(CombatException.Type.INVALID_TARGET, "Ziel ist nicht im Sichtfeld.");
+        }
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
     }
 
     @Override
-    public List<CharacterTemplate> getTargetsInFront() throws CombatException {
+    public Location getBlockTarget() throws CombatException {
 
-        return getTargetsInFront(15, 45.0F);
+        return getBlockTarget(100);
+    }
+
+    @Override
+    public Location getBlockTarget(int range) throws CombatException {
+
+        Block block = getEntity().getTargetBlock(BlockUtil.TRANSPARENT_BLOCKS, range);
+        if (block == null
+                || LocationUtil.getBlockDistance(block.getLocation(), getEntity().getLocation()) > range) {
+            throw new CombatException("Ziel ist nicht in Reichweite. Max. Reichweite: " + range + "m");
+        }
+        return block.getLocation();
+    }
+
+    @Override
+    public boolean isBehind(CharacterTemplate target) {
+
+        // we asume that if the target cannot see us we are behind it
+        return target.getEntity().hasLineOfSight(getEntity());
+    }
+
+    @Override
+    public boolean isInCombat() {
+
+        return inCombat;
+    }
+
+    @Override
+    public void setInCombat(boolean inCombat) {
+
+        if (inCombat != this.inCombat) {
+            CharacterManager.refreshPlayerTag(this);
+        }
+        this.inCombat = inCombat;
+        if (!inCombat) {
+            getThreatTable().reset();
+            if (recalculateHealth) recalculateHealth();
+        }
+    }
+
+    @Override
+    public void triggerCombat(Object source) throws CombatException {
+
+        addEffect(source, Combat.class);
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
+
+    protected float getSoundStrength(LivingEntity target) {
+
+        if (!(target instanceof Ageable)) {
+            return 1.0F;
+        }
+        if (((Ageable) target).isAdult()) {
+            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.0F;
+        } else {
+            return (MathUtil.RANDOM.nextFloat() - MathUtil.RANDOM.nextFloat()) * 0.2F + 1.5F;
+        }
+    }
+
+    protected Sound getDeathSound(EntityType type) {
+
+        switch (type) {
+
+            case COW:
+                return Sound.COW_IDLE;
+            case BLAZE:
+                return Sound.BLAZE_DEATH;
+            case CHICKEN:
+                return Sound.CHICKEN_HURT;
+            case CREEPER:
+                return Sound.CREEPER_DEATH;
+            case SKELETON:
+                return Sound.SKELETON_DEATH;
+            case IRON_GOLEM:
+                return Sound.IRONGOLEM_DEATH;
+            case GHAST:
+                return Sound.GHAST_DEATH;
+            case PIG:
+                return Sound.PIG_DEATH;
+            case OCELOT:
+                return Sound.CAT_HIT;
+            case SHEEP:
+                return Sound.SHEEP_IDLE;
+            case SPIDER:
+            case CAVE_SPIDER:
+                return Sound.SPIDER_DEATH;
+            case WOLF:
+                return Sound.WOLF_DEATH;
+            case ZOMBIE:
+                return Sound.ZOMBIE_DEATH;
+            case PIG_ZOMBIE:
+                return Sound.ZOMBIE_PIG_DEATH;
+            default:
+                return Sound.HURT_FLESH;
+        }
+    }
+
+    @Override
+    public Party getParty() {
+
+        return party;
+    }
+
+    @Override
+    public boolean isInParty(Party party) {
+
+        return party.contains(this);
+    }
+
+    @Override
+    public void joinParty(Party party) {
+
+        if (!this.party.equals(party)) {
+            this.party = party;
+            party.addMember(this);
+        }
+    }
+
+    @Override
+    public void leaveParty() {
+
+        if (this.party != null) {
+            party.removeMember(this);
+        }
+        this.party = new SimpleParty(this);
+    }
+
+    @Override
+    public boolean isFriendly(CharacterTemplate source) {
+
+        return source.equals(this) || getParty().contains(source);
     }
 
     @Override
@@ -1006,16 +1038,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return Material.AIR;
         }
         return itemInHand.getType();
-    }    @Override
+    }
+
+    @Override
     public boolean isMastered() {
 
         return getAttachedLevel().hasReachedMaxLevel();
     }
 
     @Override
-    public void reset() {
-
-    }    @Override
     public AttachedLevel<CharacterTemplate> getAttachedLevel() {
 
         return attachedLevel;
@@ -1063,7 +1094,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         // override if needed
     }
 
+    @Override
+    public boolean equals(Object o) {
 
+        if (this == o) return true;
+        if (!(o instanceof AbstractCharacterTemplate)) return false;
 
+        AbstractCharacterTemplate that = (AbstractCharacterTemplate) o;
 
+        return !(entity != null ? !entity.equals(that.entity) : that.entity != null);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return entity != null ? entity.hashCode() : 0;
+    }
 }

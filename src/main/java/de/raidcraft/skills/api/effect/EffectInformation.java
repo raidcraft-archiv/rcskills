@@ -28,4 +28,6 @@ public @interface EffectInformation {
     public DiminishingReturnType diminishingReturn() default DiminishingReturnType.NULL;
 
     public double priority() default 0.0;
+
+    public boolean global() default false;
 }

@@ -1,39 +1,41 @@
-package de.raidcraft.skills.api.effect.common;
+package de.raidcraft.skills.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.SkillInformation;
 
 /**
  * @author Silthus
  */
-@EffectInformation(
-        name = "Tagged",
-        description = "Taggs the target and gives exp to the group that tagged it on death.",
-        priority = 1.0,
-        global = true
+@SkillInformation(
+        name = "timed-permission",
+        description = "Represents a generic timed permissions skill.",
+        triggerCombat = false
 )
-public class Tagged extends ExpirableEffect<CharacterTemplate> {
+public class TimedPermissionSkill extends ExpirableEffect<PermissionSkill> {
 
-    public Tagged(CharacterTemplate source, CharacterTemplate target, EffectData data) {
+    public TimedPermissionSkill(PermissionSkill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+        getSource().remove();
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-        //TODO: implement
+
+
     }
 }

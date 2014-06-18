@@ -22,7 +22,8 @@ import de.raidcraft.skills.trigger.BowFireTrigger;
 @EffectInformation(
         name = "Queued-Range-Attack",
         description = "Calls back a range attack when projectile hits.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
 

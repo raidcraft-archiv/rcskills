@@ -19,7 +19,8 @@ import de.raidcraft.skills.trigger.PotionSplashTrigger;
 @EffectInformation(
         name = "Queued-Splash-Potion",
         description = "Calls the callback when a potion splashs.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedSplashPotion extends AbstractEffect<Skill> implements Triggered {
 

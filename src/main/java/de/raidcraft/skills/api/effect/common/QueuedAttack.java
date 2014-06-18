@@ -21,7 +21,8 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 @EffectInformation(
         name = "QueuedAttack",
         description = "Löst den gegebenen Skill bei einem Angriff aus.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
 
