@@ -48,6 +48,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         this.plugin = plugin;
         // create the config path
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
+
     }
 
     @Override
@@ -62,21 +63,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             }
         }
         plugin.getLogger().info("Loaded " + loadedSkills + "/" + (failedSkills + loadedSkills) + " skills.");
-    }
-
-    @Override
-    public ItemAttachment getItemAttachment(Player player, String attachmentName) throws ItemAttachmentException {
-
-        try {
-            Hero hero = plugin.getCharacterManager().getHero(player);
-            Skill skill = hero.getSkill(attachmentName);
-            if (skill instanceof ItemAttachment) {
-                return (ItemAttachment) skill;
-            }
-            throw new ItemAttachmentException("The skill " + skill.getName() + " is not a valid ItemAttachment!");
-        } catch (UnknownSkillException e) {
-            throw new ItemAttachmentException(e.getMessage());
-        }
     }
 
     /**
@@ -109,38 +95,26 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         }
     }
 
+    @Override
+    public ItemAttachment getItemAttachment(Player player, String attachmentName) throws ItemAttachmentException {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(player);
+            Skill skill = hero.getSkill(attachmentName);
+            if (skill instanceof ItemAttachment) {
+                return (ItemAttachment) skill;
+            }
+            throw new ItemAttachmentException("The skill " + skill.getName() + " is not a valid ItemAttachment!");
+        } catch (UnknownSkillException e) {
+            throw new ItemAttachmentException(e.getMessage());
+        }
+    }
+
     protected void createAliasFactory(String alias, String skill, AliasesConfig config) throws UnknownSkillException {
 
         SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
         skillFactories.put(alias, factory);
         factory.createDefaults();
-    }
-
-    public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
-
-        Skill skill;
-        skillName = StringUtils.formatName(skillName);
-        if (!skillFactories.containsKey(skillName)) {
-            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
-        }
-        String heroName = StringUtils.formatName(hero.getName());
-        if (!cachedSkills.containsKey(heroName)) {
-            cachedSkills.put(heroName, new HashMap<CachedSkill, Skill>());
-        }
-        // lets create a cached skill instance to counter check with our cache
-        // the skill will be null in this cached skill instance
-        CachedSkill cache = new CachedSkill(hero, profession, skillName);
-        if (cachedSkills.get(heroName).containsKey(cache)) {
-            return cachedSkills.get(heroName).get(cache);
-        }
-        // lets create a new skill for this name
-        skill = skillFactories.get(skillName).create(hero, profession);
-        cachedSkills.get(heroName).put(cache, skill);
-        // lets add the skill as a trigger handler
-        if (skill instanceof Triggered) {
-            TriggerManager.registerListeners((Triggered) skill);
-        }
-        return skill;
     }
 
     public SkillFactory getFactory(Skill skill) {
@@ -176,6 +150,33 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             }
         }
         return skills;
+    }
+
+    public Skill getSkill(Hero hero, Profession profession, String skillName) throws UnknownSkillException {
+
+        Skill skill;
+        skillName = StringUtils.formatName(skillName);
+        if (!skillFactories.containsKey(skillName)) {
+            throw new UnknownSkillException("Es gibt keinen Skill mit dem Namen: " + skillName);
+        }
+        String heroName = StringUtils.formatName(hero.getName());
+        if (!cachedSkills.containsKey(heroName)) {
+            cachedSkills.put(heroName, new HashMap<CachedSkill, Skill>());
+        }
+        // lets create a cached skill instance to counter check with our cache
+        // the skill will be null in this cached skill instance
+        CachedSkill cache = new CachedSkill(hero, profession, skillName);
+        if (cachedSkills.get(heroName).containsKey(cache)) {
+            return cachedSkills.get(heroName).get(cache);
+        }
+        // lets create a new skill for this name
+        skill = skillFactories.get(skillName).create(hero, profession);
+        cachedSkills.get(heroName).put(cache, skill);
+        // lets add the skill as a trigger handler
+        if (skill instanceof Triggered) {
+            TriggerManager.registerListeners((Triggered) skill);
+        }
+        return skill;
     }
 
     protected Collection<SkillFactory> getSkillFactoriesFor(Class<? extends Skill> sClass) {
@@ -227,6 +228,15 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         }
 
         @Override
+        public int hashCode() {
+
+            int result = player.hashCode();
+            result = 31 * result + name.hashCode();
+            result = 31 * result + profession.hashCode();
+            return result;
+        }
+
+        @Override
         public boolean equals(Object o) {
 
             if (this == o) return true;
@@ -236,15 +246,6 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
             return name.equals(that.name) && player.equals(that.player) && profession.equals(that.profession);
 
-        }
-
-        @Override
-        public int hashCode() {
-
-            int result = player.hashCode();
-            result = 31 * result + name.hashCode();
-            result = 31 * result + profession.hashCode();
-            return result;
         }
     }
 }

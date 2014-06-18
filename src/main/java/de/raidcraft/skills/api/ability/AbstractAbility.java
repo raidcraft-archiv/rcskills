@@ -49,11 +49,11 @@ import java.util.Set;
  */
 public abstract class AbstractAbility<T extends CharacterTemplate> implements Ability<T> {
 
-    private final String name;
     protected final T holder;
     protected final AbilityProperties properties;
     protected final Set<EffectType> effectTypes = new HashSet<>();
     protected final Set<EffectElement> effectElements = new HashSet<>();
+    private final String name;
     // protected final THeroSkill database;
     protected String description;
     private long lastCast;
@@ -70,7 +70,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         this.effectTypes.addAll(getProperties().getTypes());
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.addEffect(this, (S) this, eClass);
+    }    @Override
     public final void checkUsage(AbilityAction<T> action) throws CombatException {
 
         if (this instanceof Passive) {
@@ -96,7 +100,10 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         }
     }
 
-    @Override
+    public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.addEffect(this, source, eClass);
+    }    @Override
     public final void substractUsageCost(AbilityAction<T> action) {
 
         // and lets set the cooldown because it is like a usage cost for further casting
@@ -105,7 +112,10 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         setCooldown(action.getCooldown(), false);
     }
 
-    @Override
+    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
+
+        return getNearbyTargets(true);
+    }    @Override
     public boolean canUseAbility() {
 
         try {
@@ -114,62 +124,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         } catch (CombatException ignored) {
         }
         return false;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
-
-        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
-        if (effects == null) {
-            return new ArrayList<>();
-        }
-        return effects;
-    }
-
-    @Override
-    public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
-
-        for (AmbientEffect effect : getAmbientEffects(stage)) {
-            effect.run(location);
-        }
-    }
-
-    public final boolean matches(String name) {
-
-        if (name == null) return false;
-        name = name.toLowerCase();
-        return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
-    }
-
-    @SuppressWarnings("unchecked")
-    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
-
-        return target.addEffect(this, (S) this, eClass);
-    }
-
-    public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
-
-        return target.addEffect(this, source, eClass);
-    }
-
-    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
-
-        return getNearbyTargets(true);
-    }
-
-    public List<CharacterTemplate> getSafeNearbyTargets() {
-
-        return getSafeNearbyTargets(true);
-    }
-
-    public List<CharacterTemplate> getSafeNearbyTargets(boolean friendly) {
-
-        try {
-            return getNearbyTargets(friendly);
-        } catch (CombatException e) {
-            return new ArrayList<>();
-        }
     }
 
     public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
@@ -183,6 +137,15 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         return new ArrayList<>();
+    }    @Override
+    @SuppressWarnings("unchecked")
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
+
+        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
+        if (effects == null) {
+            return new ArrayList<>();
+        }
+        return effects;
     }
 
     public List<CharacterTemplate> getNearbyPartyMembers() {
@@ -194,6 +157,31 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         return targets;
+    }    @Override
+    public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
+
+        for (AmbientEffect effect : getAmbientEffects(stage)) {
+            effect.run(location);
+        }
+    }
+
+    public List<CharacterTemplate> getSafeNearbyTargets() {
+
+        return getSafeNearbyTargets(true);
+    }    public final boolean matches(String name) {
+
+        if (name == null) return false;
+        name = name.toLowerCase();
+        return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
+    }
+
+    public List<CharacterTemplate> getSafeNearbyTargets(boolean friendly) {
+
+        try {
+            return getNearbyTargets(friendly);
+        } catch (CombatException e) {
+            return new ArrayList<>();
+        }
     }
 
     public List<CharacterTemplate> getSafeTargetsInFront() {
@@ -240,11 +228,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return new ArrayList<>();
     }
 
-    public CharacterTemplate getTarget() throws CombatException {
-
-        return getHolder().getTarget(getTotalRange());
-    }
-
     public CharacterTemplate getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
 
         CharacterTemplate target;
@@ -271,6 +254,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return target;
     }
 
+    public CharacterTemplate getTarget() throws CombatException {
+
+        return getHolder().getTarget(getTotalRange());
+    }
+
     public final Location getTargetBlock() throws CombatException {
 
         return getHolder().getBlockTarget(getTotalRange());
@@ -279,6 +267,14 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage) throws CombatException {
 
         return attack(target, damage, null);
+    }
+
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
+
+        EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
+        attack.addAttackElement(getElements());
+        attack.run();
+        return attack;
     }
 
     public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
@@ -291,17 +287,17 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return attack(target, getTotalDamage(), callback);
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
-
-        EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
-        attack.addAttackElement(getElements());
-        attack.run();
-        return attack;
-    }
-
     public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
 
         return rangedAttack(type, getTotalDamage(), null);
+    }
+
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) throws CombatException {
+
+        RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
+        attack.addAttackElement(getElements());
+        attack.run();
+        return attack;
     }
 
     public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage) throws CombatException {
@@ -314,12 +310,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return rangedAttack(type, getTotalDamage(), callback);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) throws CombatException {
+    public final MagicalAttack magicalAttack(EntityAttackCallback callback) throws CombatException {
 
-        RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
-        attack.addAttackElement(getElements());
-        attack.run();
-        return attack;
+        return magicalAttack(getTarget(), getTotalDamage(), callback);
     }
 
     public final MagicalAttack magicalAttack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
@@ -332,16 +325,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack;
     }
 
-    public final MagicalAttack magicalAttack(double damage, EntityAttackCallback callback) throws CombatException {
-
-        return magicalAttack(getTarget(), damage, callback);
-    }
-
-    public final MagicalAttack magicalAttack(EntityAttackCallback callback) throws CombatException {
-
-        return magicalAttack(getTarget(), getTotalDamage(), callback);
-    }
-
     public final MagicalAttack magicalAttack() throws CombatException {
 
         return magicalAttack(getTarget(), getTotalDamage(), null);
@@ -350,6 +333,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final MagicalAttack magicalAttack(double damage) throws CombatException {
 
         return magicalAttack(damage, null);
+    }
+
+    public final MagicalAttack magicalAttack(double damage, EntityAttackCallback callback) throws CombatException {
+
+        return magicalAttack(getTarget(), damage, callback);
     }
 
     public final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
@@ -367,31 +355,116 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return HeroUtil.yawToFace(getHolder().getEntity().getLocation().getYaw());
     }
 
-    @Override
+    protected void warn(Throwable e) {
+
+        warn(e.getMessage());
+        RaidCraft.LOGGER.warning(e.getMessage());
+        e.printStackTrace();
+    }
+
+    protected void warn(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            warn((Hero) getHolder(), message);
+        }
+    }
+
+    protected void warn(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage(ChatColor.RED + message);
+    }
+
+    protected void info(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            info((Hero) getHolder(), message);
+        }
+    }
+
+    protected void info(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage("" + ChatColor.GRAY + message);
+    }
+
+    protected void msg(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            msg((Hero) getHolder(), message);
+        }
+    }
+
+    protected void msg(Hero hero, String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        hero.sendMessage(message);
+    }    @Override
     public double getTotalDamage() {
 
         return ConfigUtil.getTotalValue(this, properties.getDamage());
     }
 
-    @Override
+    protected void combatLog(String message) {
+
+        if (message == null || message.equals("")) {
+            return;
+        }
+        if (getHolder() instanceof Hero) {
+            ((Hero) getHolder()).combatLog(this, message);
+        }
+    }    @Override
     public final int getTotalRange() {
 
         return (int) ConfigUtil.getTotalValue(this, properties.getRange());
     }
 
     @Override
+    public int hashCode() {
+
+        return name.hashCode();
+    }    @Override
     public final double getTotalCooldown() {
 
         return ConfigUtil.getTotalValue(this, properties.getCooldown());
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractAbility that = (AbstractAbility) o;
+
+        return name.equals(that.name);
+
+    }    @Override
     public final double getTotalCastTime() {
 
         return ConfigUtil.getTotalValue(this, properties.getCastTime());
     }
 
     @Override
+    public final String toString() {
+
+        return getFriendlyName();
+    }    @Override
     public final void setCooldown(double cooldown) {
 
         setCooldown(cooldown, true);
@@ -569,98 +642,25 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         // override if needed
     }
 
-    protected void warn(Throwable e) {
 
-        warn(e.getMessage());
-        RaidCraft.LOGGER.warning(e.getMessage());
-        e.printStackTrace();
-    }
 
-    protected void warn(String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        if (getHolder() instanceof Hero) {
-            warn((Hero) getHolder(), message);
-        }
-    }
 
-    protected void warn(Hero hero, String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        hero.sendMessage(ChatColor.RED + message);
-    }
 
-    protected void info(String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        if (getHolder() instanceof Hero) {
-            info((Hero) getHolder(), message);
-        }
-    }
 
-    protected void info(Hero hero, String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        hero.sendMessage("" + ChatColor.GRAY + message);
-    }
 
-    protected void msg(String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        if (getHolder() instanceof Hero) {
-            msg((Hero) getHolder(), message);
-        }
-    }
 
-    protected void msg(Hero hero, String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        hero.sendMessage(message);
-    }
 
-    protected void combatLog(String message) {
 
-        if (message == null || message.equals("")) {
-            return;
-        }
-        if (getHolder() instanceof Hero) {
-            ((Hero) getHolder()).combatLog(this, message);
-        }
-    }
 
-    @Override
-    public final String toString() {
 
-        return getFriendlyName();
-    }
 
-    @Override
-    public boolean equals(Object o) {
 
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractAbility that = (AbstractAbility) o;
 
-        return name.equals(that.name);
-
-    }
-
-    @Override
-    public int hashCode() {
-
-        return name.hashCode();
-    }
 }

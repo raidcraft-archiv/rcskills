@@ -75,16 +75,6 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
         }
     }
 
-    protected void createAliasFactory(String alias, String skill, ConfigurationSection config) {
-
-        try {
-            AbilityFactory factory = new AbilityFactory(plugin, abilityClasses.get(skill), skill, config);
-            abilityFactories.put(alias, factory);
-        } catch (UnknownSkillException e) {
-            plugin.getLogger().warning(e.getMessage());
-        }
-    }
-
     public <T extends CharacterTemplate> Ability<T> getAbility(T character, String abilityName, ConfigurationSection merge) throws UnknownSkillException {
 
         Ability<T> ability;
@@ -103,6 +93,16 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
             TriggerManager.registerListeners((Triggered) ability);
         }
         return ability;
+    }
+
+    protected void createAliasFactory(String alias, String skill, ConfigurationSection config) {
+
+        try {
+            AbilityFactory factory = new AbilityFactory(plugin, abilityClasses.get(skill), skill, config);
+            abilityFactories.put(alias, factory);
+        } catch (UnknownSkillException e) {
+            plugin.getLogger().warning(e.getMessage());
+        }
     }
 
     public boolean hasAbility(String ability) {

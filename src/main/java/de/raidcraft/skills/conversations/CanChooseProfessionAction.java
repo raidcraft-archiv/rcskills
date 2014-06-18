@@ -35,8 +35,7 @@ public class CanChooseProfessionAction extends AbstractAction {
                     conversation.setCurrentStage(success);
                     conversation.triggerCurrentStage();
                 }
-            }
-            else {
+            } else {
                 if (failure != null) {
                     conversation.setCurrentStage(failure);
                     conversation.triggerCurrentStage();

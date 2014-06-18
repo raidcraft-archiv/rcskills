@@ -11,9 +11,13 @@ public interface AttachedLevel<T extends Levelable> {
 
     public int getLevel();
 
+    public void setLevel(int level);
+
     public int getMaxLevel();
 
     public int getExp();
+
+    public void setExp(int exp);
 
     /**
      * Gets the level formula containing the information
@@ -34,6 +38,7 @@ public interface AttachedLevel<T extends Levelable> {
      * Calculates the total amount of exp needed to that level from level 0 and 0 exp.
      *
      * @param level to calculate exp for
+     *
      * @return total exp
      */
     public int getTotalNeededExpForLevel(int level);
@@ -42,7 +47,8 @@ public interface AttachedLevel<T extends Levelable> {
      * Gets the exp needed to reach that level from the current level.
      *
      * @param startLevel to start calculating at
-     * @param endLevel to calculate for
+     * @param endLevel   to calculate for
+     *
      * @return exp needed
      */
     public int getNeededExpForLevel(int startLevel, int endLevel);
@@ -58,7 +64,7 @@ public interface AttachedLevel<T extends Levelable> {
      * Gets the amount of exp needed for the next level.
      *
      * @return exp needed for the next level
-     *         minus the one you already have
+     * minus the one you already have
      */
     public int getExpToNextLevel();
 
@@ -70,11 +76,7 @@ public interface AttachedLevel<T extends Levelable> {
 
     public void removeExp(int exp, boolean callEvent);
 
-    public void setExp(int exp);
-
     public void setExp(int exp, boolean callEvent);
-
-    public void setLevel(int level);
 
     public void addLevel(int level);
 

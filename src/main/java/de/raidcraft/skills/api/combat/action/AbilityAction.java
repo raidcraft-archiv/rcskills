@@ -19,9 +19,9 @@ import de.raidcraft.skills.trigger.EntityCastAbilityTrigger;
 public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T> {
 
     private final Ability<T> ability;
+    private final EntityCastAbilityTrigger trigger;
     private double castTime;
     private double cooldown;
-    private final EntityCastAbilityTrigger trigger;
 
     public AbilityAction(Ability<T> ability) {
 
@@ -32,11 +32,6 @@ public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T
 
         // lets issue a trigger that can be modified by other skills
         this.trigger = TriggerManager.callSafeTrigger(new EntityCastAbilityTrigger(this));
-    }
-
-    public Ability<T> getAbility() {
-
-        return ability;
     }
 
     public double getCastTime() {
@@ -101,5 +96,10 @@ public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T
         } catch (CombatException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
         }
+    }
+
+    public Ability<T> getAbility() {
+
+        return ability;
     }
 }

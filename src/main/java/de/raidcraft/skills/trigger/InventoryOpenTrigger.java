@@ -10,23 +10,23 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
  */
 public class InventoryOpenTrigger extends BukkitEventTrigger<InventoryOpenEvent> {
 
-    public InventoryOpenTrigger(Hero hero, InventoryOpenEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public InventoryOpenTrigger(Hero hero, InventoryOpenEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

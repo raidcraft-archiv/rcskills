@@ -56,7 +56,7 @@ public abstract class AbstractResource implements Resource {
         // lets get some default values from the config
         this.inCombatRegen = config.getConfigurationSection("in-combat-regen");
         this.outOfCombatRegen = config.getConfigurationSection("out-of-combat-regen");
-        regenInterval = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue(profession,  config.getConfigurationSection("interval")));
+        regenInterval = TimeUtil.secondsToTicks(ConfigUtil.getTotalValue(profession, config.getConfigurationSection("interval")));
         regenUsageDelay = TimeUtil.secondsToMillis(ConfigUtil.getTotalValue(profession, config.getConfigurationSection("usage-delay")));
         if (regenInterval < 1) {
             regenInterval = 20;
@@ -140,17 +140,6 @@ public abstract class AbstractResource implements Resource {
         return current;
     }
 
-    protected double fireResourceChangeEvent(double current) throws RaidCraftException {
-
-        // lets fire the trigger
-        ResourceChangeTrigger trigger = TriggerManager.callSafeTrigger(new ResourceChangeTrigger(getHero(), this, current));
-        if (trigger.isCancelled()) {
-            throw new RaidCraftException(trigger.getTriggerName() + " was cancelled!");
-        }
-        // update the value if it changed in the trigger
-        return trigger.getNewValue();
-    }
-
     @Override
     public void setCurrent(double current) {
 
@@ -178,6 +167,17 @@ public abstract class AbstractResource implements Resource {
             }
         } catch (RaidCraftException ignored) {
         }
+    }
+
+    protected double fireResourceChangeEvent(double current) throws RaidCraftException {
+
+        // lets fire the trigger
+        ResourceChangeTrigger trigger = TriggerManager.callSafeTrigger(new ResourceChangeTrigger(getHero(), this, current));
+        if (trigger.isCancelled()) {
+            throw new RaidCraftException(trigger.getTriggerName() + " was cancelled!");
+        }
+        // update the value if it changed in the trigger
+        return trigger.getNewValue();
     }
 
     @Override
@@ -213,15 +213,15 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public void setRegenUseageDelay(long delay) {
-
-        this.regenUsageDelay = delay;
-    }
-
-    @Override
     public long getRegenUseageDelay() {
 
         return regenUsageDelay;
+    }
+
+    @Override
+    public void setRegenUseageDelay(long delay) {
+
+        this.regenUsageDelay = delay;
     }
 
     @Override

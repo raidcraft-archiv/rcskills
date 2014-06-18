@@ -33,11 +33,6 @@ public class Creature extends AbstractCharacterTemplate {
         updateHealthBar();
     }
 
-    private void updateHealthBar() {
-
-        getEntity().setCustomName(EntityUtil.drawHealthBar(getHealth(), getMaxHealth(), ChatColor.GREEN));
-    }
-
     @Override
     public void setInCombat(boolean inCombat) {
 
@@ -50,9 +45,9 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public double getDefaultHealth() {
+    public boolean isMastered() {
 
-        return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
+        return true;
     }
 
     @Override
@@ -62,12 +57,7 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public void onExpGain(int exp) {
-
-    }
-
-    @Override
-    public void onExpLoss(int exp) {
+    public void onLevelLoss() {
 
     }
 
@@ -77,13 +67,23 @@ public class Creature extends AbstractCharacterTemplate {
     }
 
     @Override
-    public void onLevelLoss() {
+    public void onExpLoss(int exp) {
 
     }
 
     @Override
-    public boolean isMastered() {
+    public void onExpGain(int exp) {
 
-        return true;
+    }
+
+    private void updateHealthBar() {
+
+        getEntity().setCustomName(EntityUtil.drawHealthBar(getHealth(), getMaxHealth(), ChatColor.GREEN));
+    }
+
+    @Override
+    public double getDefaultHealth() {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getDamageManager().getCreatureHealth(getEntity().getType());
     }
 }

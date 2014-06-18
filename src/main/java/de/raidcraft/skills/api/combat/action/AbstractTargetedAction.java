@@ -16,7 +16,10 @@ public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> imp
         this.target = target;
     }
 
-    @Override
+    public boolean isCancelled() {
+
+        return cancelled;
+    }    @Override
     public T getTarget() {
 
         return target;
@@ -27,10 +30,7 @@ public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> imp
         this.cancelled = cancelled;
     }
 
-    public boolean isCancelled() {
 
-        return cancelled;
-    }
 
     @Override
     public void combatLog(Object o, String message) {

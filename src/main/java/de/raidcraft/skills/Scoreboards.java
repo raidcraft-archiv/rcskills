@@ -24,24 +24,6 @@ public final class Scoreboards {
     private static final String SIDE_DISPLAY_NAME = "---- %pvp% ----";
     private static final Map<String, Scoreboard> scoreboards = new CaseInsensitiveMap<>();
 
-    public static Scoreboard getScoreboard(Hero hero) {
-
-        String playerName = hero.getName();
-        Scoreboard scoreboard;
-        if (scoreboards.containsKey(playerName)) {
-            scoreboard = scoreboards.get(playerName);
-        } else {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        }
-        if (!hero.isOnline()) {
-            hero.updateEntity(Bukkit.getPlayer(playerName));
-            return scoreboard;
-        }
-        hero.getPlayer().setScoreboard(scoreboard);
-        scoreboards.put(playerName, scoreboard);
-        return scoreboard;
-    }
-
     public static void removeScoreboard(Player player) {
 
         if (player == null) {
@@ -57,23 +39,6 @@ public final class Scoreboards {
             }
             for (DisplaySlot slot : DisplaySlot.values()) {
                 scoreboard.clearSlot(slot);
-            }
-        }
-    }
-
-    public static void updateTeams() {
-
-        for (Scoreboard scoreboard : scoreboards.values()) {
-            for (Team team : scoreboard.getTeams()) {
-                for (Scoreboard score : scoreboards.values()) {
-                    Team scoreboardTeam = score.getTeam(team.getName());
-                    if (scoreboardTeam == null) {
-                        Team newTeam = score.registerNewTeam(team.getName());
-                        newTeam.setPrefix(team.getPrefix());
-                        newTeam.setSuffix(team.getSuffix());
-                        newTeam.setDisplayName(team.getDisplayName());
-                    }
-                }
             }
         }
     }
@@ -112,6 +77,24 @@ public final class Scoreboards {
         return objective;
     }
 
+    public static Scoreboard getScoreboard(Hero hero) {
+
+        String playerName = hero.getName();
+        Scoreboard scoreboard;
+        if (scoreboards.containsKey(playerName)) {
+            scoreboard = scoreboards.get(playerName);
+        } else {
+            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        }
+        if (!hero.isOnline()) {
+            hero.updateEntity(Bukkit.getPlayer(playerName));
+            return scoreboard;
+        }
+        hero.getPlayer().setScoreboard(scoreboard);
+        scoreboards.put(playerName, scoreboard);
+        return scoreboard;
+    }
+
     public static Team updatePlayerTeam(Hero hero) {
 
         Scoreboard scoreboard = getScoreboard(hero);
@@ -133,5 +116,22 @@ public final class Scoreboards {
             updateTeams();
         }
         return team;
+    }
+
+    public static void updateTeams() {
+
+        for (Scoreboard scoreboard : scoreboards.values()) {
+            for (Team team : scoreboard.getTeams()) {
+                for (Scoreboard score : scoreboards.values()) {
+                    Team scoreboardTeam = score.getTeam(team.getName());
+                    if (scoreboardTeam == null) {
+                        Team newTeam = score.registerNewTeam(team.getName());
+                        newTeam.setPrefix(team.getPrefix());
+                        newTeam.setSuffix(team.getSuffix());
+                        newTeam.setDisplayName(team.getDisplayName());
+                    }
+                }
+            }
+        }
     }
 }

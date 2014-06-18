@@ -11,13 +11,7 @@ import org.bukkit.event.Cancellable;
  */
 public class ResourceChangeTrigger extends Trigger implements Cancellable {
 
-    public enum Action {
-
-        GAIN,
-        LOSS,
-        NO_CHANGE;
-    }
-
+    private static final HandlerList handlers = new HandlerList();
     private final Resource resource;
     private double newValue = 0;
     private boolean cancelled = false;
@@ -29,24 +23,14 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
         this.newValue = newValue;
     }
 
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
     public Hero getHero() {
 
         return (Hero) getSource();
-    }
-
-    public Resource getResource() {
-
-        return resource;
-    }
-
-    public double getNewValue() {
-
-        return newValue;
-    }
-
-    public void setNewValue(double newValue) {
-
-        this.newValue = newValue;
     }
 
     public Action getAction() {
@@ -59,18 +43,26 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
         return Action.LOSS;
     }
 
+    public double getNewValue() {
+
+        return newValue;
+    }
+
+    public Resource getResource() {
+
+        return resource;
+    }
+
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public void setNewValue(double newValue) {
 
-    public HandlerList getHandlers() {
-
-        return handlers;
+        this.newValue = newValue;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }
@@ -85,5 +77,12 @@ public class ResourceChangeTrigger extends Trigger implements Cancellable {
     public void setCancelled(boolean cancelled) {
 
         this.cancelled = cancelled;
+    }
+
+    public enum Action {
+
+        GAIN,
+        LOSS,
+        NO_CHANGE
     }
 }

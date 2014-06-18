@@ -12,17 +12,6 @@ import java.util.Set;
  */
 public interface Resource {
 
-    public enum Type {
-
-        PERCENTAGE,
-        FLAT;
-
-        public static Type fromString(String name) {
-
-            return EnumUtils.getEnumFromString(Type.class, name);
-        }
-    }
-
     public Hero getHero();
 
     public Profession getProfession();
@@ -65,13 +54,24 @@ public interface Resource {
 
     public void setRegenValue(double percent);
 
-    public void setRegenUseageDelay(long delay);
-
     public long getRegenUseageDelay();
+
+    public void setRegenUseageDelay(long delay);
 
     public void regen();
 
     public void destroy();
 
     public void save();
+
+    public enum Type {
+
+        PERCENTAGE,
+        FLAT;
+
+        public static Type fromString(String name) {
+
+            return EnumUtils.getEnumFromString(Type.class, name);
+        }
+    }
 }

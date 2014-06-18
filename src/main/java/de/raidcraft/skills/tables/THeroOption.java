@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.api.database.Bean;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,52 +13,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_hero_options")
-public class THeroOption implements Bean {
+@Getter
+@Setter
+public class THeroOption {
 
     @Id
     private int id;
     @ManyToOne
     private THero hero;
+
     private String optionKey;
     private String optionValue;
 
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public THero getHero() {
-
-        return hero;
-    }
-
-    public void setHero(THero hero) {
-
-        this.hero = hero;
-    }
-
-    public String getOptionKey() {
-
-        return optionKey;
-    }
-
-    public void setOptionKey(String optionKey) {
-
-        this.optionKey = optionKey;
-    }
-
-    public String getOptionValue() {
-
-        return optionValue;
-    }
-
-    public void setOptionValue(String optionValue) {
-
-        this.optionValue = optionValue;
-    }
 }

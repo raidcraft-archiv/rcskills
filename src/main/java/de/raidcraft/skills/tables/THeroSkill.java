@@ -1,10 +1,9 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.database.Bean;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.LevelData;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -21,7 +20,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "skills_hero_skills")
-public class THeroSkill implements LevelData, Bean {
+@Getter
+@Setter
+public class THeroSkill implements LevelData {
 
     @Id
     private int id;
@@ -44,98 +45,15 @@ public class THeroSkill implements LevelData, Bean {
     private boolean unlocked;
     private Timestamp unlockTime;
 
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public String getName() {
-
-        return name;
-    }
-
-    public void setName(String name) {
-
-        this.name = name;
-    }
-
-    public THeroProfession getProfession() {
-
-        return profession;
-    }
-
-    public void setProfession(THeroProfession profession) {
-
-        this.profession = profession;
-    }
-
-    public THero getHero() {
-
-        return hero;
-    }
-
-    public void setHero(THero heroTable) {
-
-        this.hero = heroTable;
-    }
-
+    @Override
     public int getLevel() {
 
         return level;
     }
 
-    public void setLevel(int level) {
-
-        this.level = level;
-    }
-
+    @Override
     public int getExp() {
 
         return exp;
-    }
-
-    public void setExp(int exp) {
-
-        this.exp = exp;
-    }
-
-    public boolean isUnlocked() {
-
-        return unlocked;
-    }
-
-    public void setUnlocked(boolean unlocked) {
-
-        this.unlocked = unlocked;
-    }
-
-    public List<TSkillData> getSkillData() {
-
-        return skillData;
-    }
-
-    public void setSkillData(List<TSkillData> skillData) {
-
-        this.skillData = skillData;
-    }
-
-    public Timestamp getUnlockTime() {
-
-        return unlockTime;
-    }
-
-    public void setUnlockTime(Timestamp unlockTime) {
-
-        this.unlockTime = unlockTime;
-    }
-
-    public void delete() {
-
-        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }

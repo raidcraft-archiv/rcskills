@@ -26,7 +26,6 @@ permissions:
         rcskills.player.cast: true
         rcskills.player.bind: true
         rcskills.player.autobind: true
-        rcskills.player.unbind: true
         rcskills.party.invite: true
         rcskills.party.leave: true
         rcskills.party.accept: true

@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.UserInterface;
+import de.raidcraft.skills.binds.BindManager;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -125,4 +126,6 @@ public interface Hero extends SkilledCharacter<Hero> {
     public void removeSkill(Skill skill);
 
     void updatePermissions();
+
+    public BindManager getBinds();
 }

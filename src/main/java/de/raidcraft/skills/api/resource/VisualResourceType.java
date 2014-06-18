@@ -23,6 +23,11 @@ public enum VisualResourceType {
         this.visualResource = visualResource;
     }
 
+    public static VisualResourceType fromString(String str) {
+
+        return EnumUtils.getEnumFromString(VisualResourceType.class, str);
+    }
+
     public VisualResource getVisualResource() {
 
         return visualResource;
@@ -34,10 +39,5 @@ public enum VisualResourceType {
             return;
         }
         visualResource.update(resource);
-    }
-
-    public static VisualResourceType fromString(String str) {
-
-        return EnumUtils.getEnumFromString(VisualResourceType.class, str);
     }
 }

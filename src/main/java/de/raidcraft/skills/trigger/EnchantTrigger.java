@@ -10,23 +10,23 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
  */
 public class EnchantTrigger extends BukkitEventTrigger<EnchantItemEvent> {
 
-    public EnchantTrigger(Hero hero, EnchantItemEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public EnchantTrigger(Hero hero, EnchantItemEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

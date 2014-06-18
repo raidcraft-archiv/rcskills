@@ -20,12 +20,11 @@ import java.util.Set;
  */
 public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> implements Attack<S, T> {
 
-    private double damage;
-    private boolean knockback;
     private final Set<EffectType> attackTypes = new HashSet<>();
     private final Set<EffectElement> attackElemens = new HashSet<>();
     private final AttackSource source;
-
+    private double damage;
+    private boolean knockback;
     private List<AmbientEffect> impactEffects = new ArrayList<>();
 
     public AbstractAttack(S attacker, T target, double damage, EffectType... types) {
@@ -54,7 +53,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         if (damage < 0) {
             this.damage = 0;
         }
-        this.damage = ((int)(damage * 100.0)) / 100.0;
+        this.damage = ((int) (damage * 100.0)) / 100.0;
     }
 
     @Override
@@ -140,13 +139,13 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         return attacker != null && attacker.equals(source);
     }
 
-    public void setImpactEffects(List<AmbientEffect> impactEffects) {
-
-        this.impactEffects = impactEffects;
-    }
-
     protected List<AmbientEffect> getImpactEffects() {
 
         return this.impactEffects;
+    }
+
+    public void setImpactEffects(List<AmbientEffect> impactEffects) {
+
+        this.impactEffects = impactEffects;
     }
 }

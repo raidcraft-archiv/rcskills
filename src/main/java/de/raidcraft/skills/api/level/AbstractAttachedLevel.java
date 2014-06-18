@@ -18,6 +18,11 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     protected int exp = 0;
     protected int maxExp;
 
+    public AbstractAttachedLevel(T levelObject, LevelFormula formula) {
+
+        this(levelObject, formula, null);
+    }
+
     public AbstractAttachedLevel(T levelObject, LevelFormula formula, LevelData data) {
 
         this.levelObject = levelObject;
@@ -33,11 +38,6 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         calculateMaxExp();
     }
 
-    public AbstractAttachedLevel(T levelObject, LevelFormula formula) {
-
-        this(levelObject, formula, null);
-    }
-
     @Override
     public T getLevelObject() {
 
@@ -45,15 +45,29 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     }
 
     @Override
-    public LevelFormula getFormula() {
-
-        return formula;
-    }
-
-    @Override
     public int getLevel() {
 
         return this.level;
+    }
+
+    @Override
+    public void setLevel(int level) {
+
+        if (hasReachedMaxLevel()) return;
+        if (level > getMaxLevel()) level = getMaxLevel();
+        if (level < 1) level = 1;
+        if (level == this.level) return;
+
+        RCLevelEvent event = new RCLevelEvent(getLevelObject(), getLevel(), level);
+        RaidCraft.callEvent(event);
+
+        if (!event.isCancelled()) {
+            int oldLevel = this.level;
+            this.level = level;
+
+            if (level > oldLevel) increaseLevel();
+            if (level < oldLevel) decreaseLevel();
+        }
     }
 
     @Override
@@ -69,22 +83,21 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     }
 
     @Override
+    public void setExp(int exp) {
+
+        setExp(exp, true);
+    }
+
+    @Override
+    public LevelFormula getFormula() {
+
+        return formula;
+    }
+
+    @Override
     public int getMaxExp() {
 
         return this.maxExp;
-    }
-
-    @Override
-    public void calculateMaxExp() {
-
-        maxExp = getFormula().getNeededExpForLevel(getLevel());
-        if (maxExp == 0) maxExp = 1;
-    }
-
-    @Override
-    public int getExpToNextLevel() {
-
-        return this.maxExp - this.exp;
     }
 
     @Override
@@ -122,6 +135,19 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
             level++;
         }
         return level;
+    }
+
+    @Override
+    public void calculateMaxExp() {
+
+        maxExp = getFormula().getNeededExpForLevel(getLevel());
+        if (maxExp == 0) maxExp = 1;
+    }
+
+    @Override
+    public int getExpToNextLevel() {
+
+        return this.maxExp - this.exp;
     }
 
     @Override
@@ -164,12 +190,6 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     }
 
     @Override
-    public void setExp(int exp) {
-
-        setExp(exp, true);
-    }
-
-    @Override
     public void setExp(int exp, boolean callEvent) {
 
         if (this.exp < exp) {
@@ -185,26 +205,6 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         }
         this.exp = exp;
         checkProgress();
-    }
-
-    @Override
-    public void setLevel(int level) {
-
-        if (hasReachedMaxLevel()) return;
-        if (level > getMaxLevel()) level = getMaxLevel();
-        if (level < 1) level = 1;
-        if (level == this.level) return;
-
-        RCLevelEvent event = new RCLevelEvent<>(levelObject, getLevel(), level);
-        RaidCraft.callEvent(event);
-
-        if (!event.isCancelled()) {
-            int oldLevel = this.level;
-            this.level = level;
-
-            if (level > oldLevel) increaseLevel();
-            if (level < oldLevel) decreaseLevel();
-        }
     }
 
     @Override
@@ -235,6 +235,13 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     public boolean hasReachedMaxLevel() {
 
         return getMaxLevel() <= getLevel();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void saveLevelProgress() {
+
+        levelObject.saveLevelProgress(this);
     }
 
     private void checkProgress() {
@@ -270,12 +277,5 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
         calculateMaxExp();
         saveLevelProgress();
         getLevelObject().onLevelLoss();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void saveLevelProgress() {
-
-        levelObject.saveLevelProgress(this);
     }
 }

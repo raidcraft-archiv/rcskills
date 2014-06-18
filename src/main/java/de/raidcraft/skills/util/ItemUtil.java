@@ -16,9 +16,10 @@ public final class ItemUtil {
             return;
         }
         ItemStack contents[] = hero.getPlayer().getInventory().getContents();
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 9; i++) {
             if (contents[i] != null && CustomItemUtil.isWeapon(contents[i])) {
                 CustomItemUtil.moveItem(hero.getPlayer(), i, contents[i]);
             }
+        }
     }
 }

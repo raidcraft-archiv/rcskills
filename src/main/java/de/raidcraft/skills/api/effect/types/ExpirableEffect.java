@@ -16,8 +16,8 @@ import org.bukkit.Bukkit;
  */
 public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
-    private long startTime;
     protected long duration = 0;
+    private long startTime;
 
     public ExpirableEffect(S source, CharacterTemplate target, EffectData data) {
 
@@ -40,16 +40,16 @@ public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
         return TimeUtil.ticksToSeconds(getDuration()) - TimeUtil.millisToSeconds(runningTimeMillis);
     }
 
+    public long getDuration() {
+
+        return duration;
+    }
+
     public void setDuration(double time) {
 
         duration = TimeUtil.secondsToTicks(time);
         stopTask();
         startTask();
-    }
-
-    public long getDuration() {
-
-        return duration;
     }
 
     @Override

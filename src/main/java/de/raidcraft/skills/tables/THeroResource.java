@@ -1,9 +1,9 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.ResourceData;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,6 +15,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skills_hero_resources")
+@Getter
+@Setter
 public class THeroResource implements ResourceData {
 
     @Id
@@ -27,48 +29,27 @@ public class THeroResource implements ResourceData {
     @ManyToOne
     private THeroProfession profession;
 
+    @Override
     public int getId() {
 
         return id;
     }
 
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
 
         return name;
     }
 
-    public void setName(String name) {
-
-        this.name = name;
-    }
-
+    @Override
     public double getValue() {
 
         return value;
     }
 
+    @Override
     public void setValue(double value) {
 
         this.value = value;
-    }
-
-    public THeroProfession getProfession() {
-
-        return profession;
-    }
-
-    public void setProfession(THeroProfession profession) {
-
-        this.profession = profession;
-    }
-
-    public void delete() {
-
-        RaidCraft.getDatabase(SkillsPlugin.class).delete(this);
     }
 }

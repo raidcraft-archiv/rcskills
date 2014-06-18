@@ -76,6 +76,11 @@ public class ThreatTable {
             return target;
         }
 
+        public void increaseThreat(double amount) {
+
+            setThreatLevel(getThreatLevel() + amount);
+        }
+
         public double getThreatLevel() {
 
             return threatLevel;
@@ -85,11 +90,6 @@ public class ThreatTable {
 
             this.threatLevel = threatLevel;
             order();
-        }
-
-        public void increaseThreat(double amount) {
-
-            setThreatLevel(getThreatLevel() + amount);
         }
 
         public void decreaseThreat(double amount) {

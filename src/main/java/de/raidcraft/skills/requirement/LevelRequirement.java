@@ -18,13 +18,13 @@ public abstract class LevelRequirement extends AbstractRequirement<Hero> {
         super(resolver, config);
     }
 
-    protected abstract Levelable getLevelable();
-
     @Override
     protected void load(ConfigurationSection data) {
 
         requiredLevel = data.getInt("level", getLevelable() == null ? 1 : getLevelable().getMaxLevel());
     }
+
+    protected abstract Levelable getLevelable();
 
     protected int getRequiredLevel() {
 

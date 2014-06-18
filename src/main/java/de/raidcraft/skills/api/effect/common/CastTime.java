@@ -52,16 +52,15 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     }
 
     @Override
-    protected void tick(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer && !casted) {
-            // when the spell is cast above 85% it is consired success
-            if ((double) getRemainingTicks() / (double) getDuration() < 0.15) {
-                casted = true;
-            }
+        if (isPlayer) {
+            BarAPI.removeBar((Player) getTarget().getEntity());
         }
-        for (AmbientEffect effect : ambientEffects) {
-            effect.run(getTarget().getEntity().getLocation());
+        if (!casted) {
+            warn(getSource().getSource(), "Zauber " + getSource().getAbility().getFriendlyName() + " wurde unterbrochen.");
+        } else {
+            getSource().run();
         }
     }
 
@@ -72,15 +71,16 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void tick(CharacterTemplate target) throws CombatException {
 
-        if (isPlayer) {
-            BarAPI.removeBar((Player) getTarget().getEntity());
+        if (isPlayer && !casted) {
+            // when the spell is cast above 85% it is consired success
+            if ((double) getRemainingTicks() / (double) getDuration() < 0.15) {
+                casted = true;
+            }
         }
-        if (!casted) {
-            warn(getSource().getSource(), "Zauber " + getSource().getAbility().getFriendlyName() + " wurde unterbrochen.");
-        } else {
-            getSource().run();
+        for (AmbientEffect effect : ambientEffects) {
+            effect.run(getTarget().getEntity().getLocation());
         }
     }
 }

@@ -10,12 +10,7 @@ import org.bukkit.event.HandlerList;
  */
 public class RCCombatEvent extends Event implements Cancellable {
 
-    public enum Type {
-
-        LEAVE,
-        ENTER
-    }
-
+    private static final HandlerList handlers = new HandlerList();
     private final CharacterTemplate character;
     private final Type type;
     private boolean cancelled;
@@ -24,6 +19,11 @@ public class RCCombatEvent extends Event implements Cancellable {
 
         this.character = character;
         this.type = type;
+    }
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
     }
 
     public CharacterTemplate getHero() {
@@ -42,25 +42,24 @@ public class RCCombatEvent extends Event implements Cancellable {
         return cancelled;
     }
 
+    /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
+
     @Override
     public void setCancelled(boolean b) {
 
         this.cancelled = b;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public enum Type {
 
-        return handlers;
+        LEAVE,
+        ENTER
     }
 }

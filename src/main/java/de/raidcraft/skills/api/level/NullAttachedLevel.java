@@ -23,6 +23,11 @@ public final class NullAttachedLevel extends AbstractAttachedLevel<Profession> {
     }
 
     @Override
+    public void setLevel(int level) {
+
+    }
+
+    @Override
     public int getMaxLevel() {
 
         return 1;
@@ -32,6 +37,11 @@ public final class NullAttachedLevel extends AbstractAttachedLevel<Profession> {
     public int getExp() {
 
         return 0;
+    }
+
+    @Override
+    public void setExp(int exp) {
+
     }
 
     @Override
@@ -58,16 +68,6 @@ public final class NullAttachedLevel extends AbstractAttachedLevel<Profession> {
 
     @Override
     public void removeExp(int exp) {
-
-    }
-
-    @Override
-    public void setExp(int exp) {
-
-    }
-
-    @Override
-    public void setLevel(int level) {
 
     }
 

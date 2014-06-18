@@ -27,6 +27,18 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     }
 
     @Override
+    public void applyAttachment(Player player) throws CustomItemException {
+
+
+    }
+
+    @Override
+    public void removeAttachment(Player player) throws CustomItemException {
+
+
+    }
+
+    @Override
     public String getName() {
 
         return "level";
@@ -48,17 +60,5 @@ public class LevelRequirementAttachment implements RequiredItemAttachment {
     public String getErrorMessage() {
 
         return "Du benötigst mindestens Level " + requiredLevel + " um dieses Item zu tragen.";
-    }
-
-    @Override
-    public void applyAttachment(Player player) throws CustomItemException {
-
-
-    }
-
-    @Override
-    public void removeAttachment(Player player) throws CustomItemException {
-
-
     }
 }

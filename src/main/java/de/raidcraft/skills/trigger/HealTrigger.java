@@ -11,15 +11,21 @@ import org.bukkit.event.Cancellable;
  */
 public class HealTrigger extends Trigger implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
+    private final HealAction<?> action;
     private double amount;
     private boolean cancelled = false;
-    private final HealAction<?> action;
 
     public HealTrigger(HealAction action, double amount) {
 
         super((CharacterTemplate) action.getTarget());
         this.action = action;
         this.amount = amount;
+    }
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
     }
 
     public CharacterTemplate getTarget() {
@@ -32,6 +38,10 @@ public class HealTrigger extends Trigger implements Cancellable {
         return action;
     }
 
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
+
     public double getAmount() {
 
         return amount;
@@ -42,18 +52,7 @@ public class HealTrigger extends Trigger implements Cancellable {
         this.amount = amount;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

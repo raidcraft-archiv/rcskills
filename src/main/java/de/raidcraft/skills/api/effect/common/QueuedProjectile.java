@@ -34,15 +34,15 @@ public class QueuedProjectile extends ExpirableEffect<Skill> implements Triggere
         if (duration == 0) duration = 20 * 10;
     }
 
-    public void addCallback(LocationCallback callback) {
-
-        this.callback = callback;
-    }
-
     public void addCallback(LocationCallback callback, ProjectileType type) {
 
         addCallback(callback);
         setType(type);
+    }
+
+    public void addCallback(LocationCallback callback) {
+
+        this.callback = callback;
     }
 
     public void setType(ProjectileType type) {

@@ -94,6 +94,21 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         throw new UnknownSkillException("Error when loading skill for class: " + sClass.getCanonicalName());
     }
 
+    public boolean useAlias() {
+
+        return aliasConfig != null;
+    }
+
+    public String getAlias() {
+
+        return aliasConfig.getName();
+    }
+
+    public SkillInformation getInformation() {
+
+        return sClass.getAnnotation(SkillInformation.class);
+    }
+
     protected Skill create(Hero hero, Profession profession, ConfigurationSection... overrides) throws UnknownSkillException {
 
         SkillConfig config;
@@ -164,21 +179,6 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
             RaidCraft.getDatabase(SkillsPlugin.class).save(database);
         }
         return database;
-    }
-
-    public SkillInformation getInformation() {
-
-        return sClass.getAnnotation(SkillInformation.class);
-    }
-
-    public String getAlias() {
-
-        return aliasConfig.getName();
-    }
-
-    public boolean useAlias() {
-
-        return aliasConfig != null;
     }
 
     public SkillConfig getConfig(Profession profession) {

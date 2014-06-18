@@ -40,9 +40,17 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
         }
     }
 
-    public long getDelay() {
+    @Override
+    public void apply() throws CombatException {
 
-        return delay;
+        // dont start if interval is not configured
+        if (getInterval() < 1) {
+            remove();
+        }
+        if (!isStarted()) {
+            // lets start the task
+            startTask();
+        }
     }
 
     public long getInterval() {
@@ -64,17 +72,9 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
         }
     }
 
-    @Override
-    public void apply() throws CombatException {
+    public long getDelay() {
 
-        // dont start if interval is not configured
-        if (getInterval() < 1) {
-            remove();
-        }
-        if (!isStarted()) {
-            // lets start the task
-            startTask();
-        }
+        return delay;
     }
 
     @Override
@@ -94,8 +94,6 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
             super.renew();
         }
     }
-
-    protected abstract void tick(CharacterTemplate target) throws CombatException;
 
     @Override
     public void run() {
@@ -119,4 +117,6 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
             warn(e.getMessage());
         }
     }
+
+    protected abstract void tick(CharacterTemplate target) throws CombatException;
 }

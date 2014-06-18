@@ -39,18 +39,6 @@ public enum ProjectileType {
         this.clazz = clazz;
     }
 
-    public Class<? extends Projectile> getClazz() {
-
-        return clazz;
-    }
-
-    public Projectile spawn(CharacterTemplate character) {
-
-        Projectile projectile = character.getEntity().launchProjectile(getClazz());
-        projectile.setShooter(character.getEntity());
-        return projectile;
-    }
-
     public static ProjectileType fromName(String name) {
 
         for (ProjectileType type : values()) {
@@ -61,6 +49,11 @@ public enum ProjectileType {
         return null;
     }
 
+    public Class<? extends Projectile> getClazz() {
+
+        return clazz;
+    }
+
     public static ProjectileType valueOf(Entity entity) {
 
         for (ProjectileType type : values()) {
@@ -69,5 +62,12 @@ public enum ProjectileType {
             }
         }
         return null;
+    }
+
+    public Projectile spawn(CharacterTemplate character) {
+
+        Projectile projectile = character.getEntity().launchProjectile(getClazz());
+        projectile.setShooter(character.getEntity());
+        return projectile;
     }
 }

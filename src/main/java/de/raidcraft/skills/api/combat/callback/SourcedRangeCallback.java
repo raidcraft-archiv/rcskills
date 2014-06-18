@@ -40,11 +40,6 @@ public class SourcedRangeCallback<T extends ProjectileCallback> {
         return attack.getProjectile();
     }
 
-    public T getCallback() {
-
-        return attack.getCallback();
-    }
-
     public RangedAttack<T> getAttack() {
 
         return attack;
@@ -66,5 +61,10 @@ public class SourcedRangeCallback<T extends ProjectileCallback> {
         } else {
             combatManager.queueRangedAttack(this);
         }
+    }
+
+    public T getCallback() {
+
+        return attack.getCallback();
     }
 }

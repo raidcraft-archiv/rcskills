@@ -11,6 +11,7 @@ import org.bukkit.event.Cancellable;
  */
 public class PlayerCastSkillTrigger extends Trigger implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     private final SkillAction action;
     private boolean cancelled = false;
 
@@ -19,6 +20,15 @@ public class PlayerCastSkillTrigger extends Trigger implements Cancellable {
         super(action.getSource());
         this.action = action;
     }
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
+    /*///////////////////////////////////////////////////
+    //              Needed Trigger Stuff
+    ///////////////////////////////////////////////////*/
 
     public Skill getSkill() {
 
@@ -30,18 +40,7 @@ public class PlayerCastSkillTrigger extends Trigger implements Cancellable {
         return action;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Trigger Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

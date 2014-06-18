@@ -94,21 +94,6 @@ public final class ProfessionManager {
         return factory;
     }
 
-    public Profession getVirtualProfession(Hero hero) {
-
-        try {
-            return getProfession(hero, VIRTUAL_PROFESSION);
-        } catch (UnknownSkillException | UnknownProfessionException e) {
-            plugin.getLogger().warning(e.getMessage());
-        }
-        return null;
-    }
-
-    public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
-
-        return getProfession(hero, null, profId);
-    }
-
     public Profession getProfession(Profession profession, String profId) throws UnknownProfessionException, UnknownSkillException {
 
         return getProfession(profession.getHero(), profession, profId);
@@ -142,6 +127,10 @@ public final class ProfessionManager {
         return profession;
     }
 
+    public List<Profession> getAllProfessions(Hero hero) {
+
+        return getAllProfessions(hero, true);
+    }
 
     public List<Profession> getAllProfessions(Hero hero, boolean virtual) {
 
@@ -161,10 +150,19 @@ public final class ProfessionManager {
         return professions;
     }
 
+    public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
 
-    public List<Profession> getAllProfessions(Hero hero) {
+        return getProfession(hero, null, profId);
+    }
 
-        return getAllProfessions(hero, true);
+    public Profession getVirtualProfession(Hero hero) {
+
+        try {
+            return getProfession(hero, VIRTUAL_PROFESSION);
+        } catch (UnknownSkillException | UnknownProfessionException e) {
+            plugin.getLogger().warning(e.getMessage());
+        }
+        return null;
     }
 
     public ProfessionFactory getFactory(String name) throws UnknownProfessionException {

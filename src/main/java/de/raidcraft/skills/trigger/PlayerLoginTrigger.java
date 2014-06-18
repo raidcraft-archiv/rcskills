@@ -10,23 +10,23 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class PlayerLoginTrigger extends BukkitEventTrigger<PlayerJoinEvent> {
 
-    public PlayerLoginTrigger(CharacterTemplate source, PlayerJoinEvent event) {
-
-        super(source, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public PlayerLoginTrigger(CharacterTemplate source, PlayerJoinEvent event) {
 
-    public HandlerList getHandlers() {
+        super(source, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

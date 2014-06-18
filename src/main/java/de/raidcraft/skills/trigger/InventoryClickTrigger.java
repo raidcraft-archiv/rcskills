@@ -10,23 +10,23 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  */
 public class InventoryClickTrigger extends BukkitEventTrigger<InventoryClickEvent> {
 
-    public InventoryClickTrigger(Hero hero, InventoryClickEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public InventoryClickTrigger(Hero hero, InventoryClickEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

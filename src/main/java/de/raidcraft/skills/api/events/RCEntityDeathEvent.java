@@ -9,6 +9,7 @@ import org.bukkit.event.HandlerList;
  */
 public class RCEntityDeathEvent extends Event {
 
+    private static final HandlerList handlers = new HandlerList();
     private final CharacterTemplate character;
 
     public RCEntityDeathEvent(CharacterTemplate character) {
@@ -16,23 +17,21 @@ public class RCEntityDeathEvent extends Event {
         this.character = character;
     }
 
+    /*///////////////////////////////////////////////////
+    //              Needed Bukkit Stuff
+    ///////////////////////////////////////////////////*/
+
+    public static HandlerList getHandlerList() {
+
+        return handlers;
+    }
+
     public CharacterTemplate getCharacter() {
 
         return character;
     }
 
-    /*///////////////////////////////////////////////////
-    //              Needed Bukkit Stuff
-    ///////////////////////////////////////////////////*/
-
-    private static final HandlerList handlers = new HandlerList();
-
     public HandlerList getHandlers() {
-
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
 
         return handlers;
     }

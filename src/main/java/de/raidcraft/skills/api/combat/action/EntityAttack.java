@@ -32,15 +32,15 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
     private EntityDamageEvent.DamageCause cause = null;
     private List<AmbientEffect> lineEffects = new ArrayList<>();
 
-    public EntityAttack(CharacterTemplate source, CharacterTemplate target, double damage, EffectType... types) {
-
-        super(source, target, damage, types);
-    }
-
     public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, Callback<EntityAttack> callback, EffectType... types) {
 
         this(attacker, target, 0, types);
         this.callback = callback;
+    }
+
+    public EntityAttack(CharacterTemplate source, CharacterTemplate target, double damage, EffectType... types) {
+
+        super(source, target, damage, types);
     }
 
     public EntityAttack(CharacterTemplate attacker, CharacterTemplate target, double damage, Callback<EntityAttack> callback, EffectType... types) {

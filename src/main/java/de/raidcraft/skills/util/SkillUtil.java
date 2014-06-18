@@ -90,7 +90,7 @@ public final class SkillUtil {
         }
 
         for (Resource resource : skill.getHolder().getResources()) {
-            double resourceCost = ((int)(skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
+            double resourceCost = ((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
 
             if (resourceCost == 0) {
                 continue;

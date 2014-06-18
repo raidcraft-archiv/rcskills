@@ -7,6 +7,30 @@ import de.raidcraft.api.RaidCraftException;
  */
 public class CombatException extends RaidCraftException {
 
+    private final Type type;
+
+    public CombatException(String message) {
+
+        super(message);
+        this.type = CombatException.Type.UNKNOWN;
+    }
+
+    public CombatException(Type type) {
+
+        this(type, type.getMessage());
+    }
+
+    public CombatException(Type type, String message) {
+
+        super(message);
+        this.type = type;
+    }
+
+    public Type getType() {
+
+        return type;
+    }
+
     public enum Type {
 
         CANCELLED("Abgebrochen."),
@@ -46,29 +70,5 @@ public class CombatException extends RaidCraftException {
 
             return message;
         }
-    }
-
-    private final Type type;
-
-    public CombatException(String message) {
-
-        super(message);
-        this.type = CombatException.Type.UNKNOWN;
-    }
-
-    public CombatException(Type type) {
-
-        this(type, type.getMessage());
-    }
-
-    public CombatException(Type type, String message) {
-
-        super(message);
-        this.type = type;
-    }
-
-    public Type getType() {
-
-        return type;
     }
 }

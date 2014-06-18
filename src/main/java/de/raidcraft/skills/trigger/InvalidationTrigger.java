@@ -10,23 +10,23 @@ import de.raidcraft.skills.api.trigger.Trigger;
 public class InvalidationTrigger extends Trigger {
 
 
-    public InvalidationTrigger(CharacterTemplate source) {
-
-        super(source);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public InvalidationTrigger(CharacterTemplate source) {
 
-    public HandlerList getHandlers() {
+        super(source);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

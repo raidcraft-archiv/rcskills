@@ -12,13 +12,6 @@ import java.util.Map;
  */
 public class LevelConfig extends ConfigurationBase<SkillsPlugin> {
 
-    public enum Type {
-
-        SKILLS,
-        PROFESSIONS,
-        HEROES
-    }
-
     private final Map<String, ConfigurationSection> skillFormulas = new HashMap<>();
     private final Map<String, ConfigurationSection> professionFormulas = new HashMap<>();
     private final Map<String, ConfigurationSection> heroFormulas = new HashMap<>();
@@ -64,5 +57,12 @@ public class LevelConfig extends ConfigurationBase<SkillsPlugin> {
             default:
                 return null;
         }
+    }
+
+    public enum Type {
+
+        SKILLS,
+        PROFESSIONS,
+        HEROES
     }
 }

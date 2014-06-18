@@ -136,6 +136,27 @@ public class PlayerCommands {
         }
     }
 
+    private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {
+
+        Hero hero = expPool.getLevelObject();
+        if (exp > expPool.getExp()) {
+            plugin.getLogger().warning(hero.getName() + " tried to exploit the system by adding more exp than he has!");
+            throw new InvalidChoiceException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
+        }
+        int level = attachedLevel.getLevel() + attachedLevel.getLevelAmountForExp(exp);
+        if (level >= attachedLevel.getMaxLevel()) {
+            exp = attachedLevel.getNeededExpForLevel(attachedLevel.getLevel(), attachedLevel.getMaxLevel() - 1);
+            if (exp <= 0) {
+                throw new InvalidChoiceException("Du hast mit dieser Klasse bereits das max. Level erreicht.");
+            }
+            hero.sendMessage(ChatColor.RED + "Es wurden nur " + ChatColor.AQUA + exp
+                    + ChatColor.RED + " EXP verteilt, da du das max. Level erreicht hast.");
+        }
+        expPool.removeExp(exp);
+        attachedLevel.addExp(exp);
+        hero.sendMessage(ChatColor.GREEN + "Die EXP aus deinem EXP Pool wurden erfolgreich übertragen.");
+    }
+
     @Command(
             aliases = {"clear", "leave", "clearcache", "cache"},
             desc = "Kicks the player and clears his cache"
@@ -153,7 +174,6 @@ public class PlayerCommands {
             }
         }, 5L);
     }
-
 
     @Command(
             aliases = {"combatlog", "cl", "kampflog", "kl"},
@@ -179,26 +199,5 @@ public class PlayerCommands {
         Option.SIDEBAR_PARTY_HP.set(hero, !Option.SIDEBAR_PARTY_HP.isSet(hero));
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Die Gruppen Anzeige " + ChatColor.AQUA +
                 (Option.SIDEBAR_PARTY_HP.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
-    }
-
-    private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {
-
-        Hero hero = expPool.getLevelObject();
-        if (exp > expPool.getExp()) {
-            plugin.getLogger().warning(hero.getName() + " tried to exploit the system by adding more exp than he has!");
-            throw new InvalidChoiceException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
-        }
-        int level = attachedLevel.getLevel() + attachedLevel.getLevelAmountForExp(exp);
-        if (level >= attachedLevel.getMaxLevel()) {
-            exp = attachedLevel.getNeededExpForLevel(attachedLevel.getLevel(), attachedLevel.getMaxLevel() - 1);
-            if (exp <= 0) {
-                throw new InvalidChoiceException("Du hast mit dieser Klasse bereits das max. Level erreicht.");
-            }
-            hero.sendMessage(ChatColor.RED + "Es wurden nur " + ChatColor.AQUA + exp
-                    + ChatColor.RED + " EXP verteilt, da du das max. Level erreicht hast.");
-        }
-        expPool.removeExp(exp);
-        attachedLevel.addExp(exp);
-        hero.sendMessage(ChatColor.GREEN + "Die EXP aus deinem EXP Pool wurden erfolgreich übertragen.");
     }
 }

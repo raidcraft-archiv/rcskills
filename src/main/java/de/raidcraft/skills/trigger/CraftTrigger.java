@@ -10,23 +10,23 @@ import org.bukkit.event.inventory.CraftItemEvent;
  */
 public class CraftTrigger extends BukkitEventTrigger<CraftItemEvent> {
 
-    public CraftTrigger(Hero hero, CraftItemEvent event) {
-
-        super(hero, event);
-    }
+    private static final HandlerList handlers = new HandlerList();
 
     /*///////////////////////////////////////////////////
     //              Needed Trigger Stuff
     ///////////////////////////////////////////////////*/
 
-    private static final HandlerList handlers = new HandlerList();
+    public CraftTrigger(Hero hero, CraftItemEvent event) {
 
-    public HandlerList getHandlers() {
+        super(hero, event);
+    }
+
+    public static HandlerList getHandlerList() {
 
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
 
         return handlers;
     }

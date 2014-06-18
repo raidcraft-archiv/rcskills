@@ -36,6 +36,49 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
         crafting.putAll(formatItems(loadExperience(CRAFTING)));
     }
 
+    private Map<EntityType, Integer> formatEntities(Map<String, Integer> map) {
+
+        Map<EntityType, Integer> entities = new HashMap<>();
+        if (map != null) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                EntityType type = EntityType.fromName(entry.getKey());
+                if (type == null) {
+                    getPlugin().getLogger().warning("Wrong Entity Name in experience config: " + entry.getKey());
+                } else {
+                    entities.put(type, entry.getValue());
+                }
+            }
+        }
+        return entities;
+    }
+
+    private Map<String, Integer> loadExperience(String key) {
+
+        if (!contains(key)) return null;
+
+        Map<String, Integer> map = new HashMap<>();
+        for (String type : getConfigurationSection(key).getKeys(false)) {
+            map.put(type, getInt(key + "." + type));
+        }
+        return map;
+    }
+
+    private Map<Integer, Integer> formatItems(Map<String, Integer> map) {
+
+        Map<Integer, Integer> materials = new HashMap<>();
+        if (map != null) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                Material type = Material.matchMaterial(entry.getKey());
+                if (type == null) {
+                    getPlugin().getLogger().warning("Wrong Material Name in experience config: " + entry.getKey());
+                } else {
+                    materials.put(type.getId(), entry.getValue());
+                }
+            }
+        }
+        return materials;
+    }
+
     public int getBlockExperienceFor(int itemId) {
 
         if (blocks.containsKey(itemId)) {
@@ -73,48 +116,5 @@ public class ExperienceConfig extends ConfigurationBase<SkillsPlugin> {
     public double getProfessionHeroExpRate() {
 
         return getDouble("prof-hero-exp-rate", 1.0);
-    }
-
-    private Map<Integer, Integer> formatItems(Map<String, Integer> map) {
-
-        Map<Integer, Integer> materials = new HashMap<>();
-        if (map != null) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                Material type = Material.matchMaterial(entry.getKey());
-                if (type == null) {
-                    getPlugin().getLogger().warning("Wrong Material Name in experience config: " + entry.getKey());
-                } else {
-                    materials.put(type.getId(), entry.getValue());
-                }
-            }
-        }
-        return materials;
-    }
-
-    private Map<EntityType, Integer> formatEntities(Map<String, Integer> map) {
-
-        Map<EntityType, Integer> entities = new HashMap<>();
-        if (map != null) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                EntityType type = EntityType.fromName(entry.getKey());
-                if (type == null) {
-                    getPlugin().getLogger().warning("Wrong Entity Name in experience config: " + entry.getKey());
-                } else {
-                    entities.put(type, entry.getValue());
-                }
-            }
-        }
-        return entities;
-    }
-
-    private Map<String, Integer> loadExperience(String key) {
-
-        if (!contains(key)) return null;
-
-        Map<String, Integer> map = new HashMap<>();
-        for (String type : getConfigurationSection(key).getKeys(false)) {
-            map.put(type, getInt(key + "." + type));
-        }
-        return map;
     }
 }

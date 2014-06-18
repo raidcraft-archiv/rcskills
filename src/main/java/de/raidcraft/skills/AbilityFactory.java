@@ -78,21 +78,6 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
         throw new UnknownSkillException("Error when loading ability for class: " + sClass.getCanonicalName());
     }
 
-    public AbilityInformation getInformation() {
-
-        return sClass.getAnnotation(AbilityInformation.class);
-    }
-
-    public String getAlias() {
-
-        return aliasConfig.getName();
-    }
-
-    public boolean useAlias() {
-
-        return aliasConfig != null;
-    }
-
     protected AbilityConfig getNewConfig() {
 
         AbilityConfig config = plugin.configure(new AbilityConfig(this), false);
@@ -100,6 +85,21 @@ public final class AbilityFactory extends AbstractFactory<AbilityInformation> {
             config.merge(aliasConfig);
         }
         return config;
+    }
+
+    public boolean useAlias() {
+
+        return aliasConfig != null;
+    }
+
+    public String getAlias() {
+
+        return aliasConfig.getName();
+    }
+
+    public AbilityInformation getInformation() {
+
+        return sClass.getAnnotation(AbilityInformation.class);
     }
 
     protected Class<? extends Ability> getAbilityClass() {
