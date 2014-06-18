@@ -53,7 +53,7 @@ public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // lets replace the fired projectile with ours so we can track the impact and callback
-        new RangedAttack(getSource().getHolder(), trigger.getEvent());
+        new RangedAttack(getSource().getHolder(), trigger.getEvent()).run();
         fired = true;
         remove();
     }

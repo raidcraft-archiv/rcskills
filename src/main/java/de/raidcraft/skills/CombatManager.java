@@ -5,10 +5,13 @@ import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
+import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
+import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
@@ -160,10 +163,10 @@ public final class CombatManager implements Listener, Triggered {
             return;
         }
         // lets check some advanced stuff first, like if the attacking player has pvp disabled and the victim has pvp enabled
-        if (victim.isPvPEnabled() && !attacker.isPvPEnabled()) {
+        if (victim.isPvPEnabled()) {
             attacker.setPvPEnabled(true);
             attacker.sendMessage(ChatColor.RED + "Dein PvP Status wurde auf aktiv gesetzt!");
-        } else if (!victim.isPvPEnabled()) {
+        } else {
             throw new CombatException("Dein Ziel hat PvP nicht aktiviert und kann nicht angegriffen werden!");
         }
     }
@@ -302,6 +305,10 @@ public final class CombatManager implements Listener, Triggered {
             }
             CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
             source.triggerCombat(source);
+            // queue all ranged attacks to enable tracking of default attacks with projectiles
+            RangedAttack<ProjectileCallback> rangedAttack = new RangedAttack<>(source, ProjectileType.valueOf(event.getEntity()));
+            rangedAttack.setProjectile(event.getEntity());
+            new SourcedRangeCallback<>(rangedAttack).queueCallback();
         } catch (CombatException ignored) {
         }
     }
@@ -314,19 +321,19 @@ public final class CombatManager implements Listener, Triggered {
             return;
         }
         CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
-        try {
-            // iterate over our queued callbacks
-            for (SourcedRangeCallback<LocationCallback> sourcedCallback : new ArrayList<>(locationCallbacks.values())) {
-                if (sourcedCallback.getProjectile().equals(event.getEntity()) && sourcedCallback.getSource().equals(source)) {
-                    locationCallbacks.remove(sourcedCallback.getTaskId());
-                    sourcedCallback.getCallback().run(event.getEntity().getLocation());
+        // iterate over our queued callbacks
+        new ArrayList<>(locationCallbacks.values()).stream()
+                .filter(sourcedCallback -> sourcedCallback.getProjectile().equals(event.getEntity())
+                        && sourcedCallback.getSource().equals(source)).forEach(sourcedCallback -> {
+            try {
+                locationCallbacks.remove(sourcedCallback.getTaskId());
+                sourcedCallback.getCallback().run(event.getEntity().getLocation());
+            } catch (CombatException e) {
+                if (source instanceof Hero) {
+                    ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
                 }
             }
-        } catch (CombatException e) {
-            if (source instanceof Hero) {
-                ((Hero) source).sendMessage(ChatColor.RED + e.getMessage());
-            }
-        }
+        });
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -405,8 +412,9 @@ public final class CombatManager implements Listener, Triggered {
                         }
                         // lets issue a new physical attack for the event
                         try {
-                            PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage(), EffectType.DEFAULT_ATTACK);
+                            RangedAttack attack = new RangedAttack<>(source, ProjectileType.valueOf(event.getDamager()), source.getDamage());
                             attack.setKnockback(knockback);
+                            attack.setProjectile((Projectile) event.getDamager());
                             attack.run();
                         } catch (CombatException e) {
                             event.setCancelled(true);
