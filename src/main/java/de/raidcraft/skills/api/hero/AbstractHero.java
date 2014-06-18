@@ -112,7 +112,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the skills after the profession
         loadSkills();
         // load the bindings after the skills
-        getBinds().load();
+        getBindings().load();
         // it is important to load the user interface last or lese it will run in an endless loop
         this.userInterface = new BukkitUserInterface(this);
     }
@@ -789,7 +789,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the skills after the profession
         loadSkills();
         // reload the bound items
-        getBinds().reload();
+        getBindings().reload();
         clearWeapons();
         Scoreboards.removeScoreboard(getPlayer());
         save();

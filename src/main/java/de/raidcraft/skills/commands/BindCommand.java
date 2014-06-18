@@ -76,7 +76,7 @@ public class BindCommand {
 
                 throw new CommandException(ChatColor.YELLOW + "Du kannst diese Fähigkeit nicht an einen Gegenstand binden.");
             }
-            if (hero.getBinds().add(material, skill, args.argsLength() > 1 ? args.getString(1) : null)) {
+            if (hero.getBindings().add(material, skill, args.argsLength() > 1 ? args.getString(1) : null)) {
 
                 player.sendMessage(ChatColor.DARK_GREEN + "Die Fähigkeit " + skill.getFriendlyName() + " wurde erfolgreich an den Gegenstand gebunden.");
                 return;
@@ -86,7 +86,7 @@ public class BindCommand {
             }
         }
 
-        if (hero.getBinds().remove(material)) {
+        if (hero.getBindings().remove(material)) {
 
             player.sendMessage(ChatColor.DARK_GREEN + "Alle Fähigkeiten wurden erfolgreich von den Gegenstand entbunden.");
             return;

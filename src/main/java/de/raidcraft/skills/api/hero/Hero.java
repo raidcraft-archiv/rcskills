@@ -127,5 +127,5 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     void updatePermissions();
 
-    public BindManager getBinds();
+    public BindManager getBindings();
 }

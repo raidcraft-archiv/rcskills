@@ -34,7 +34,7 @@ public class BindListener implements Listener {
         Hero hero = plugin.getCharacterManager().getHero(player);
         Material material = player.getItemInHand().getType();
 
-        if (material == null || !hero.getBinds().contains(material)) {
+        if (material == null || !hero.getBindings().contains(material)) {
             return;
         }
 
@@ -43,14 +43,14 @@ public class BindListener implements Listener {
             if (Material.BOW.equals(material)) {
                 switchBoundSkill(hero, material, !player.isSneaking());
             } else {
-                use(hero, hero.getBinds().getWrapper(material));
+                use(hero, hero.getBindings().getWrapper(material));
             }
 
             event.setCancelled(true);
         } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             if (Material.BOW.equals(material)) {
-                use(hero, hero.getBinds().getWrapper(material));
+                use(hero, hero.getBindings().getWrapper(material));
                 event.setCancelled(event.getAction() == Action.RIGHT_CLICK_BLOCK);
             } else {
                 switchBoundSkill(hero, material, !player.isSneaking());
@@ -61,7 +61,7 @@ public class BindListener implements Listener {
 
     private void switchBoundSkill(Hero hero, Material material, boolean forward) {
 
-        BindWrapper bindWrapper = hero.getBinds().switchSkill(material, forward);
+        BindWrapper bindWrapper = hero.getBindings().switchSkill(material, forward);
 
         if (bindWrapper != null) {
             hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + bindWrapper.getSkill().getFriendlyName());

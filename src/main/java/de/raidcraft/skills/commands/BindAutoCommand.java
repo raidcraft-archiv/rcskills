@@ -107,7 +107,7 @@ public class BindAutoCommand {
 
         for (Map.Entry<Material, List<Skill>> entry : assignments.entrySet()) {
 
-            hero.getBinds().remove(entry.getKey());
+            hero.getBindings().remove(entry.getKey());
             stringBuilder.append(ChatColor.GOLD);
             stringBuilder.append(ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             stringBuilder.append(ChatColor.YELLOW);
@@ -116,7 +116,7 @@ public class BindAutoCommand {
             Skill lastSkill = entry.getValue().get(entry.getValue().size() - 1);
             for (Skill skill : entry.getValue()) {
 
-                hero.getBinds().add(entry.getKey(), skill, null);
+                hero.getBindings().add(entry.getKey(), skill, null);
                 colorToggle = !colorToggle;
                 stringBuilder.append(colorToggle ? ChatColor.GRAY : ChatColor.DARK_GRAY);
                 stringBuilder.append(skill.getFriendlyName());
