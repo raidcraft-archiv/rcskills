@@ -1,4 +1,4 @@
-package de.raidcraft.skills.bindings;
+package de.raidcraft.skills.binds;
 
 import com.avaje.ebean.SqlUpdate;
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -20,24 +20,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Manages and holds bindings.
+ * Manages and holds binds.
  */
-public class BindingManager {
+public class BindManager {
 
     private final Hero hero;
     private Map<Material, Integer> iterators = new HashMap<>(5);
-    private Map<Material, ArrayList<BindingWrapper>> bindings = new HashMap<>(5);
+    private Map<Material, ArrayList<BindWrapper>> binds = new HashMap<>(5);
 
-    public BindingManager(Hero hero) {
+    public BindManager(Hero hero) {
 
         this.hero = hero;
     }
 
     /**
-     * Bind a skill on an item material.
+     * Bind a skill to the given item material.
      *
-     * @param material The material of the item
-     * @param skill    The skill to bind
+     * @param material The item material to bind to
+     * @param skill    The skill to be bound
      * @param arg      The argument to commit
      *
      * @return true if success, otherwise false
@@ -79,7 +79,7 @@ public class BindingManager {
 
         try {
 
-            addToList(material, new BindingWrapper(skill, new CommandContext(arg)));
+            addToList(material, new BindWrapper(skill, new CommandContext(arg)));
         } catch (CommandException e) {
 
             // no operation
@@ -88,33 +88,33 @@ public class BindingManager {
         return true;
     }
 
-    private void addToList(Material material, BindingWrapper bindingWrapper) {
+    private void addToList(Material material, BindWrapper bindWrapper) {
 
-        ArrayList<BindingWrapper> bindingWrapperArrayList;
+        ArrayList<BindWrapper> bindWrapperArrayList;
 
-        if (bindings.containsKey(material)) {
+        if (binds.containsKey(material)) {
 
-            bindingWrapperArrayList = bindings.get(material);
-            bindingWrapperArrayList.add(bindingWrapper);
+            bindWrapperArrayList = binds.get(material);
+            bindWrapperArrayList.add(bindWrapper);
         } else {
 
-            bindingWrapperArrayList = new ArrayList<>();
-            bindingWrapperArrayList.add(bindingWrapper);
+            bindWrapperArrayList = new ArrayList<>();
+            bindWrapperArrayList.add(bindWrapper);
             iterators.put(material, 0);
-            bindings.put(material, bindingWrapperArrayList);
+            binds.put(material, bindWrapperArrayList);
         }
     }
 
     /**
-     * Unbind any skill from an item material.
+     * Unbinds all skills from the given item material.
      *
-     * @param material The item material to unbind the skills from.
+     * @param material The item material to unbind
      *
      * @return true if success, otherwise false
      */
     public boolean remove(@NonNull Material material) {
 
-        if (!bindings.containsKey(material)) {
+        if (!binds.containsKey(material)) {
             return false;
         }
 
@@ -133,7 +133,7 @@ public class BindingManager {
         }
 
         result.stream().forEach(r -> RaidCraft.getDatabase(SkillsPlugin.class).delete(r));
-        bindings.remove(material);
+        binds.remove(material);
 
         if (iterators.containsKey(material)) {
             iterators.remove(material);
@@ -143,7 +143,7 @@ public class BindingManager {
     }
 
     /**
-     * Reloads all bindings from the database.
+     * Reloads all binds from the database.
      */
     public void reload() {
 
@@ -152,7 +152,7 @@ public class BindingManager {
     }
 
     /**
-     * Remove all bindings
+     * Removes all bound skills from each item material.
      */
     public void clear() {
 
@@ -160,7 +160,7 @@ public class BindingManager {
     }
 
     /**
-     * Load all bindings from the database.
+     * Load all binds from the database.
      */
     public void load() {
 
@@ -182,7 +182,7 @@ public class BindingManager {
                 Skill skill = hero.getSkill(result.getSkill());
                 Material material = Material.getMaterial(result.getItem());
 
-                addToList(material, new BindingWrapper(skill, new CommandContext(result.getArgs())));
+                addToList(material, new BindWrapper(skill, new CommandContext(result.getArgs())));
 
             } catch (UnknownSkillException | NullPointerException e) {
                 RaidCraft.getDatabase(SkillsPlugin.class).delete(result);
@@ -193,13 +193,13 @@ public class BindingManager {
     }
 
     /**
-     * Remove all bindings
+     * Removes all bound skills from each item material.
      *
      * @param permanent true to delete all entries from the database
      */
     public void clear(boolean permanent) {
 
-        bindings.clear();
+        binds.clear();
 
         if (permanent) {
 
@@ -211,71 +211,71 @@ public class BindingManager {
     }
 
     /**
-     * Returns true if the list contains no bindings.
+     * Returns true if the list contains no binds.
      *
-     * @return true if the binding list contains no elements, otherwise false
+     * @return true if the list contains no binds
      */
     public boolean isEmpty() {
 
-        return bindings.isEmpty();
+        return binds.isEmpty();
     }
 
     /**
-     * Returns true if bindings know about the specified material.
+     * Returns true if a skill is bound to the given item material.
      *
      * @param material The item material
      *
-     * @return true if bindings contains the specified material, otherwise false
+     * @return true if a skill is attached to the specified item material
      */
-    public boolean containsMaterial(Material material) {
+    public boolean contains(Material material) {
 
-        return !bindings.isEmpty() && bindings.containsKey(material);
+        return !binds.isEmpty() && binds.containsKey(material);
     }
 
     /**
-     * Returns the bound wrapper which the specified item is mapped, or null if there is no mapping for the item.
+     * Retrieves the currently pointed wrapper of the skill bound to the given item material.
      *
-     * @param material The item material whose associated skill action is to be returned
+     * @param material The item material
      *
-     * @return The wrapper to which the specified item material is mapped, or null if there is no mapping for the item material
+     * @return the wrapper of the specified item material currently referenced by the internal pointer, or null if none
      */
-    public BindingWrapper getBindingWrapper(Material material) {
+    public BindWrapper getWrapper(Material material) {
 
-        if (!bindings.containsKey(material) || !iterators.containsKey(material)) {
+        if (!binds.containsKey(material) || !iterators.containsKey(material)) {
             return null;
         }
 
-        return bindings.get(material).get(iterators.get(material));
+        return binds.get(material).get(iterators.get(material));
     }
 
     /**
-     * Switch the bound skill on the given item material.
+     * Moves the internal pointer of the given item material to its next attached skill.
      *
      * @param material The item material
      * @param forward  true to move forward, false to move backwards
      *
-     * @return the current selected wrapper, otherwise null
+     * @return the wrapper currently referenced by the internal pointer, or null if none
      */
-    public BindingWrapper switchSkill(Material material, boolean forward) {
+    public BindWrapper switchSkill(Material material, boolean forward) {
 
-        if (bindings.containsKey(material) && bindings.get(material).size() > 1 && iterators.containsKey(material)) {
+        if (binds.containsKey(material) && binds.get(material).size() > 1 && iterators.containsKey(material)) {
 
             if (forward) {
 
                 iterators.put(material,
-                        bindings.get(material).listIterator(iterators.get(material)).nextIndex() < bindings.get(material).size() - 1 ?
+                        binds.get(material).listIterator(iterators.get(material)).nextIndex() < binds.get(material).size() - 1 ?
                                 iterators.get(material) + 1 : 0
                 );
             } else {
 
                 iterators.put(material,
-                        bindings.get(material).listIterator(iterators.get(material)).hasPrevious() ?
-                                bindings.get(material).listIterator(iterators.get(material)).previousIndex() :
-                                bindings.get(material).size() - 1
+                        binds.get(material).listIterator(iterators.get(material)).hasPrevious() ?
+                                binds.get(material).listIterator(iterators.get(material)).previousIndex() :
+                                binds.get(material).size() - 1
                 );
             }
 
-            return bindings.get(material).get(iterators.get(material));
+            return binds.get(material).get(iterators.get(material));
         }
 
         return null;

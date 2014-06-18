@@ -20,7 +20,7 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.bindings.BindListener;
+import de.raidcraft.skills.binds.BindListener;
 import de.raidcraft.skills.commands.AdminCommands;
 import de.raidcraft.skills.commands.BindAutoCommand;
 import de.raidcraft.skills.commands.BindCommand;

@@ -1,4 +1,4 @@
-package de.raidcraft.skills.bindings;
+package de.raidcraft.skills.binds;
 
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.action.SkillAction;
@@ -27,36 +27,32 @@ public class BindListener implements Listener {
 
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
         Hero hero = plugin.getCharacterManager().getHero(player);
         Material material = player.getItemInHand().getType();
 
-        if (hero.getBindings().isEmpty() || material == null || !hero.getBindings().containsMaterial(material) || material.isBlock()) {
+        if (material == null || !hero.getBinds().contains(material)) {
             return;
         }
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 
             if (Material.BOW.equals(material)) {
-
                 switchBoundSkill(hero, material, !player.isSneaking());
             } else {
-
-                use(hero, hero.getBindings().getBindingWrapper(material));
+                use(hero, hero.getBinds().getWrapper(material));
             }
 
             event.setCancelled(true);
         } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             if (Material.BOW.equals(material)) {
-
-                use(hero, hero.getBindings().getBindingWrapper(material));
+                use(hero, hero.getBinds().getWrapper(material));
                 event.setCancelled(event.getAction() == Action.RIGHT_CLICK_BLOCK);
             } else {
-
                 switchBoundSkill(hero, material, !player.isSneaking());
                 event.setCancelled(true);
             }
@@ -65,19 +61,19 @@ public class BindListener implements Listener {
 
     private void switchBoundSkill(Hero hero, Material material, boolean forward) {
 
-        BindingWrapper bindingWrapper = hero.getBindings().switchSkill(material, forward);
+        BindWrapper bindWrapper = hero.getBinds().switchSkill(material, forward);
 
-        if (bindingWrapper != null) {
-            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + bindingWrapper.getSkill().getFriendlyName());
+        if (bindWrapper != null) {
+            hero.sendMessage(ChatColor.DARK_GRAY + "Gewählter Skill: " + bindWrapper.getSkill().getFriendlyName());
         }
 
     }
 
-    private void use(Hero hero, @NonNull BindingWrapper bindingWrapper) {
+    private void use(Hero hero, @NonNull BindWrapper bindWrapper) {
 
         try {
 
-            new SkillAction(bindingWrapper.getSkill(), bindingWrapper.getCommandContext()).run();
+            new SkillAction(bindWrapper.getSkill(), bindWrapper.getCommandContext()).run();
 
         } catch (CombatException e) {
 

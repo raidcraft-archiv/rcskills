@@ -33,7 +33,7 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.api.ui.UserInterface;
-import de.raidcraft.skills.bindings.BindingManager;
+import de.raidcraft.skills.binds.BindManager;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.formulas.FormulaType;
@@ -83,7 +83,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private boolean pvpEnabled = false;
 
     @Getter
-    private BindingManager bindings;
+    private BindManager bindings;
 
     protected AbstractHero(Player player, HeroData data) {
 
@@ -94,7 +94,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
-        this.bindings = new BindingManager(this);
+        this.bindings = new BindManager(this);
 
         // load some default options
         pvpEnabled = Option.PVP.isSet(this);
@@ -112,7 +112,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the skills after the profession
         loadSkills();
         // load the bindings after the skills
-        getBindings().load();
+        getBinds().load();
         // it is important to load the user interface last or lese it will run in an endless loop
         this.userInterface = new BukkitUserInterface(this);
     }
@@ -789,7 +789,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         // load the skills after the profession
         loadSkills();
         // reload the bound items
-        getBindings().reload();
+        getBinds().reload();
         clearWeapons();
         Scoreboards.removeScoreboard(getPlayer());
         save();
