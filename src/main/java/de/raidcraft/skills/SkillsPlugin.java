@@ -9,11 +9,15 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
+import de.raidcraft.api.action.action.ActionFactory;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.skills.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -130,6 +134,17 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         // register the tab stuff
         registerTabDecoSettings();
+
+        // register action api stuff
+        ActionFactory.getInstance().registerAction(this, "hero.addxp", new AddHeroExpAction());
+        RequirementFactory.getInstance().registerRequirement(this, "hero.level", new Requirement<Player>() {
+            @Override
+            public boolean test(Player player) {
+
+                Hero hero = getCharacterManager().getHero(player);
+                return hero.getPlayerLevel() >= getConfig().getInt("level");
+            }
+        });
 
         // register conv actions when all plugins loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
