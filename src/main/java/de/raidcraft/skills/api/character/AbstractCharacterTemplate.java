@@ -49,6 +49,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -831,6 +832,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         List<E> effects = new ArrayList<>();
         this.effects.values().stream().forEach(entry -> effects.addAll((Collection<? extends E>) entry.values()));
         return effects;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
+
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+        }
+        return null;
     }
 
     @Override
