@@ -690,7 +690,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
-        getEntity().damage(getMaxHealth());
+        setHealth(0.0);
     }
 
     @Override
@@ -724,7 +724,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (hasEffect(eClass, effect.getSource()) || (globalEffect && hasEffect(eClass))) {
             Effect<?> existingEffect;
             if (globalEffect) {
-                existingEffect = effects.get(eClass).values().stream().findFirst().get();
+                existingEffect = effects.get(eClass).values().stream().findFirst().orElseGet(() -> effect);
             } else {
                 existingEffect = effects.get(eClass).get(effect.getSource());
             }
