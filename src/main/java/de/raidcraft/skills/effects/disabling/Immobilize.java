@@ -36,16 +36,16 @@ public class Immobilize<S> extends ExpirableEffect<S> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
-        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(jumpBlock);
         target.getEntity().addPotionEffect(moveBlock);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.JUMP);
+        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
     }
 }

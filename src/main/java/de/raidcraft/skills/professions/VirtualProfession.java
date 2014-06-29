@@ -32,27 +32,6 @@ public final class VirtualProfession extends AbstractProfession {
     }
 
     @Override
-    public void loadSkills() {
-
-        super.loadSkills();
-        // also load all skills that are only added in the db
-        SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
-        List<THeroSkill> dbSkills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId()).getSkills();
-        if (dbSkills != null) {
-            for (THeroSkill tHeroSkill : dbSkills) {
-                try {
-                    Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
-                    if (skill.isUnlocked()) {
-                        addSkill(skill);
-                    }
-                } catch (UnknownSkillException e) {
-                    getHero().sendMessage(ChatColor.RED + e.getMessage());
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean isActive() {
 
         return true;
@@ -78,6 +57,27 @@ public final class VirtualProfession extends AbstractProfession {
         this.skills.remove(skill.getName());
         skill.lock();
         skill.save();
+    }
+
+    @Override
+    public void loadSkills() {
+
+        super.loadSkills();
+        // also load all skills that are only added in the db
+        SkillManager skillManager = RaidCraft.getComponent(SkillsPlugin.class).getSkillManager();
+        List<THeroSkill> dbSkills = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId()).getSkills();
+        if (dbSkills != null) {
+            for (THeroSkill tHeroSkill : dbSkills) {
+                try {
+                    Skill skill = skillManager.getSkill(getHero(), this, tHeroSkill.getName());
+                    if (skill.isUnlocked()) {
+                        addSkill(skill);
+                    }
+                } catch (UnknownSkillException e) {
+                    getHero().sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
+        }
     }
 
     @Override

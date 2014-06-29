@@ -19,7 +19,8 @@ import java.util.Map;
         name = "Diminishing Returns",
         description = "Provides protection for stun locks and more.",
         types = {EffectType.SYSTEM},
-        priority = 1.0
+        priority = 1.0,
+        global = true
 )
 public class DiminishingReturns<S> extends ExpirableEffect<S> {
 
@@ -29,6 +30,11 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
     public DiminishingReturns(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
+    }
+
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
     }
 
     @Override
@@ -56,17 +62,12 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 

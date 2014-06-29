@@ -37,6 +37,8 @@ public interface Effect<S> {
 
     public boolean isOfType(EffectType type);
 
+    public boolean isOfAnyType(EffectType... types);
+
     public double getPriority();
 
     public void setPriority(double priority);

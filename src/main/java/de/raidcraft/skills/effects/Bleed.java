@@ -54,14 +54,14 @@ public class Bleed extends PeriodicExpirableEffect<Ability> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        warn("Blutungseffekt entfernt!");
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         warn("Blutungseffekt wurde erneuert!");
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        warn("Blutungseffekt entfernt!");
     }
 }

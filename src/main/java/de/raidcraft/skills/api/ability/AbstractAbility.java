@@ -70,10 +70,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         this.effectTypes.addAll(getProperties().getTypes());
     }
 
-    @SuppressWarnings("unchecked")
-    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> void removeEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
-        return target.addEffect(this, (S) this, eClass);
+        target.removeEffect(eClass, this);
     }    @Override
     public final void checkUsage(AbilityAction<T> action) throws CombatException {
 
@@ -100,9 +99,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         }
     }
 
-    public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> void removeEffect(Class<E> eClass) throws CombatException {
 
-        return target.addEffect(this, source, eClass);
+        getHolder().removeEffect(eClass, this);
     }    @Override
     public final void substractUsageCost(AbilityAction<T> action) {
 
@@ -112,9 +111,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         setCooldown(action.getCooldown(), false);
     }
 
-    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
+    public final <E extends Effect<S>, S> boolean hasEffect(Class<E> eClass) {
 
-        return getNearbyTargets(true);
+        return getHolder().hasEffect(eClass, this);
     }    @Override
     public boolean canUseAbility() {
 
@@ -124,6 +123,62 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         } catch (CombatException ignored) {
         }
         return false;
+    }
+
+    public final <E extends Effect<S>, S> boolean hasEffect(CharacterTemplate target, Class<E> eClass) {
+
+        return target.hasEffect(eClass, this);
+    }    @Override
+    @SuppressWarnings("unchecked")
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
+
+        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
+        if (effects == null) {
+            return new ArrayList<>();
+        }
+        return effects;
+    }
+
+    public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.getEffect(eClass, this);
+    }    @Override
+    public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
+
+        for (AmbientEffect effect : getAmbientEffects(stage)) {
+            effect.run(location);
+        }
+    }
+
+    public final <E extends Effect<S>, S> E getEffect(Class<E> eClass) throws CombatException {
+
+        return getHolder().getEffect(eClass, this);
+    }    public final boolean matches(String name) {
+
+        if (name == null) return false;
+        name = name.toLowerCase();
+        return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
+    }
+
+    public final <E extends Effect<S>, S> E addEffect(Class<E> eClass) throws CombatException {
+
+        return addEffect(getHolder(), eClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.addEffect(this, (S) this, eClass);
+    }
+
+    public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
+
+        return target.addEffect(this, source, eClass);
+    }
+
+    public List<CharacterTemplate> getNearbyTargets() throws CombatException {
+
+        return getNearbyTargets(true);
     }
 
     public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
@@ -137,15 +192,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         return new ArrayList<>();
-    }    @Override
-    @SuppressWarnings("unchecked")
-    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
-
-        List<AmbientEffect> effects = (List<AmbientEffect>) getProperties().getAmbientEffects().get(stage);
-        if (effects == null) {
-            return new ArrayList<>();
-        }
-        return effects;
     }
 
     public List<CharacterTemplate> getNearbyPartyMembers() {
@@ -157,22 +203,11 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             }
         }
         return targets;
-    }    @Override
-    public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
-
-        for (AmbientEffect effect : getAmbientEffects(stage)) {
-            effect.run(location);
-        }
     }
 
     public List<CharacterTemplate> getSafeNearbyTargets() {
 
         return getSafeNearbyTargets(true);
-    }    public final boolean matches(String name) {
-
-        if (name == null) return false;
-        name = name.toLowerCase();
-        return getName().contains(name) || getFriendlyName().toLowerCase().contains(name);
     }
 
     public List<CharacterTemplate> getSafeNearbyTargets(boolean friendly) {

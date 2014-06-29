@@ -21,7 +21,8 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 @EffectInformation(
         name = "QueuedAttack",
         description = "Löst den gegebenen Skill bei einem Angriff aus.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
 
@@ -70,15 +71,15 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!attacked) {
             info("Du senkst deine Waffe.");
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

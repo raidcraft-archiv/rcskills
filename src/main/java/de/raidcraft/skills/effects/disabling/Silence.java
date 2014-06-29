@@ -34,13 +34,13 @@ public class Silence<S> extends ExpirableEffect<S> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
-        warn("Der Stille Effekt wurde aufgehoben und du kannst wieder Zauber wirken!");
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
+        warn("Der Stille Effekt wurde aufgehoben und du kannst wieder Zauber wirken!");
     }
 }

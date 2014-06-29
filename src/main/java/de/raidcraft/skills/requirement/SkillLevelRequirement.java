@@ -27,12 +27,6 @@ public class SkillLevelRequirement extends LevelRequirement {
     }
 
     @Override
-    protected Levelable getLevelable() {
-
-        return requiredSkill;
-    }
-
-    @Override
     protected void load(ConfigurationSection data) {
 
         String skillName = data.getString("skill");
@@ -47,6 +41,12 @@ public class SkillLevelRequirement extends LevelRequirement {
             RaidCraft.LOGGER.warning("The skill level requirement " + skillName + " needs to be a levelable skill.");
         }
         super.load(data);
+    }
+
+    @Override
+    protected Levelable getLevelable() {
+
+        return requiredSkill;
     }
 
     @Override

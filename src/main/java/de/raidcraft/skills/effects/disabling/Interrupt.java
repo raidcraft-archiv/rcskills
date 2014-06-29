@@ -27,12 +27,6 @@ public class Interrupt<S> extends AbstractEffect<S> {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        silence = data.getBoolean("silence", false);
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         if (target.hasEffect(CastTime.class)) {
@@ -45,12 +39,18 @@ public class Interrupt<S> extends AbstractEffect<S> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
+        silence = data.getBoolean("silence", false);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

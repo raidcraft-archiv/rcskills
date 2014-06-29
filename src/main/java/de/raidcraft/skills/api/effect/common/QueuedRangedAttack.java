@@ -23,7 +23,8 @@ import org.bukkit.entity.Projectile;
 @EffectInformation(
         name = "Queued-Range-Attack",
         description = "Calls back a range attack when projectile hits.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedRangedAttack extends ExpirableEffect<Skill> implements Triggered {
 
@@ -64,15 +65,15 @@ public class QueuedRangedAttack extends ExpirableEffect<Skill> implements Trigge
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!fired) {
             info("Der Zauber auf deinem Bogen ist verblasst.");
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

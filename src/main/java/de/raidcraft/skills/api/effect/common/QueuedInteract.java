@@ -21,7 +21,8 @@ import org.bukkit.event.block.Action;
 @EffectInformation(
         name = "Queued Interact",
         description = "Löst den gegebenen Skill bei einem Interact aus.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered {
 
@@ -38,6 +39,12 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        info(activateMessage);
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         this.activateMessage = data.getString("activate-message");
@@ -45,9 +52,8 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
-        info(activateMessage);
     }
 
     @Override
@@ -56,11 +62,6 @@ public class QueuedInteract extends ExpirableEffect<Skill> implements Triggered 
         if (!triggered) {
             info(deactivateMessage);
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 
     public void sendInfo(String msg) {

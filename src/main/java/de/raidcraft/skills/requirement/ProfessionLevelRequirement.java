@@ -26,12 +26,6 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     }
 
     @Override
-    protected Levelable getLevelable() {
-
-        return profession;
-    }
-
-    @Override
     protected void load(ConfigurationSection data) {
 
         try {
@@ -40,6 +34,12 @@ public class ProfessionLevelRequirement extends LevelRequirement {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
         super.load(data);
+    }
+
+    @Override
+    protected Levelable getLevelable() {
+
+        return profession;
     }
 
     @Override

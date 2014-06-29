@@ -36,6 +36,12 @@ public class SunderingArmor extends ExpirableEffect<Ability> {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        armorReduction = armorReductionPerStack;
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         armorReductionPerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
@@ -47,22 +53,16 @@ public class SunderingArmor extends ExpirableEffect<Ability> {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        armorReduction = armorReductionPerStack;
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         if (armorReduction + armorReductionPerStack > armorReductionCap) {
             return;
         }
         armorReduction += armorReductionPerStack;
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
     }
 }

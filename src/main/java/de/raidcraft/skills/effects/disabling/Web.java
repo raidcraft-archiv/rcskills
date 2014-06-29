@@ -43,6 +43,12 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        renew(target);
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         abortSkillCast = data.getBoolean("abort-skillcast", true);
@@ -51,9 +57,9 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
-        renew(target);
+        setWebBlock(target.getEntity().getLocation());
     }
 
     @Override
@@ -62,12 +68,6 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
         for (Block block : blocks) {
             block.setType(Material.AIR);
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        setWebBlock(target.getEntity().getLocation());
     }
 
     private void setWebBlock(Location location) {

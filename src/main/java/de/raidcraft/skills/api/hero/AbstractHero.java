@@ -193,6 +193,17 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         return health;
     }
 
+    protected List<Profession> getActiveProfessions() {
+
+        ArrayList<Profession> professions = new ArrayList<>();
+        for (Profession profession : getProfessions()) {
+            if (profession.isActive()) {
+                professions.add(profession);
+            }
+        }
+        return professions;
+    }
+
     @Override
     public boolean equals(Object obj) {
 
@@ -375,12 +386,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         }
     }
 
-    @Override
-    public Player getPlayer() {
-
-        return (Player) getEntity();
-    }
-
     private void loadSkills() {
 
         virtualSkills.clear();
@@ -404,6 +409,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             }
         }
         getVirtualProfession().checkSkillsForUnlock();
+    }
+
+    @Override
+    public Player getPlayer() {
+
+        return (Player) getEntity();
     }
 
     @Override
@@ -979,17 +990,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (highestRankedProfession == null) {
             highestRankedProfession = getVirtualProfession();
         }
-    }
-
-    protected List<Profession> getActiveProfessions() {
-
-        ArrayList<Profession> professions = new ArrayList<>();
-        for (Profession profession : getProfessions()) {
-            if (profession.isActive()) {
-                professions.add(profession);
-            }
-        }
-        return professions;
     }
 
     private void addAttributes(Collection<ItemAttribute> attributes) {

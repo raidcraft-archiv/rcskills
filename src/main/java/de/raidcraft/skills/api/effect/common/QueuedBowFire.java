@@ -22,7 +22,8 @@ import de.raidcraft.skills.trigger.BowFireTrigger;
 @EffectInformation(
         name = "Queued-Range-Attack",
         description = "Calls back a range attack when projectile hits.",
-        types = {EffectType.SYSTEM}
+        types = {EffectType.SYSTEM},
+        global = true
 )
 public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
 
@@ -65,15 +66,15 @@ public class QueuedBowFire extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!fired) {
             info("Der Zauber auf deinem Bogen ist verblasst.");
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

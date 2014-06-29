@@ -27,10 +27,6 @@ public class ProfessionPath implements Path<Profession> {
     public int hashCode() {
 
         return name.hashCode();
-    }    @Override
-    public String getName() {
-
-        return name;
     }
 
     @Override
@@ -44,6 +40,14 @@ public class ProfessionPath implements Path<Profession> {
         return name.equals(that.name);
 
     }    @Override
+    public String getName() {
+
+        return name;
+    }
+
+
+
+    @Override
     public String getFriendlyName() {
 
         return config.getFriendlyName(getName());
@@ -98,8 +102,6 @@ public class ProfessionPath implements Path<Profession> {
 
         return config.getParents(getName());
     }
-
-
 
 
 }

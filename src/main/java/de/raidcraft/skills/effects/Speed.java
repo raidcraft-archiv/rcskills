@@ -32,13 +32,19 @@ public class Speed<S> extends ExpirableEffect<S> {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), amplifier));
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         this.amplifier = data.getInt("potion-amplifier", 1);
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), amplifier));
     }
@@ -51,11 +57,5 @@ public class Speed<S> extends ExpirableEffect<S> {
                 target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
             }
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), amplifier));
     }
 }

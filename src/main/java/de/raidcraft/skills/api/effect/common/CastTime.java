@@ -21,7 +21,8 @@ import java.util.List;
 @EffectInformation(
         name = "Casttime",
         description = "Keeps track of the casttime for a char template",
-        priority = -1.0
+        priority = -1.0,
+        global = true
 )
 public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
@@ -52,6 +53,12 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        // nothing we need to do here
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (isPlayer) {
@@ -62,12 +69,6 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
         } else {
             getSource().run();
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        // nothing we need to do here
     }
 
     @Override
