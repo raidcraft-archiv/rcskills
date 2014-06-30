@@ -175,6 +175,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException;
 
+    List<CharacterTemplate> getNearbyTargets(int range, boolean friendly, boolean self) throws CombatException;
+
     List<CharacterTemplate> getTargetsInFront(int range, float degrees) throws CombatException;
 
     List<CharacterTemplate> getTargetsInFront(int range) throws CombatException;
