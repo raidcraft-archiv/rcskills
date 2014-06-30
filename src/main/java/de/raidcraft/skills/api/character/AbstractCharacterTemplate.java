@@ -783,10 +783,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (effects != null) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
-                // lets remove the effect as a listener
-                if (effect instanceof Triggered) {
-                    TriggerManager.unregisterListeners((Triggered) effect);
-                }
             }
         }
     }
@@ -801,17 +797,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
         if (effect != null) {
             effect.remove();
-            // lets remove the effect as a listener
-            if (effect instanceof Triggered) {
-                TriggerManager.unregisterListeners((Triggered) effect);
-            }
         }
     }
 
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        removeEffect(effect.getClass(), effect.getSource());
+        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
+        if (removedEffect != null) {
+            effect.remove();
+        }
+        // lets remove the effect as a listener
+        if (effect instanceof Triggered) {
+            TriggerManager.unregisterListeners((Triggered) effect);
+        }
     }
 
     @Override
@@ -901,7 +900,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void clearEffects() {
 
-        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+        for (Map<Object, Effect> entry : effects.values()) {
             new ArrayList<>(entry.values()).forEach(effect -> {
                 try {
                     if (effect != null) {
@@ -1007,17 +1006,26 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
 
-        return getNearbyTargets(range).stream()
-                .filter(target -> friendly ? target.isFriendly(this) : !target.isFriendly(this))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly, boolean self) throws CombatException {
-
-        List<CharacterTemplate> targets = getNearbyTargets(range, friendly);
-        if (self) targets.add(this);
-        return targets;
+        List<CharacterTemplate> nearbyTargets = getNearbyTargets(range);
+        if (friendly) {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (target.isFriendly(this)) {
+                    targets.add(target);
+                }
+            }
+            // add self
+            targets.add(this);
+            return targets;
+        } else {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (!target.isFriendly(this)) {
+                    targets.add(target);
+                }
+            }
+            return targets;
+        }
     }
 
     @Override
