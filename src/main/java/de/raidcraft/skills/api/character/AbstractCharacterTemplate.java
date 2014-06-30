@@ -783,6 +783,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (effects != null) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
+                // lets remove the effect as a listener
+                if (effect instanceof Triggered) {
+                    TriggerManager.unregisterListeners((Triggered) effect);
+                }
             }
         }
     }
@@ -797,20 +801,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
         if (effect != null) {
             effect.remove();
+            // lets remove the effect as a listener
+            if (effect instanceof Triggered) {
+                TriggerManager.unregisterListeners((Triggered) effect);
+            }
         }
     }
 
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
-        if (removedEffect != null) {
-            effect.remove();
-        }
-        // lets remove the effect as a listener
-        if (effect instanceof Triggered) {
-            TriggerManager.unregisterListeners((Triggered) effect);
-        }
+        removeEffect(effect.getClass(), effect.getSource());
     }
 
     @Override
