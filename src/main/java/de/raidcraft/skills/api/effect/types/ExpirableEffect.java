@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.effect.types;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -14,6 +15,7 @@ import org.bukkit.Bukkit;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class ExpirableEffect<S> extends ScheduledEffect<S> {
 
     protected long duration = 0;

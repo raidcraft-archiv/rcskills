@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 /**
  * @author Silthus
  */
+@IgnoredSkill
 public abstract class AbstractLevelableSkill extends AbstractSkill implements LevelableSkill {
 
     private AttachedLevel<LevelableSkill> attachedLevel;

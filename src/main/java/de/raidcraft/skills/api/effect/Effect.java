@@ -17,6 +17,7 @@ import java.util.List;
  *
  * @author Silthus
  */
+@IgnoredEffect
 public interface Effect<S> {
 
     public String getName();
