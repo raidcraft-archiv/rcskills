@@ -816,7 +816,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
-        return effects.containsKey(eClass);
+        return effects.containsKey(eClass) && !effects.get(eClass).isEmpty();
     }
 
     @Override
