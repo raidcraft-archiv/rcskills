@@ -1008,26 +1008,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
 
-        List<CharacterTemplate> nearbyTargets = getNearbyTargets(range);
-        if (friendly) {
-            List<CharacterTemplate> targets = new ArrayList<>();
-            for (CharacterTemplate target : nearbyTargets) {
-                if (target.isFriendly(this)) {
-                    targets.add(target);
-                }
-            }
-            // add self
-            targets.add(this);
-            return targets;
-        } else {
-            List<CharacterTemplate> targets = new ArrayList<>();
-            for (CharacterTemplate target : nearbyTargets) {
-                if (!target.isFriendly(this)) {
-                    targets.add(target);
-                }
-            }
-            return targets;
-        }
+        return getNearbyTargets(range).stream()
+                .filter(target -> friendly ? target.isFriendly(this) : !target.isFriendly(this))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly, boolean self) throws CombatException {
+
+        List<CharacterTemplate> targets = getNearbyTargets(range, friendly);
+        if (self) targets.add(this);
+        return targets;
     }
 
     @Override
