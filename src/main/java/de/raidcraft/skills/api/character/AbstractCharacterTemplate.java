@@ -27,6 +27,7 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
@@ -81,7 +82,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
-    private CharacterTemplate lastKill;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -626,9 +626,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                         + attack.getDamage() + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
-                ((Hero) this).combatLog((attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "("
-                        + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + " hat dir "
-                        + attack.getDamage() + " Schaden mit " + attack.getSource() + "zugefügt.");
+                ((Hero) this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
+                        (attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "(" + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + "erhalten.");
             }
         }
     }
@@ -679,31 +678,19 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
-        getEntity().setCustomNameVisible(false);
-        // we need to damage not set health the entity or else it wont fire an death event
-        getEntity().damage(getMaxHealth());
-        if (killer != null) {
-            killer.setLastKill(this);
-        }
+        getEntity().damage(getMaxHealth(), killer.getEntity());
     }
 
     @Override
     public void kill() {
 
-        kill(null);
-    }
-
-    @Nullable
-    @Override
-    public CharacterTemplate getLastKill() {
-
-        return lastKill;
-    }
-
-    @Override
-    public void setLastKill(CharacterTemplate lastKill) {
-
-        this.lastKill = lastKill;
+        if (getEntity().isDead()) {
+            return;
+        }
+        getEntity().setCustomNameVisible(false);
+        RaidCraft.callEvent(new RCEntityDeathEvent(this));
+        clearEffects();
+        setHealth(0.0);
     }
 
     @Override
@@ -792,8 +779,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E> void removeEffect(Class<E> eClass) throws CombatException {
 
-        Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());
-        if (!effects.isEmpty()) {
+        Map<Object, Effect> effects = this.effects.remove(eClass);
+        if (effects != null) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
             }
@@ -816,19 +803,26 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        removeEffect(effect.getClass(), effect.getSource());
+        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
+        if (removedEffect != null) {
+            effect.remove();
+        }
+        // lets remove the effect as a listener
+        if (effect instanceof Triggered) {
+            TriggerManager.unregisterListeners((Triggered) effect);
+        }
     }
 
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
-        return effects.containsKey(eClass) && !effects.get(eClass).isEmpty();
+        return effects.containsKey(eClass);
     }
 
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
 
-        return hasEffect(eClass) && effects.get(eClass).containsKey(source);
+        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
     }
 
     @Override
@@ -844,16 +838,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
 
-        return getEffect(eClass, null);
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+        }
+        return null;
     }
 
     @Override
-    @Nullable
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
         if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findAny().orElseGet(null);
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
         }
         return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
     }
@@ -1010,17 +1006,26 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
 
-        return getNearbyTargets(range).stream()
-                .filter(target -> friendly ? target.isFriendly(this) : !target.isFriendly(this))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly, boolean self) throws CombatException {
-
-        List<CharacterTemplate> targets = getNearbyTargets(range, friendly);
-        if (self) targets.add(this);
-        return targets;
+        List<CharacterTemplate> nearbyTargets = getNearbyTargets(range);
+        if (friendly) {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (target.isFriendly(this)) {
+                    targets.add(target);
+                }
+            }
+            // add self
+            targets.add(this);
+            return targets;
+        } else {
+            List<CharacterTemplate> targets = new ArrayList<>();
+            for (CharacterTemplate target : nearbyTargets) {
+                if (!target.isFriendly(this)) {
+                    targets.add(target);
+                }
+            }
+            return targets;
+        }
     }
 
     @Override
