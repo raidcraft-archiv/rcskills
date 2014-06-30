@@ -89,9 +89,7 @@ public class SimpleParty implements Party {
             BukkitTask bukkitTask = invitedMembers.remove(member);
             if (bukkitTask != null) bukkitTask.cancel();
         }
-        for (Hero template : getHeroes()) {
-            CharacterManager.refreshPlayerTag(template);
-        }
+        getHeroes().forEach(CharacterManager::refreshPlayerTag);
     }
 
     @Override
@@ -160,9 +158,7 @@ public class SimpleParty implements Party {
     public void dispandParty() {
 
         sendMessage(ChatColor.RED + "Die Gruppe wurde aufgelöst.");
-        for (CharacterTemplate member : new HashSet<>(getMembers())) {
-            removeMember(member);
-        }
+        new HashSet<>(getMembers()).forEach(this::removeMember);
     }
 
     @Override
