@@ -691,8 +691,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
-        // we need to damage not set health the entity or else it wont fire an death event
-        getEntity().damage(getMaxHealth());
+        setHealth(0.0);
     }
 
     @Override
@@ -818,7 +817,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
-        return effects.containsKey(eClass) && !effects.get(eClass).isEmpty();
+        return effects.containsKey(eClass);
     }
 
     @Override
@@ -867,9 +866,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Map<Object, Effect> entry : effects.values()) {
-            new ArrayList<>(entry.values()).stream()
-                    .filter(effect -> effect.isOfType(type))
+        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
+            entry.values().stream().filter(effect -> effect.isOfType(type))
                     .forEach(effect -> {
                         try {
                             effect.remove();
