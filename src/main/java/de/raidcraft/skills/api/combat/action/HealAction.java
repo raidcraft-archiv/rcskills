@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.HealTrigger;
+import de.raidcraft.util.MathUtil;
 
 /**
  * @author Silthus
@@ -15,7 +16,7 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
     public HealAction(S source, CharacterTemplate target, double amount) {
 
         super(source, target);
-        this.amount = amount;
+        setAmount(amount);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
 
     public void setAmount(double amount) {
 
-        this.amount = amount;
+        this.amount = MathUtil.trim(amount);
     }
 
     @Override
