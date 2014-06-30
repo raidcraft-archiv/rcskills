@@ -901,7 +901,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public final void clearEffects() {
 
         for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
-            entry.values().forEach(effect -> {
+            new ArrayList<>(entry.values()).forEach(effect -> {
                 try {
                     if (effect != null) {
                         effect.remove();
