@@ -27,6 +27,7 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
@@ -687,19 +688,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         kill(null);
     }
 
-    @Nullable
-    @Override
-    public CharacterTemplate getLastKill() {
-
-        return lastKill;
-    }
-
-    @Override
-    public void setLastKill(CharacterTemplate lastKill) {
-
-        this.lastKill = lastKill;
-    }
-
     @Override
     public boolean isFriendly(CharacterTemplate source) {
 
@@ -786,8 +774,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E> void removeEffect(Class<E> eClass) throws CombatException {
 
-        Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());
-        if (!effects.isEmpty()) {
+        Map<Object, Effect> effects = this.effects.remove(eClass);
+        if (effects != null) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
             }
@@ -810,7 +798,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void removeEffect(Effect effect) throws CombatException {
 
-        removeEffect(effect.getClass(), effect.getSource());
+        Effect removedEffect = this.effects.getOrDefault(effect.getClass(), new HashMap<>()).remove(effect.getSource());
+        if (removedEffect != null) {
+            effect.remove();
+        }
+        // lets remove the effect as a listener
+        if (effect instanceof Triggered) {
+            TriggerManager.unregisterListeners((Triggered) effect);
+        }
     }
 
     @Override
@@ -822,7 +817,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
 
-        return hasEffect(eClass) && effects.get(eClass).containsKey(source);
+        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
     }
 
     @Override
@@ -838,16 +833,18 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
 
-        return getEffect(eClass, null);
+        if (eClass.getAnnotation(EffectInformation.class).global()) {
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+        }
+        return null;
     }
 
     @Override
-    @Nullable
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
         if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findAny().orElseGet(null);
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
         }
         return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
     }
@@ -863,8 +860,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
-            entry.values().stream().filter(effect -> effect.isOfType(type))
+        for (Map<Object, Effect> entry : effects.values()) {
+            new ArrayList<>(entry.values()).stream()
+                    .filter(effect -> effect.isOfType(type))
                     .forEach(effect -> {
                         try {
                             effect.remove();
