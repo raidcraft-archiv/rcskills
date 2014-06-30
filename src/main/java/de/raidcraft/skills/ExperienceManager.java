@@ -178,6 +178,25 @@ public final class ExperienceManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onExpGain(RCExpGainEvent event) {
 
+        Levelable levelable = event.getAttachedLevel().getLevelObject();
+        Hero hero = null;
+        if (levelable instanceof Hero) {
+            hero = ((Hero) levelable);
+        } else if (levelable instanceof Skill) {
+            hero = ((Skill) levelable).getHolder();
+        } else if (levelable instanceof Profession) {
+            hero = ((Profession) levelable).getHero();
+        }
+        int levelTreshhold = plugin.getCommonConfig().hero_level_treshhold;
+        if (hero != null && hero.getPlayerLevel() >= levelTreshhold) {
+            if (!hero.getPlayer().hasPermission("rcskills.hero.allow-level-above-treshhold")) {
+                plugin.getTranslationProvider().msg(hero.getPlayer(), "hero.reached-level-treshhold", ChatColor.RED
+                        + "Du musst dich freischalten lassen (http://rc-mc.eu/bewerbung) um über Level %s zu leveln.", levelTreshhold);
+                event.setGainedExp(0);
+                event.setCancelled(true);
+            }
+        }
+        // lets check permissions to level above the defined level
         double expBoost = plugin.getExperienceConfig().getExpRate();
         if (expBoost == 0.0) {
             return;
