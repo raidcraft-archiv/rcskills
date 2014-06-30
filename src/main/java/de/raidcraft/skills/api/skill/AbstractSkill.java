@@ -42,6 +42,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
+@IgnoredSkill
 public abstract class AbstractSkill extends AbstractAbility<Hero> implements Skill {
 
     private final int id;

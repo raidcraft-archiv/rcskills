@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 /**
  * @author Silthus
  */
+@IgnoredSkill
 public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver<Hero> {
 
     public int getId();

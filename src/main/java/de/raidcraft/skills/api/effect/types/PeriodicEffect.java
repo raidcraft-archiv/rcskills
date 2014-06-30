@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
 
     protected long delay;

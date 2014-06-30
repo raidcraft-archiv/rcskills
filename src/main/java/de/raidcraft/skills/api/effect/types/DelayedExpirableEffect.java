@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.effect.types;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
@@ -14,6 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class DelayedExpirableEffect<S> extends ScheduledEffect<S> {
 
     protected long delay = 0;
