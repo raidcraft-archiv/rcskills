@@ -476,6 +476,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public double profession_change_level_modifier = 1.0;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
+        @Setting("hero.level-treshhold")
+        public int hero_level_treshhold = 10;
         @Setting("health-scale")
         public double health_scale = 100.0;
         @Setting("paths.skill-configs")
