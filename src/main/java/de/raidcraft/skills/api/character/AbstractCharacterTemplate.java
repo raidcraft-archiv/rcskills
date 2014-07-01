@@ -824,7 +824,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
 
-        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
+        return hasEffect(eClass) && effects.get(eClass).containsKey(source);
     }
 
     @Override
