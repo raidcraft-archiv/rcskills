@@ -306,7 +306,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void increaseMaxHealth(double amount) {
 
         amount = MathUtil.trim(amount);
-        double healthIncreasePercent = MathUtil.toPercent(getMaxHealth() + amount / getMaxHealth());
+        double healthIncreasePercent = MathUtil.toPercent(amount / getMaxHealth());
         super.increaseMaxHealth(amount);
         combatLog("Maximale Leben um " + healthIncreasePercent + "% (" + (amount) + ") erhöht.");
     }
@@ -315,7 +315,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void decreaseMaxHealth(double amount) {
 
         amount = MathUtil.trim(amount);
-        double healthIncreasePercent = MathUtil.toPercent(getMaxHealth() + amount / getMaxHealth());
+        double healthIncreasePercent = MathUtil.toPercent(amount / getMaxHealth());
         super.decreaseMaxHealth(amount);
         combatLog("Maximale Leben um " + healthIncreasePercent + "% (" + (amount) + ") verringert.");
     }
