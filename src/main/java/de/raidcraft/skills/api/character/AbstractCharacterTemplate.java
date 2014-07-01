@@ -838,18 +838,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
 
-        if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
-        }
-        return null;
+        return getEffect(eClass, null);
     }
 
     @Override
+    @Nullable
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
         if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findAny().orElseGet(null);
         }
         return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
     }
