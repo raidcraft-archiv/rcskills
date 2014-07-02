@@ -4,7 +4,7 @@ import java.util.Collection;
 
 /**
  * Provides utility methods for {@link Collection} instances.
- * <p/>
+ *
  * Based on Apache Commons CollectionUtils
  */
 public class CollectionUtils {

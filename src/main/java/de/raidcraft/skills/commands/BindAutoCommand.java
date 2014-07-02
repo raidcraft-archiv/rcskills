@@ -39,8 +39,6 @@ public class BindAutoCommand {
      *
      * @param args   Passed command arguments
      * @param sender The source of the command
-     *
-     * @return true if success, otherwise false
      */
     @Command(
             aliases = "autobind",
@@ -129,8 +127,6 @@ public class BindAutoCommand {
         }
 
         player.sendMessage(stringBuilder.toString());
-
-        return;
     }
 
     private boolean bindSkill(int slot, Skill skill, Map<Material, List<Skill>> boundSkills) {

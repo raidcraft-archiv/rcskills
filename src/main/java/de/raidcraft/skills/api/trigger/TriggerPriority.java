@@ -29,7 +29,7 @@ public enum TriggerPriority {
     HIGHEST(4),
     /**
      * Trigger is listened to purely for monitoring the outcome of an trigger.
-     * <p/>
+     *
      * No modifications to the trigger should be made under this priority
      */
     MONITOR(5);

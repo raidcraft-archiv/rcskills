@@ -31,8 +31,6 @@ public class BindCommand {
      *
      * @param args   Passed command arguments
      * @param sender The source of the command
-     *
-     * @return true if success, otherwise false
      */
     @Command(
             aliases = {"bind", "unbind"},
@@ -87,14 +85,10 @@ public class BindCommand {
         }
 
         if (hero.getBindings().remove(material)) {
-
             player.sendMessage(ChatColor.DARK_GREEN + "Alle Fähigkeiten wurden erfolgreich von den Gegenstand entbunden.");
-            return;
         } else {
-
             player.sendMessage(ChatColor.DARK_GREEN + "Auf dem Gegenstand gibt es keine gebundene Fähigkeit.");
             player.sendMessage(ChatColor.YELLOW + "Gebe eine Fähigkeit an wenn du eine an den Gegenstand binden möchtest.");
-            return;
         }
     }
 }
