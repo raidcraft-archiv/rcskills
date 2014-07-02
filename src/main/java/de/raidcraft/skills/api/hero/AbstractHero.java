@@ -43,6 +43,7 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.MathUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -299,6 +300,24 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (getUserInterface() != null) {
             getUserInterface().refresh();
         }
+    }
+
+    @Override
+    public void increaseMaxHealth(double amount) {
+
+        amount = MathUtil.trim(amount);
+        double healthIncreasePercent = MathUtil.toPercent(amount / getMaxHealth());
+        super.increaseMaxHealth(amount);
+        combatLog("Maximale Leben um " + healthIncreasePercent + "% (" + (amount) + ") erhöht.");
+    }
+
+    @Override
+    public void decreaseMaxHealth(double amount) {
+
+        amount = MathUtil.trim(amount);
+        double healthIncreasePercent = MathUtil.toPercent(amount / getMaxHealth());
+        super.decreaseMaxHealth(amount);
+        combatLog("Maximale Leben um " + healthIncreasePercent + "% (" + (amount) + ") verringert.");
     }
 
     @Override

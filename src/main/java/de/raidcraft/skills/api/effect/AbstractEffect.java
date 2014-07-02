@@ -26,6 +26,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class AbstractEffect<S> implements Effect<S> {
 
     protected final Map<EffectEffectStage, List<AmbientEffect>> visualEffects;

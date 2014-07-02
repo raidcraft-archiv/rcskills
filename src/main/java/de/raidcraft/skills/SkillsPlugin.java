@@ -10,7 +10,6 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.api.action.action.ActionFactory;
-import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
@@ -135,16 +134,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         // register the tab stuff
         registerTabDecoSettings();
 
-        // register action api stuff
-        ActionFactory.getInstance().registerAction(this, "hero.addxp", new AddHeroExpAction());
-        RequirementFactory.getInstance().registerRequirement(this, "hero.level", new Requirement<Player>() {
-            @Override
-            public boolean test(Player player) {
-
-                Hero hero = getCharacterManager().getHero(player);
-                return hero.getPlayerLevel() >= getConfig().getInt("level");
-            }
-        });
+        registerActionAPI();
 
         // register conv actions when all plugins loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -209,6 +199,25 @@ public class SkillsPlugin extends BasePlugin implements Component {
         loadEngine();
         // reload the skill permissions provider
         permissionsProvider.reload();
+    }
+
+    private void registerActionAPI() {
+
+        /* ACTIONS */
+        ActionFactory actionFactory = ActionFactory.getInstance();
+        actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
+
+        /* REQUIREMENTS */
+        RequirementFactory requirementFactory = RequirementFactory.getInstance();
+        requirementFactory.registerRequirement(this, "hero.level", (Player player) -> {
+
+            Hero hero = getCharacterManager().getHero(player);
+            return hero.getPlayerLevel() >= getConfig().getInt("level");
+        });
+
+        /* TRIGGER */
+        de.raidcraft.api.action.trigger.TriggerManager triggerManager = de.raidcraft.api.action.trigger.TriggerManager.getInstance();
+        
     }
 
     public CharacterManager getCharacterManager() {
@@ -476,6 +485,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public double profession_change_level_modifier = 1.0;
         @Setting("hero.max-level")
         public int hero_max_level = 100;
+        @Setting("hero.level-treshhold")
+        public int hero_level_treshhold = 10;
         @Setting("health-scale")
         public double health_scale = 100.0;
         @Setting("paths.skill-configs")

@@ -1,18 +1,17 @@
 package de.raidcraft.skills.skills;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.SkillInformation;
 
 /**
  * @author Silthus
  */
-@SkillInformation(
+@EffectInformation(
         name = "timed-permission",
-        description = "Represents a generic timed permissions skill.",
-        triggerCombat = false
+        description = "Represents a generic timed permissions effect."
 )
 public class TimedPermissionSkill extends ExpirableEffect<PermissionSkill> {
 

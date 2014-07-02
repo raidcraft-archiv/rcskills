@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
         if (damage < 0) {
             this.damage = 0;
         }
-        this.damage = ((int) (damage * 100.0)) / 100.0;
+        this.damage = MathUtil.trim(damage);
     }
 
     @Override

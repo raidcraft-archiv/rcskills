@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -11,6 +12,7 @@ import de.raidcraft.util.TimeUtil;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
 
     protected long duration;

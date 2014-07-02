@@ -19,7 +19,7 @@ public class PartyHealthDisplay implements HealthDisplay {
 
         this.holder = holder;
         this.characterTemplate = characterTemplate;
-        this.scoreName = Bukkit.getOfflinePlayer(ChatColor.BLUE + characterTemplate.getName());
+        this.scoreName = Bukkit.getOfflinePlayer(ChatColor.BLUE + characterTemplate.getName().substring(0, 15));
         holder.attachHealthDisplay(this);
     }
 

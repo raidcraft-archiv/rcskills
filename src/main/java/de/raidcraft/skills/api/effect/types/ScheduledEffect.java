@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.effect.types;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.AbstractEffect;
+import de.raidcraft.skills.api.effect.IgnoredEffect;
 import de.raidcraft.skills.api.effect.Scheduled;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,6 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * @author Silthus
  */
+@IgnoredEffect
 public abstract class ScheduledEffect<S> extends AbstractEffect<S> implements Scheduled {
 
     private BukkitTask task;

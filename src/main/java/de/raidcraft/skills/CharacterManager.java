@@ -191,7 +191,7 @@ public final class CharacterManager implements Listener, Component {
         } else {
             if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
                 event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-            } else if (hero.isPvPEnabled() && !receivingPlayer.isPvPEnabled()) {
+            } else if (hero.isPvPEnabled()) {
                 event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
             } else {
                 event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
