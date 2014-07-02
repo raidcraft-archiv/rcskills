@@ -774,8 +774,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E> void removeEffect(Class<E> eClass) throws CombatException {
 
-        Map<Object, Effect> effects = this.effects.remove(eClass);
-        if (effects != null) {
+        Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());
+        if (!effects.isEmpty()) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
             }
