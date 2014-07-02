@@ -27,7 +27,6 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
@@ -784,10 +783,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (!effects.isEmpty()) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
-                // lets remove the effect as a listener
-                if (effect instanceof Triggered) {
-                    TriggerManager.unregisterListeners((Triggered) effect);
-                }
             }
         }
     }
@@ -802,10 +797,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
         if (effect != null) {
             effect.remove();
-            // lets remove the effect as a listener
-            if (effect instanceof Triggered) {
-                TriggerManager.unregisterListeners((Triggered) effect);
-            }
         }
     }
 
@@ -818,7 +809,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
-        return effects.containsKey(eClass);
+        return effects.containsKey(eClass) && !effects.get(eClass).isEmpty();
     }
 
     @Override
