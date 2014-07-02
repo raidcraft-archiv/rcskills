@@ -626,8 +626,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                         + attack.getDamage() + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
-                ((Hero) this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
-                        (attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "(" + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + "erhalten.");
+                ((Hero) this).combatLog((attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "("
+                        + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + " hat dir "
+                        + attack.getDamage() + " Schaden mit " + attack.getSource() + "zugefügt.");
             }
         }
     }
