@@ -625,8 +625,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                         + attack.getDamage() + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
-                ((Hero) this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
-                        (attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "(" + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + "erhalten.");
+                ((Hero) this).combatLog((attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "("
+                        + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + " hat dir "
+                        + attack.getDamage() + " Schaden mit " + attack.getSource() + "zugefügt.");
             }
         }
     }
@@ -689,7 +690,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         getEntity().setCustomNameVisible(false);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
-        setHealth(0.0);
+        // we need to damage not set health the entity or else it wont fire an death event
+        getEntity().damage(getMaxHealth());
     }
 
     @Override

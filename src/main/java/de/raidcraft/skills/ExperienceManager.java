@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
@@ -57,6 +58,13 @@ public final class ExperienceManager implements Listener {
 
         entity.remove();
         return watcher;
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onProfessionChange(PlayerChangeProfessionEvent event) {
+
+        // set the exp pool link
+        Option.EXP_POOL_LINK.set(plugin.getCharacterManager().getHero(event.getPlayer()), event.getNewProfession());
     }
 
     @SuppressWarnings("unchecked")
