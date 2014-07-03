@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
@@ -120,6 +121,11 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     public void kill(CharacterTemplate killer);
 
     public void kill();
+
+    public void setLastKill(CharacterTemplate lastKill);
+
+    @Nullable
+    public CharacterTemplate getLastKill();
 
     public boolean isFriendly(CharacterTemplate source);
 

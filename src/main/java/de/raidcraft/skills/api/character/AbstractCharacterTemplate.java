@@ -81,6 +81,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private Attack lastAttack;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
+    private CharacterTemplate lastKill;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -678,19 +679,33 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
-        getEntity().damage(getMaxHealth(), killer.getEntity());
+        getEntity().setCustomNameVisible(false);
+        // we need to damage not set health the entity or else it wont fire an death event
+        if (killer == null) {
+            getEntity().damage(getMaxHealth());
+        } else {
+            killer.setLastKill(this);
+            getEntity().damage(getMaxHealth(), killer.getEntity());
+        }
     }
 
     @Override
     public void kill() {
 
-        if (getEntity().isDead()) {
-            return;
-        }
-        getEntity().setCustomNameVisible(false);
-        RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        clearEffects();
-        setHealth(0.0);
+        kill(null);
+    }
+
+    @Nullable
+    @Override
+    public CharacterTemplate getLastKill() {
+
+        return lastKill;
+    }
+
+    @Override
+    public void setLastKill(CharacterTemplate lastKill) {
+
+        this.lastKill = lastKill;
     }
 
     @Override
