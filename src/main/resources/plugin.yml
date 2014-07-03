@@ -1,5 +1,5 @@
 main: de.raidcraft.skills.SkillsPlugin
-name: Skills
+name: RCSkills
 version: ${project.version}#${build.number}
 description: API for creating and using custom skills.
 author: Silthus
