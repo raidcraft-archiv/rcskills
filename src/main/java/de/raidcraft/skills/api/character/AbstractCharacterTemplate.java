@@ -27,7 +27,6 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
@@ -626,8 +625,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                         + attack.getDamage() + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
-                ((Hero) this).combatLog("Du hast " + attack.getDamage() + " Schaden von " + attack.getSource() +
-                        (attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "(" + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + "erhalten.");
+                ((Hero) this).combatLog((attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + "("
+                        + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + " hat dir "
+                        + attack.getDamage() + " Schaden mit " + attack.getSource() + "zugefügt.");
             }
         }
     }
@@ -684,13 +684,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void kill() {
 
-        if (getEntity().isDead()) {
-            return;
-        }
-        getEntity().setCustomNameVisible(false);
-        RaidCraft.callEvent(new RCEntityDeathEvent(this));
-        clearEffects();
-        setHealth(0.0);
+        kill(null);
+    }
+
+    @Nullable
+    @Override
+    public CharacterTemplate getLastKill() {
+
+        return lastKill;
+    }
+
+    @Override
+    public void setLastKill(CharacterTemplate lastKill) {
+
+        this.lastKill = lastKill;
     }
 
     @Override
@@ -783,10 +790,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (!effects.isEmpty()) {
             for (Effect effect : new ArrayList<>(effects.values())) {
                 effects.remove(effect.getSource()).remove();
-                // lets remove the effect as a listener
-                if (effect instanceof Triggered) {
-                    TriggerManager.unregisterListeners((Triggered) effect);
-                }
             }
         }
     }
@@ -801,10 +804,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         Effect<?> effect = effects.getOrDefault(eClass, new HashMap<>()).remove(source);
         if (effect != null) {
             effect.remove();
-            // lets remove the effect as a listener
-            if (effect instanceof Triggered) {
-                TriggerManager.unregisterListeners((Triggered) effect);
-            }
         }
     }
 
@@ -817,13 +816,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass) {
 
-        return effects.containsKey(eClass);
+        return effects.containsKey(eClass) && !effects.get(eClass).isEmpty();
     }
 
     @Override
     public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source) {
 
-        return effects.values().stream().anyMatch(entry -> entry.keySet().contains(source));
+        return hasEffect(eClass) && effects.get(eClass).containsKey(source);
     }
 
     @Override
@@ -839,18 +838,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
 
-        if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
-        }
-        return null;
+        return getEffect(eClass, null);
     }
 
     @Override
+    @Nullable
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
         if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findFirst().get();
+            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findAny().orElseGet(null);
         }
         return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
     }
