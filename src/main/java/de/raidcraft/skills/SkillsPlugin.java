@@ -9,6 +9,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
+import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
@@ -204,8 +205,12 @@ public class SkillsPlugin extends BasePlugin implements Component {
     private void registerActionAPI() {
 
         /* ACTIONS */
-        ActionFactory actionFactory = ActionFactory.getInstance();
-        actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
+        try {
+            ActionFactory actionFactory = ActionFactory.getInstance();
+            actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
+        } catch (ActionException e) {
+            getLogger().warning(e.getMessage());
+        }
 
         /* REQUIREMENTS */
         RequirementFactory requirementFactory = RequirementFactory.getInstance();
