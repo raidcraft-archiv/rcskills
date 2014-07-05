@@ -1,7 +1,8 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.api.ebean.Model;
+import com.avaje.ebean.validation.Length;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.task.Model;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,6 +57,13 @@ public class TProfessionTranslation extends Model {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private String description;
+
+    /**
+     * The profession tag.
+     */
+    @Column(columnDefinition = "CHAR", length = 3)
+    @Length(min = 3)
+    private String tag;
 
     public static Finder<Integer, TProfessionTranslation> find = new Finder<>(Integer.class, TProfessionTranslation.class, SkillsPlugin.class);
 }
