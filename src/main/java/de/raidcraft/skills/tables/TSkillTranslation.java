@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import de.raidcraft.api.ebean.Model;
+import de.raidcraft.api.language.table.TLanguage;
 import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
