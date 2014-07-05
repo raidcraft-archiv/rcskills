@@ -1,7 +1,7 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.api.ebean.Model;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.task.Model;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +25,11 @@ public class TProfession extends Model {
     @Id
     @Column(unique = true, nullable = false, length = 32)
     private String nameKey;
+
+    /**
+     * When the profession is max out.
+     */
+    private int maxLevel = 1;
 
     public static Finder<String, TProfession> find = new Finder<>(String.class, TProfession.class, SkillsPlugin.class);
 }
