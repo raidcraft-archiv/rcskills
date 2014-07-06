@@ -1,11 +1,11 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.Length;
 import com.avaje.ebean.validation.NotEmpty;
 import com.avaje.ebean.validation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,19 +20,19 @@ import javax.persistence.Table;
 public class TBinding {
 
     @Id
-    public int id;
+    private int id;
 
     @NotNull
     private int ownerId;
 
-    @Length(max = 32)
+    @Column(nullable = false, length = 32)
     @NotEmpty
     private String item;
 
-    @Length(max = 32)
+    @Column(length = 32)
     private String skill;
 
-    @Length(max = 32)
+    @Column(length = 32)
     private String args;
 
 }
