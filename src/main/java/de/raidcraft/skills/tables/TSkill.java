@@ -81,7 +81,7 @@ public class TSkill extends Model {
     private int maxLevel = 1;
 
     /**
-     * The length of the cooldown, or 0 if instant
+     * The length of the cooldown
      */
     private int cooldown = 0;
 
@@ -91,6 +91,8 @@ public class TSkill extends Model {
     private int range = 1;
 
     /**
+     * A string representation of this object.
+     * </p>
      * Only for debugging.
      */
     @Override
@@ -99,18 +101,18 @@ public class TSkill extends Model {
         final StringBuilder result = new StringBuilder();
         final String newLine = System.getProperty("line.separator");
 
-        result.append(this.getClass().getName() + " Object {" + newLine);
-        result.append(" Key: " + this.getNameKey() + newLine);
-        result.append(" Profession: " + this.getProfession());
-        result.append(" Creation timestamp: " + this.getCretimestamp() + newLine);
-        result.append(" Update timestamp: " + this.getUpdtimestamp() + newLine);
-        result.append(" Enabled: " + this.isEnabled());
-        result.append(" Hidden: " + this.isHidden());
-        result.append(" Icon material: " + this.getIconMaterial());
-        result.append(" Required level: " + this.getReqLevel());
-        result.append(" Maximum level: " + this.getMaxLevel());
-        result.append(" Cooldown time: " + this.getCooldown());
-        result.append(" Range: " + this.getRange());
+        result.append(this.getClass().getName()).append(" Object {").append(newLine);
+        result.append(" Key: ").append(this.getNameKey()).append(newLine);
+        result.append(" Profession: ").append(this.getProfession()).append(newLine);
+        result.append(" Creation timestamp: ").append(this.getCretimestamp()).append(newLine);
+        result.append(" Update timestamp: ").append(this.getUpdtimestamp()).append(newLine);
+        result.append(" Enabled: ").append(this.isEnabled()).append(newLine);
+        result.append(" Hidden: ").append(this.isHidden()).append(newLine);
+        result.append(" Icon material: ").append(this.getIconMaterial()).append(newLine);
+        result.append(" Required level: ").append(this.getReqLevel()).append(newLine);
+        result.append(" Maximum level: ").append(this.getMaxLevel()).append(newLine);
+        result.append(" Cooldown time: ").append(this.getCooldown()).append(newLine);
+        result.append(" Range: ").append(this.getRange()).append(newLine);
         result.append("}");
 
         return result.toString();
