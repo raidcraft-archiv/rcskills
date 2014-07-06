@@ -83,7 +83,7 @@ public class TSkill extends Model {
     /**
      * The length of the cooldown
      */
-    private int cooldown = 0;
+    private int cooldown;
 
     /**
      * The maximum distance of the skill to have an effect.
