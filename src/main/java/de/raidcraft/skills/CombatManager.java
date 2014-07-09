@@ -412,9 +412,8 @@ public final class CombatManager implements Listener, Triggered {
                         }
                         // lets issue a new physical attack for the event
                         try {
-                            RangedAttack attack = new RangedAttack<>(source, ProjectileType.valueOf(event.getDamager()), source.getDamage());
+                            PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage());
                             attack.setKnockback(knockback);
-                            attack.setProjectile((Projectile) event.getDamager());
                             attack.run();
                         } catch (CombatException e) {
                             event.setCancelled(true);
