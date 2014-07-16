@@ -484,16 +484,10 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerJoin(final PlayerJoinEvent event) {
 
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-
-                Hero hero = getHero(event.getPlayer());
-                hero.updateEntity(event.getPlayer());
-                hero.updatePermissions();
-                Scoreboards.updatePlayerTeam(hero);
-            }
-        }, 1L);
+        Hero hero = getHero(event.getPlayer());
+        hero.updateEntity(event.getPlayer());
+        hero.updatePermissions();
+        Scoreboards.updatePlayerTeam(hero);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
