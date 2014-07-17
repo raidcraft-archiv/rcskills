@@ -253,6 +253,8 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         unlocked = true;
         unlockTime = new Timestamp(System.currentTimeMillis());
         save();
+        // fire the skill gain event
+        RaidCraft.callEvent(new PlayerUnlockSkillEvent(this));
         // lets unlock all linked skills without checking the requirements
         for (Skill skill : getSkillProperties().getLinkedSkills(getHolder())) {
             skill.unlock();

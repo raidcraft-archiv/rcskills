@@ -17,6 +17,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
 import de.raidcraft.skills.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -222,7 +223,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         /* TRIGGER */
         de.raidcraft.api.action.trigger.TriggerManager triggerManager = de.raidcraft.api.action.trigger.TriggerManager.getInstance();
-        
+        triggerManager.registerTrigger(this, new SkillTrigger());
     }
 
     public CharacterManager getCharacterManager() {
