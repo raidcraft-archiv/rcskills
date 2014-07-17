@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
+import de.raidcraft.skills.api.skill.PlayerCastSkillEvent;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -153,6 +154,7 @@ public class SkillAction extends AbilityAction<Hero> {
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);
 
+        RaidCraft.callEvent(new PlayerCastSkillEvent(this));
         // lets inform the player that his skill was executed
         skill.getHolder().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
     }
