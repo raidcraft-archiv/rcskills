@@ -102,21 +102,21 @@ public class TSkill extends Model {
         final String newLine = System.getProperty("line.separator");
 
         result.append(this.getClass().getName()).append(" Object {").append(newLine);
-        result.append(" Key: ").append(this.getNameKey()).append(newLine);
-        result.append(" Profession: ").append(this.getProfession()).append(newLine);
-        result.append(" Creation timestamp: ").append(this.getCretimestamp()).append(newLine);
-        result.append(" Update timestamp: ").append(this.getUpdtimestamp()).append(newLine);
-        result.append(" Enabled: ").append(this.isEnabled()).append(newLine);
-        result.append(" Hidden: ").append(this.isHidden()).append(newLine);
-        result.append(" Icon material: ").append(this.getIconMaterial()).append(newLine);
-        result.append(" Required level: ").append(this.getReqLevel()).append(newLine);
-        result.append(" Maximum level: ").append(this.getMaxLevel()).append(newLine);
-        result.append(" Cooldown time: ").append(this.getCooldown()).append(newLine);
-        result.append(" Range: ").append(this.getRange()).append(newLine);
+        result.append(" key: ").append(this.nameKey).append(newLine);
+        result.append(" profession: ").append(this.profession).append(newLine);
+        result.append(" creation timestamp: ").append(this.cretimestamp).append(newLine);
+        result.append(" update timestamp: ").append(this.updtimestamp).append(newLine);
+        result.append(" enabled: ").append(this.enabled).append(newLine);
+        result.append(" hidden: ").append(this.hidden).append(newLine);
+        result.append(" icon material: ").append(this.iconMaterial).append(newLine);
+        result.append(" required level: ").append(this.reqLevel).append(newLine);
+        result.append(" maximum level: ").append(this.maxLevel).append(newLine);
+        result.append(" cooldown time: ").append(this.cooldown).append(newLine);
+        result.append(" range: ").append(this.range).append(newLine);
         result.append("}");
 
         return result.toString();
     }
 
-    public static Finder<String, TSkill> find = new TSkill.Finder<>(String.class, TSkill.class, SkillsPlugin.class);
+    public static Finder<String, TSkill> find = new Finder<>(String.class, TSkill.class, SkillsPlugin.class);
 }

@@ -31,5 +31,24 @@ public class TProfession extends Model {
      */
     private int maxLevel = 1;
 
+    /**
+     * A string representation of this object.
+     * </p>
+     * Only for debugging.
+     */
+    @Override
+    public String toString() {
+
+        final StringBuilder result = new StringBuilder();
+        final String newLine = System.getProperty("line.separator");
+
+        result.append(this.getClass().getName()).append(" Object {").append(newLine);
+        result.append(" key: ").append(this.nameKey).append(newLine);
+        result.append(" maxLevel: ").append(this.maxLevel).append(newLine);
+        result.append("}");
+
+        return result.toString();
+    }
+
     public static Finder<String, TProfession> find = new Finder<>(String.class, TProfession.class, SkillsPlugin.class);
 }
