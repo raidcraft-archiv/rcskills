@@ -67,7 +67,11 @@ import de.raidcraft.skills.tables.THeroOption;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TProfession;
+import de.raidcraft.skills.tables.TProfessionTranslation;
+import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -238,7 +242,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 getDatabase().find(clazz).findRowCount();
             }
         } catch (PersistenceException ex) {
-            System.out.println("Installing database for " + getDescription().getName() + " due to first time usage");
+            this.getLogger().info(String.format("Installing database for %s due to first time usage.", getDescription().getName()));
             installDDL();
         }
     }
@@ -364,6 +368,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(THeroResource.class);
         classes.add(THeroAttribute.class);
         classes.add(TBinding.class);
+        classes.add(TSkill.class);
+        classes.add(TSkillTranslation.class);
+        classes.add(TProfession.class);
+        classes.add(TProfessionTranslation.class);
         return classes;
     }
 
