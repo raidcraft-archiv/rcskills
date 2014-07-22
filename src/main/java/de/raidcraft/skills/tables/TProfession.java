@@ -7,7 +7,11 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 /**
@@ -27,6 +31,13 @@ public class TProfession extends Model {
     private String nameKey;
 
     /**
+     * The parent of this profession.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private TProfession parent;
+
+    /**
      * When the profession is max out.
      */
     private int maxLevel = 1;
@@ -44,6 +55,7 @@ public class TProfession extends Model {
 
         result.append(this.getClass().getName()).append(" Object {").append(newLine);
         result.append(" key: ").append(this.nameKey).append(newLine);
+        result.append(" parent: ").append(this.parent).append(newLine);
         result.append(" maxLevel: ").append(this.maxLevel).append(newLine);
         result.append("}");
 
