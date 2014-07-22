@@ -14,6 +14,7 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
@@ -72,6 +73,7 @@ import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.tables.TSkillTranslation;
+import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -172,6 +174,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 }
             }
         }, 1L);
+
+        new LoadConfigsTask(this).runTaskAsynchronously(this);
     }
 
     @Override
@@ -368,6 +372,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(THeroResource.class);
         classes.add(THeroAttribute.class);
         classes.add(TBinding.class);
+        classes.add(TLanguage.class);
         classes.add(TSkill.class);
         classes.add(TSkillTranslation.class);
         classes.add(TProfession.class);

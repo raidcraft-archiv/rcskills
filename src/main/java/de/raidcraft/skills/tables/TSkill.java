@@ -1,7 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.annotation.CreatedTimestamp;
-import de.raidcraft.api.ebean.Model;
+import de.raidcraft.skills.ebean.Model;
 import de.raidcraft.skills.SkillsPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,7 +45,6 @@ public class TSkill extends Model {
     /**
      * A timestamp that is set to the datetime when the skill is created/inserted.
      */
-    @Setter(AccessLevel.PROTECTED)
     @CreatedTimestamp
     private Timestamp cretimestamp;
 
@@ -68,7 +67,7 @@ public class TSkill extends Model {
      * The icon material the skill is using.
      */
     @Enumerated(EnumType.STRING)
-    private Material iconMaterial;
+    private Material iconMaterial = Material.ENCHANTED_BOOK;
 
     /**
      * The character level requirement.
@@ -88,7 +87,7 @@ public class TSkill extends Model {
     /**
      * The maximum distance of the skill to have an effect.
      */
-    private int range = 1;
+    private int reach = 1;
 
     /**
      * A string representation of this object.
@@ -112,7 +111,7 @@ public class TSkill extends Model {
         result.append(" required level: ").append(this.reqLevel).append(newLine);
         result.append(" maximum level: ").append(this.maxLevel).append(newLine);
         result.append(" cooldown time: ").append(this.cooldown).append(newLine);
-        result.append(" range: ").append(this.range).append(newLine);
+        result.append(" reach: ").append(this.reach).append(newLine);
         result.append("}");
 
         return result.toString();
