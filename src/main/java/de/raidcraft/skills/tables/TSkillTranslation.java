@@ -60,7 +60,7 @@ public class TSkillTranslation extends Model {
 
     /**
      * A string representation of this object.
-     * </p>
+     *
      * Only for debugging.
      */
     @Override
