@@ -39,12 +39,13 @@ public class ProfessionPath implements Path<Profession> {
 
         return name.equals(that.name);
 
-    }    @Override
+    }
+
+    @Override
     public String getName() {
 
         return name;
     }
-
 
 
     @Override

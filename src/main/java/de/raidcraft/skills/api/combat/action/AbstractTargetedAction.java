@@ -24,13 +24,13 @@ public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> imp
     public void setCancelled(boolean cancelled) {
 
         this.cancelled = cancelled;
-    }    @Override
+    }
+
+    @Override
     public T getTarget() {
 
         return target;
     }
-
-
 
 
     @Override

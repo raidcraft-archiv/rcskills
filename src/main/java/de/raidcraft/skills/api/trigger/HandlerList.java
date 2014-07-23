@@ -35,7 +35,7 @@ public class HandlerList {
 
         handlerslots = new EnumMap<>(TriggerPriority.class);
         for (TriggerPriority o : TriggerPriority.values()) {
-            handlerslots.put(o, new ArrayList<RegisteredTrigger>());
+            handlerslots.put(o, new ArrayList<>());
         }
         synchronized (allLists) {
             allLists.add(this);

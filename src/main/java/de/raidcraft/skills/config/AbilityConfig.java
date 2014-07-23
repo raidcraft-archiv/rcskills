@@ -106,7 +106,7 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
                 continue;
             }
             if (!effects.containsKey(stage)) {
-                effects.put(stage, new ArrayList<AmbientEffect>());
+                effects.put(stage, new ArrayList<>());
             }
             Set<String> keys = section.getKeys(false);
             for (String key : keys) {

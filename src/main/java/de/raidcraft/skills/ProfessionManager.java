@@ -106,7 +106,7 @@ public final class ProfessionManager {
             throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
         }
         if (!cachedProfessions.containsKey(hero.getName())) {
-            cachedProfessions.put(hero.getName(), new CaseInsensitiveMap<Profession>());
+            cachedProfessions.put(hero.getName(), new CaseInsensitiveMap<>());
         }
         if (cachedProfessions.get(hero.getName()).containsKey(profId)) {
             return cachedProfessions.get(hero.getName()).get(profId);

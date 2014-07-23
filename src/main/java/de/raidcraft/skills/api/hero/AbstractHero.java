@@ -103,7 +103,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         ConfigurationSection levelConfig = RaidCraft.getComponent(SkillsPlugin.class).getLevelConfig()
                 .getConfigFor(LevelConfig.Type.HEROES, getName());
         FormulaType formulaType = FormulaType.fromName(levelConfig.getString("type", "wow"));
-        attachLevel(new ConfigurableAttachedLevel<CharacterTemplate>(this, formulaType.create(levelConfig), data.getLevelData()));
+        attachLevel(new ConfigurableAttachedLevel<>(this, formulaType.create(levelConfig), data.getLevelData()));
         // load the professions first so we have the skills already loaded
         loadProfessions(data);
         loadAttributes();

@@ -161,7 +161,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         }
         String heroName = StringUtils.formatName(hero.getName());
         if (!cachedSkills.containsKey(heroName)) {
-            cachedSkills.put(heroName, new HashMap<CachedSkill, Skill>());
+            cachedSkills.put(heroName, new HashMap<>());
         }
         // lets create a cached skill instance to counter check with our cache
         // the skill will be null in this cached skill instance

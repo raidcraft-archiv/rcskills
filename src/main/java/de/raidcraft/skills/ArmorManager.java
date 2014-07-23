@@ -101,9 +101,9 @@ public final class ArmorManager implements Triggered, Listener {
      * This reduction formula is based on the WoW Armor Reduction formula for characters up to level 59.
      * <code>%Reduction = (Armor / ([45 * Attacker_Level] + Armor + 200)) * 100</code>
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
-     *
+     * <p>
      * The level of the attacker is taken from the hero or the attacking mob (defaults to 60).
-     *
+     * <p>
      * Since we have about half the armor items (4 opposed to 8) the formula is halfed.
      *
      * @return damage reduction in percent

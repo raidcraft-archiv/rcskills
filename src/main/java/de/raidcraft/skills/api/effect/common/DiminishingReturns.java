@@ -51,7 +51,7 @@ public class DiminishingReturns<S> extends ExpirableEffect<S> {
                     try {
                         int stack = Integer.parseInt(subKey);
                         if (!reduction.containsKey(type)) {
-                            reduction.put(type, new HashMap<Integer, Double>());
+                            reduction.put(type, new HashMap<>());
                         }
                         reduction.get(type).put(stack, section.getDouble(subKey));
                     } catch (NumberFormatException ignored) {

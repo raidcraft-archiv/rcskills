@@ -26,7 +26,8 @@ public class SkillTrigger extends Trigger implements Listener, Triggered {
 
         informListeners("cast", event.getPlayer(),
                 config -> !config.isSet("skill")
-                        || event.getSkill().getName().equalsIgnoreCase(config.getString("skill")));
+                        || event.getSkill().getName().equalsIgnoreCase(config.getString("skill"))
+        );
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -34,7 +35,8 @@ public class SkillTrigger extends Trigger implements Listener, Triggered {
 
         informListeners("unlock", event.getPlayer(),
                 config -> !config.isSet("skill")
-                        || event.getSkill().getName().equalsIgnoreCase(config.getString("skill")));
+                        || event.getSkill().getName().equalsIgnoreCase(config.getString("skill"))
+        );
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

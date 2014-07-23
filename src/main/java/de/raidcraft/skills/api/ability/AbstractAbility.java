@@ -73,7 +73,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> void removeEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         target.removeEffect(eClass, this);
-    }    @Override
+    }
+
+    @Override
     public final void checkUsage(AbilityAction<T> action) throws CombatException {
 
         if (this instanceof Passive) {
@@ -102,7 +104,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> void removeEffect(Class<E> eClass) throws CombatException {
 
         getHolder().removeEffect(eClass, this);
-    }    @Override
+    }
+
+    @Override
     public final void substractUsageCost(AbilityAction<T> action) {
 
         // and lets set the cooldown because it is like a usage cost for further casting
@@ -114,7 +118,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> boolean hasEffect(Class<E> eClass) {
 
         return getHolder().hasEffect(eClass, this);
-    }    @Override
+    }
+
+    @Override
     public boolean canUseAbility() {
 
         try {
@@ -128,7 +134,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> boolean hasEffect(CharacterTemplate target, Class<E> eClass) {
 
         return target.hasEffect(eClass, this);
-    }    @Override
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage) {
 
@@ -142,7 +150,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.getEffect(eClass, this);
-    }    @Override
+    }
+
+    @Override
     public void executeAmbientEffects(AbilityEffectStage stage, Location location) {
 
         for (AmbientEffect effect : getAmbientEffects(stage)) {
@@ -153,7 +163,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final <E extends Effect<S>, S> E getEffect(Class<E> eClass) throws CombatException {
 
         return getHolder().getEffect(eClass, this);
-    }    public final boolean matches(String name) {
+    }
+
+    public final boolean matches(String name) {
 
         if (name == null) return false;
         name = name.toLowerCase();
@@ -449,7 +461,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
             return;
         }
         hero.sendMessage(message);
-    }    @Override
+    }
+
+    @Override
     public double getTotalDamage() {
 
         return ConfigUtil.getTotalValue(this, properties.getDamage());
@@ -463,7 +477,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         if (getHolder() instanceof Hero) {
             ((Hero) getHolder()).combatLog(this, message);
         }
-    }    @Override
+    }
+
+    @Override
     public final int getTotalRange() {
 
         return (int) ConfigUtil.getTotalValue(this, properties.getRange());
@@ -473,7 +489,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public int hashCode() {
 
         return name.hashCode();
-    }    @Override
+    }
+
+    @Override
     public final double getTotalCooldown() {
 
         return ConfigUtil.getTotalValue(this, properties.getCooldown());
@@ -489,7 +507,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         return name.equals(that.name);
 
-    }    @Override
+    }
+
+    @Override
     public final double getTotalCastTime() {
 
         return ConfigUtil.getTotalValue(this, properties.getCastTime());
@@ -499,7 +519,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final String toString() {
 
         return getFriendlyName();
-    }    @Override
+    }
+
+    @Override
     public final void setCooldown(double cooldown) {
 
         setCooldown(cooldown, true);
@@ -676,26 +698,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         // override if needed
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

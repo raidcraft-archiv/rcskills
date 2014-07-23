@@ -11,13 +11,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginBase;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.persistence.PersistenceException;
 import java.io.File;
 import java.sql.Timestamp;
 
 /**
  * O_x Look at this mess. Just look at it! How did this happen?
- *
+ * <p>
  * Bitte so schnell wie möglich löschen und besser implementieren.
  */
 public class LoadConfigsTask extends BukkitRunnable {
@@ -54,17 +53,17 @@ public class LoadConfigsTask extends BukkitRunnable {
 
     private void loadProfessionSkills(final String root) {
 
-       final File[] classDirectories = new File(this.plugin.getDataFolder(), root).listFiles();
+        final File[] classDirectories = new File(this.plugin.getDataFolder(), root).listFiles();
 
         if ((classDirectories != null) && (classDirectories.length > 0)) {
-            for(final File classDirectory : classDirectories) {
-                if(!classDirectory.isDirectory()) {
+            for (final File classDirectory : classDirectories) {
+                if (!classDirectory.isDirectory()) {
                     continue;
                 }
 
                 TProfession profession = TProfession.find.byId(classDirectory.getName());
 
-                if(profession == null) {
+                if (profession == null) {
                     profession = new TProfession();
                     profession.setNameKey(classDirectory.getName());
                     profession.save(SkillsPlugin.class);
@@ -72,12 +71,12 @@ public class LoadConfigsTask extends BukkitRunnable {
 
                 final File[] childFiles = classDirectory.listFiles();
 
-                if((childFiles != null) && (childFiles.length > 0)) {
-                    for(final File childFile : childFiles) {
-                        if(childFile.isDirectory()) {
+                if ((childFiles != null) && (childFiles.length > 0)) {
+                    for (final File childFile : childFiles) {
+                        if (childFile.isDirectory()) {
                             TProfession childProfession = TProfession.find.byId(childFile.getName().replace(".yml", ""));
 
-                            if(childProfession == null) {
+                            if (childProfession == null) {
                                 childProfession = new TProfession();
                                 childProfession.setNameKey(childFile.getName().replace(".yml", ""));
                                 childProfession.setParent(profession);
@@ -86,17 +85,16 @@ public class LoadConfigsTask extends BukkitRunnable {
 
                             final File[] childChildsFiles = childFile.listFiles();
 
-                            if((childChildsFiles != null) && (childChildsFiles.length > 0)) {
+                            if ((childChildsFiles != null) && (childChildsFiles.length > 0)) {
                                 for (final File childChildsFile : childChildsFiles) {
-                                    if(childChildsFile.isDirectory() || childChildsFile.isHidden()) {
+                                    if (childChildsFile.isDirectory() || childChildsFile.isHidden()) {
                                         continue;
                                     }
                                     this.skillFromFile(childChildsFile.getName().replace(".yml", ""), childChildsFile, childProfession);
                                 }
                             }
-                        }
-                        else {
-                            if(childFile.isHidden()) {
+                        } else {
+                            if (childFile.isHidden()) {
                                 continue;
                             }
 
@@ -169,7 +167,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                     .eq("language_code", this.getLanguage().getCode())
                     .findUnique();
 
-            if(translation == null) {
+            if (translation == null) {
                 translation = new TSkillTranslation();
             }
 

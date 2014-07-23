@@ -14,7 +14,6 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
@@ -68,6 +67,7 @@ import de.raidcraft.skills.tables.THeroOption;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
@@ -630,7 +630,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
             sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
                     getTranslationProvider().tr(sender, "pvp.toggled", "PvP has been %s",
                             (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "enabled.")
-                            : getTranslationProvider().var(sender, "pvp.disabled", "disabled."))));
+                                    : getTranslationProvider().var(sender, "pvp.disabled", "disabled."))
+                    ));
         }
 
         @Command(

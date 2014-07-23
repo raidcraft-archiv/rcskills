@@ -1060,7 +1060,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             return Material.AIR;
         }
         return itemInHand.getType();
-    }    @Override
+    }
+
+    @Override
     public boolean isMastered() {
 
         return getAttachedLevel().hasReachedMaxLevel();
@@ -1069,7 +1071,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void reset() {
 
-    }    @Override
+    }
+
+    @Override
     public AttachedLevel<CharacterTemplate> getAttachedLevel() {
 
         return attachedLevel;
@@ -1116,8 +1120,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         // override if needed
     }
-
-
 
 
 }

@@ -118,7 +118,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
                 continue;
             }
             if (!effects.containsKey(stage)) {
-                effects.put(stage, new ArrayList<AmbientEffect>());
+                effects.put(stage, new ArrayList<>());
             }
             Set<String> keys = section.getKeys(false);
             for (String key : keys) {
@@ -294,7 +294,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     public Set<WeaponType> getRequiredWeapons() {
 
         HashSet<WeaponType> weaponTypes = new HashSet<>();
-        List<String> weapons = getOverride("weapons", new ArrayList<String>());
+        List<String> weapons = getOverride("weapons", new ArrayList<>());
         for (String weapon : weapons) {
             WeaponType weaponType = WeaponType.fromString(weapon);
             if (weaponType != null) {
