@@ -1,9 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.annotation.CreatedTimestamp;
-import de.raidcraft.skills.ebean.Model;
+import de.raidcraft.api.ebean.Model;
 import de.raidcraft.skills.SkillsPlugin;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;

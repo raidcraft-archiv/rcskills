@@ -1,6 +1,6 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.skills.ebean.Model;
+import de.raidcraft.api.ebean.Model;
 import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;

@@ -1,9 +1,8 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.Length;
-import de.raidcraft.RaidCraftPlugin;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.ebean.Model;
+import de.raidcraft.api.ebean.Model;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,5 +58,5 @@ public class TLanguage extends Model {
         return result.toString();
     }
 
-    public static Finder<String, TLanguage> find = new TLanguage.Finder<>(String.class, TLanguage.class, SkillsPlugin.class);
+    public static Finder<String, TLanguage> find = new TLanguage.Finder<String, TLanguage>(String.class, TLanguage.class, SkillsPlugin.class);
 }
