@@ -71,7 +71,6 @@ import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
-import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
@@ -369,7 +368,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(THeroExpPool.class);
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);
-        classes.add(TSkillData.class);
         classes.add(THeroResource.class);
         classes.add(THeroAttribute.class);
         classes.add(TBinding.class);
