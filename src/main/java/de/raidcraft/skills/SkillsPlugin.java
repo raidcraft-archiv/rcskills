@@ -247,6 +247,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
             }
         } catch (PersistenceException ex) {
             this.getLogger().info(String.format("Installing database for %s due to first time usage.", getDescription().getName()));
+            ex.printStackTrace();
             installDDL();
         }
     }
