@@ -78,6 +78,7 @@ import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -222,10 +223,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         /* REQUIREMENTS */
         RequirementFactory requirementFactory = RequirementFactory.getInstance();
-        requirementFactory.registerRequirement(this, "hero.level", (Player player) -> {
+        requirementFactory.registerRequirement(this, "hero.level", (Player player, ConfigurationSection config) -> {
 
             Hero hero = getCharacterManager().getHero(player);
-            return hero.getPlayerLevel() >= getConfig().getInt("level");
+            return hero.getPlayerLevel() >= config.getInt("level");
         });
 
         /* TRIGGER */
