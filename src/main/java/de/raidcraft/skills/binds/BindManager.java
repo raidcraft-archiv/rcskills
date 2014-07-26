@@ -4,6 +4,7 @@ import com.avaje.ebean.SqlUpdate;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.reference.Colors;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -81,8 +82,8 @@ public class BindManager {
 
             addToList(material, new BindWrapper(skill, new CommandContext(arg)));
         } catch (CommandException e) {
-
-            // no operation
+            hero.sendMessage(Colors.Chat.ERROR + e.getMessage());
+            e.printStackTrace();
         }
 
         return true;
