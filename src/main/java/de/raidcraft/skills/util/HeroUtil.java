@@ -14,7 +14,6 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
@@ -134,11 +133,9 @@ public final class HeroUtil {
         throw new UnknownPlayerException(character.getName() + " ist kein Spieler!");
     }
 
-    // TODO: use this class more oftern
     public static Hero getHeroFromName(String name) throws UnknownPlayerException {
 
-        return RaidCraft.getComponent(SkillsPlugin.class)
-                .getCharacterManager().getHero(UUIDUtil.convertPlayer(name));
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(name);
     }
 
     public static Profession getActivePathProfession(Hero hero, Path<Profession> path) {

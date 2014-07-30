@@ -5,10 +5,10 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.util.StringUtil;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.party.Party;
-import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -115,21 +115,25 @@ public class PartyCommands {
     @CommandPermissions("rcskills.party.kick")
     public void kick(CommandContext args, CommandSender sender) throws CommandException {
 
-        Hero hero = plugin.getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getString(0)));
-        Hero owner = plugin.getCharacterManager().getHero((Player) sender);
-        if (owner.getParty().getHeroes().size() <= 1) {
-            throw new CommandException("Du bist in keiner Gruppe.");
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(args.getString(0));
+            Hero owner = plugin.getCharacterManager().getHero((Player) sender);
+            if (owner.getParty().getHeroes().size() <= 1) {
+                throw new CommandException("Du bist in keiner Gruppe.");
+            }
+            if (hero.equals(owner)) {
+                throw new CommandException("Du kannst dich nicht selbst aus der Gruppe kicken.");
+            }
+            if (!owner.getParty().getOwner().equals(owner)) {
+                throw new CommandException("Nur der Gruppenleiter kann Spieler aus der Gruppe kicken.");
+            }
+            if (!owner.getParty().contains(hero)) {
+                throw new CommandException("Der Spieler " + hero.getName() + " ist nicht in deiner Gruppe.");
+            }
+            owner.getParty().kickMember(hero);
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
         }
-        if (hero.equals(owner)) {
-            throw new CommandException("Du kannst dich nicht selbst aus der Gruppe kicken.");
-        }
-        if (!owner.getParty().getOwner().equals(owner)) {
-            throw new CommandException("Nur der Gruppenleiter kann Spieler aus der Gruppe kicken.");
-        }
-        if (!owner.getParty().contains(hero)) {
-            throw new CommandException("Der Spieler " + hero.getName() + " ist nicht in deiner Gruppe.");
-        }
-        owner.getParty().kickMember(hero);
     }
 
     @Command(

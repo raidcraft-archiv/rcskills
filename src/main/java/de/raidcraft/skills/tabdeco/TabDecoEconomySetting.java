@@ -26,11 +26,11 @@ public class TabDecoEconomySetting extends TabDecoSetting {
         if (economy != null) {
 
             if (settingName.equalsIgnoreCase("rcMoneyGold")) {
-                return String.valueOf((int) economy.getBalance(player.getUniqueId()) / 100);
+                return String.valueOf((int) economy.getBalance(player.getName()) / 100);
             } else if (settingName.equalsIgnoreCase("rcMoneySilver")) {
-                return String.valueOf((int) economy.getBalance(player.getUniqueId()) % 100);
+                return String.valueOf((int) economy.getBalance(player.getName()) % 100);
             } else if (settingName.equalsIgnoreCase("rcMoneyCopper")) {
-                return String.valueOf((int) ((economy.getBalance(player.getUniqueId()) * 100.0) % 100));
+                return String.valueOf((int) ((economy.getBalance(player.getName()) * 100.0) % 100));
             }
         }
         // return random unique string

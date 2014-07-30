@@ -7,7 +7,6 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.UUID;
 
 /**
  * @author Silthus
@@ -22,7 +21,7 @@ public class THeroExpPool implements LevelData {
     private int id;
 
     private int heroId;
-    private UUID playerId;
+    private String player;
     private int exp;
     private THeroProfession linkedProfession;
 

@@ -1,5 +1,6 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.events.RCMaxHealthChangeEvent;
@@ -49,7 +50,7 @@ import java.util.Map;
 public final class BukkitEventDispatcher implements Listener {
 
     private final SkillsPlugin plugin;
-    private final Map<Block, Player> brewingPlayers = new HashMap<>();
+    private final Map<Block, String> brewingPlayers = new HashMap<>();
 
     public BukkitEventDispatcher(SkillsPlugin plugin) {
 
@@ -149,25 +150,26 @@ public final class BukkitEventDispatcher implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBrew(BrewEvent event) {
 
-        if (brewingPlayers.containsKey(event.getBlock())) {
-            TriggerManager.callSafeTrigger(
-                    new BrewTrigger(plugin.getCharacterManager().getHero(brewingPlayers.get(event.getBlock())), event)
-            );
+        try {
+            if (brewingPlayers.containsKey(event.getBlock())) {
+                TriggerManager.callSafeTrigger(
+                        new BrewTrigger(plugin.getCharacterManager().getHero(brewingPlayers.get(event.getBlock())), event)
+                );
+            }
+        } catch (UnknownPlayerException e) {
+            // player is offline so remove him
+            brewingPlayers.remove(event.getBlock());
         }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onInventoryOpen(InventoryOpenEvent event) {
 
-        if (!(event.getPlayer() instanceof Player)) {
-            return;
-        }
         TriggerManager.callSafeTrigger(
                 new InventoryOpenTrigger(plugin.getCharacterManager().getHero((Player) event.getPlayer()), event)
         );
         if (event.getInventory().getType() == InventoryType.BREWING) {
-            brewingPlayers.put(((BlockState) event.getInventory().getHolder()).getBlock(),
-                    (Player) event.getPlayer());
+            brewingPlayers.put(((BlockState) event.getInventory().getHolder()).getBlock(), event.getPlayer().getName());
         }
     }
 

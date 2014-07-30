@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.commands.QueuedCommand;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -39,23 +40,27 @@ public class PlayerCommands {
     @CommandPermissions("rcskills.player.cmd.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
-        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        Collection<String> strings = ProfessionUtil.renderProfessionInformation(hero.getVirtualProfession());
-        strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
-        for (String line : strings) {
-            hero.sendMessage(line);
-        }
-        if (hero.getResources().size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(ChatColor.YELLOW).append("Resourcen: \n");
-            for (Resource resource : hero.getResources()) {
-                sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ");
-                sb.append(ChatColor.AQUA).append(resource.getCurrent()).append(ChatColor.YELLOW).append("/");
-                sb.append(ChatColor.AQUA).append(resource.getMax()).append(ChatColor.YELLOW);
-                sb.append("\n");
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(sender.getName());
+            Collection<String> strings = ProfessionUtil.renderProfessionInformation(hero.getVirtualProfession());
+            strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
+            for (String line : strings) {
+                hero.sendMessage(line);
             }
-            hero.sendMessage(sb.toString());
+            if (hero.getResources().size() > 0) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(ChatColor.YELLOW).append("Resourcen: \n");
+                for (Resource resource : hero.getResources()) {
+                    sb.append(ChatColor.YELLOW).append("  - ");
+                    sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ");
+                    sb.append(ChatColor.AQUA).append(resource.getCurrent()).append(ChatColor.YELLOW).append("/");
+                    sb.append(ChatColor.AQUA).append(resource.getMax()).append(ChatColor.YELLOW);
+                    sb.append("\n");
+                }
+                hero.sendMessage(sb.toString());
+            }
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e.getMessage());
         }
     }
 

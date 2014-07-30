@@ -19,7 +19,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Silthus
@@ -35,7 +34,7 @@ public class THero implements LevelData, HeroData {
 
     @NotNull
     @Column(unique = true)
-    private UUID playerId;
+    private String player;
 
     private String selectedProfession;
     private int exp;
@@ -68,9 +67,9 @@ public class THero implements LevelData, HeroData {
     }
 
     @Override
-    public UUID getPlayerId() {
+    public String getName() {
 
-        return this.playerId;
+        return player;
     }
 
     @Override

@@ -63,11 +63,11 @@ public class ChooseProfessionAction extends AbstractAction {
                     hero.sendMessage("");
                     hero.changeProfession(profession);
                     if (cost > 0.0) {
-                        RaidCraft.getEconomy().modify(hero.getPlayer().getUniqueId(), -cost, BalanceSource.SKILL, "Wechsel zu " + profession.getFriendlyName());
+                        RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "Wechsel zu " + profession.getFriendlyName());
                     }
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {
-                    if (cost <= 0.0 || RaidCraft.getEconomy().hasEnough(hero.getPlayer().getUniqueId(), cost)) {
+                    if (cost <= 0.0 || RaidCraft.getEconomy().hasEnough(hero.getName(), cost)) {
                         conversation.triggerStage(createConfirmStage(
                                 "Bist du dir sicher dass du die " + profession.getPath().getFriendlyName() + " Spezialisierung "
                                         + profession.getFriendlyName() + " wählen willst?" +
