@@ -14,7 +14,6 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
@@ -75,6 +74,7 @@ import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -644,11 +644,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
             Hero hero;
             if (args.argsLength() > 0) {
-                try {
-                    hero = getCharacterManager().getHero(args.getString(0));
-                } catch (UnknownPlayerException e) {
-                    throw new CommandException(e.getMessage());
-                }
+                hero = getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getString(0)));
             } else {
                 hero = getCharacterManager().getHero((Player) sender);
             }

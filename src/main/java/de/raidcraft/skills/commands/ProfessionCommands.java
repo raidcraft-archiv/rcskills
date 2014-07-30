@@ -7,13 +7,13 @@ import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.PaginatedResult;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -151,7 +151,7 @@ public class ProfessionCommands {
         if (RaidCraft.getEconomy() != null && cost > 0.0) {
             hero.sendMessage(ChatColor.RED + "Dir wurden " + ChatColor.AQUA + RaidCraft.getEconomy().getFormattedAmount(cost)
                     + ChatColor.RED + " vom Konto abgezogen.");
-            RaidCraft.getEconomy().modify(hero.getName(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
+            RaidCraft.getEconomy().modify(hero.getPlayer().getUniqueId(), -cost, BalanceSource.SKILL, "--> " + profession.getFriendlyName());
         }
     }
 
@@ -165,11 +165,10 @@ public class ProfessionCommands {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         if (args.hasFlag('h')) {
-            try {
-                hero = plugin.getCharacterManager().getHero(args.getFlag('h'));
-            } catch (UnknownPlayerException e) {
-                throw new CommandException(e.getMessage());
-            }
+                hero = plugin.getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getFlag('h')));
+        }
+        if(hero == null) {
+            throw new CommandException("invalid Player");
         }
 
         Profession profession = hero.getSelectedProfession();

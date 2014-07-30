@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -92,18 +93,22 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
     }
 
     @Override
-    public Set<String> getPlayerGroups(String player) {
+    public Set<String> getPlayerGroups(UUID player) {
 
         Set<String> groups = new HashSet<>();
-        try {
-            Hero hero = plugin.getCharacterManager().getHero(player);
-            for (Skill skill : hero.getSkills()) {
-                if (skill.isActive() && skill.isUnlocked() && skill instanceof PermissionSkill) {
-                    groups.add(skill.getName());
-                }
+        Hero hero = plugin.getCharacterManager().getHero(player);
+        if(hero == null) {
+            try {
+                throw new UnknownPlayerException("getHero: Player is null");
+            } catch (UnknownPlayerException e) {
+                e.printStackTrace();
             }
-        } catch (UnknownPlayerException e) {
-            plugin.getLogger().warning(e.getMessage());
+            return null;
+        }
+        for (Skill skill : hero.getSkills()) {
+            if (skill.isActive() && skill.isUnlocked() && skill instanceof PermissionSkill) {
+                groups.add(skill.getName());
+            }
         }
         return groups;
     }

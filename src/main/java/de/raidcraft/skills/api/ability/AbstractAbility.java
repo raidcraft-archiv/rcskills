@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.ability;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -30,6 +29,7 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.TimeUtil;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -279,13 +279,10 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         CharacterTemplate target;
         if (args.argsLength() > 0) {
-            try {
-                target = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
-                if (!LocationUtil.isWithinRadius(getHolder().getEntity().getLocation(), target.getEntity().getLocation(), getTotalRange())) {
-                    throw new CombatException(CombatException.Type.OUT_OF_RANGE);
-                }
-            } catch (UnknownPlayerException e) {
-                throw new CombatException(e.getMessage());
+
+            target = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getString(0)));
+            if (!LocationUtil.isWithinRadius(getHolder().getEntity().getLocation(), target.getEntity().getLocation(), getTotalRange())) {
+                throw new CombatException(CombatException.Type.OUT_OF_RANGE);
             }
         } else if (self
                 || (getHolder().getEntity() instanceof Player
