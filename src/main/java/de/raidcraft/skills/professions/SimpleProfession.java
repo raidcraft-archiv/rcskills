@@ -34,7 +34,7 @@ public class SimpleProfession extends AbstractProfession {
         double conversionRate = ConfigUtil.getTotalValue(this, getProperties().getExpMoneyConversionRate());
         Economy economy = RaidCraft.getEconomy();
         if (economy != null) {
-            economy.modify(getHero().getName(), exp * conversionRate, BalanceSource.SKILL, "Berufseinkommen");
+            economy.modify(getHero().getPlayer().getUniqueId(), exp * conversionRate, BalanceSource.SKILL, "Berufseinkommen");
         }
         getHero().getUserInterface().refresh();
     }

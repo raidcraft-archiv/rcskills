@@ -34,7 +34,6 @@ public class PermissionSkill extends AbstractSkill {
     private boolean timed = false;
 
     public PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
-
         super(hero, data, profession, database);
     }
 
