@@ -137,8 +137,12 @@ public final class HeroUtil {
     // TODO: use this class more oftern
     public static Hero getHeroFromName(String name) throws UnknownPlayerException {
 
-        return RaidCraft.getComponent(SkillsPlugin.class)
+        Hero hero =  RaidCraft.getComponent(SkillsPlugin.class)
                 .getCharacterManager().getHero(UUIDUtil.convertPlayer(name));
+        if(hero == null) {
+            throw  new UnknownPlayerException("No hero found for: " + name);
+        }
+        return hero;
     }
 
     public static Profession getActivePathProfession(Hero hero, Path<Profession> path) {
