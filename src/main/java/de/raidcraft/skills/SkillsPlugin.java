@@ -145,7 +145,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerActionAPI();
 
         // register conv actions when all plugins loaded
-        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
 
