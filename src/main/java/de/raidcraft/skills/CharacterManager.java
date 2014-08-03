@@ -211,27 +211,28 @@ public final class CharacterManager implements Listener, Component {
             return null;
         }
         UUID player_id = player.getUniqueId();
-        THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
-                .where().eq("player_id", player_id).findUnique();
-        BukkitTask task = queuedLoggedOutHeroes.remove(player_id);
-        if (task != null) {
-            task.cancel();
-        }
-        if (heroTable == null) {
-            // create a new entry
-            heroTable = new THero();
-            heroTable.setPlayerId(player_id);
-            heroTable.setHealth(20);
-            heroTable.setExp(0);
-            heroTable.setLevel(0);
-            plugin.getDatabase().save(heroTable);
-        }
-
         Hero hero = heroes.get(player_id);
-        if (!heroes.containsKey(player_id)) {
-            // alo create a new exp pool for the hero
+        if (hero == null) {
+            BukkitTask task = queuedLoggedOutHeroes.remove(player_id);
+            if (task != null) {
+                task.cancel();
+            }
+            // try to load hero
+            THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
+                    .where().eq("player_id", player_id).findUnique();
+            // create a new entry if not exists
+            if (heroTable == null) {
+                heroTable = new THero();
+                heroTable.setPlayerId(player_id);
+                heroTable.setHealth(20);
+                heroTable.setExp(0);
+                heroTable.setLevel(0);
+                plugin.getDatabase().save(heroTable);
+            }
+
             THeroExpPool pool = plugin.getDatabase().find(THeroExpPool.class)
                     .where().eq("player_id", player_id).findUnique();
+            // also create a new exp pool for the hero
             if (pool == null) {
                 pool = new THeroExpPool();
                 pool.setPlayerId(player_id);
