@@ -28,7 +28,7 @@ public final class DamageManager implements Listener {
     private final SkillsPlugin plugin;
     private final SimpleConfiguration config;
     private Map<EntityType, Integer> creatureHealth;
-    private Map<EntityType, Integer> creatureDamage;
+    private Map<EntityType, Double> creatureDamage;
     private Map<Material, Double> itemDamage;
     private Map<EntityDamageEvent.DamageCause, Double> environmentalDamage;
     private Map<ProjectileType, Double> projectileDamage;
@@ -44,7 +44,7 @@ public final class DamageManager implements Listener {
     private void loadConfig() {
 
         this.creatureHealth = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-health"), EntityType.class, 20);
-        this.creatureDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-damage"), EntityType.class, 10);
+        this.creatureDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("creature-damage"), EntityType.class, 10.0);
         this.itemDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("item-damage"), Material.class, 2.0);
         this.environmentalDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("environmental-damage"), EntityDamageEvent.DamageCause.class, 0.0);
         this.projectileDamage = ConfigUtil.loadEnumMap(config.getConfigurationSection("projectile-damage"), ProjectileType.class, 0.0);
