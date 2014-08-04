@@ -34,6 +34,7 @@ public class PermissionSkill extends AbstractSkill {
     private boolean timed = false;
 
     public PermissionSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+
         super(hero, data, profession, database);
     }
 
@@ -51,7 +52,8 @@ public class PermissionSkill extends AbstractSkill {
     public void apply() {
 
         if (getHolder().isOnline()) {
-            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().addPlayerToGroup(getHolder().getName(), getName());
+            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager()
+                    .addPlayerToGroup(getHolder().getPlayer().getUniqueId(), getName());
         }
         if (timed) {
             try {
@@ -66,7 +68,8 @@ public class PermissionSkill extends AbstractSkill {
     public void remove() {
 
         if (getHolder().isOnline()) {
-            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager().removePlayerFromGroup(getHolder().getName(), getName());
+            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager()
+                    .removePlayerFromGroup(getHolder().getPlayer().getUniqueId(), getName());
         }
     }
 
