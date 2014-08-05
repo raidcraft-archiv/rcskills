@@ -3,11 +3,13 @@ package de.raidcraft.skills.task;
 import com.avaje.ebean.SqlUpdate;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.tables.TDataAlias;
+import de.raidcraft.skills.tables.TDataProfession;
 import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillTranslation;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginBase;
@@ -15,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * O_x Look at this mess. Just look at it! How did this happen?
@@ -51,13 +54,76 @@ public class LoadConfigsTask extends BukkitRunnable {
         this.loadGenericSkills();
         this.loadProfessionSkills("alias-configs/klassen", "Klasse");
         this.loadProfessionSkills("alias-configs/berufe", "Beruf");
+        this.loadProfs();
         this.loadAliases();
+    }
+
+    private void loadProfs() {
+        // delete old profs
+        SqlUpdate deleteCommands = plugin.getDatabase()
+                .createSqlUpdate("DELETE FROM skills_data_profession");
+        deleteCommands.execute();
+
+        File[] files = new File(this.plugin.getDataFolder(), "professions").listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseProf(file);
+                continue;
+            }
+            analyseAlias(file, null);
+        }
+    }
+
+    private void analyseProf(File parent) {
+
+        File[] files = parent.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseProf(file);
+                continue;
+            }
+            analyseProf(file, parent.getName());
+        }
+    }
+
+    private void analyseProf(File file, String type) {
+
+        try {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            TDataProfession prof = new TDataProfession();
+            String name = config.getString("name");
+            if (name == null) {
+                // UTF-8 file with BOM?
+                plugin.getLogger().warning("cannot sync prof into db: " + file.getName());
+                plugin.getLogger().warning(" no name key found - check encoding #1227");
+                return;
+            }
+            prof.setName(name);
+            prof.setDescription(config.getString("description"));
+            prof.setMaxLevel(config.getInt("max-level"));
+            prof.setFormula(config.getString("formula"));
+            prof.setParent(config.getString("parent"));
+            prof.setType(type);
+
+            ConfigurationSection skills = config.getConfigurationSection("skills");
+            Set<String> keys = skills.getKeys(false);
+            String skillString = "";
+            for (String key : keys) {
+                skillString += key + "$$" + skills.get(key + ".level") + "$$";
+            }
+            prof.setSkills(skillString);
+            plugin.getDatabase().save(prof);
+        } catch (Exception e) {
+            plugin.getLogger().warning("cannot sync prof into db: " + file.getName());
+            e.printStackTrace();
+        }
     }
 
     private void loadAliases() {
 
         // delete old aliases
-        SqlUpdate deleteCommands = plugin.getDatabase().createSqlUpdate("DELETE FROM skills_data_alias");
+        SqlUpdate deleteCommands = plugin.getDatabase()
+                .createSqlUpdate("DELETE FROM skills_data_alias");
         deleteCommands.execute();
 
         File[] files = new File(this.plugin.getDataFolder(), "alias-configs").listFiles();
@@ -90,7 +156,7 @@ public class LoadConfigsTask extends BukkitRunnable {
             String name = config.getString("name");
             if (name == null) {
                 // UTF-8 file with BOM?
-                plugin.getLogger().warning("cannot sync into db: " + file.getName());
+                plugin.getLogger().warning("cannot sync alias into db: " + file.getName());
                 plugin.getLogger().warning(" no name key found - check encoding #1227");
                 return;
             }
@@ -101,7 +167,7 @@ public class LoadConfigsTask extends BukkitRunnable {
             alias.setHidden(config.getBoolean("hidden", false));
             plugin.getDatabase().save(alias);
         } catch (Exception e) {
-            plugin.getLogger().warning("cannot sync into db: " + file.getName());
+            plugin.getLogger().warning("cannot sync alias into db: " + file.getName());
             e.printStackTrace();
         }
     }
