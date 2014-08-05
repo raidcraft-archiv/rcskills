@@ -5,10 +5,10 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.util.SkillUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -58,12 +58,10 @@ public class BindCommand {
 
         if (args.argsLength() > 0) {
 
-            try {
 
-                skill = hero.getSkill(args.getString(0));
+            skill = SkillUtil.getSkillFromArgs(hero, args.getString(0));
 
-            } catch (UnknownSkillException e) {
-
+            if (skill == null) {
                 throw new CommandException(ChatColor.YELLOW + "Du besitzt diese Fähigkeit nicht.");
             }
             if (hero.getPlayer().getItemInHand() == null || material == null || material.equals(Material.AIR) || material.isBlock()) {
