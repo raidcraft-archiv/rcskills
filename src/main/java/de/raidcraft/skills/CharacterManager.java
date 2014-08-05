@@ -17,6 +17,7 @@ import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.trigger.InvalidationTrigger;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -197,6 +198,11 @@ public final class CharacterManager implements Listener, Component {
                 event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
             }
         }
+    }
+
+    @Deprecated
+    public Hero getHero(String playerName) {
+        return getHero(UUIDUtil.convertPlayer(playerName));
     }
 
     // TODO: add exception, and create not a new player if command wrong
