@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 
 /**
  * O_x Look at this mess. Just look at it! How did this happen?
- * <p>
+ * <p/>
  * Bitte so schnell wie möglich löschen und besser implementieren.
  */
 public class LoadConfigsTask extends BukkitRunnable {
@@ -51,6 +51,11 @@ public class LoadConfigsTask extends BukkitRunnable {
         this.loadProfessionSkills("alias-configs/berufe");
     }
 
+    private static String getType(File file) {
+
+        return (file.getAbsolutePath().toLowerCase().contains("berufe")) ? "Beruf" : "Profession";
+    }
+
     private void loadProfessionSkills(final String root) {
 
         final File[] classDirectories = new File(this.plugin.getDataFolder(), root).listFiles();
@@ -66,6 +71,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                 if (profession == null) {
                     profession = new TProfession();
                     profession.setNameKey(classDirectory.getName());
+                    profession.setType(getType(classDirectory));
                     profession.save(SkillsPlugin.class);
                 }
 
@@ -79,6 +85,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                             if (childProfession == null) {
                                 childProfession = new TProfession();
                                 childProfession.setNameKey(childFile.getName().replace(".yml", ""));
+                                childProfession.setType(getType(childFile));
                                 childProfession.setParent(profession);
                                 childProfession.save(SkillsPlugin.class);
                             }

@@ -42,6 +42,11 @@ public class TProfession extends Model {
     private int maxLevel = 1;
 
     /**
+     * "Beruf" oder "Profession"
+     */
+    private String type;
+
+    /**
      * A string representation of this object.
      * </p>
      * Only for debugging.
