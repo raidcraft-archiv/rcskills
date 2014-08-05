@@ -1,6 +1,8 @@
 package de.raidcraft.skills.task;
 
+import com.avaje.ebean.SqlUpdate;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.tables.TDataAlias;
 import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
@@ -47,16 +49,64 @@ public class LoadConfigsTask extends BukkitRunnable {
     public void run() {
 
         this.loadGenericSkills();
-        this.loadProfessionSkills("alias-configs/klassen");
-        this.loadProfessionSkills("alias-configs/berufe");
+        this.loadProfessionSkills("alias-configs/klassen", "Klasse");
+        this.loadProfessionSkills("alias-configs/berufe", "Beruf");
+        this.loadAliases();
     }
 
-    private static String getType(File file) {
+    private void loadAliases() {
 
-        return (file.getAbsolutePath().toLowerCase().contains("berufe")) ? "Beruf" : "Profession";
+        // delete old aliases
+        SqlUpdate deleteCommands = plugin.getDatabase().createSqlUpdate("DELETE FROM skills_data_alias");
+        deleteCommands.execute();
+
+        File[] files = new File(this.plugin.getDataFolder(), "alias-configs").listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseFolder(file);
+                continue;
+            }
+            analyseAlias(file, null);
+        }
     }
 
-    private void loadProfessionSkills(final String root) {
+    private void analyseFolder(File parent) {
+
+        File[] files = parent.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseFolder(file);
+                continue;
+            }
+            analyseAlias(file, parent.getName());
+        }
+    }
+
+    private void analyseAlias(File file, String parent) {
+
+        try {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            TDataAlias alias = new TDataAlias();
+            String name = config.getString("name");
+            if (name == null) {
+                // UTF-8 file with BOM?
+                plugin.getLogger().warning("cannot sync into db: " + file.getName());
+                plugin.getLogger().warning(" no name key found - check encoding #1227");
+                return;
+            }
+            alias.setName(name);
+            alias.setDescription(config.getString("description"));
+            alias.setParent(parent);
+            alias.setSkill(config.getString("skill"));
+            alias.setHidden(config.getBoolean("hidden", false));
+            plugin.getDatabase().save(alias);
+        } catch (Exception e) {
+            plugin.getLogger().warning("cannot sync into db: " + file.getName());
+            e.printStackTrace();
+        }
+    }
+
+    private void loadProfessionSkills(final String root, String type) {
 
         final File[] classDirectories = new File(this.plugin.getDataFolder(), root).listFiles();
 
@@ -71,7 +121,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                 if (profession == null) {
                     profession = new TProfession();
                     profession.setNameKey(classDirectory.getName());
-                    profession.setType(getType(classDirectory));
+                    profession.setType(type);
                     profession.save(SkillsPlugin.class);
                 }
 
@@ -85,7 +135,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                             if (childProfession == null) {
                                 childProfession = new TProfession();
                                 childProfession.setNameKey(childFile.getName().replace(".yml", ""));
-                                childProfession.setType(getType(childFile));
+                                childProfession.setType(type);
                                 childProfession.setParent(profession);
                                 childProfession.save(SkillsPlugin.class);
                             }
