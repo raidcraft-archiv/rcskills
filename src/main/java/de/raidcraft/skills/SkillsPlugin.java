@@ -137,8 +137,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(BindCommand.class);
         registerCommands(BindAutoCommand.class);
 
-        getServer().getPluginManager().registerEvents(new BindListener(this), this);
-
         // register the tab stuff
         registerTabDecoSettings();
 
@@ -344,6 +342,9 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.experienceManager = new ExperienceManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
         this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
+
+
+        Bukkit.getPluginManager().registerEvents(new BindListener(this), this);
     }
 
     private void registerConversationActions() {
