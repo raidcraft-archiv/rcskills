@@ -115,7 +115,7 @@ public class LoadConfigsTask extends BukkitRunnable {
             plugin.getDatabase().save(prof);
         } catch (Exception e) {
             plugin.getLogger().warning("cannot sync prof into db: " + file.getName());
-            e.printStackTrace();
+            plugin.getLogger().warning(e.getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public class LoadConfigsTask extends BukkitRunnable {
             plugin.getDatabase().save(alias);
         } catch (Exception e) {
             plugin.getLogger().warning("cannot sync alias into db: " + file.getName());
-            e.printStackTrace();
+            plugin.getLogger().warning(e.getMessage());
         }
     }
 
