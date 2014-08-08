@@ -19,6 +19,7 @@ public class TDataProfession {
 
     @Id
     private String name;
+    private String filename;
     @Column(columnDefinition = "TEXT")
     private String description;
     private int maxLevel;
