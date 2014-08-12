@@ -215,6 +215,14 @@ public final class ExperienceManager implements Listener {
                 return;
             }
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
+            if (linkedProf.equals("")) {
+                try {
+                    throw new NullPointerException("RCExpGainEvent: " + event.getAttachedLevel().getLevelObject().getName())
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
             if (linkedProf != null) {
                 try {
                     Profession profession = plugin.getProfessionManager().getProfession(hero, linkedProf);
