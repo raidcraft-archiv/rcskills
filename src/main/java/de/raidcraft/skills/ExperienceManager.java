@@ -217,7 +217,8 @@ public final class ExperienceManager implements Listener {
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
             if (linkedProf.equals("")) {
                 try {
-                    throw new NullPointerException("RCExpGainEvent: " + event.getAttachedLevel().getLevelObject().getName())
+                    throw new NullPointerException("RCExpGainEvent: "
+                            + event.getAttachedLevel().getLevelObject().getName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
