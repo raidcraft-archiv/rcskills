@@ -171,9 +171,9 @@ public final class CharacterManager implements Listener, Component {
         return pausedExpPlayers.contains(player.getName().toLowerCase());
     }
 
-    public boolean isPlayerCached(String name) {
+    public boolean isPlayerCached(UUID playerId) {
 
-        return heroes.containsKey(name);
+        return heroes.containsKey(playerId);
     }
 
     // tag api end
@@ -346,12 +346,12 @@ public final class CharacterManager implements Listener, Component {
     public void clearCacheOf(CharacterTemplate character) {
 
         if (character instanceof Hero) {
-            BukkitTask task = queuedLoggedOutHeroes.remove(character.getName().toLowerCase());
+            BukkitTask task = queuedLoggedOutHeroes.remove(((Hero) character).getPlayer().getUniqueId());
             if (task != null) {
                 task.cancel();
             }
             HeroUtil.clearCache((Hero) character);
-            heroes.remove(character.getName());
+            heroes.remove(((Hero) character).getPlayer().getUniqueId());
             return;
         }
         LivingEntity entity = character.getEntity();
@@ -444,17 +444,14 @@ public final class CharacterManager implements Listener, Component {
     public void queueHeroLogout(final Hero hero) {
 
         hero.save();
-        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
+        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getPlayer().getUniqueId());
         if (task != null) {
             task.cancel();
         }
         if (plugin.getCommonConfig().hero_cache_timeout > 0) {
-            task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                @Override
-                public void run() {
+            task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
-                    clearCacheOf(hero);
-                }
+                clearCacheOf(hero);
             }, plugin.getCommonConfig().hero_cache_timeout * 20);
             queuedLoggedOutHeroes.put(hero.getPlayer().getUniqueId(), task);
         } else {
