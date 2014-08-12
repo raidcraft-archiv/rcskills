@@ -7,7 +7,7 @@ public enum Option {
 
     DEBUGGING("debug", false),
     COMBAT_LOGGING("combatlog", false),
-    EXP_POOL_LINK("exp_pool_link", ""),
+    EXP_POOL_LINK("exp_pool_link", null),
     SIDEBAR_PARTY_HP("display_sidebar_party_hp", true),
     PVP("pvp", false);
 
