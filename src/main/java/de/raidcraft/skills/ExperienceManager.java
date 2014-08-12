@@ -216,13 +216,10 @@ public final class ExperienceManager implements Listener {
             }
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
             if (linkedProf.equals("")) {
-                try {
-                    throw new NullPointerException("RCExpGainEvent: "
-                            + event.getAttachedLevel().getLevelObject().getName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return;
-                }
+                // hotfix for default exp pool
+                plugin.getLogger().info("expPoolRedirectExpGain null: " + hero.getName());
+                Option.EXP_POOL_LINK.set(hero, null);
+                linkedProf = null;
             }
             if (linkedProf != null) {
                 try {
