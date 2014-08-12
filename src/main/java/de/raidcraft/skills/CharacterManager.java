@@ -181,27 +181,30 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true)
     public void onNameTagChange(AsyncPlayerReceiveNameTagEvent event) {
 
-        Hero hero = getHero(event.getNamedPlayer());
-        Hero receivingPlayer = getHero(event.getPlayer());
-        if (hero.getParty().contains(receivingPlayer)) {
-            if (hero.isPvPEnabled()) {
-                event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Hero hero = getHero(event.getNamedPlayer());
+            Hero receivingPlayer = getHero(event.getPlayer());
+            if (hero.getParty().contains(receivingPlayer)) {
+                if (hero.isPvPEnabled()) {
+                    event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
+                }
             } else {
-                event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
+                if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
+                    event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
+                } else if (hero.isPvPEnabled()) {
+                    event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
+                }
             }
-        } else {
-            if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
-                event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-            } else if (hero.isPvPEnabled()) {
-                event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
-            } else {
-                event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
-            }
-        }
+        });
     }
 
     @Deprecated
     public Hero getHero(String playerName) {
+
         return getHero(UUIDUtil.convertPlayer(playerName));
     }
 
