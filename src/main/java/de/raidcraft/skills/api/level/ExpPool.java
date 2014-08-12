@@ -76,7 +76,8 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
     @Override
     public void saveLevelProgress() {
 
-        THeroExpPool db = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class).where().eq("player", getLevelObject().getName()).findUnique();
+        THeroExpPool db = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class)
+                .where().eq("player_id", getLevelObject().getName()).findUnique();
         db.setExp(getExp());
         RaidCraft.getDatabase(SkillsPlugin.class).save(db);
     }
