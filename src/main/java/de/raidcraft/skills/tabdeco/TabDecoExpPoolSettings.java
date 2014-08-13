@@ -26,8 +26,7 @@ public class TabDecoExpPoolSettings extends TabDecoSetting {
         Hero hero = plugin.getCharacterManager().getHero(player);
         if (settingName.equalsIgnoreCase("expPool")) {
             return String.valueOf(hero.getExpPool().getExp());
-        } else if (settingName.equalsIgnoreCase("expPoolLink") && Option.EXP_POOL_LINK != null
-                && Option.EXP_POOL_LINK.get(hero) != null) {
+        } else if (settingName.equalsIgnoreCase("expPoolLink") && Option.EXP_POOL_LINK.get(hero) != null) {
             try {
                 return hero.getProfession(Option.EXP_POOL_LINK.get(hero)).getFriendlyName();
             } catch (UnknownSkillException | UnknownProfessionException ignored) {

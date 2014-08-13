@@ -44,6 +44,9 @@ public enum Option {
 
         String result = hero.getOptions().get(this);
         if (result == null || result.equals("")) {
+            if(defaultValue == null) {
+                return null;
+            }
             result = defaultValue.toString();
         }
         return result;
