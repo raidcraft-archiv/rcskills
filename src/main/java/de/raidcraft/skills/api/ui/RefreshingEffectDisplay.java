@@ -34,7 +34,7 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
             name = name.substring(0, 15);
         }
         // TODO: catch nullpointer
-        return Bukkit.getPlayer(UUIDUtil.convertPlayer(name));
+        return Bukkit.getOfflinePlayer(UUIDUtil.convertPlayer(name));
     }
 
     public Effect getEffect() {
