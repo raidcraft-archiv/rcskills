@@ -2,6 +2,7 @@ package de.raidcraft.skills.api.ui;
 
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -32,7 +33,8 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
         if (name.length() > 15) {
             name = name.substring(0, 15);
         }
-        return Bukkit.getOfflinePlayer(name);
+        // TODO: catch nullpointer
+        return Bukkit.getPlayer(UUIDUtil.convertPlayer(name));
     }
 
     public Effect getEffect() {
