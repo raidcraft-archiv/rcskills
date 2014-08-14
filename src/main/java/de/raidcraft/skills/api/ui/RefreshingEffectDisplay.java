@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.ui;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 
 /**
  * @author Silthus
@@ -19,7 +18,7 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
     }
 
     @Override
-    public OfflinePlayer getScoreName() {
+    public String getScoreName() {
 
         ChatColor color = ChatColor.DARK_GRAY;
         if (getEffect().isOfType(EffectType.HELPFUL)) {
@@ -31,12 +30,8 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
         if (name.length() > 15) {
             name = name.substring(0, 15);
         }
-        // old
-        //  return Bukkit.getOfflinePlayer(name);
-        // TODO: no sense
-        // return Bukkit.getOfflinePlayer(UUIDUtil.convertPlayer(name));
-        return null;
-   }
+        return name;
+    }
 
     public Effect getEffect() {
 
