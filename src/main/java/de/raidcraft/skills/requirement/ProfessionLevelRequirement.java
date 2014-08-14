@@ -54,10 +54,13 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     public String getLongReason() {
 
         String friendlyName = "???";
-        if (profession.getPath() == null) {
-            RaidCraft.LOGGER.info("path is null of " + profession.getName());
-        } else {
-            friendlyName = profession.getPath().getFriendlyName();
+        if (profession == null) {
+            RaidCraft.LOGGER.info("profession is null of " + getName());
+            if (profession.getPath() == null) {
+                RaidCraft.LOGGER.info("path is null of " + profession.getName());
+            } else {
+                friendlyName = profession.getPath().getFriendlyName();
+            }
         }
         return ChatColor.RED + "Du musst erst deine " + friendlyName + " Spezialisierung " +
                 ChatColor.AQUA + profession.getFriendlyName() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
