@@ -215,7 +215,7 @@ public final class ExperienceManager implements Listener {
                 return;
             }
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
-            if (linkedProf.equals("")) {
+            if (linkedProf != null && linkedProf.equals("")) {
                 // hotfix for default exp pool
                 plugin.getLogger().info("expPoolRedirectExpGain null: " + hero.getName());
                 Option.EXP_POOL_LINK.set(hero, null);
