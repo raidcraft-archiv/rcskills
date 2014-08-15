@@ -632,11 +632,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
                         sender, "pvp.cooldown", "You need to wait " + time + " until you can toggle your PvP status.", time));
             }
             hero.setPvPEnabled(!hero.isPvPEnabled());
-            sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
-                    getTranslationProvider().tr(sender, "pvp.toggled", "PvP has been %s",
-                            (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "enabled.")
-                                    : getTranslationProvider().var(sender, "pvp.disabled", "disabled."))
-                    ));
+            sender.sendMessage(hero.isPvPEnabled() ?
+                            ChatColor.RED + getTranslationProvider().tr(sender, "pvp.msg-enabled", "PvP has been enabled")
+                            : ChatColor.AQUA + getTranslationProvider().tr(sender, "pvp.msg-disabled", "PvP has been disabled")
+            );
         }
 
         @Command(
