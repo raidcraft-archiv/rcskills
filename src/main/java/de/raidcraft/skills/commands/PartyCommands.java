@@ -14,6 +14,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * @author Silthus
  */
@@ -34,7 +36,11 @@ public class PartyCommands {
     @CommandPermissions("rcskills.party.invite")
     public void invite(CommandContext args, CommandSender sender) throws CommandException {
 
-        Player player = Bukkit.getPlayer(args.getString(0));
+        UUID uuid = UUIDUtil.convertPlayer(args.getString(0));
+        if (uuid == null) {
+            throw new CommandException("Es ist existiert kein Spieler mit dem Namen: " + args.getString(0));
+        }
+        Player player = Bukkit.getPlayer(uuid);
         if (player == null) {
             throw new CommandException("Es ist kein Spieler mit dem Namen " + args.getString(0) + " online.");
         }

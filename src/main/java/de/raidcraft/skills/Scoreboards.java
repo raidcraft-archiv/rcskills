@@ -87,7 +87,7 @@ public final class Scoreboards {
             scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         }
         if (!hero.isOnline()) {
-            hero.updateEntity(Bukkit.getPlayer(playerName));
+            hero.updateEntity(Bukkit.getPlayer(hero.getPlayer().getUniqueId()));
             return scoreboard;
         }
         hero.getPlayer().setScoreboard(scoreboard);
