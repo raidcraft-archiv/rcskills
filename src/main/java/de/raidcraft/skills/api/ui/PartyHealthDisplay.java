@@ -2,9 +2,7 @@ package de.raidcraft.skills.api.ui;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.hero.Hero;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 
 /**
  * @author Silthus
@@ -13,7 +11,7 @@ public class PartyHealthDisplay implements HealthDisplay {
 
     private final Hero holder;
     private final CharacterTemplate characterTemplate;
-    private final OfflinePlayer scoreName;
+    private final String scoreName;
 
     public PartyHealthDisplay(Hero holder, CharacterTemplate characterTemplate) {
 
@@ -21,7 +19,7 @@ public class PartyHealthDisplay implements HealthDisplay {
         this.characterTemplate = characterTemplate;
         String name = ChatColor.BLUE + characterTemplate.getName();
         if (name.length() > 16) name = name.substring(0, 15);
-        this.scoreName = Bukkit.getOfflinePlayer(name);
+        this.scoreName = name;
         holder.attachHealthDisplay(this);
     }
 

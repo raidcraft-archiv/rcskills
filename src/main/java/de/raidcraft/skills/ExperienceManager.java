@@ -215,6 +215,12 @@ public final class ExperienceManager implements Listener {
                 return;
             }
             String linkedProf = Option.EXP_POOL_LINK.get(hero);
+            if (linkedProf != null && linkedProf.equals("")) {
+                // hotfix for default exp pool
+                plugin.getLogger().info("expPoolRedirectExpGain null: " + hero.getName());
+                Option.EXP_POOL_LINK.set(hero, null);
+                linkedProf = null;
+            }
             if (linkedProf != null) {
                 try {
                     Profession profession = plugin.getProfessionManager().getProfession(hero, linkedProf);
@@ -224,7 +230,6 @@ public final class ExperienceManager implements Listener {
                         hero.sendMessage(ChatColor.RED + "Die Verbindung von deinem EXP Pool mit der "
                                 + profession.getPath().getFriendlyName() + " Spezialisierung " + profession.getFriendlyName()
                                 + " wurde aufgehoben, da die Spezialisierung bereits das maximale Level erreicht hat.");
-                        return;
                     }
                     profession.getAttachedLevel().addExp(event.getGainedExp());
                     event.setCancelled(true);

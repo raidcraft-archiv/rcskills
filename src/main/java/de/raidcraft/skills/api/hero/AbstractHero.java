@@ -91,7 +91,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         super(player);
 
         this.id = data.getId();
-        this.name = data.getName();
+        this.name = player.getName();
         this.expPool = new ExpPool(this, data.getExpPool());
         this.options = new HeroOptions(this);
         this.maxLevel = data.getMaxLevel();
@@ -324,7 +324,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void kill(CharacterTemplate attacker) {
 
         super.kill(attacker);
-        debug(attacker.getName() + " killed YOU");
+        String sttackerName = "UNKNOWN";
+        // attack can be null, e.g. console
+        if (attacker != null) {
+            sttackerName = attacker.getName();
+        }
+        debug(sttackerName + " killed YOU");
     }
 
     @Override

@@ -29,7 +29,9 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     protected void load(ConfigurationSection data) {
 
         try {
+
             profession = RaidCraft.getComponent(SkillsPlugin.class).getProfessionManager().getProfession(getResolver().getObject(), data.getString("profession"));
+            RaidCraft.LOGGER.info("load ProfessionLevelRequirement: " + profession);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage() + " in config of " + getResolver());
         }
@@ -51,7 +53,16 @@ public class ProfessionLevelRequirement extends LevelRequirement {
     @Override
     public String getLongReason() {
 
-        return ChatColor.RED + "Du musst erst deine " + profession.getPath().getFriendlyName() + " Spezialisierung " +
+        String friendlyName = "???";
+        if (profession == null) {
+            RaidCraft.LOGGER.info("profession is null of " + getName());
+            if (profession.getPath() == null) {
+                RaidCraft.LOGGER.info("path is null of " + profession.getName());
+            } else {
+                friendlyName = profession.getPath().getFriendlyName();
+            }
+        }
+        return ChatColor.RED + "Du musst erst deine " + friendlyName + " Spezialisierung " +
                 ChatColor.AQUA + profession.getFriendlyName() + ChatColor.RED + " auf " + ChatColor.AQUA + "Level "
                 + getRequiredLevel() + ChatColor.RED + " bringen.";
     }

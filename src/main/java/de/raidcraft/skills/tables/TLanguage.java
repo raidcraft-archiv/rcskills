@@ -1,7 +1,7 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.Length;
-import de.raidcraft.api.ebean.Model;
+import de.raidcraft.skills.ebean.Model;
 import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;

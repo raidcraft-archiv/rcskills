@@ -14,7 +14,6 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
@@ -60,6 +59,8 @@ import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
 import de.raidcraft.skills.tabdeco.TabDecoPvPSettings;
 import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
 import de.raidcraft.skills.tables.TBinding;
+import de.raidcraft.skills.tables.TDataAlias;
+import de.raidcraft.skills.tables.TDataProfession;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroAttribute;
 import de.raidcraft.skills.tables.THeroExpPool;
@@ -71,14 +72,15 @@ import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
-import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -137,15 +139,13 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(BindCommand.class);
         registerCommands(BindAutoCommand.class);
 
-        getServer().getPluginManager().registerEvents(new BindListener(this), this);
-
         // register the tab stuff
         registerTabDecoSettings();
 
         registerActionAPI();
 
         // register conv actions when all plugins loaded
-        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
 
@@ -173,7 +173,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                     e.printStackTrace();
                 }
             }
-        }, 1L);
+        });
 
         new LoadConfigsTask(this).runTaskAsynchronously(this);
     }
@@ -223,10 +223,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         /* REQUIREMENTS */
         RequirementFactory requirementFactory = RequirementFactory.getInstance();
-        requirementFactory.registerRequirement(this, "hero.level", (Player player) -> {
+        requirementFactory.registerRequirement(this, "hero.level", (Player player, ConfigurationSection config) -> {
 
             Hero hero = getCharacterManager().getHero(player);
-            return hero.getPlayerLevel() >= getConfig().getInt("level");
+            return hero.getPlayerLevel() >= config.getInt("level");
         });
 
         /* TRIGGER */
@@ -247,6 +247,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
             }
         } catch (PersistenceException ex) {
             this.getLogger().info(String.format("Installing database for %s due to first time usage.", getDescription().getName()));
+            ex.printStackTrace();
             installDDL();
         }
     }
@@ -343,6 +344,9 @@ public class SkillsPlugin extends BasePlugin implements Component {
         this.experienceManager = new ExperienceManager(this);
         this.bukkitEnvironmentManager = new BukkitEnvironmentManager(this);
         this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
+
+
+        Bukkit.getPluginManager().registerEvents(new BindListener(this), this);
     }
 
     private void registerConversationActions() {
@@ -368,7 +372,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(THeroExpPool.class);
         classes.add(THeroProfession.class);
         classes.add(THeroSkill.class);
-        classes.add(TSkillData.class);
         classes.add(THeroResource.class);
         classes.add(THeroAttribute.class);
         classes.add(TBinding.class);
@@ -377,6 +380,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(TSkillTranslation.class);
         classes.add(TProfession.class);
         classes.add(TProfessionTranslation.class);
+        classes.add(TDataAlias.class);
+        classes.add(TDataProfession.class);
         return classes;
     }
 
@@ -627,11 +632,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
                         sender, "pvp.cooldown", "You need to wait " + time + " until you can toggle your PvP status.", time));
             }
             hero.setPvPEnabled(!hero.isPvPEnabled());
-            sender.sendMessage((hero.isPvPEnabled() ? ChatColor.RED : ChatColor.AQUA) +
-                    getTranslationProvider().tr(sender, "pvp.toggled", "PvP has been %s",
-                            (hero.isPvPEnabled() ? getTranslationProvider().var(sender, "pvp.enabled", "enabled.")
-                                    : getTranslationProvider().var(sender, "pvp.disabled", "disabled."))
-                    ));
+            sender.sendMessage(hero.isPvPEnabled() ?
+                            ChatColor.RED + getTranslationProvider().tr(sender, "pvp.msg-enabled", "PvP has been enabled")
+                            : ChatColor.AQUA + getTranslationProvider().tr(sender, "pvp.msg-disabled", "PvP has been disabled")
+            );
         }
 
         @Command(
@@ -644,11 +648,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
             Hero hero;
             if (args.argsLength() > 0) {
-                try {
-                    hero = getCharacterManager().getHero(args.getString(0));
-                } catch (UnknownPlayerException e) {
-                    throw new CommandException(e.getMessage());
-                }
+                hero = getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getString(0)));
             } else {
                 hero = getCharacterManager().getHero((Player) sender);
             }

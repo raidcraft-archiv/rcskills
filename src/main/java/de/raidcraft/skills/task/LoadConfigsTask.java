@@ -1,11 +1,16 @@
 package de.raidcraft.skills.task;
 
+import com.avaje.ebean.SqlUpdate;
 import de.raidcraft.skills.SkillsPlugin;
+import de.raidcraft.skills.tables.TDataAlias;
+import de.raidcraft.skills.tables.TDataProfession;
 import de.raidcraft.skills.tables.TLanguage;
 import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillTranslation;
+import net.minecraft.util.org.apache.commons.io.FilenameUtils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginBase;
@@ -13,10 +18,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * O_x Look at this mess. Just look at it! How did this happen?
- * <p>
+ * <p/>
  * Bitte so schnell wie möglich löschen und besser implementieren.
  */
 public class LoadConfigsTask extends BukkitRunnable {
@@ -47,11 +53,128 @@ public class LoadConfigsTask extends BukkitRunnable {
     public void run() {
 
         this.loadGenericSkills();
-        this.loadProfessionSkills("alias-configs/klassen");
-        this.loadProfessionSkills("alias-configs/berufe");
+        this.loadProfessionSkills("alias-configs/klassen", "Klasse");
+        this.loadProfessionSkills("alias-configs/berufe", "Beruf");
+        this.loadProfs();
+        this.loadAliases();
     }
 
-    private void loadProfessionSkills(final String root) {
+    private void loadProfs() {
+        // delete old profs
+        SqlUpdate deleteCommands = plugin.getDatabase()
+                .createSqlUpdate("DELETE FROM skills_data_profession");
+        deleteCommands.execute();
+
+        File[] files = new File(this.plugin.getDataFolder(), "professions").listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseProf(file);
+                continue;
+            }
+            analyseAlias(file, null);
+        }
+    }
+
+    private void analyseProf(File parent) {
+
+        File[] files = parent.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseProf(file);
+                continue;
+            }
+            analyseProf(file, parent.getName());
+        }
+    }
+
+    private void analyseProf(File file, String type) {
+
+        try {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            TDataProfession prof = new TDataProfession();
+            String name = config.getString("name");
+            if (name == null) {
+                // UTF-8 file with BOM?
+                plugin.getLogger().warning("cannot sync prof into db: " + file.getName());
+                plugin.getLogger().warning(" no name key found - check encoding #1227");
+                return;
+            }
+            prof.setName(name);
+            prof.setFilename(FilenameUtils.getBaseName(file.getName()));
+            prof.setDescription(config.getString("description"));
+            prof.setMaxLevel(config.getInt("max-level"));
+            prof.setFormula(config.getString("formula"));
+            prof.setParent(config.getString("parent"));
+            prof.setType(type);
+
+            ConfigurationSection skills = config.getConfigurationSection("skills");
+            Set<String> keys = skills.getKeys(false);
+            String skillString = "";
+            for (String key : keys) {
+                skillString += key + "$$" + skills.get(key + ".level") + "$$";
+            }
+            prof.setSkills(skillString);
+            plugin.getDatabase().save(prof);
+        } catch (Exception e) {
+            plugin.getLogger().warning("cannot sync prof into db: " + file.getName());
+            plugin.getLogger().warning(e.getMessage());
+        }
+    }
+
+    private void loadAliases() {
+
+        // delete old aliases
+        SqlUpdate deleteCommands = plugin.getDatabase()
+                .createSqlUpdate("DELETE FROM skills_data_alias");
+        deleteCommands.execute();
+
+        File[] files = new File(this.plugin.getDataFolder(), "alias-configs").listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseFolder(file);
+                continue;
+            }
+            analyseAlias(file, null);
+        }
+    }
+
+    private void analyseFolder(File parent) {
+
+        File[] files = parent.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                analyseFolder(file);
+                continue;
+            }
+            analyseAlias(file, parent.getName());
+        }
+    }
+
+    private void analyseAlias(File file, String parent) {
+
+        try {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            TDataAlias alias = new TDataAlias();
+            String name = config.getString("name");
+            if (name == null) {
+                // UTF-8 file with BOM?
+                plugin.getLogger().warning("cannot sync alias into db: " + file.getName());
+                plugin.getLogger().warning(" no name key found - check encoding #1227");
+                return;
+            }
+            alias.setName(name);
+            alias.setDescription(config.getString("description"));
+            alias.setParent(parent);
+            alias.setSkill(config.getString("skill"));
+            alias.setHidden(config.getBoolean("hidden", false));
+            plugin.getDatabase().save(alias);
+        } catch (Exception e) {
+            plugin.getLogger().warning("cannot sync alias into db: " + file.getName());
+            plugin.getLogger().warning(e.getMessage());
+        }
+    }
+
+    private void loadProfessionSkills(final String root, String type) {
 
         final File[] classDirectories = new File(this.plugin.getDataFolder(), root).listFiles();
 
@@ -66,6 +189,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                 if (profession == null) {
                     profession = new TProfession();
                     profession.setNameKey(classDirectory.getName());
+                    profession.setType(type);
                     profession.save(SkillsPlugin.class);
                 }
 
@@ -79,6 +203,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                             if (childProfession == null) {
                                 childProfession = new TProfession();
                                 childProfession.setNameKey(childFile.getName().replace(".yml", ""));
+                                childProfession.setType(type);
                                 childProfession.setParent(profession);
                                 childProfession.save(SkillsPlugin.class);
                             }

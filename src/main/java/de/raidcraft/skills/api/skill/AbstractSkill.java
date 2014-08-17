@@ -24,7 +24,6 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -114,21 +113,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         RaidCraft.getPermissions().playerRemove(getHolder().getPlayer(), node);
     }
 
-    protected final <V> void setData(String key, V value) {
-
-        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
-        if (data == null) {
-            data = new TSkillData();
-            data.setDataKey(key);
-            data.setSkill(RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId()));
-        }
-        data.setDataValue(value.toString());
-
-        // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(data);
-        }
-    }
 
     @Override
     public final int getId() {
@@ -325,38 +309,6 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         }
     }
 
-    protected final void removeData(String key) {
-
-        TSkillData data = RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique();
-        if (data != null) {
-            RaidCraft.getDatabase(SkillsPlugin.class).delete(data);
-        }
-    }
-
-    protected final int getDataInt(String key) {
-
-        return Integer.parseInt(getData(key));
-    }
-
-    protected final String getData(String key) {
-
-        return RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where().eq("key", key).eq("skill_id", getId()).findUnique().getDataValue();
-    }
-
-    protected final double getDataDouble(String key) {
-
-        return Double.parseDouble(getData(key));
-    }
-
-    protected final String getDataString(String key) {
-
-        return getData(key);
-    }
-
-    protected final boolean getDataBool(String key) {
-
-        return Boolean.parseBoolean(getData(key));
-    }
 
     protected final QueuedAttack queueAttack(Callback<AttackTrigger> callback) throws CombatException {
 

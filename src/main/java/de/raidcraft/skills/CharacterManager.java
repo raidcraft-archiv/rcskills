@@ -17,6 +17,7 @@ import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.trigger.InvalidationTrigger;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -56,11 +57,11 @@ import java.util.UUID;
 public final class CharacterManager implements Listener, Component {
 
     private final SkillsPlugin plugin;
-    private final Map<String, Hero> heroes = new CaseInsensitiveMap<>();
+    private final Map<UUID, Hero> heroes = new HashMap<>();
     private final Map<UUID, CharacterTemplate> characters = new HashMap<>();
     private final Map<Class<? extends CharacterTemplate>, Constructor<? extends CharacterTemplate>> cachedClasses = new HashMap<>();
     private final Set<String> pausedExpPlayers = new HashSet<>();
-    private final Map<String, BukkitTask> queuedLoggedOutHeroes = new CaseInsensitiveMap<>();
+    private final Map<UUID, BukkitTask> queuedLoggedOutHeroes = new HashMap<>();
     private final Map<String, BukkitTask> queuedPvPToggle = new CaseInsensitiveMap<>();
 
     protected CharacterManager(SkillsPlugin plugin) {
@@ -75,16 +76,16 @@ public final class CharacterManager implements Listener, Component {
     private void startRefreshTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-                    @Override
-                    public void run() {
+            @Override
+            public void run() {
 
-                        for (Hero hero : getCachedHeroes()) {
-                            if (hero.isOnline()) {
-                                hero.getUserInterface().refresh();
-                            }
-                        }
+                for (Hero hero : getCachedHeroes()) {
+                    if (hero.isOnline()) {
+                        hero.getUserInterface().refresh();
                     }
-                },
+                }
+            }
+        },
                 plugin.getCommonConfig().userinterface_refresh_interval,
                 plugin.getCommonConfig().userinterface_refresh_interval
         );
@@ -93,17 +94,17 @@ public final class CharacterManager implements Listener, Component {
     private void startValidationTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-                    @Override
-                    public void run() {
+            @Override
+            public void run() {
 
-                        for (CharacterTemplate character : new ArrayList<>(characters.values())) {
-                            if (character.getEntity() == null || !character.getEntity().isValid()) {
-                                TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
-                                if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
-                            }
-                        }
+                for (CharacterTemplate character : new ArrayList<>(characters.values())) {
+                    if (character.getEntity() == null || !character.getEntity().isValid()) {
+                        TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
+                        if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
                     }
-                },
+                }
+            }
+        },
                 plugin.getCommonConfig().character_invalidation_interval,
                 plugin.getCommonConfig().character_invalidation_interval
         );
@@ -170,9 +171,9 @@ public final class CharacterManager implements Listener, Component {
         return pausedExpPlayers.contains(player.getName().toLowerCase());
     }
 
-    public boolean isPlayerCached(String name) {
+    public boolean isPlayerCached(UUID playerId) {
 
-        return heroes.containsKey(name);
+        return heroes.containsKey(playerId);
     }
 
     // tag api end
@@ -180,91 +181,88 @@ public final class CharacterManager implements Listener, Component {
     @EventHandler(ignoreCancelled = true)
     public void onNameTagChange(AsyncPlayerReceiveNameTagEvent event) {
 
-        Hero hero = getHero(event.getNamedPlayer());
-        Hero receivingPlayer = getHero(event.getPlayer());
-        if (hero.getParty().contains(receivingPlayer)) {
-            if (hero.isPvPEnabled()) {
-                event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Hero hero = getHero(event.getNamedPlayer());
+            Hero receivingPlayer = getHero(event.getPlayer());
+            if (hero.getParty().contains(receivingPlayer)) {
+                if (hero.isPvPEnabled()) {
+                    event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
+                }
             } else {
-                event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
+                if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
+                    event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
+                } else if (hero.isPvPEnabled()) {
+                    event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
+                } else {
+                    event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
+                }
             }
-        } else {
-            if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
-                event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-            } else if (hero.isPvPEnabled()) {
-                event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
-            } else {
-                event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
-            }
-        }
+        });
     }
 
+    @Deprecated
+    public Hero getHero(String playerName) {
+
+        return getHero(UUIDUtil.convertPlayer(playerName));
+    }
+
+    // TODO: add exception, and create not a new player if command wrong
     public Hero getHero(Player player) {
 
-        try {
-            return getHero(player, player.getName());
-        } catch (UnknownPlayerException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Hero getHero(Player player, String name) throws UnknownPlayerException {
-
-        THero heroTable = null;
-        if (player != null) {
-            name = player.getName();
-        } else {
-            // try to find a match in the db
-            heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().like("player", name).findUnique();
-            if (heroTable == null) throw new UnknownPlayerException("Es gibt keinen Spieler mit dem Namen: " + name);
-        }
-
-        BukkitTask task = queuedLoggedOutHeroes.remove(name);
-        if (task != null) {
-            task.cancel();
-        }
-
-        Hero hero;
-        if (!heroes.containsKey(name)) {
-
-            if (heroTable == null) {
-                heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class).where().eq("player", name).findUnique();
+        if (player == null) {
+            try {
+                throw new UnknownPlayerException("getHero: Player is null");
+            } catch (UnknownPlayerException e) {
+                e.printStackTrace();
             }
+            return null;
+        }
+        UUID player_id = player.getUniqueId();
+        Hero hero = heroes.get(player_id);
+        if (hero == null) {
+            BukkitTask task = queuedLoggedOutHeroes.remove(player_id);
+            if (task != null) {
+                task.cancel();
+            }
+            // try to load hero
+            THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
+                    .where().eq("player_id", player_id).findUnique();
+            // create a new entry if not exists
             if (heroTable == null) {
-                // create a new entry
                 heroTable = new THero();
-                heroTable.setPlayer(name);
+                heroTable.setPlayerId(player_id);
                 heroTable.setHealth(20);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
+                plugin.getDatabase().save(heroTable);
             }
+
+            THeroExpPool pool = plugin.getDatabase().find(THeroExpPool.class)
+                    .where().eq("player_id", player_id).findUnique();
             // also create a new exp pool for the hero
-            THeroExpPool pool = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class).where().eq("player", name).findUnique();
             if (pool == null) {
                 pool = new THeroExpPool();
-                pool.setPlayer(name);
-                pool.setHeroId(heroTable.getId());
-            } else {
-                pool.setHeroId(heroTable.getId());
+                pool.setPlayerId(player_id);
             }
-            RaidCraft.getDatabase(SkillsPlugin.class).save(pool);
+            pool.setHeroId(heroTable.getId());
+            plugin.getDatabase().save(pool);
+
             heroTable.setExpPool(pool);
-            RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
+            plugin.getDatabase().save(heroTable);
+
             hero = new SimpleHero(player, heroTable);
-            heroes.put(name, hero);
+            heroes.put(player_id, hero);
             hero.checkArmor();
             hero.checkWeapons();
-        } else {
-            hero = heroes.get(name);
         }
         return hero;
     }
 
-    public Hero getHero(String name) throws UnknownPlayerException {
+    public Hero getHero(UUID player_id) {
 
-        return getHero(Bukkit.getPlayer(name), name);
+        return getHero(Bukkit.getPlayer(player_id));
     }
 
     /**
@@ -351,12 +349,12 @@ public final class CharacterManager implements Listener, Component {
     public void clearCacheOf(CharacterTemplate character) {
 
         if (character instanceof Hero) {
-            BukkitTask task = queuedLoggedOutHeroes.remove(character.getName().toLowerCase());
+            BukkitTask task = queuedLoggedOutHeroes.remove(((Hero) character).getPlayer().getUniqueId());
             if (task != null) {
                 task.cancel();
             }
             HeroUtil.clearCache((Hero) character);
-            heroes.remove(character.getName());
+            heroes.remove(((Hero) character).getPlayer().getUniqueId());
             return;
         }
         LivingEntity entity = character.getEntity();
@@ -449,19 +447,16 @@ public final class CharacterManager implements Listener, Component {
     public void queueHeroLogout(final Hero hero) {
 
         hero.save();
-        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getName().toLowerCase());
+        BukkitTask task = queuedLoggedOutHeroes.remove(hero.getPlayer().getUniqueId());
         if (task != null) {
             task.cancel();
         }
         if (plugin.getCommonConfig().hero_cache_timeout > 0) {
-            task = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                @Override
-                public void run() {
+            task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
-                    clearCacheOf(hero);
-                }
+                clearCacheOf(hero);
             }, plugin.getCommonConfig().hero_cache_timeout * 20);
-            queuedLoggedOutHeroes.put(hero.getName(), task);
+            queuedLoggedOutHeroes.put(hero.getPlayer().getUniqueId(), task);
         } else {
             clearCacheOf(hero);
         }

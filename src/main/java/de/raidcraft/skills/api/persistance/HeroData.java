@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.persistance;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -9,7 +10,7 @@ public interface HeroData {
 
     public int getId();
 
-    public String getName();
+    public UUID getPlayerId();
 
     public String getSelectedProfession();
 

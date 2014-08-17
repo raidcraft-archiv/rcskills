@@ -103,7 +103,14 @@ public final class ProfessionManager {
 
         profId = StringUtils.formatName(profId);
         if (!professionFactories.containsKey(profId)) {
-            throw new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist.");
+            UnknownProfessionException exp = new UnknownProfessionException("The profession " + profId + " is not loaded or does not exist. "
+                    + "(Hero: " + hero.getName() + " Parent: " + parent + ")");
+            try {
+                throw exp;
+            } catch (UnknownProfessionException e) {
+                e.printStackTrace();
+            }
+            throw exp;
         }
         if (!cachedProfessions.containsKey(hero.getName())) {
             cachedProfessions.put(hero.getName(), new CaseInsensitiveMap<>());

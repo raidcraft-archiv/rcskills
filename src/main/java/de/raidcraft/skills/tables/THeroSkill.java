@@ -36,10 +36,6 @@ public class THeroSkill implements LevelData {
     @ManyToOne
     private THero hero;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "skill_id")
-    private List<TSkillData> skillData;
-
     private int level;
     private int exp;
     private boolean unlocked;

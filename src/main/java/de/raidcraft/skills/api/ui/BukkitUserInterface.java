@@ -11,7 +11,6 @@ import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -46,7 +45,7 @@ public class BukkitUserInterface implements UserInterface {
     }
 
     @Override
-    public void removeSidebarScore(OfflinePlayer name) {
+    public void removeSidebarScore(String name) {
 
         if (!getHero().isOnline()) return;
         Score score = Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name);
@@ -54,7 +53,7 @@ public class BukkitUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateSidebarScore(OfflinePlayer name, int score) {
+    public void updateSidebarScore(String name, int score) {
 
         if (!getHero().isOnline()) return;
         Scoreboards.getPlayerSidebarObjective(getHero()).getScore(name).setScore(score);

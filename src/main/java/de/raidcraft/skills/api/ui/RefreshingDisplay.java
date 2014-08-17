@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.ui;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -56,5 +55,5 @@ public abstract class RefreshingDisplay implements Runnable {
         userInterface.removeSidebarScore(getScoreName());
     }
 
-    public abstract OfflinePlayer getScoreName();
+    public abstract String getScoreName();
 }
