@@ -60,6 +60,7 @@ public class PermissionSkill extends AbstractSkill {
                 addEffect(TimedPermissionSkill.class);
             } catch (CombatException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

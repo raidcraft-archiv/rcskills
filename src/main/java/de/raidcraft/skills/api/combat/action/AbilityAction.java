@@ -95,6 +95,7 @@ public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T
             getAbility().getHolder().addEffect(getAbility(), Combat.class);
         } catch (CombatException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 

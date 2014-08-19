@@ -70,6 +70,7 @@ public final class ConfigUtil {
                         RaidCraft.LOGGER.warning("Invalid value type (" + key + ") in damages config!");
                     } catch (Exception e) {
                         RaidCraft.LOGGER.warning(e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             }

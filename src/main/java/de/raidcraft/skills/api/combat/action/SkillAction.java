@@ -148,6 +148,7 @@ public class SkillAction extends AbilityAction<Hero> {
                 skill.getHolder().addEffect(skill, Combat.class);
             } catch (CombatException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
             }
         }
 

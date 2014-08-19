@@ -52,6 +52,7 @@ public class ListProfessionSkills extends AbstractAction {
 
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -114,6 +114,7 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
                     effects.get(stage).add(AmbientManager.getEffect(section.getConfigurationSection(key)));
                 } catch (UnknownAmbientEffect e) {
                     RaidCraft.LOGGER.warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
