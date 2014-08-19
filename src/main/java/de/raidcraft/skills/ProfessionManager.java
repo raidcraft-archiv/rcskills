@@ -58,7 +58,7 @@ public final class ProfessionManager {
                     loadProfessionFactory(path, child, fileMap.get(child.toLowerCase()));
                 }
             }
-            plugin.getLogger().info("Loaded all Professions for the path: " + path.getName());
+            plugin.info("Loaded all Professions for the path: " + path.getName());
         }
         // lets create the factory for the virtual profession
         professionFactories.put(VIRTUAL_PROFESSION, new ProfessionFactory(plugin, new VirtualPath(), VIRTUAL_PROFESSION, new File(configBaseDir, "virtual.yml")));
@@ -90,7 +90,7 @@ public final class ProfessionManager {
             return null;
         }
         professionFactories.put(factory.getProfessionName(), factory);
-        plugin.getLogger().info("Loaded Profession: " + factory.getProfessionName());
+        plugin.info("Loaded Profession: " + factory.getProfessionName(), "profession");
         return factory;
     }
 
