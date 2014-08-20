@@ -245,12 +245,13 @@ public final class CharacterManager implements Listener, Component {
             if (pool == null) {
                 pool = new THeroExpPool();
                 pool.setPlayerId(player_id);
+                plugin.getDatabase().save(pool);
             }
             pool.setHeroId(heroTable.getId());
-            plugin.getDatabase().save(pool);
+            plugin.getDatabase().update(pool);
 
             heroTable.setExpPool(pool);
-            plugin.getDatabase().save(heroTable);
+            plugin.getDatabase().update(heroTable);
 
             hero = new SimpleHero(player, heroTable);
             heroes.put(player_id, hero);
