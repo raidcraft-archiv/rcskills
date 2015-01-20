@@ -40,10 +40,6 @@
             <id>raidcraft</id>
             <url>http://repo.raid-craft.eu/artifactory/repo/</url>
         </repository>
-        <repository>
-            <id>kitteh</id>
-            <url>http://repo.kitteh.org/content/repositories/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -66,11 +62,6 @@
             <groupId>de.raidcraft</groupId>
             <artifactId>tabdeco</artifactId>
             <version>1.2.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kitteh</groupId>
-            <artifactId>tagapi</artifactId>
-            <version>3.0.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

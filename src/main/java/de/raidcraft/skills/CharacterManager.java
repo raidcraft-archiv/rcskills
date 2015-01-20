@@ -6,6 +6,7 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.SkilledCharacter;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
+import de.raidcraft.skills.api.events.RE_PlayerStatusChangedEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -38,8 +39,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
-import org.kitteh.tag.AsyncPlayerReceiveNameTagEvent;
-import org.kitteh.tag.TagAPI;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -76,16 +75,16 @@ public final class CharacterManager implements Listener, Component {
     private void startRefreshTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
+                    @Override
+                    public void run() {
 
-                for (Hero hero : getCachedHeroes()) {
-                    if (hero.isOnline()) {
-                        hero.getUserInterface().refresh();
+                        for (Hero hero : getCachedHeroes()) {
+                            if (hero.isOnline()) {
+                                hero.getUserInterface().refresh();
+                            }
+                        }
                     }
-                }
-            }
-        },
+                },
                 plugin.getCommonConfig().userinterface_refresh_interval,
                 plugin.getCommonConfig().userinterface_refresh_interval
         );
@@ -94,17 +93,17 @@ public final class CharacterManager implements Listener, Component {
     private void startValidationTask() {
 
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
+                    @Override
+                    public void run() {
 
-                for (CharacterTemplate character : new ArrayList<>(characters.values())) {
-                    if (character.getEntity() == null || !character.getEntity().isValid()) {
-                        TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
-                        if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                        for (CharacterTemplate character : new ArrayList<>(characters.values())) {
+                            if (character.getEntity() == null || !character.getEntity().isValid()) {
+                                TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
+                                if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                            }
+                        }
                     }
-                }
-            }
-        },
+                },
                 plugin.getCommonConfig().character_invalidation_interval,
                 plugin.getCommonConfig().character_invalidation_interval
         );
@@ -117,15 +116,12 @@ public final class CharacterManager implements Listener, Component {
 
     public static void refreshPlayerTag(CharacterTemplate template) {
 
-        if (Bukkit.getPluginManager().getPlugin("TagAPI") == null) {
-            return;
-        }
         if (!(template instanceof Hero) || !((Hero) template).isOnline()) {
             return;
         }
         // lets refresh all online players
         for (Player player : Bukkit.getOnlinePlayers()) {
-            TagAPI.refreshPlayer(player);
+            RaidCraft.callEvent(new RE_PlayerStatusChangedEvent(player));
         }
     }
 
@@ -177,30 +173,6 @@ public final class CharacterManager implements Listener, Component {
     }
 
     // tag api end
-
-    @EventHandler(ignoreCancelled = true)
-    public void onNameTagChange(AsyncPlayerReceiveNameTagEvent event) {
-
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            Hero hero = getHero(event.getNamedPlayer());
-            Hero receivingPlayer = getHero(event.getPlayer());
-            if (hero.getParty().contains(receivingPlayer)) {
-                if (hero.isPvPEnabled()) {
-                    event.setTag(ChatColor.DARK_GREEN + event.getNamedPlayer().getName());
-                } else {
-                    event.setTag(ChatColor.GREEN + event.getNamedPlayer().getName());
-                }
-            } else {
-                if (hero.isPvPEnabled() && receivingPlayer.isPvPEnabled()) {
-                    event.setTag(ChatColor.DARK_RED + event.getNamedPlayer().getName());
-                } else if (hero.isPvPEnabled()) {
-                    event.setTag(ChatColor.GOLD + event.getNamedPlayer().getName());
-                } else {
-                    event.setTag(ChatColor.AQUA + event.getNamedPlayer().getName());
-                }
-            }
-        });
-    }
 
     @Deprecated
     public Hero getHero(String playerName) {
@@ -268,13 +240,11 @@ public final class CharacterManager implements Listener, Component {
 
     /**
      * Spawns a new entity with a custom defined class.
-     *
-     * @param entityType    to spawn
-     * @param location      to spawn the entity at
+     * @param entityType to spawn
+     * @param location to spawn the entity at
      * @param creatureClazz that defines the entity
-     * @param args          to pass to the constructor
-     * @param <T>           type of the entity to spawn
-     *
+     * @param args to pass to the constructor
+     * @param <T> type of the entity to spawn
      * @return spawned entity of the defined class
      */
     @SuppressWarnings("unchecked")
@@ -344,7 +314,6 @@ public final class CharacterManager implements Listener, Component {
      * This methods removes the character from the cache in this class.
      * Do NOT use this to clear heroes from the cache! Use the {@link HeroUtil#clearCache(de.raidcraft.skills.api.hero.Hero)}
      * method instead!!!
-     *
      * @param character to clear the cache for
      */
     public void clearCacheOf(CharacterTemplate character) {

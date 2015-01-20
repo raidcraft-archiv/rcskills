@@ -4,7 +4,7 @@ version: ${project.version}#${build.number}
 description: API for creating and using custom skills.
 author: Silthus
 website: http://www.raid-craft.de
-depend: [RaidCraft-API, RCPermissions, TagAPI]
+depend: [RaidCraft-API, RCPermissions]
 softdepend: [RCConversations]
 database: true
 permissions:
