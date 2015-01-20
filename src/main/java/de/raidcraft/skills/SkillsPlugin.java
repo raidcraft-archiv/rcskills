@@ -49,15 +49,6 @@ import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.tabdeco.TabDecoArmorSettings;
-import de.raidcraft.skills.tabdeco.TabDecoAttributeSettings;
-import de.raidcraft.skills.tabdeco.TabDecoEconomySetting;
-import de.raidcraft.skills.tabdeco.TabDecoExpPoolSettings;
-import de.raidcraft.skills.tabdeco.TabDecoHeroLevelSettings;
-import de.raidcraft.skills.tabdeco.TabDecoMaxHealthSettings;
-import de.raidcraft.skills.tabdeco.TabDecoProfessionPathSettings;
-import de.raidcraft.skills.tabdeco.TabDecoPvPSettings;
-import de.raidcraft.skills.tabdeco.TabDecoResourceSettings;
 import de.raidcraft.skills.tables.TBinding;
 import de.raidcraft.skills.tables.TDataAlias;
 import de.raidcraft.skills.tables.TDataProfession;
@@ -74,7 +65,6 @@ import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.skills.task.LoadConfigsTask;
-import de.raidcraft.tabdeco.api.TabDecoRegistry;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
@@ -82,11 +72,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.plugin.Plugin;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -98,8 +84,6 @@ import java.util.Set;
  * @author Silthus
  */
 public class SkillsPlugin extends BasePlugin implements Component {
-
-    private static boolean loadedTabDecoSettings = false;
 
     private SkillManager skillManager;
     private AbilityManager abilityManager;
@@ -138,9 +122,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         registerCommands(BaseCommands.class);
         registerCommands(BindCommand.class);
         registerCommands(BindAutoCommand.class);
-
-        // register the tab stuff
-        registerTabDecoSettings();
 
         registerActionAPI();
 
@@ -250,72 +231,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
             ex.printStackTrace();
             installDDL();
         }
-    }
-
-    private void registerTabDecoSettings() {
-
-        registerEvents(new Listener() {
-
-            @EventHandler
-            public void onPluginEnable(PluginEnableEvent event) {
-
-                try {
-                    //Check if TabDeco has been loaded
-                    Plugin tabDeco = getServer().getPluginManager().getPlugin("TabDeco");
-                    if (tabDeco != null) {
-                        //Check if the settings already have been loaded
-                        //This event loads multiple times for each plugin
-                        if (!loadedTabDecoSettings) {
-
-                            TabDecoRegistry.registerNewSetting("attribute\\(([a-zA-Z0-9]+)\\)",
-                                    new TabDecoAttributeSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("profession([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
-                                    new TabDecoProfessionPathSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("resource([a-zA-Z0-9]+)\\(([a-zA-Z0-9]+)\\)",
-                                    new TabDecoResourceSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("armorValue",
-                                    new TabDecoArmorSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("maxHealth",
-                                    new TabDecoMaxHealthSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("expPool",
-                                    new TabDecoExpPoolSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("expPoolLink",
-                                    new TabDecoExpPoolSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("heroLevel",
-                                    new TabDecoHeroLevelSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("pvpStatus",
-                                    new TabDecoPvPSettings(SkillsPlugin.this), SkillsPlugin.this);
-
-                            TabDecoRegistry.registerNewSetting("rcMoneyGold",
-                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
-                            TabDecoRegistry.registerNewSetting("rcMoneySilver",
-                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
-                            TabDecoRegistry.registerNewSetting("rcMoneyCopper",
-                                    new TabDecoEconomySetting(SkillsPlugin.this), SkillsPlugin.this);
-
-
-                            //Let the user of the plugin know that everything worked
-                            getLogger().info("Registered settings for TabDeco");
-
-                            //Set mySettingsLoaded to true to prevent multiple registrations of the settings
-                            loadedTabDecoSettings = true;
-                        }
-                    }
-                } catch (Exception ex) {
-                    //Let the user know that something didn't work as it should and
-                    //print out the error
-                    getLogger().severe("Couldn't load settings for TabDeco");
-                }
-            }
-        });
     }
 
     private void loadEngine() {
