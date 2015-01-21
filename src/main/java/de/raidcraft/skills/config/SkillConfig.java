@@ -126,6 +126,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
                     effects.get(stage).add(AmbientManager.getEffect(section.getConfigurationSection(key)));
                 } catch (UnknownAmbientEffect e) {
                     RaidCraft.LOGGER.warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }

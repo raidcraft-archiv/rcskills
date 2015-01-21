@@ -235,6 +235,7 @@ public final class ExperienceManager implements Listener {
                     event.setCancelled(true);
                 } catch (UnknownSkillException | UnknownProfessionException e) {
                     RaidCraft.LOGGER.warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }

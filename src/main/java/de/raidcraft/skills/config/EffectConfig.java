@@ -136,6 +136,7 @@ public class EffectConfig extends ConfigurationBase<SkillsPlugin> implements Eff
                     effects.get(stage).add(AmbientManager.getEffect(section.getConfigurationSection(key)));
                 } catch (UnknownAmbientEffect e) {
                     RaidCraft.LOGGER.warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
