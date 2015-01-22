@@ -41,6 +41,7 @@
             <url>http://repo.raid-craft.eu/artifactory/repo/</url>
         </repository>
     </repositories>
+    
 
     <dependencies>
         <dependency>
