@@ -56,6 +56,7 @@ public class ProfessionLevelRequirement extends LevelRequirement {
         String friendlyName = "???";
         if (profession == null) {
             RaidCraft.LOGGER.info("profession is null of " + getName());
+        } else {
             if (profession.getPath() == null) {
                 RaidCraft.LOGGER.info("path is null of " + profession.getName());
             } else {
