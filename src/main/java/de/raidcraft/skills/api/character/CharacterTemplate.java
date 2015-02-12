@@ -124,6 +124,10 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void heal(HealAction action);
 
+    public default void remove() {
+        kill();
+    }
+
     public void kill(CharacterTemplate killer);
 
     public void kill();

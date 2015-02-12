@@ -1,9 +1,9 @@
 package de.raidcraft.skills.creature;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.AbstractCharacterTemplate;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.util.EntityUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -74,6 +74,13 @@ public class Creature extends AbstractCharacterTemplate {
     @Override
     public void onExpGain(int exp) {
 
+    }
+
+    @Override
+    public void remove() {
+
+        getEntity().remove();
+        RaidCraft.getComponent(CharacterManager.class).clearCacheOf(this);
     }
 
     private void updateHealthBar() {
