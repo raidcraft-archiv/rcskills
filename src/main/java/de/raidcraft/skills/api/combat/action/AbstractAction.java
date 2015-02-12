@@ -3,17 +3,17 @@ package de.raidcraft.skills.api.combat.action;
 /**
  * @author Silthus
  */
-public abstract class AbstractAction<T> implements Action<T> {
+public abstract class AbstractAction<S> implements Action<S> {
 
-    private final T source;
+    private final S source;
 
-    protected AbstractAction(final T source) {
+    protected AbstractAction(final S source) {
 
         this.source = source;
     }
 
     @Override
-    public T getSource() {
+    public S getSource() {
 
         return source;
     }

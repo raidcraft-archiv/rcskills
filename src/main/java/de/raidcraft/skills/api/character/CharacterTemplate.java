@@ -6,6 +6,7 @@ import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
+import de.raidcraft.skills.api.combat.action.Action;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
@@ -37,6 +38,11 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     public ThreatTable getThreatTable();
 
     public Attack getLastDamageCause();
+
+    @Nullable
+    public Action<? extends CharacterTemplate> getLastAction();
+
+    public void setLastAction(Action<? extends CharacterTemplate> action);
 
     public CustomWeapon getWeapon(EquipmentSlot slot);
 

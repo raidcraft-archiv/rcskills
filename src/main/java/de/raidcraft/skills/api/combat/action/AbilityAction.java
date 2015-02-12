@@ -16,14 +16,14 @@ import de.raidcraft.skills.trigger.EntityCastAbilityTrigger;
 /**
  * @author Silthus
  */
-public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T> {
+public class AbilityAction<S extends CharacterTemplate> extends AbstractAction<S> {
 
-    private final Ability<T> ability;
+    private final Ability<S> ability;
     private final EntityCastAbilityTrigger trigger;
     private double castTime;
     private double cooldown;
 
-    public AbilityAction(Ability<T> ability) {
+    public AbilityAction(Ability<S> ability) {
 
         super(ability.getHolder());
         this.ability = ability;
@@ -83,6 +83,7 @@ public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T
 
         // and call the trigger
         ((Useable) ability).use();
+        getSource().setLastAction(this);
         // substract the usage costs
         ability.substractUsageCost(this);
         // run ambient stuff
@@ -99,7 +100,7 @@ public class AbilityAction<T extends CharacterTemplate> extends AbstractAction<T
         }
     }
 
-    public Ability<T> getAbility() {
+    public Ability<S> getAbility() {
 
         return ability;
     }

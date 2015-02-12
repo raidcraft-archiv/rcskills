@@ -53,5 +53,8 @@ public class HealAction<S> extends AbstractTargetedAction<S, CharacterTemplate> 
         }
 
         getTarget().heal(this);
+        if (getSource() instanceof CharacterTemplate) {
+            ((CharacterTemplate) getSource()).setLastAction((Action<? extends CharacterTemplate>) this);
+        }
     }
 }

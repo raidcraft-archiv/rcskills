@@ -18,13 +18,13 @@ public class SkillTrigger extends Trigger implements Listener, Triggered {
 
     public SkillTrigger() {
 
-        super("skill", "unlock", "level", "cast");
+        super("skill", "unlock", "level", "use");
     }
 
     @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.MONITOR)
     public void onSkillCast(PlayerCastSkillEvent event) {
 
-        informListeners("cast", event.getPlayer(),
+        informListeners("use", event.getPlayer(),
                 config -> !config.isSet("skill")
                         || event.getSkill().getName().equalsIgnoreCase(config.getString("skill"))
         );

@@ -103,6 +103,7 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             getTarget().damage(this);
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
+            getSource().setLastAction(this);
             // play the impact effects
             for (AmbientEffect effect : getImpactEffects()) {
                 effect.run(getTarget().getEntity().getLocation());

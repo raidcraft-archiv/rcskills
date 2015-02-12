@@ -9,6 +9,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ThreatTable;
+import de.raidcraft.skills.api.combat.action.Action;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EnvironmentAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -78,7 +79,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private LivingEntity entity;
     private double damage;
     private boolean inCombat = false;
-    private Attack lastAttack;
+    private Attack lastDamageCause;
+    private Action<? extends CharacterTemplate> lastAction;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
     private CharacterTemplate lastKill;
@@ -214,7 +216,19 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public Attack getLastDamageCause() {
 
-        return lastAttack;
+        return lastDamageCause;
+    }
+
+    @Override
+    public void setLastAction(Action<? extends CharacterTemplate> action) {
+
+        this.lastAction = action;
+    }
+
+    @Override
+    public Action<? extends CharacterTemplate> getLastAction() {
+
+        return lastAction;
     }
 
     @Override
@@ -580,7 +594,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 if (attacker != null) attack.getAttacker().addEffect(this, Combat.class);
                 addEffect(attack.getAttacker(), Combat.class);
                 // set the last attack variable to track death
-                lastAttack = attack;
+                lastDamageCause = attack;
                 // lets increase the thread against the attacker
                 if (attacker != null) {
                     if (getEntity() instanceof PigZombie) {

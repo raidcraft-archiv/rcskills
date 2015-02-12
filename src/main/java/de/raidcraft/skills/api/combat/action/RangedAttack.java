@@ -130,6 +130,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
         // queue the ranged callback to be called if the projectile hits
         SourcedRangeCallback<T> rangeCallback = new SourcedRangeCallback<>(this);
         rangeCallback.queueCallback();
+        getSource().setLastAction(this);
     }
 
     public Location getSpawnLocation() {

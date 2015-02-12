@@ -9,13 +9,13 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
-import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
 import de.raidcraft.skills.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -195,19 +195,21 @@ public class SkillsPlugin extends BasePlugin implements Component {
     private void registerActionAPI() {
 
         /* ACTIONS */
-        try {
-            ActionFactory actionFactory = ActionFactory.getInstance();
-            actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
-        } catch (ActionException e) {
-            getLogger().warning(e.getMessage());
-        }
+        ActionFactory actionFactory = ActionFactory.getInstance();
+        actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
 
         /* REQUIREMENTS */
         RequirementFactory requirementFactory = RequirementFactory.getInstance();
+        requirementFactory.registerRequirement(this, "skill.use", new SkillUseRequirement());
         requirementFactory.registerRequirement(this, "hero.level", (Player player, ConfigurationSection config) -> {
 
             Hero hero = getCharacterManager().getHero(player);
             return hero.getPlayerLevel() >= config.getInt("level");
+        });
+        requirementFactory.registerRequirement(this, "hero.skill", (Player player, ConfigurationSection config) -> {
+
+            Hero hero = getCharacterManager().getHero(player);
+            return hero.hasSkill(config.getString("skill"));
         });
 
         /* TRIGGER */
