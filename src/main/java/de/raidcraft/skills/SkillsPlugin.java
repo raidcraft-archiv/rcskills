@@ -9,8 +9,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
-import de.raidcraft.api.action.action.ActionFactory;
-import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.requirement.RequirementManager;
@@ -194,27 +193,20 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
     private void registerActionAPI() {
 
-        /* ACTIONS */
-        ActionFactory actionFactory = ActionFactory.getInstance();
-        actionFactory.registerAction(this, "hero.addxp", new AddHeroExpAction());
+        ActionAPI.register(this)
+                .action("hero.addxp", new AddHeroExpAction())
+                .requirement("skill.use", new SkillUseRequirement())
+                .requirement("hero.level", (Player player, ConfigurationSection config) -> {
 
-        /* REQUIREMENTS */
-        RequirementFactory requirementFactory = RequirementFactory.getInstance();
-        requirementFactory.registerRequirement(this, "skill.use", new SkillUseRequirement());
-        requirementFactory.registerRequirement(this, "hero.level", (Player player, ConfigurationSection config) -> {
+                    Hero hero = getCharacterManager().getHero(player);
+                    return hero.getPlayerLevel() >= config.getInt("level");
+                })
+                .requirement("hero.skill", (Player player, ConfigurationSection config) -> {
 
-            Hero hero = getCharacterManager().getHero(player);
-            return hero.getPlayerLevel() >= config.getInt("level");
-        });
-        requirementFactory.registerRequirement(this, "hero.skill", (Player player, ConfigurationSection config) -> {
-
-            Hero hero = getCharacterManager().getHero(player);
-            return hero.hasSkill(config.getString("skill"));
-        });
-
-        /* TRIGGER */
-        de.raidcraft.api.action.trigger.TriggerManager triggerManager = de.raidcraft.api.action.trigger.TriggerManager.getInstance();
-        triggerManager.registerTrigger(this, new SkillTrigger());
+                    Hero hero = getCharacterManager().getHero(player);
+                    return hero.hasSkill(config.getString("skill"));
+                })
+                .trigger(new SkillTrigger());
     }
 
     public CharacterManager getCharacterManager() {
