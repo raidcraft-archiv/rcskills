@@ -40,6 +40,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -340,6 +341,12 @@ public final class CharacterManager implements Listener, Component {
         plugin.getSkillManager().clearSkillCache(character.getName());
     }
 
+    @Nullable
+    public CharacterTemplate getCharacter(UUID uuid) {
+
+        return characters.get(uuid);
+    }
+
     public CharacterTemplate getCharacter(LivingEntity entity) {
 
         if (entity == null) {
@@ -364,7 +371,7 @@ public final class CharacterManager implements Listener, Component {
             // cache the character
             characters.put(entity.getUniqueId(), creature);
         } else {
-            return characters.get(entity.getUniqueId());
+            return getCharacter(entity.getUniqueId());
         }
         return creature;
     }
