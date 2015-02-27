@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.combat.action.Action;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.Effect;
+import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
@@ -36,6 +37,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     public CharacterType getCharacterType();
 
     public ThreatTable getThreatTable();
+
+    public Combat getLastCombat();
 
     public Attack getLastDamageCause();
 

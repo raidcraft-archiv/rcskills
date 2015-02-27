@@ -81,6 +81,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private boolean inCombat = false;
     private Attack lastDamageCause;
     private Action<? extends CharacterTemplate> lastAction;
+    private Combat lastCombat;
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
     private CharacterTemplate lastKill;
@@ -211,6 +212,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public ThreatTable getThreatTable() {
 
         return threatTable;
+    }
+
+    @Override
+    public Combat getLastCombat() {
+
+        return lastCombat;
     }
 
     @Override
@@ -759,6 +766,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (existingEffect instanceof Stackable) {
                 // we dont replace or renew stackable effects, we increase their stacks :)
                 ((Stackable) existingEffect).setStacks(((Stackable) existingEffect).getStacks() + 1);
+                if (existingEffect instanceof Combat) {
+                    lastCombat = (Combat) existingEffect;
+                }
+                return;
             } else if (existingEffect.getPriority() < 0) {
                 // prio less then 0 is special and means always replace
                 existingEffect.remove();
@@ -768,6 +779,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             } else if (existingEffect.getPriority() == effect.getPriority()) {
                 // lets renew the existing effect
                 existingEffect.renew();
+                if (existingEffect instanceof Combat) {
+                    lastCombat = (Combat) existingEffect;
+                }
+                return;
             } else {
                 // the new effect has a higher priority so lets remove the old one
                 existingEffect.remove();
@@ -777,6 +792,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // apply the new effect
             effects.get(eClass).put(effect.getSource(), effect);
             effect.apply();
+        }
+        if (effect instanceof Combat) {
+            lastCombat = (Combat) effect;
         }
     }
 
@@ -797,8 +815,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass);
         addEffect(eClass, effect);
         // special check for the combat effect
-        if (effect instanceof Combat && source instanceof CharacterTemplate) {
-            ((Combat) effect).addInvolvedCharacter((CharacterTemplate) source);
+        if (getLastCombat() != null && source instanceof CharacterTemplate) {
+            getLastCombat().addInvolvedCharacter((CharacterTemplate) source);
         }
         return effect;
     }
