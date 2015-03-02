@@ -155,8 +155,8 @@ public class SkillAction extends AbilityAction<Hero> {
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);
 
-        RaidCraft.callEvent(new PlayerCastSkillEvent(this));
         getSource().setLastAction(this);
+        RaidCraft.callEvent(new PlayerCastSkillEvent(this));
         // lets inform the player that his skill was executed
         skill.getHolder().sendMessage(ChatColor.DARK_GRAY + "Skill ausgeführt: " + skill.getFriendlyName());
     }
