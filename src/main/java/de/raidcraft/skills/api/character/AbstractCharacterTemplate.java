@@ -698,14 +698,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity().isDead()) {
             return;
         }
-        RaidCraft.callEvent(new RCEntityDeathEvent(this));
         clearEffects();
         getEntity().setCustomNameVisible(false);
-        // we need to damage not set health the entity or else it wont fire an death event
-        getEntity().damage(getMaxHealth());
         if (killer != null) {
             killer.setLastKill(this);
         }
+        // we need to damage not set health the entity or else it wont fire an death event
+        getEntity().damage(getMaxHealth());
+        RaidCraft.callEvent(new RCEntityDeathEvent(this));
     }
 
     @Override
