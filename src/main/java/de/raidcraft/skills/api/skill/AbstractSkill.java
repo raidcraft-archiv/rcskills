@@ -33,6 +33,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -302,6 +303,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         if (skill == null) return;
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
+        skill.setLastCast(Timestamp.from(Instant.ofEpochMilli(getLastCast())));
         // dont save when the player is in a blacklist world
         if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
                 || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {

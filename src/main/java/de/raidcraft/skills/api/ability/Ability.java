@@ -71,6 +71,8 @@ public interface Ability<T extends CharacterTemplate> {
 
     boolean isLevelable();
 
+    long getLastCast();
+
     void setLastCast(long time);
 
     boolean matches(String name);

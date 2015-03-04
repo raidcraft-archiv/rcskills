@@ -5,15 +5,11 @@ import de.raidcraft.skills.api.persistance.LevelData;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * @author Silthus
@@ -38,6 +34,7 @@ public class THeroSkill implements LevelData {
 
     private int level;
     private int exp;
+    private Timestamp lastCast;
     private boolean unlocked;
     private Timestamp unlockTime;
 

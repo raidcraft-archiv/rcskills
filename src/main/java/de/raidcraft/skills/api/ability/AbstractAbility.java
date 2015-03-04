@@ -38,6 +38,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -573,6 +575,12 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public boolean isLevelable() {
 
         return this instanceof Levelable && properties.isLevelable();
+    }
+
+    @Override
+    public long getLastCast() {
+
+        return lastCast;
     }
 
     @Override
