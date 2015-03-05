@@ -251,10 +251,15 @@ public final class CharacterManager implements Listener, Component {
     @SuppressWarnings("unchecked")
     public <T extends CharacterTemplate> T spawnCharacter(EntityType entityType, Location location, Class<T> creatureClazz, Object... args) {
 
-        LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
+        return wrapCharacter((LivingEntity) location.getWorld().spawnEntity(location, entityType), creatureClazz, args);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends CharacterTemplate> T wrapCharacter(LivingEntity entity, Class<T> creatureClazz, Object... args) {
+
         // at this point the spawnEntity event was called but we dont always handle it, so lets check if we have it cached
         if (characters.containsKey(entity.getUniqueId())) {
-            characters.remove(entity.getUniqueId()).leaveParty();
+            clearCacheOf(characters.remove(entity.getUniqueId()));
         }
 
         if (!cachedClasses.containsKey(creatureClazz)) {
@@ -349,10 +354,10 @@ public final class CharacterManager implements Listener, Component {
 
     public CharacterTemplate getCharacter(LivingEntity entity) {
 
-        if (entity == null) {
+        if (entity == null || entity.hasMetadata("NPC")) {
             return null;
         }
-        if (!entity.hasMetadata("NPC") && entity instanceof Player) {
+        if (entity instanceof Player) {
             return getHero((Player) entity);
         }
 
