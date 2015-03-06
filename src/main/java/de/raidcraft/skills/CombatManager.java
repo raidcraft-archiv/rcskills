@@ -185,6 +185,10 @@ public final class CombatManager implements Listener, Triggered {
         CharacterTemplate creature = plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity());
         CharacterTemplate target = plugin.getCharacterManager().getCharacter(event.getTarget());
 
+	    if (creature == null || target == null) {
+		    return;
+	    }
+
         if (target.isFriendly(creature)) {
             event.setCancelled(true);
         }
