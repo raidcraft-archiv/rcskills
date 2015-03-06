@@ -310,7 +310,7 @@ public final class CharacterManager implements Listener, Component {
             if (entity instanceof Player && !entity.hasMetadata("NPC")) {
                 continue;
             }
-            if (entity instanceof LivingEntity) {
+            if (entity instanceof LivingEntity && !entity.hasMetadata("NPC")) {
                 clearCacheOf(getCharacter((LivingEntity) entity));
             }
         }
