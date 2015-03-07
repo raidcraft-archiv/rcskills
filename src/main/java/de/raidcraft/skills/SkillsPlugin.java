@@ -48,21 +48,7 @@ import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
 import de.raidcraft.skills.requirement.SkillLevelRequirement;
 import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.tables.TBinding;
-import de.raidcraft.skills.tables.TDataAlias;
-import de.raidcraft.skills.tables.TDataProfession;
-import de.raidcraft.skills.tables.THero;
-import de.raidcraft.skills.tables.THeroAttribute;
-import de.raidcraft.skills.tables.THeroExpPool;
-import de.raidcraft.skills.tables.THeroOption;
-import de.raidcraft.skills.tables.THeroProfession;
-import de.raidcraft.skills.tables.THeroResource;
-import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.tables.TLanguage;
-import de.raidcraft.skills.tables.TProfession;
-import de.raidcraft.skills.tables.TProfessionTranslation;
-import de.raidcraft.skills.tables.TSkill;
-import de.raidcraft.skills.tables.TSkillTranslation;
+import de.raidcraft.skills.tables.*;
 import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
@@ -291,6 +277,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(TProfessionTranslation.class);
         classes.add(TDataAlias.class);
         classes.add(TDataProfession.class);
+	    classes.add(TRunestone.class);
         return classes;
     }
 
