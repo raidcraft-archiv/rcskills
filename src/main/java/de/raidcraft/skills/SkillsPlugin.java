@@ -139,7 +139,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                     e.printStackTrace();
                 }
             }
-        });
+        }, 1);
 
         new LoadConfigsTask(this).runTaskAsynchronously(this);
     }
