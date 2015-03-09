@@ -352,7 +352,9 @@ public final class CombatManager implements Listener, Triggered {
         }
         if (event.getEntity() == null
                 || event.getDamager() == null
-                || !(event.getEntity() instanceof LivingEntity)) {
+                || !(event.getEntity() instanceof LivingEntity)
+                || event.getEntity().hasMetadata("NPC")
+                || event.getDamager().hasMetadata("NPC")) {
             return;
         }
         boolean callback = false;
