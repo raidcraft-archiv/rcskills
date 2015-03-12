@@ -373,9 +373,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         heroTable.setLevel(getAttachedLevel().getLevel());
 
         // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).save(heroTable);
     }
 
     @Override
@@ -896,15 +894,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (tHero == null) return;
         tHero.setHealth(getHealth());
         tHero.setSelectedProfession(getSelectedProfession().getName());
+        RaidCraft.getDatabase(SkillsPlugin.class).save(tHero);
 
-        // dont save when the player is in a blacklist world
-        if (isOnline() && RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(tHero);
-            saveProfessions();
-            saveLevelProgress(getAttachedLevel());
-            getExpPool().saveLevelProgress();
-            saveSkills();
-        }
+        saveProfessions();
+        saveLevelProgress(getAttachedLevel());
+        getExpPool().saveLevelProgress();
+        saveSkills();
+
         getOptions().set(Option.PVP, pvpEnabled);
         getOptions().save();
     }

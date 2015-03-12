@@ -1,7 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -84,12 +83,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         skill.setLevel(attachedLevel.getLevel());
         skill.setExp(attachedLevel.getExp());
-
-        // dont save when the player is in a blacklist world
-        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
     }
 
     @Override

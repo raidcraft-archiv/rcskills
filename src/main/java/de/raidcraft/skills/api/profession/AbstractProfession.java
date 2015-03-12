@@ -3,7 +3,6 @@ package de.raidcraft.skills.api.profession;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -177,12 +176,7 @@ public abstract class AbstractProfession implements Profession {
 
         THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
         profession.setActive(isActive());
-
-        // dont save when the player is in a blacklist world
-        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
     }
 
     @Override
@@ -260,12 +254,7 @@ public abstract class AbstractProfession implements Profession {
         THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
         profession.setLevel(attachedLevel.getLevel());
         profession.setExp(attachedLevel.getExp());
-
-        // dont save when the player is in a blacklist world
-        if (getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).save(profession);
     }
 
     public void loadSkills() {

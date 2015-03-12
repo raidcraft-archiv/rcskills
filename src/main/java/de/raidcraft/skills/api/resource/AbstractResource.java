@@ -328,17 +328,11 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void save() {
 
-        if (!getHero().isOnline()) {
-            return;
-        }
-        // dont save when the player is in a blacklist world
-        if (RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHero().getPlayer().getWorld().getName())) {
-            EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
-            THeroResource resource = database.find(THeroResource.class).where()
-                    .eq("profession_id", getProfession().getId())
-                    .eq("name", getName()).findUnique();
-            resource.setValue(getCurrent());
-            database.update(resource);
-        }
+        EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
+        THeroResource resource = database.find(THeroResource.class).where()
+                .eq("profession_id", getProfession().getId())
+                .eq("name", getName()).findUnique();
+        resource.setValue(getCurrent());
+        database.update(resource);
     }
 }

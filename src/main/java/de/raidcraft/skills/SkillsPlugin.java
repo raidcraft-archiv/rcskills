@@ -148,18 +148,14 @@ public class SkillsPlugin extends BasePlugin implements Component {
     public void disable() {
 
         // clear the cache of all heroes, saving them to the database
-        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
-            hero.save();
-        }
+        getCharacterManager().getCachedHeroes().forEach(Hero::save);
     }
 
     @Override
     public void reload() {
 
         // clear the cache of all heroes, saving them to the database
-        for (Hero hero : new ArrayList<>(getCharacterManager().getCachedHeroes())) {
-            hero.save();
-        }
+        getCharacterManager().getCachedHeroes().forEach(Hero::save);
         // cancel all tasks
         Bukkit.getScheduler().cancelTasks(this);
         // and reload all of our managers and configs
@@ -363,11 +359,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         return experienceConfig;
     }
 
-    public boolean isSavingWorld(String world) {
-
-        return !getCommonConfig().getIgnoredWorlds().contains(world);
-    }
-
     public LocalConfiguration getCommonConfig() {
 
         return configuration;
@@ -441,11 +432,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public LocalConfiguration(SkillsPlugin plugin) {
 
             super(plugin, "config.yml");
-        }
-
-        public Set<String> getIgnoredWorlds() {
-
-            return new HashSet<>(getStringList("ignored-worlds"));
         }
 
         public Set<String> getExcludedProfessions() {

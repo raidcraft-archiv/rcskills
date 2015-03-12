@@ -7,7 +7,6 @@ import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.AbstractAbility;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -304,11 +303,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
         skill.setLastCast(Timestamp.from(Instant.ofEpochMilli(getLastCast())));
-        // dont save when the player is in a blacklist world
-        if (getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)
-                || RaidCraft.getComponent(SkillsPlugin.class).isSavingWorld(getHolder().getPlayer().getWorld().getName())) {
-            RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
     }
 
 
