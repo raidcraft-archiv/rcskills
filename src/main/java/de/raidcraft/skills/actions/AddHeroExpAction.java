@@ -17,6 +17,8 @@ public class AddHeroExpAction implements Action<Player> {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
         Hero hero = plugin.getCharacterManager().getHero(player);
-        hero.getExpPool().addExp(config.getInt("exp"));
+	    int exp = config.getInt("exp");
+        hero.getExpPool().addExp(exp);
+	    hero.sendMessage("Deinem EXP Pool wurden "+exp+" EXP hinzugefügt.");
     }
 }
