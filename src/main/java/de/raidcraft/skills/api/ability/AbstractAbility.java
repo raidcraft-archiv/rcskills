@@ -38,7 +38,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     private final String name;
     // protected final THeroSkill database;
     protected String description;
-    private long lastCast;
+    private Instant lastCast;
     private double cooldown;
     private BukkitTask cooldownInformTask;
 
@@ -112,7 +111,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final void substractUsageCost(AbilityAction<T> action) {
 
         // and lets set the cooldown because it is like a usage cost for further casting
-        setLastCast(System.currentTimeMillis());
+        setLastCast(Instant.now());
         // get the cooldown from the skill action
         setCooldown(action.getCooldown(), false);
     }
@@ -491,9 +490,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final double getTotalCooldown() {
+    public final long getTotalCooldown() {
 
-        return ConfigUtil.getTotalValue(this, properties.getCooldown());
+        return Double.valueOf(ConfigUtil.getTotalValue(this, properties.getCooldown())).longValue();
     }
 
     @Override
@@ -562,7 +561,8 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @Override
     public final double getRemainingCooldown() {
 
-        return TimeUtil.millisToSeconds(lastCast + (TimeUtil.secondsToMillis(cooldown)) - System.currentTimeMillis());
+        Instant instant = Instant.now().minusMillis(getLastCast().plusSeconds(getTotalCooldown()).toEpochMilli());
+        return instant.getEpochSecond();
     }
 
     @Override
@@ -578,15 +578,14 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public long getLastCast() {
+    public Instant getLastCast() {
 
         return lastCast;
     }
 
-    @Override
-    public final void setLastCast(long time) {
+    public final void setLastCast(Instant instant) {
 
-        this.lastCast = time;
+        this.lastCast = instant;
     }
 
     @Override

@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -61,7 +62,7 @@ public interface Ability<T extends CharacterTemplate> {
 
     int getTotalRange();
 
-    double getTotalCooldown();
+    long getTotalCooldown();
 
     void setCooldown(double cooldown);
 
@@ -71,9 +72,9 @@ public interface Ability<T extends CharacterTemplate> {
 
     boolean isLevelable();
 
-    long getLastCast();
+    Instant getLastCast();
 
-    void setLastCast(long time);
+    void setLastCast(Instant time);
 
     boolean matches(String name);
 
