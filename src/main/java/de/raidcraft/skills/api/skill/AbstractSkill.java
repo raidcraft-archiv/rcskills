@@ -204,7 +204,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         // keep this last or items will be removed before casting
         holder.getPlayer().getInventory().removeItem(getSkillProperties().getReagents());
         // and lets set the cooldown because it is like a usage cost for further casting
-        setLastCast(System.currentTimeMillis());
+        setLastCast(Instant.now());
         // get the cooldown from the skill action
         setCooldown(action.getCooldown(), false);
         // also give the player the defined amount of exp for using the skill
@@ -302,7 +302,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         if (skill == null) return;
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
-        skill.setLastCast(Timestamp.from(Instant.ofEpochMilli(getLastCast())));
+        skill.setLastCast(Timestamp.from(getLastCast()));
         RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
     }
 
