@@ -302,7 +302,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         if (skill == null) return;
         skill.setUnlockTime(unlockTime);
         skill.setUnlocked(isUnlocked());
-        skill.setLastCast(Timestamp.from(getLastCast()));
+        if (getLastCast() != null) skill.setLastCast(Timestamp.from(getLastCast()));
         RaidCraft.getDatabase(SkillsPlugin.class).save(skill);
     }
 
