@@ -30,16 +30,23 @@ public class TRunestone {
         return Optional.ofNullable(RaidCraft.getDatabase(SkillsPlugin.class).find(TRunestone.class, customItemStack.getMetaDataId()));
     }
 
-    public static void updateRunestone(TRunestone runestone, int remainingUses) {
+    public static void updateRunestone(CustomItemStack runestone, int remainingUses) {
 
         EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
-        runestone.setRemainingUses(remainingUses);
-        database.save(runestone);
+        TRunestone entry = database.find(TRunestone.class, runestone.getMetaDataId());
+        if (entry != null) {
+            entry.setRemainingUses(remainingUses);
+            database.update(entry);
+        }
     }
 
-    public static void deleteRunestone(TRunestone runestone) {
+    public static void deleteRunestone(CustomItemStack runestone) {
 
-        RaidCraft.getDatabase(SkillsPlugin.class).delete(runestone);
+        EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
+        TRunestone entry = database.find(TRunestone.class, runestone.getMetaDataId());
+        if (entry != null) {
+            database.delete(entry);
+        }
     }
 
     public static TRunestone createRunestone(CustomItemStack customItemStack, int maxUses, int remainingUses, Location location) {
