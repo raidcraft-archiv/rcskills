@@ -34,7 +34,7 @@ public class TRunestone {
 
         EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
         runestone.setRemainingUses(remainingUses);
-        database.update(runestone);
+        database.save(runestone);
     }
 
     public static void deleteRunestone(TRunestone runestone) {
