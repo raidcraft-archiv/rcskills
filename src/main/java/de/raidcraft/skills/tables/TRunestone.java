@@ -58,6 +58,7 @@ public class TRunestone {
         runestone.setPitch(location.getPitch());
         RaidCraft.getDatabase(SkillsPlugin.class).save(runestone);
         customItemStack.setMetaDataId(runestone.getId());
+        RaidCraft.LOGGER.info("Created runestone with database id " + runestone.getId() + " and meta id " + customItemStack.getMetaDataId());
         return runestone;
     }
 
