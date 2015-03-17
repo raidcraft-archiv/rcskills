@@ -48,9 +48,9 @@ public class TRunestone {
         runestone.setMaxUses(maxUses);
         runestone.setRemainingUses(remainingUses);
         runestone.setWorld(location.getWorld().getName());
-        runestone.setX(location.getX());
-        runestone.setY(location.getY());
-        runestone.setZ(location.getZ());
+        runestone.setX(location.getBlockX());
+        runestone.setY(location.getBlockY());
+        runestone.setZ(location.getBlockZ());
         runestone.setYaw(location.getYaw());
         runestone.setPitch(location.getPitch());
         RaidCraft.getDatabase(SkillsPlugin.class).save(runestone);
@@ -65,9 +65,9 @@ public class TRunestone {
     private int maxUses;
     private int remainingUses;
     private String world;
-    private double x;
-    private double y;
-    private double z;
+    private int x;
+    private int y;
+    private int z;
     private float yaw;
     private float pitch;
 }
