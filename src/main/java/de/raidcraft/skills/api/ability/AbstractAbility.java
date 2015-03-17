@@ -561,8 +561,8 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @Override
     public final double getRemainingCooldown() {
 
-        Instant instant = Instant.now().minusMillis(getLastCast().plusSeconds(getTotalCooldown()).toEpochMilli());
-        return instant.getEpochSecond();
+        long remainingCooldown = getLastCast().plusSeconds((long) cooldown).toEpochMilli() - Instant.now().toEpochMilli();
+        return TimeUtil.millisToSeconds(remainingCooldown);
     }
 
     @Override
