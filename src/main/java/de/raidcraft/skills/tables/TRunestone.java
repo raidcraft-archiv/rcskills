@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.skills.SkillsPlugin;
@@ -11,7 +10,6 @@ import org.bukkit.Location;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Optional;
 
 /**
  * @author mdoering
@@ -22,38 +20,30 @@ import java.util.Optional;
 @Table(name = "runestones")
 public class TRunestone {
 
-    public static Optional<TRunestone> getRunestone(CustomItemStack customItemStack) {
+    public static TRunestone getRunestone(CustomItemStack customItemStack) {
 
         if (customItemStack.getMetaDataId() < 1) {
-            return Optional.empty();
+            return null;
         }
-        return Optional.ofNullable(RaidCraft.getDatabase(SkillsPlugin.class).find(TRunestone.class, customItemStack.getMetaDataId()));
+        return RaidCraft.getDatabase(SkillsPlugin.class).find(TRunestone.class, customItemStack.getMetaDataId());
     }
 
-    public static void updateRunestone(CustomItemStack runestone, int remainingUses) {
+    public static void updateRunestone(TRunestone runestone, int remainingUses) {
 
-        EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
-        TRunestone entry = database.find(TRunestone.class, runestone.getMetaDataId());
-        if (entry != null) {
-            entry.setRemainingUses(remainingUses);
-            database.update(entry);
-        }
+        runestone.setRemainingUses(remainingUses);
+        RaidCraft.getDatabase(SkillsPlugin.class).save(runestone);
     }
 
-    public static void deleteRunestone(CustomItemStack runestone) {
+    public static void deleteRunestone(TRunestone runestone) {
 
-        EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
-        TRunestone entry = database.find(TRunestone.class, runestone.getMetaDataId());
-        if (entry != null) {
-            database.delete(entry);
-        }
+        RaidCraft.getDatabase(SkillsPlugin.class).delete(runestone);
     }
 
     public static TRunestone createRunestone(CustomItemStack customItemStack, int maxUses, int remainingUses, Location location) {
 
-        Optional<TRunestone> entry = getRunestone(customItemStack);
-        if (entry.isPresent()) return entry.get();
-        TRunestone runestone = new TRunestone();
+        TRunestone runestone = getRunestone(customItemStack);
+        if (runestone != null) return runestone;
+        runestone = new TRunestone();
         runestone.setCustomItemId(customItemStack.getItem().getId());
         runestone.setMaxUses(maxUses);
         runestone.setRemainingUses(remainingUses);
