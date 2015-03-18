@@ -293,6 +293,7 @@ public final class CharacterManager implements Listener, Component {
             System.arraycopy(args, 0, objects, 1, objects.length - 1);
             // we also pass in the living entity
             T character = constructor.newInstance(objects);
+            character.updateEntity(entity);
             characters.put(character.getEntity().getUniqueId(), character);
             return character;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
