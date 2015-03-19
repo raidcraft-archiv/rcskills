@@ -879,12 +879,8 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void saveSkills() {
 
-        for (Skill skill : getSkills()) {
-            skill.save();
-        }
-        for (Skill skill : getVirtualProfession().getSkills()) {
-            skill.save();
-        }
+        getSkills().forEach(Skill::save);
+        getVirtualProfession().getSkills().forEach(Skill::save);
     }
 
     @Override
