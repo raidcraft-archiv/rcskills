@@ -10,6 +10,8 @@ import org.bukkit.Location;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import java.sql.Timestamp;
 
 /**
  * @author mdoering
@@ -48,9 +50,9 @@ public class TRunestone {
         runestone.setMaxUses(maxUses);
         runestone.setRemainingUses(remainingUses);
         runestone.setWorld(location.getWorld().getName());
-        runestone.setX(location.getBlockX());
-        runestone.setY(location.getBlockY());
-        runestone.setZ(location.getBlockZ());
+        runestone.setX(location.getX());
+        runestone.setY(location.getY());
+        runestone.setZ(location.getZ());
         runestone.setYaw(location.getYaw());
         runestone.setPitch(location.getPitch());
         RaidCraft.getDatabase(SkillsPlugin.class).save(runestone);
@@ -65,9 +67,11 @@ public class TRunestone {
     private int maxUses;
     private int remainingUses;
     private String world;
-    private int x;
-    private int y;
-    private int z;
+    private double x;
+    private double y;
+    private double z;
     private float yaw;
     private float pitch;
+    @Version
+    private Timestamp lastUpdate;
 }
