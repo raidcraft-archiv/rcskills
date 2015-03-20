@@ -580,4 +580,42 @@ public class AdminCommands {
             }
         }, 5L);
     }
+
+    @Command(
+            aliases = "reset",
+            desc = "Resets all effects and cooldowns of the player.",
+            flags = "p:ecr"
+    )
+    @CommandPermissions("rcskills.admin.reset")
+    public void reset(CommandContext args, CommandSender sender) {
+
+        Hero hero;
+        if (args.hasFlag('p')) {
+            hero = plugin.getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getFlag('p')));
+            sender.sendMessage(ChatColor.GREEN + "Die " +
+                            (args.hasFlag('r') ? "Resourcen " : "") +
+                            (args.hasFlag('e') ? " Effekte " : "") +
+                            (args.hasFlag('c') ? " Cooldowns " : "") +
+                            "von " + hero.getName() + " wurden zurückgesetzt."
+            );
+        } else {
+            hero = plugin.getCharacterManager().getHero((Player) sender);
+        }
+        // reset all resources
+        if (args.hasFlag('r')) {
+            hero.reset();
+            hero.sendMessage(ChatColor.AQUA + "Alle Resourcen (inkl. Leben) wurden zurückgesetzt.");
+        }
+        if (args.hasFlag('e')) {
+            hero.clearEffects();
+            hero.sendMessage(ChatColor.AQUA + "Alle Effekte wurden entfernt.");
+        }
+        // reset all skill cooldowns
+        if (args.hasFlag('c')) {
+            hero.getSkills().stream().filter(Skill::isOnCooldown).forEach(s -> {
+                s.setLastCast(null);
+                hero.sendMessage(ChatColor.AQUA + "Cooldown von " + s + " wurde zurückgesetzt.");
+            });
+        }
+    }
 }
