@@ -259,6 +259,9 @@ public final class CharacterManager implements Listener, Component {
 
         // at this point the spawnEntity event was called but we dont always handle it, so lets check if we have it cached
         if (characters.containsKey(entity.getUniqueId())) {
+            if (creatureClazz.isInstance(characters.get(entity.getUniqueId()))) {
+                return (T) characters.get(entity.getUniqueId());
+            }
             clearCacheOf(characters.remove(entity.getUniqueId()));
         }
 
