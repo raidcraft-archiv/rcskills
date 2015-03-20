@@ -490,7 +490,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     }
 
     @Override
-    public final long getTotalCooldown() {
+    public final long getConfiguredCooldown() {
 
         return Double.valueOf(ConfigUtil.getTotalValue(this, properties.getCooldown())).longValue();
     }
@@ -517,6 +517,14 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final String toString() {
 
         return getFriendlyName();
+    }
+
+    public double getCooldown() {
+
+        if (this.cooldown <= 0) {
+            this.cooldown = getConfiguredCooldown();
+        }
+        return this.cooldown;
     }
 
     @Override
@@ -564,14 +572,13 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         if (getLastCast() == null) {
             return 0;
         }
-        long remainingCooldown = getLastCast().plusSeconds((long) cooldown).toEpochMilli() - Instant.now().toEpochMilli();
-        return TimeUtil.millisToSeconds(remainingCooldown);
+        return getLastCast().plusSeconds((long) getCooldown()).getEpochSecond() - Instant.now().getEpochSecond();
     }
 
     @Override
     public final boolean isOnCooldown() {
 
-        return getRemainingCooldown() > 0;
+        return getLastCast().plusSeconds((long) getCooldown()).isAfter(Instant.now());
     }
 
     @Override

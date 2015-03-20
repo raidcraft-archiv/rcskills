@@ -62,7 +62,9 @@ public interface Ability<T extends CharacterTemplate> {
 
     int getTotalRange();
 
-    long getTotalCooldown();
+    long getConfiguredCooldown();
+
+    double getCooldown();
 
     void setCooldown(double cooldown);
 

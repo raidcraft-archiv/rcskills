@@ -194,7 +194,7 @@ public class AdminCommands {
             sb.append("\t\tEXP per Use: ").append(skill.getUseExp()).append("\n");
             sb.append("\t\tEffect Types: ").append(StringUtil.joinString(skill.getTypes(), ", ", 0)).append("\n");
             // sb.append("\t\tEffect Elements: ").append(StringUtil.joinString(skill.getElements(), ", ", 0)).append("\n");
-            sb.append("\t\tCooldown: ").append(skill.getRemainingCooldown()).append("/").append(skill.getTotalCooldown()).append("\n");
+            sb.append("\t\tCooldown: ").append(skill.getRemainingCooldown()).append("/").append(skill.getConfiguredCooldown()).append("\n");
             sb.append("\t\tCast Time: ").append(skill.getTotalCastTime()).append("\n");
             sb.append("\t\tRange: ").append(skill.getTotalRange()).append("\n");
             sb.append("\t\tRequirements: \n");

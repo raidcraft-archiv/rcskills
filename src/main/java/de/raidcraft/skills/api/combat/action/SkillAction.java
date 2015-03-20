@@ -44,7 +44,7 @@ public class SkillAction extends AbilityAction<Hero> {
         this.skill = skill;
         this.args = args;
         this.castTime = skill.getTotalCastTime();
-        this.cooldown = skill.getTotalCooldown();
+        this.cooldown = skill.getConfiguredCooldown();
 
         for (Resource resource : skill.getHolder().getResources()) {
             resourceCosts.put(resource.getName(), skill.getTotalResourceCost(resource.getName()));

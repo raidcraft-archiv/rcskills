@@ -28,7 +28,7 @@ public class AbilityAction<S extends CharacterTemplate> extends AbstractAction<S
         super(ability.getHolder());
         this.ability = ability;
         this.castTime = ability.getTotalCastTime();
-        this.cooldown = ability.getTotalCooldown();
+        this.cooldown = ability.getConfiguredCooldown();
 
         // lets issue a trigger that can be modified by other skills
         this.trigger = TriggerManager.callSafeTrigger(new EntityCastAbilityTrigger(this));
