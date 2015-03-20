@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.time.Instant;
 
 /**
  * @author Silthus
@@ -34,7 +35,7 @@ public class THeroSkill implements LevelData {
 
     private int level;
     private int exp;
-    private Timestamp lastCast;
+    private Instant lastCast;
     private boolean unlocked;
     private Timestamp unlockTime;
 
