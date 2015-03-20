@@ -151,7 +151,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
             // this is called after the skill is created in order
             // to give local variables of the skill a chance to init
             if (database.getLastCast() != null) {
-                skill.setLastCast(database.getLastCast());
+                skill.setLastCast(database.getLastCast().toInstant());
                 plugin.getLogger().info("Loaded last cast of skill " + skill.getName() + "[" + skill.getHolder() + "]: " + skill.getLastCast());
             }
             skill.load(config.getData());

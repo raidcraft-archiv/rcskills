@@ -9,8 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.sql.Timestamp;
-import java.time.Instant;
 
 /**
  * @author Silthus
@@ -35,7 +36,8 @@ public class THeroSkill implements LevelData {
 
     private int level;
     private int exp;
-    private Instant lastCast;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp lastCast;
     private boolean unlocked;
     private Timestamp unlockTime;
 
