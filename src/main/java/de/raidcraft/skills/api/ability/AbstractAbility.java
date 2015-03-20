@@ -578,7 +578,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @Override
     public final boolean isOnCooldown() {
 
-        return getLastCast().plusSeconds((long) getCooldown()).isAfter(Instant.now());
+        return getLastCast() != null && getLastCast().plusSeconds((long) getCooldown()).isAfter(Instant.now());
     }
 
     @Override
