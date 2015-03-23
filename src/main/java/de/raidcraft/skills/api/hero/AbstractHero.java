@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.api.events.RCPlayerGainExpEvent;
 import de.raidcraft.api.items.ArmorType;
+import de.raidcraft.api.items.AttributeHolder;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
@@ -46,6 +47,7 @@ import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.MathUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -244,17 +246,17 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void setWeapon(CustomWeapon weapon) {
+    public void setWeapon(CustomItemStack item) {
 
-        super.setWeapon(weapon);
-        if (weapon != null && weapon.hasAttributes()) addAttributes(weapon.getAttributes());
+        super.setWeapon(item);
+        if (item != null && item.getItem() instanceof AttributeHolder) addAttributes(((AttributeHolder) item.getItem()).getAttributes());
     }
 
     @Override
     public CustomWeapon removeWeapon(EquipmentSlot slot) {
 
         CustomWeapon weapon = super.removeWeapon(slot);
-        if (weapon != null && weapon.hasAttributes()) removeAttributes(weapon.getAttributes());
+        if (weapon != null) removeAttributes(weapon.getAttributes());
         return weapon;
     }
 
@@ -269,17 +271,17 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void setArmor(CustomArmor armor) {
+    public void setArmor(CustomItemStack item) {
 
-        super.setArmor(armor);
-        if (armor != null && armor.hasAttributes()) addAttributes(armor.getAttributes());
+        super.setArmor(item);
+        if (item != null && item.getItem() instanceof AttributeHolder) addAttributes(((AttributeHolder) item.getItem()).getAttributes());
     }
 
     @Override
     public CustomArmor removeArmor(EquipmentSlot slot) {
 
         CustomArmor armor = super.removeArmor(slot);
-        if (armor != null && armor.hasAttributes()) removeAttributes(armor.getAttributes());
+        if (armor != null) removeAttributes(armor.getAttributes());
         return armor;
     }
 
@@ -538,12 +540,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
                     sendMessage(ChatColor.RED + "Deine Off-Hand Waffe wurde in dein Inventar gelegt um Platz für deine Zweihand Waffe zu machen.");
                 }
-                setWeapon(mainWeapon);
+                setWeapon(mainWeaponCustomItemStack);
             } else if (mainWeapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
-                setWeapon(mainWeapon);
+                setWeapon(mainWeaponCustomItemStack);
                 // check for a second weapon too
-                ItemStack offHandItemStack = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
-                if (offHandItemStack != null && offHandItemStack.getTypeId() != 0) {
+                CustomItemStack offHandItemStack = RaidCraft.getCustomItem(getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
+                if (offHandItemStack != null && offHandItemStack.getType() != Material.AIR) {
                     if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
                         CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
                         if (!isAllowedWeapon(offHandWeapon.getWeaponType())) {
@@ -554,7 +556,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                         if (!offHandWeapon.isMeetingAllRequirements(getPlayer())) {
                             throw new CombatException(offHandWeapon.getResolveReason(getPlayer()));
                         }
-                        setWeapon(offHandWeapon);
+                        setWeapon(offHandItemStack);
                     } else if (CustomItemUtil.isShield(offHandItemStack)) {
                         // check for a shield
                         CustomArmor armor = CustomItemUtil.getArmor(offHandItemStack);
@@ -566,7 +568,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                         if (!armor.isMeetingAllRequirements(getPlayer())) {
                             throw new CombatException(armor.getResolveReason(getPlayer()));
                         }
-                        setArmor(armor);
+                        setArmor(offHandItemStack);
                     } else {
                         removeWeapon(EquipmentSlot.SHIELD_HAND);
                         removeArmor(EquipmentSlot.SHIELD_HAND);
@@ -607,7 +609,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                     CustomItemUtil.denyItem(getPlayer(), i + CustomItemUtil.ARMOR_SLOT, customItemStack,
                             armor.getResolveReason(getPlayer()));
                 } else {
-                    setArmor(armor);
+                    setArmor(customItemStack);
                 }
             }
         }

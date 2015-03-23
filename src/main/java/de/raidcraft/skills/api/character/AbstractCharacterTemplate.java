@@ -2,6 +2,8 @@ package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.CharacterManager;
@@ -263,13 +265,17 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setWeapon(CustomWeapon weapon) {
+    public void setWeapon(CustomItemStack customItem) {
 
-        if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-            weapons.remove(EquipmentSlot.ONE_HANDED);
-            weapons.remove(EquipmentSlot.SHIELD_HAND);
+        CustomItem item = customItem.getItem();
+        if (item instanceof CustomWeapon) {
+            CustomWeapon weapon = (CustomWeapon) item;
+            if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+                weapons.remove(EquipmentSlot.ONE_HANDED);
+                weapons.remove(EquipmentSlot.SHIELD_HAND);
+            }
+            weapons.put(weapon.getEquipmentSlot(), weapon);
         }
-        weapons.put(weapon.getEquipmentSlot(), weapon);
     }
 
     @Override
@@ -389,9 +395,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public void setArmor(CustomArmor armor) {
+    public void setArmor(CustomItemStack item) {
 
-        armorPieces.put(armor.getEquipmentSlot(), armor);
+        if (item.getItem() instanceof CustomArmor) {
+            armorPieces.put(((CustomArmor) item.getItem()).getEquipmentSlot(), (CustomArmor) item.getItem());
+        }
         // if hero update the user interface
         if (this instanceof Hero) {
             ((Hero) this).getUserInterface().refresh();

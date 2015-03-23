@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.ability.Ability;
@@ -61,7 +62,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public boolean hasWeaponsEquiped();
 
-    public void setWeapon(CustomWeapon weapon);
+    public void setWeapon(CustomItemStack weapon);
 
     public CustomWeapon removeWeapon(EquipmentSlot slot);
 
@@ -85,7 +86,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     Collection<CustomArmor> getArmor();
 
-    void setArmor(CustomArmor armorPiece);
+    void setArmor(CustomItemStack armorPiece);
 
     CustomArmor getArmor(EquipmentSlot slot);
 
