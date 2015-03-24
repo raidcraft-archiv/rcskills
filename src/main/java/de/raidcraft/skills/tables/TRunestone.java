@@ -1,10 +1,14 @@
 package de.raidcraft.skills.tables;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import javax.persistence.Entity;
@@ -41,14 +45,15 @@ public class TRunestone {
         RaidCraft.getDatabase(SkillsPlugin.class).delete(runestone);
     }
 
-    public static TRunestone createRunestone(CustomItemStack customItemStack, int maxUses, int remainingUses, Location location) {
+    public static CustomItemStack createRunestone(CustomItem item, int uses, int maxUses, Location location, String locationName) {
 
+        CustomItemStack customItemStack = item.createNewItem();
         TRunestone runestone = getRunestone(customItemStack);
-        if (runestone != null) return runestone;
+        if (runestone != null) return customItemStack;
         runestone = new TRunestone();
-        runestone.setCustomItemId(customItemStack.getItem().getId());
+        runestone.setCustomItemId(item.getId());
         runestone.setMaxUses(maxUses);
-        runestone.setRemainingUses(remainingUses);
+        runestone.setRemainingUses(uses);
         runestone.setWorld(location.getWorld().getName());
         runestone.setX(location.getX());
         runestone.setY(location.getY());
@@ -57,8 +62,16 @@ public class TRunestone {
         runestone.setPitch(location.getPitch());
         RaidCraft.getDatabase(SkillsPlugin.class).save(runestone);
         customItemStack.setMetaDataId(runestone.getId());
+        if (locationName == null) {
+            locationName = location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + " (" + location.getWorld().getName() + ")";
+        }
+        customItemStack.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                ChatColor.GREEN + "Aufladungen: " + ChatColor.AQUA + uses + ChatColor.GREEN + "/" + ChatColor.AQUA + maxUses,
+                ChatColor.GREEN + "Ort: " + ChatColor.GOLD + locationName
+        ));
+        customItemStack.rebuild();
         RaidCraft.LOGGER.info("Created runestone with database id " + runestone.getId() + " and meta id " + customItemStack.getMetaDataId());
-        return runestone;
+        return customItemStack;
     }
 
     @Id
