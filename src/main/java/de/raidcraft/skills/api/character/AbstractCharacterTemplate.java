@@ -69,9 +69,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     private final ThreatTable threatTable;
     private final Map<Class<? extends Effect>, Map<Object, Effect>> effects = new HashMap<>();
-    private final Map<EquipmentSlot, CustomWeapon> weapons = new EnumMap<>(EquipmentSlot.class);
+    private final Map<EquipmentSlot, CustomItemStack> weapons = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
-    private final Map<EquipmentSlot, CustomArmor> armorPieces = new EnumMap<>(EquipmentSlot.class);
+    private final Map<EquipmentSlot, CustomItemStack> armorPieces = new EnumMap<>(EquipmentSlot.class);
     private final Set<HealthDisplay> healthDisplays = new HashSet<>();
     protected int maxLevel;
     protected boolean usingHealthBar = true;
@@ -241,13 +241,13 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public CustomWeapon getWeapon(EquipmentSlot slot) {
+    public CustomItemStack getWeapon(EquipmentSlot slot) {
 
         return weapons.get(slot);
     }
 
     @Override
-    public Collection<CustomWeapon> getWeapons() {
+    public Collection<CustomItemStack> getWeapons() {
 
         return weapons.values();
     }
@@ -274,12 +274,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 weapons.remove(EquipmentSlot.ONE_HANDED);
                 weapons.remove(EquipmentSlot.SHIELD_HAND);
             }
-            weapons.put(weapon.getEquipmentSlot(), weapon);
+            weapons.put(weapon.getEquipmentSlot(), customItem);
         }
     }
 
     @Override
-    public CustomWeapon removeWeapon(EquipmentSlot slot) {
+    public CustomItemStack removeWeapon(EquipmentSlot slot) {
 
         return weapons.remove(slot);
     }
@@ -287,9 +287,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearWeapons() {
 
-        for (CustomWeapon weapon : getWeapons()) {
-            removeWeapon(weapon.getEquipmentSlot());
-        }
+        getWeapons().stream()
+                .filter(weapon -> weapon.getItem() instanceof CustomWeapon)
+                .forEach(weapon -> removeWeapon(((CustomWeapon) weapon.getItem()).getEquipmentSlot()));
     }
 
     @Override
@@ -312,11 +312,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (!hasWeapon(slot)) {
             return 0;
         }
-        CustomWeapon weapon = getWeapon(slot);
-        if (weapon == null) {
+        CustomItemStack weapon = getWeapon(slot);
+        if (weapon == null || !(weapon.getItem() instanceof CustomWeapon)) {
             return 0;
         }
-        return MathUtil.RANDOM.nextInt(weapon.getMaxDamage() - weapon.getMinDamage()) + weapon.getMinDamage();
+        CustomWeapon customWeapon = (CustomWeapon) weapon.getItem();
+        return MathUtil.RANDOM.nextInt(customWeapon.getMaxDamage() - customWeapon.getMinDamage()) + customWeapon.getMinDamage();
     }
 
     @Override
@@ -333,8 +334,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public boolean canSwing(EquipmentSlot slot) {
 
         if (slot != EquipmentSlot.HANDS && this instanceof Hero) {
-            CustomWeapon weapon = getWeapon(slot);
-            if (weapon != null && !weapon.matches(getEntity().getEquipment().getItemInHand())) {
+            CustomItemStack weapon = getWeapon(slot);
+            if (weapon != null && !weapon.getItem().matches(getEntity().getEquipment().getItemInHand())) {
                 return false;
             }
         }
@@ -377,10 +378,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setLastSwing(EquipmentSlot slot) {
 
-        CustomWeapon weapon = getWeapon(slot);
+        CustomItemStack weapon = getWeapon(slot);
         long swingTime = 1000;
-        if (weapon != null) {
-            swingTime *= weapon.getSwingTime();
+        if (weapon != null && weapon.getItem() instanceof CustomWeapon) {
+            swingTime *= ((CustomWeapon) weapon.getItem()).getSwingTime();
         } else {
             swingTime *= RaidCraft.getComponent(SkillsPlugin.class).getCommonConfig().default_swing_time;
         }
@@ -389,7 +390,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public Collection<CustomArmor> getArmor() {
+    public Collection<CustomItemStack> getArmor() {
 
         return armorPieces.values();
     }
@@ -398,7 +399,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public void setArmor(CustomItemStack item) {
 
         if (item.getItem() instanceof CustomArmor) {
-            armorPieces.put(((CustomArmor) item.getItem()).getEquipmentSlot(), (CustomArmor) item.getItem());
+            armorPieces.put(((CustomArmor) item.getItem()).getEquipmentSlot(), item);
         }
         // if hero update the user interface
         if (this instanceof Hero) {
@@ -407,15 +408,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public CustomArmor getArmor(EquipmentSlot slot) {
+    public CustomItemStack getArmor(EquipmentSlot slot) {
 
         return armorPieces.get(slot);
     }
 
     @Override
-    public CustomArmor removeArmor(EquipmentSlot slot) {
+    public CustomItemStack removeArmor(EquipmentSlot slot) {
 
-        CustomArmor remove = armorPieces.remove(slot);
+        CustomItemStack remove = armorPieces.remove(slot);
         // if hero update the user interface
         if (this instanceof Hero) {
             ((Hero) this).getUserInterface().refresh();
@@ -427,8 +428,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public int getTotalArmorValue() {
 
         int armorValue = 0;
-        for (CustomArmor armor : getArmor()) {
-            armorValue += armor.getArmorValue();
+        for (CustomItemStack armor : getArmor()) {
+            if (armor.getItem() instanceof CustomArmor) {
+                armorValue += ((CustomArmor) armor.getItem()).getArmorValue();
+            }
         }
         return armorValue;
     }
@@ -436,8 +439,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void clearArmor() {
 
-        for (CustomArmor armor : getArmor()) {
-            removeArmor(armor.getEquipmentSlot());
+        for (CustomItemStack armor : getArmor()) {
+            if (armor.getItem() instanceof CustomArmor) {
+                removeArmor(((CustomArmor) armor.getItem()).getEquipmentSlot());
+            }
         }
         // if hero update the user interface
         if (this instanceof Hero) {

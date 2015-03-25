@@ -1,8 +1,6 @@
 package de.raidcraft.skills.api.character;
 
-import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -54,9 +52,9 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setLastAction(Action<? extends CharacterTemplate> action);
 
-    public CustomWeapon getWeapon(EquipmentSlot slot);
+    public CustomItemStack getWeapon(EquipmentSlot slot);
 
-    public Collection<CustomWeapon> getWeapons();
+    public Collection<CustomItemStack> getWeapons();
 
     public boolean hasWeapon(EquipmentSlot slot);
 
@@ -64,7 +62,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setWeapon(CustomItemStack weapon);
 
-    public CustomWeapon removeWeapon(EquipmentSlot slot);
+    public CustomItemStack removeWeapon(EquipmentSlot slot);
 
     public void clearWeapons();
 
@@ -84,13 +82,13 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     public void setLastSwing(EquipmentSlot slot);
 
-    Collection<CustomArmor> getArmor();
+    Collection<CustomItemStack> getArmor();
 
     void setArmor(CustomItemStack armorPiece);
 
-    CustomArmor getArmor(EquipmentSlot slot);
+    CustomItemStack getArmor(EquipmentSlot slot);
 
-    CustomArmor removeArmor(EquipmentSlot type);
+    CustomItemStack removeArmor(EquipmentSlot type);
 
     int getTotalArmorValue();
 

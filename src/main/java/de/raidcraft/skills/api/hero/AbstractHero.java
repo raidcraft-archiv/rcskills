@@ -4,7 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
 import de.raidcraft.api.events.RCPlayerGainExpEvent;
 import de.raidcraft.api.items.ArmorType;
-import de.raidcraft.api.items.AttributeHolder;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
@@ -249,13 +248,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void setWeapon(CustomItemStack item) {
 
         super.setWeapon(item);
-        if (item != null && item.getItem() instanceof AttributeHolder) addAttributes(((AttributeHolder) item.getItem()).getAttributes());
+        if (item != null) addAttributes(item.getAttributes());
     }
 
     @Override
-    public CustomWeapon removeWeapon(EquipmentSlot slot) {
+    public CustomItemStack removeWeapon(EquipmentSlot slot) {
 
-        CustomWeapon weapon = super.removeWeapon(slot);
+        CustomItemStack weapon = super.removeWeapon(slot);
         if (weapon != null) removeAttributes(weapon.getAttributes());
         return weapon;
     }
@@ -274,13 +273,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     public void setArmor(CustomItemStack item) {
 
         super.setArmor(item);
-        if (item != null && item.getItem() instanceof AttributeHolder) addAttributes(((AttributeHolder) item.getItem()).getAttributes());
+        if (item != null) addAttributes(item.getAttributes());
     }
 
     @Override
-    public CustomArmor removeArmor(EquipmentSlot slot) {
+    public CustomItemStack removeArmor(EquipmentSlot slot) {
 
-        CustomArmor armor = super.removeArmor(slot);
+        CustomItemStack armor = super.removeArmor(slot);
         if (armor != null) removeAttributes(armor.getAttributes());
         return armor;
     }
