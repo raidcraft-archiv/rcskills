@@ -63,13 +63,7 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
     }
 
     @Override
-    public int onJoin(Player player) {
-
-        return ExpUtil.getTotalExp(plugin.getCharacterManager().getHero(player));
-    }
-
-    @Override
-    public int onQuit(Player player) {
+    public int getStatisticValue(Player player) {
 
         return ExpUtil.getTotalExp(plugin.getCharacterManager().getHero(player));
     }
