@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.PlayerChangeProfessionEvent;
+import de.raidcraft.api.player.PlayerStatisticProvider;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.events.RCEntityDeathEvent;
@@ -39,7 +40,7 @@ import java.util.HashSet;
 /**
  * @author Silthus
  */
-public final class ExperienceManager implements Listener {
+public final class ExperienceManager implements Listener, PlayerStatisticProvider {
 
     private final ProtocolManager protocolManager;
     private final SkillsPlugin plugin;
@@ -48,6 +49,7 @@ public final class ExperienceManager implements Listener {
 
         this.plugin = plugin;
         this.protocolManager = ProtocolLibrary.getProtocolManager();
+        RaidCraft.registerPlayerStatisticProvider(plugin, "gained-exp", this);
         plugin.registerEvents(this);
     }
 
@@ -58,6 +60,18 @@ public final class ExperienceManager implements Listener {
 
         entity.remove();
         return watcher;
+    }
+
+    @Override
+    public int onJoin(Player player) {
+
+        return ExpUtil.getTotalExp(plugin.getCharacterManager().getHero(player));
+    }
+
+    @Override
+    public int onQuit(Player player) {
+
+        return ExpUtil.getTotalExp(plugin.getCharacterManager().getHero(player));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

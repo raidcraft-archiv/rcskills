@@ -1,5 +1,10 @@
 package de.raidcraft.skills.util;
 
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.AttachedLevel;
+import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.util.EntityUtil;
 import org.bukkit.ChatColor;
 
@@ -114,5 +119,21 @@ public class ExpUtil {
                 return rest + (temp - (rest / 2));
             }
         }
+    }
+
+    public static int getTotalExp(Hero hero) {
+
+        int exp = hero.getExpPool().getExp();
+        for (Profession profession : hero.getProfessions()) {
+            AttachedLevel<Profession> level = profession.getAttachedLevel();
+            exp += (level.getTotalNeededExpForLevel(level.getLevel()) - level.getExpToNextLevel());
+        }
+        for (Skill skill : hero.getSkills()) {
+            if (skill instanceof Levelable) {
+                AttachedLevel level = ((Levelable) skill).getAttachedLevel();
+                exp += (level.getTotalNeededExpForLevel(level.getLevel()) - level.getExpToNextLevel());
+            }
+        }
+        return exp;
     }
 }
