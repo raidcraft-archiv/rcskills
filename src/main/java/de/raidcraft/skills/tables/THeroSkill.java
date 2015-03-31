@@ -40,6 +40,13 @@ public class THeroSkill implements LevelData {
     private Timestamp lastCast;
     private boolean unlocked;
     private Timestamp unlockTime;
+    private int castCount;
+
+    public void setLastCast(Timestamp lastCast) {
+
+        this.lastCast = lastCast;
+        setCastCount(getCastCount() + 1);
+    }
 
     @Override
     public int getLevel() {
