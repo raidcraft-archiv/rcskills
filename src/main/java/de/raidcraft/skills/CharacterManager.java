@@ -195,6 +195,8 @@ public final class CharacterManager implements Listener, Component {
         UUID player_id = player.getUniqueId();
         Hero hero = heroes.get(player_id);
         if (hero == null) {
+            long startTime = System.nanoTime();
+            plugin.getLogger().info("Creating a new hero for " + player.getName() + " ...");
             BukkitTask task = queuedLoggedOutHeroes.remove(player_id);
             if (task != null) {
                 task.cancel();
@@ -230,6 +232,10 @@ public final class CharacterManager implements Listener, Component {
             heroes.put(player_id, hero);
             hero.checkArmor();
             hero.checkWeapons();
+
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+            plugin.getLogger().info("... Hero (" + player.getName() + ") created in " + (duration / 1000000L) + "ms");
         }
         return hero;
     }

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -105,11 +106,12 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
             }
             return null;
         }
-        for (Skill skill : hero.getSkills()) {
-            if (skill.isActive() && skill.isUnlocked() && skill instanceof PermissionSkill) {
-                groups.add(skill.getName());
-            }
-        }
+        groups.addAll(hero.getSkills().stream()
+                .filter(skill -> skill.isActive()
+                        && skill.isUnlocked()
+                        && skill instanceof PermissionSkill)
+                .map(Skill::getName)
+                .collect(Collectors.toList()));
         return groups;
     }
 }
