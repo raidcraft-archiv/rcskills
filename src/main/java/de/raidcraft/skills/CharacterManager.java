@@ -2,6 +2,7 @@ package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.events.RCEntityRemovedEvent;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.character.SkilledCharacter;
@@ -97,12 +98,13 @@ public final class CharacterManager implements Listener, Component {
                     @Override
                     public void run() {
 
-                        for (CharacterTemplate character : new ArrayList<>(characters.values())) {
-                            if (character.getEntity() == null || !character.getEntity().isValid()) {
-                                TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
-                                if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
-                            }
-                        }
+                        new ArrayList<>(characters.values()).stream()
+                                .filter(character -> character.getEntity() == null
+                                        || !character.getEntity().isValid()).forEach(character -> {
+                            RaidCraft.callEvent(new RCEntityRemovedEvent(character.getEntity()));
+                            TriggerManager.callSafeTrigger(new InvalidationTrigger(character));
+                            if (character.getEntity() != null) characters.remove(character.getEntity().getUniqueId());
+                        });
                     }
                 },
                 plugin.getCommonConfig().character_invalidation_interval,
