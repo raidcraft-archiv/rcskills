@@ -466,6 +466,11 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
             return new HashSet<>(getStringList("excluded-max-out-skills"));
         }
+
+        public Set<String> getTemporaryWorlds() {
+
+            return new HashSet<>(getStringList("temporary-worlds"));
+        }
     }
 
     public class BaseCommands {

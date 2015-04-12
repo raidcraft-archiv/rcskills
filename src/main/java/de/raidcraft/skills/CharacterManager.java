@@ -14,6 +14,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.hero.SimpleHero;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroExpPool;
 import de.raidcraft.skills.trigger.InvalidationTrigger;
@@ -230,7 +231,11 @@ public final class CharacterManager implements Listener, Component {
             heroTable.setExpPool(pool);
             plugin.getDatabase().update(heroTable);
 
-            hero = new SimpleHero(player, heroTable);
+            if (plugin.getCommonConfig().getTemporaryWorlds().contains(player.getLocation().getWorld().getName().toLowerCase())) {
+                hero = new TemporaryHero(player, heroTable);
+            } else {
+                hero = new SimpleHero(player, heroTable);
+            }
             heroes.put(player_id, hero);
             hero.checkArmor();
             hero.checkWeapons();
