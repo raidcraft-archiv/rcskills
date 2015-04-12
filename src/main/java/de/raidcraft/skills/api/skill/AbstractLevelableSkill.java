@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.level.SkillAttachedLevel;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.ChatColor;
 
@@ -89,6 +90,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void save() {
 
+        if (getHolder() instanceof TemporaryHero) return;
         super.save();
         attachedLevel.saveLevelProgress();
     }

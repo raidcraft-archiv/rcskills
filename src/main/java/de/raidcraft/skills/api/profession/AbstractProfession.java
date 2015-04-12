@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.resource.ConfigurableResource;
 import de.raidcraft.skills.api.resource.HealthResource;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.util.StringUtils;
@@ -172,6 +173,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void save() {
 
+        if (getHero() instanceof TemporaryHero) return;
         saveLevelProgress(getAttachedLevel());
 
         THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());

@@ -22,6 +22,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
@@ -294,6 +295,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     @Override
     public void save() {
 
+        if (getHolder() instanceof TemporaryHero) return;
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         if (skill == null) return;
         skill.setUnlockTime(unlockTime);
