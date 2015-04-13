@@ -9,7 +9,6 @@ import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillTranslation;
-import net.minecraft.util.org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -100,7 +99,7 @@ public class LoadConfigsTask extends BukkitRunnable {
                 return;
             }
             prof.setName(name);
-            prof.setFilename(FilenameUtils.getBaseName(file.getName()));
+            prof.setFilename(file.getAbsolutePath());
             prof.setDescription(config.getString("description"));
             prof.setMaxLevel(config.getInt("max-level"));
             prof.setFormula(config.getString("formula"));
