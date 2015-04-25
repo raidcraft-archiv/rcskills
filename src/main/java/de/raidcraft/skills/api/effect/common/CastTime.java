@@ -13,6 +13,7 @@ import de.raidcraft.util.bossbar.BarAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class CastTime extends PeriodicExpirableEffect<SkillAction> {
 
     private boolean casted = false;
     private boolean isPlayer = false;
-    private List<AmbientEffect> ambientEffects;
+    private List<AmbientEffect> ambientEffects = new ArrayList<>();
 
     public CastTime(SkillAction source, CharacterTemplate target, EffectData data) {
 
