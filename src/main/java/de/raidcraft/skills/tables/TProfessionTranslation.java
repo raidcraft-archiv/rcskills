@@ -1,8 +1,6 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.Length;
-import de.raidcraft.skills.ebean.Model;
-import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +21,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "skills_profession_translation")
-public class TProfessionTranslation extends Model {
+public class TProfessionTranslation {
 
     /**
      * A unique Id.
@@ -87,6 +85,4 @@ public class TProfessionTranslation extends Model {
 
         return result.toString();
     }
-
-    public static Finder<Integer, TProfessionTranslation> find = new Finder<>(Integer.class, TProfessionTranslation.class, SkillsPlugin.class);
 }

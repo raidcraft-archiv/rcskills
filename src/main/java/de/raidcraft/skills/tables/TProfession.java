@@ -1,7 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import de.raidcraft.skills.ebean.Model;
-import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +18,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "skills_profession")
-public class TProfession extends Model {
+public class TProfession {
 
     /**
      * A unique key.
@@ -65,6 +63,4 @@ public class TProfession extends Model {
 
         return result.toString();
     }
-
-    public static Finder<String, TProfession> find = new Finder<>(String.class, TProfession.class, SkillsPlugin.class);
 }

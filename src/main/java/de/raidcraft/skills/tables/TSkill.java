@@ -1,8 +1,6 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.annotation.CreatedTimestamp;
-import de.raidcraft.skills.ebean.Model;
-import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -25,7 +23,7 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Table(name = "skills_skill")
-public class TSkill extends Model {
+public class TSkill {
 
     /**
      * A unique key.
@@ -115,6 +113,4 @@ public class TSkill extends Model {
 
         return result.toString();
     }
-
-    public static Finder<String, TSkill> find = new Finder<>(String.class, TSkill.class, SkillsPlugin.class);
 }
