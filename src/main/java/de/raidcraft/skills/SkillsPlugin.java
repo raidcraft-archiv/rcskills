@@ -68,7 +68,6 @@ import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TRunestone;
 import de.raidcraft.skills.tables.TSkill;
 import de.raidcraft.skills.tables.TSkillTranslation;
-import de.raidcraft.skills.task.LoadConfigsTask;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
@@ -163,8 +162,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 }
             }
         }, 1);
-
-        new LoadConfigsTask(this).runTaskAsynchronously(this);
     }
 
     @Override

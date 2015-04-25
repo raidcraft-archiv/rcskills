@@ -7,10 +7,13 @@ import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
+
+import java.util.HashSet;
 
 /**
  * @author Silthus
@@ -31,7 +34,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
 
     public RangedAttack(CharacterTemplate source, ProjectileType projectileType, double damage) {
 
-        super(source, source.getEntity().getTargetBlock(null, 100).getLocation(), damage,
+        super(source, source.getEntity().getTargetBlock(new HashSet<Material>(), 100).getLocation(), damage,
                 (projectileType == ProjectileType.FIREBALL ? EffectType.MAGICAL : EffectType.PHYSICAL));
         this.projectileType = projectileType;
         addAttackTypes(EffectType.RANGE);
