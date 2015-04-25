@@ -848,6 +848,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         List<Skill> foundSkills = new ArrayList<>();
         for (Skill skill : getSkills()) {
+            if (skill.getName().equalsIgnoreCase(name)) {
+                return skill;
+            }
             if (skill.matches(name)) {
                 foundSkills.add(skill);
             }
