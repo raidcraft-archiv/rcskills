@@ -1048,7 +1048,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (target.equals(getEntity())) {
                 continue;
             }
-            targets.add(RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target));
+            CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(target);
+            if (character != null) {
+                targets.add(character);
+            }
         }
         return targets;
     }
