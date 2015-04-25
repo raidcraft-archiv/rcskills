@@ -1,8 +1,6 @@
 package de.raidcraft.skills.tables;
 
 import com.avaje.ebean.validation.Length;
-import de.raidcraft.skills.ebean.Model;
-import de.raidcraft.skills.SkillsPlugin;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +18,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "rc_language")
-public class TLanguage extends Model {
+public class TLanguage {
 
     /**
      * ISO 639-1 language code in the format [language_territory]
@@ -57,6 +55,4 @@ public class TLanguage extends Model {
 
         return result.toString();
     }
-
-    public static Finder<String, TLanguage> find = new TLanguage.Finder<String, TLanguage>(String.class, TLanguage.class, SkillsPlugin.class);
 }
