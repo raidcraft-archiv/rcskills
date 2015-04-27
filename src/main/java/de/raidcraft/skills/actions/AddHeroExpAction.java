@@ -13,6 +13,17 @@ import org.bukkit.entity.Player;
 public class AddHeroExpAction implements Action<Player> {
 
     @Override
+    @Information(
+            value = "hero.addxp",
+            desc = "Checks if the player is at or in a radius of the given location.",
+            conf = {
+                    "world: [current]",
+                    "x",
+                    "y",
+                    "z",
+                    "radius: [0]"
+            }
+    )
     public void accept(Player player, ConfigurationSection config) {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);

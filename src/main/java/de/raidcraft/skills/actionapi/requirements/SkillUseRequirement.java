@@ -15,6 +15,13 @@ import org.bukkit.entity.Player;
 public class SkillUseRequirement implements Requirement<Player> {
 
     @Override
+    @Information(
+            value = "skill.use",
+            desc = "Checks if the last action of the player was a SkillAction.class",
+            conf = {
+                    "skill: <identifier>"
+            }
+    )
     public boolean test(Player player, ConfigurationSection config) {
 
         Action<? extends CharacterTemplate> lastAction = RaidCraft.getComponent(CharacterManager.class).getHero(player).getLastAction();

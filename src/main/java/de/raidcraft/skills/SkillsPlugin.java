@@ -10,6 +10,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.api.action.ActionAPI;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
@@ -20,9 +21,13 @@ import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
 import de.raidcraft.skills.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.Levelable;
+import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.binds.BindListener;
 import de.raidcraft.skills.commands.AdminCommands;
@@ -196,17 +201,109 @@ public class SkillsPlugin extends BasePlugin implements Component {
     private void registerActionAPI() {
 
         ActionAPI.register(this)
-                .action("hero.addxp", new AddHeroExpAction())
-                .requirement("skill.use", new SkillUseRequirement())
-                .requirement("hero.level", (Player player, ConfigurationSection config) -> {
+                .action(new AddHeroExpAction())
+                .requirement(new SkillUseRequirement())
+                .requirement(new Requirement<Player>() {
+                    @Override
+                    @Information(
+                            value = "hero.level",
+                            desc = "Checks if the level of the hero/profession/skill is greater,equals or lower than the given level.",
+                            conf = {
+                                    "level: 1",
+                                    "modifier: [gt/ge/eq/le/lt]: eq",
+                                    "type: <hero/skill/profession/exppool>: hero",
+                                    "skill",
+                                    "profession"
+                            }
+                    )
+                    public boolean test(Player player, ConfigurationSection config) {
 
-                    Hero hero = getCharacterManager().getHero(player);
-                    return hero.getPlayerLevel() >= config.getInt("level");
+                        Hero hero = getCharacterManager().getHero(player);
+                        String type = config.getString("type", "hero");
+                        int currentLevel = 1;
+                        switch (type) {
+                            case "skill":
+                                try {
+                                    Skill skill;
+                                    if (config.isSet("profession")) {
+                                        Profession profession = hero.getProfession(config.getString("profession"));
+                                        skill = profession.getSkill(config.getString("skill"));
+                                    } else {
+                                        skill = hero.getSkill(config.getString("skill"));
+                                    }
+                                    if (skill instanceof Levelable) {
+                                        currentLevel = ((Levelable) skill).getAttachedLevel().getLevel();
+                                    } else {
+                                        return false;
+                                    }
+                                } catch (UnknownSkillException | UnknownProfessionException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "profession":
+                                try {
+                                    Profession profession = hero.getProfession(config.getString("profession"));
+                                    if (config.getBoolean("total-level", false)) {
+                                        currentLevel = profession.getAttachedLevel().getLevel();
+                                    } else {
+                                        currentLevel = profession.getTotalLevel();
+                                    }
+                                } catch (UnknownSkillException | UnknownProfessionException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "exppool":
+                                currentLevel = hero.getExpPool().getLevel();
+                                break;
+                            case "hero":
+                            default:
+                                currentLevel = hero.getPlayerLevel();
+                                break;
+                        }
+
+                        String modifier = config.getString("modifier", "eq");
+                        int level = config.getInt("level", 1);
+                        switch (modifier) {
+                            case "gt":
+                                return currentLevel > level;
+                            case "ge":
+                                return currentLevel >= level;
+                            case "le":
+                                return currentLevel <= level;
+                            case "lt":
+                                return currentLevel < level;
+                            case "eq":
+                            default:
+                                return currentLevel == level;
+                        }
+                    }
                 })
-                .requirement("hero.skill", (Player player, ConfigurationSection config) -> {
+                .requirement(new Requirement<Player>() {
+                    @Override
+                    @Information(
+                            value = "hero.skill",
+                            desc = "Checks if the hero has the given skill and if the skill is unlocked, active or enabled.",
+                            conf = {
+                                    "skill",
+                                    "profession: [optional profession the skill is attached to]",
+                                    "unlocked: [true] skill has been unlocked = level reached",
+                                    "active: [true] skill is currently active because if chosen profession",
+                                    "enabled: [true] skill is enabled"
+                            }
+                    )
+                    public boolean test(Player player, ConfigurationSection config) {
 
-                    Hero hero = getCharacterManager().getHero(player);
-                    return hero.hasSkill(config.getString("skill"));
+                        try {
+                            Hero hero = getCharacterManager().getHero(player);
+                            Skill skill = hero.getSkill(config.getString("name"));
+                            return config.getBoolean("unlocked", true) == skill.isUnlocked()
+                                    && config.getBoolean("active", true) == skill.isActive()
+                                    && config.getBoolean("enabled", true) == skill.isEnabled();
+                        } catch (UnknownSkillException e) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }
                 })
                 .trigger(new SkillTrigger());
     }
