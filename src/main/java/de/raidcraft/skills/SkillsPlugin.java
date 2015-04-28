@@ -563,7 +563,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         public Set<String> getTemporaryWorlds() {
 
-            return new HashSet<>(getStringList("temporary-worlds"));
+            return new HashSet<>(getStringList("ignored-worlds"));
         }
     }
 
