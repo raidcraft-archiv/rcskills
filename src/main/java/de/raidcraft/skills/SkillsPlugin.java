@@ -203,6 +203,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         ActionAPI.register(this)
                 .action(new AddHeroExpAction())
                 .requirement(new SkillUseRequirement())
+                .requirement(new de.raidcraft.skills.actionapi.requirements.ProfessionLevelRequirement())
                 .requirement(new Requirement<Player>() {
                     @Override
                     @Information(
