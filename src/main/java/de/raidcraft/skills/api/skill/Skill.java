@@ -1,18 +1,19 @@
 package de.raidcraft.skills.api.skill;
 
-import de.raidcraft.api.requirement.RequirementResolver;
+import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import org.bukkit.entity.Player;
 
 /**
  * @author Silthus
  */
 @IgnoredSkill
-public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver<Hero> {
+public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver<Player> {
 
     public int getId();
 

@@ -14,7 +14,6 @@ import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
-import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
 import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
@@ -50,10 +49,6 @@ import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
 import de.raidcraft.skills.random.RunestoneLootObject;
-import de.raidcraft.skills.requirement.ItemRequirement;
-import de.raidcraft.skills.requirement.ProfessionLevelRequirement;
-import de.raidcraft.skills.requirement.SkillLevelRequirement;
-import de.raidcraft.skills.requirement.SkillRequirement;
 import de.raidcraft.skills.skills.PermissionSkill;
 import de.raidcraft.skills.tables.TBinding;
 import de.raidcraft.skills.tables.TDataAlias;
@@ -252,7 +247,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
     private void loadEngine() {
 
-        registerRequirements();
         // load some config stuff
         levelConfig.loadFormulas();
         // the skill manager takes care of all skills currently loaded
@@ -316,14 +310,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(TDataProfession.class);
 	    classes.add(TRunestone.class);
         return classes;
-    }
-
-    private void registerRequirements() {
-
-        RequirementManager.registerRequirementType(ItemRequirement.class);
-        RequirementManager.registerRequirementType(ProfessionLevelRequirement.class);
-        RequirementManager.registerRequirementType(SkillLevelRequirement.class);
-        RequirementManager.registerRequirementType(SkillRequirement.class);
     }
 
     private void registerSkills() {

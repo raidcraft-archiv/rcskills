@@ -2,12 +2,14 @@ package de.raidcraft.skills.util;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
-import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.action.requirement.Reasonable;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,7 @@ public final class SkillUtil {
         return sb.toString();
     }
 
+    @SuppressWarnings("unchecked")
     public static List<String> formatBody(Skill skill) {
 
         List<String> body = new ArrayList<>();
@@ -114,11 +117,13 @@ public final class SkillUtil {
         if (skill.getRequirements().size() > 0) {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
-            for (Requirement<Hero> requirement : skill.getRequirements()) {
-                sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet(skill.getHolder()) ? ChatColor.GREEN : ChatColor.RED));
-                sb.append(requirement.getShortReason());
-                sb.append("\n");
+            for (Requirement<Player> requirement : skill.getRequirements()) {
+                if (requirement instanceof Reasonable) {
+                    sb.append(ChatColor.YELLOW).append("  - ");
+                    sb.append((requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.RED));
+                    sb.append(((Reasonable<Player>) requirement).getReason(skill.getHolder().getPlayer()));
+                    sb.append("\n");
+                }
             }
             body.add(sb.toString());
         }

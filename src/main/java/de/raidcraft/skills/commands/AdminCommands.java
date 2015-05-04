@@ -10,7 +10,6 @@ import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.commands.QueuedCaptchaCommand;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.language.TranslationProvider;
-import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
@@ -197,13 +196,6 @@ public class AdminCommands {
             sb.append("\t\tCooldown: ").append(skill.getRemainingCooldown()).append("/").append(skill.getConfiguredCooldown()).append("\n");
             sb.append("\t\tCast Time: ").append(skill.getTotalCastTime()).append("\n");
             sb.append("\t\tRange: ").append(skill.getTotalRange()).append("\n");
-            sb.append("\t\tRequirements: \n");
-            for (Requirement<Hero> requirement : skill.getRequirements()) {
-                sb.append("\t\t\t").append(requirement.getName()).append(":\n");
-                sb.append("\t\t\t\tDescription: ").append(requirement.getDescription()).append("\n");
-                sb.append("\t\t\t\tLong Reason: ").append(requirement.getLongReason()).append("\n");
-                sb.append("\t\t\t\tShort Reason: ").append(requirement.getShortReason()).append("\n");
-            }
             sb.append("\t\tAmbient Effects:\n");
             for (AbilityEffectStage stage : AbilityEffectStage.values()) {
                 List<AmbientEffect> ambientEffects = skill.getAmbientEffects(stage);

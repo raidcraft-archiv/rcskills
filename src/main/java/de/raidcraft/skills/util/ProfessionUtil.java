@@ -3,12 +3,14 @@ package de.raidcraft.skills.util;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.action.requirement.Reasonable;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +64,7 @@ public final class ProfessionUtil {
         return strings;
     }
 
+    @SuppressWarnings("unchecked")
     public static List<String> formatBody(Profession profession) {
 
         List<String> body = new ArrayList<>();
@@ -100,11 +103,13 @@ public final class ProfessionUtil {
         if (profession.getRequirements().size() > 0) {
             sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append("Vorraussetzungen: \n");
-            for (Requirement<Hero> requirement : profession.getRequirements()) {
-                sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append((requirement.isMet(profession.getHero()) ? ChatColor.GREEN : ChatColor.RED));
-                sb.append(requirement.getShortReason());
-                sb.append("\n");
+            for (Requirement<Player> requirement : profession.getRequirements()) {
+                if (requirement instanceof Reasonable) {
+                    sb.append(ChatColor.YELLOW).append("  - ");
+                    sb.append((requirement.test(profession.getHero().getPlayer()) ? ChatColor.GREEN : ChatColor.RED));
+                    sb.append(((Reasonable<Player>) requirement).getReason(profession.getHero().getPlayer()));
+                    sb.append("\n");
+                }
             }
             body.add(sb.toString());
         }
