@@ -362,7 +362,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             }
         }
         if (getSkillProperties().getRequiredLevel() > getProfession().getAttachedLevel().getLevel()) {
-            return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
+            return "Dein " + getProfession().getPath().getFriendlyName() + " Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
     }
