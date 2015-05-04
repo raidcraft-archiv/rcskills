@@ -15,10 +15,12 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.util.UUIDUtil;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -177,23 +180,42 @@ public final class HeroUtil {
         }
     }
 
+    public static String getPvPTag(Hero hero, Player viewingPlayer) {
+
+        return getPvPColor(hero, viewingPlayer) + "PvP: " + (hero.isPvPEnabled() ? "an" : "aus");
+    }
+
     public static String getPvPTag(Hero hero) {
 
-        ChatColor color;
-        if (hero.getParty().getHeroes().size() > 1) {
+        return getPvPTag(hero, null);
+    }
+
+    public static ChatColor getPvPColor(Hero hero, Player viewingPlayer) {
+
+        Hero viewer = null;
+        if (viewingPlayer != null) {
+            try {
+                viewer = getHeroFromEntity(viewingPlayer);
+            } catch (UnknownPlayerException e) {
+                e.printStackTrace();
+            }
+        }
+        if (hero.getParty().getHeroes().size() > 1 && (viewer == null || hero.getParty().contains(viewer))) {
             if (hero.isPvPEnabled()) {
-                color = ChatColor.DARK_GREEN;
+                return ChatColor.DARK_GREEN;
             } else {
-                color = ChatColor.GREEN;
+                return ChatColor.GREEN;
             }
         } else {
             if (hero.isPvPEnabled()) {
-                color = ChatColor.DARK_RED;
+                if (viewer != null && !viewer.isPvPEnabled()) {
+                    return ChatColor.GOLD;
+                }
+                return ChatColor.DARK_RED;
             } else {
-                color = ChatColor.AQUA;
+                return ChatColor.AQUA;
             }
         }
-        return color + "PvP: " + (hero.isPvPEnabled() ? "an" : "aus");
     }
 
     /**
@@ -224,5 +246,26 @@ public final class HeroUtil {
         } else {
             return axis[Math.round(yaw / 90f) & 0x3];
         }
+    }
+
+    public static FancyMessage getHeroTooltip(Hero hero, FancyMessage message, Player viewer) {
+
+        ArrayList<FancyMessage> messages = new ArrayList<>();
+        messages.add(new FancyMessage("[").color(ChatColor.YELLOW)
+                .then(hero.getPlayerLevel() + "").color(ChatColor.AQUA)
+                .then("]").color(ChatColor.YELLOW)
+                .then(" ").then(hero.getName()).color(getPvPColor(hero, viewer)));
+
+        messages.addAll(hero.getProfessions().stream()
+                .map(profession -> new FancyMessage("  - ").color(ChatColor.DARK_PURPLE)
+                    .then("[").color(ChatColor.YELLOW)
+                    .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
+                    .then("]").color(ChatColor.YELLOW)
+                    .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY))
+                .collect(Collectors.toList()));
+
+        return message.then("[").color(ChatColor.BLACK).then(hero.getName()).color(getPvPColor(hero, viewer))
+                .formattedTooltip(messages)
+                .then("]").color(ChatColor.BLACK);
     }
 }

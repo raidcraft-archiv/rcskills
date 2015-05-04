@@ -12,7 +12,9 @@ import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +41,16 @@ public class PlayerCommands {
     @CommandPermissions("rcskills.player.cmd.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
-        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Hero hero;
+        if (args.argsLength() > 0) {
+            hero = plugin.getCharacterManager().getHero(args.getString(0));
+        } else {
+            hero = plugin.getCharacterManager().getHero((Player) sender);
+        }
+        FancyMessage msg = new FancyMessage("======= ").color(ChatColor.GOLD);
+        msg = HeroUtil.getHeroTooltip(hero, msg, (Player) sender);
+        msg = msg.then(" =======").color(ChatColor.GOLD);
+
         Collection<String> strings = ProfessionUtil.renderProfessionInformation(hero.getVirtualProfession());
         strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
         for (String line : strings) {
