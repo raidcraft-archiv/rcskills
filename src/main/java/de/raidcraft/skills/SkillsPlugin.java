@@ -104,6 +104,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
     private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
     private BukkitEventDispatcher bukkitEventDispatcher;
+    private ProtocolManager protocolManager;
 
     @Override
     public void enable() {
@@ -140,6 +141,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 loadEngine();
                 // lets register our permissions provider last
                 permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
+                protocolManager = new ProtocolManager(SkillsPlugin.this);
 
                 try {
                     if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
