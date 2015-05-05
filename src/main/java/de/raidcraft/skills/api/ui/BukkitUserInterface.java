@@ -9,13 +9,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.util.CaseInsensitiveMap;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +20,6 @@ import java.util.Set;
  * @author Silthus
  */
 public class BukkitUserInterface implements UserInterface {
-
-    public static final String HEALTH_OBJECTIVE = "rcshp";
 
     private final Hero hero;
     private final Map<String, RefreshingDisplay> refreshingDisplays = new CaseInsensitiveMap<>();
@@ -155,27 +147,8 @@ public class BukkitUserInterface implements UserInterface {
 
     private void updateHealthDisplay() {
 
-        // update what others see
-        Objective objective = getScoreboardHealthObjective();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            objective.getScore(player).setScore((int) player.getHealth());
-        }
         Scoreboards.updateHealthDisplays();
         // update what the player sees in his exp bar
         getHero().getPlayer().setLevel((int) getHero().getHealth());
-    }
-
-    private Objective getScoreboardHealthObjective() {
-
-        // lets also set the scoreboard to display the health of this player to all online players
-        Scoreboard scoreboard = Scoreboards.getScoreboard(hero);
-
-        Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
-        if (objective == null) {
-            objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
-            objective.setDisplayName(ChatColor.RED + "❤");
-            objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        }
-        return objective;
     }
 }

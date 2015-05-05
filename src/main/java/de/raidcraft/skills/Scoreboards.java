@@ -2,13 +2,13 @@ package de.raidcraft.skills;
 
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.ui.BukkitUserInterface;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -20,6 +20,7 @@ import java.util.Map;
  */
 public final class Scoreboards {
 
+    private static final String HEALTH_OBJECTIVE = "rcshp";
     private static final String OBJECTIVE_SIDE_BASE_NAME = "side";
     private static final String SIDE_DISPLAY_NAME = "---- %pvp% ----";
     private static final Map<String, Scoreboard> scoreboards = new CaseInsensitiveMap<>();
@@ -46,13 +47,11 @@ public final class Scoreboards {
     public static void updateHealthDisplays() {
 
         for (Scoreboard scoreboard : scoreboards.values()) {
-            for (Objective objective : scoreboard.getObjectives()) {
-                if (objective.getName().startsWith(BukkitUserInterface.HEALTH_OBJECTIVE)) {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.hasMetadata("NPC")) continue;
-                        objective.getScore(player).setScore((int) player.getHealth());
-                    }
-                }
+            Objective objective = scoreboard.getObjective(HEALTH_OBJECTIVE);
+            if (objective == null) {
+                objective = scoreboard.registerNewObjective(HEALTH_OBJECTIVE, "health");
+                objective.setDisplayName(ChatColor.DARK_RED + "❤");
+                objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
             }
         }
     }
@@ -70,9 +69,9 @@ public final class Scoreboards {
             objective = scoreboard.getObjective(objectiveName);
         }
         if (hero.isOnline() && hero.getEntity().hasMetadata("GHOST")) {
-            objective.setDisplayName(ChatColor.DARK_GRAY + SIDE_DISPLAY_NAME.replace("%pvp%", "Geist"));
+            objective.setDisplayName(ChatColor.DARK_GRAY + ChatColor.stripColor(SIDE_DISPLAY_NAME.replace("%pvp%", "Geist")));
         } else {
-            objective.setDisplayName(SIDE_DISPLAY_NAME.replace("%pvp%", HeroUtil.getPvPTag(hero)));
+            objective.setDisplayName(HeroUtil.getPvPColor(hero, null) + ChatColor.stripColor(SIDE_DISPLAY_NAME.replace("%pvp%", HeroUtil.getPvPTag(hero))));
         }
         return objective;
     }
@@ -108,10 +107,13 @@ public final class Scoreboards {
             String friendlyName = color + profession.getFriendlyName();
             if (friendlyName.length() > 15) friendlyName = friendlyName.substring(0, 15);
             team.setPrefix(friendlyName);
-            String level = color + "[" + ChatColor.GREEN + color + "]";
+            String level = color + "[" + ChatColor.AQUA + profession.getAttachedLevel().getLevel() + "]";
             if (level.length() > 15) level = level.substring(0, 15);
             team.setSuffix(level);
             team.setDisplayName(teamId);
+            team.setAllowFriendlyFire(true);
+            team.setCanSeeFriendlyInvisibles(true);
+            team.setNameTagVisibility(NameTagVisibility.ALWAYS);
             team.addPlayer(Bukkit.getOfflinePlayer(hero.getName()));
             updateTeams();
         }
