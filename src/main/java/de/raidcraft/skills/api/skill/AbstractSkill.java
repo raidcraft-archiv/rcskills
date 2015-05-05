@@ -1,12 +1,13 @@
 package de.raidcraft.skills.api.skill;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.requirement.Reasonable;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
-import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.AbstractAbility;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -29,6 +30,7 @@ import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,8 +50,8 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     private final int id;
     private final SkillProperties properties;
     private final Profession profession;
-    private final List<Requirement<Hero>> requirements = new ArrayList<>();
-    private final List<Requirement<Hero>> useRequirements = new ArrayList<>();
+    private final List<Requirement<Player>> requirements = new ArrayList<>();
+    private final List<Requirement<Player>> useRequirements = new ArrayList<>();
     private boolean unlocked = false;
     private Timestamp unlockTime;
 
@@ -76,7 +78,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         return false;
     }
 
-    private List<Requirement<Hero>> getUseRequirements() {
+    private List<Requirement<Player>> getUseRequirements() {
 
         if (useRequirements.size() < 1) {
             useRequirements.addAll(getSkillProperties().loadUseRequirements(this));
@@ -188,9 +190,13 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             }
         }
         // lets check the players use requirements
-        for (Requirement<Hero> requirement : getUseRequirements()) {
-            if (!requirement.isMet(getHolder())) {
-                throw new CombatException(requirement.getLongReason());
+        for (Requirement<Player> requirement : getUseRequirements()) {
+            if (!requirement.test(getHolder().getPlayer())) {
+                if (requirement instanceof Reasonable) {
+                    throw new CombatException(((Reasonable<Player>) requirement).getReason(getHolder().getPlayer()));
+                } else {
+                    throw new CombatException("Skill kann nicht genutzt werden!");
+                }
             }
         }
     }
@@ -337,13 +343,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public Hero getObject() {
-
-        return getHolder();
-    }
-
-    @Override
-    public final List<Requirement<Hero>> getRequirements() {
+    public final List<Requirement<Player>> getRequirements() {
 
         if (requirements.size() < 1) {
             requirements.addAll(getSkillProperties().loadRequirements(this));
@@ -352,26 +352,23 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final boolean isMeetingAllRequirements(Hero object) {
+    public final boolean isMeetingAllRequirements(Player object) {
 
-        for (Requirement<Hero> requirement : getRequirements()) {
-            if (!requirement.isMet(object)) {
-                return false;
-            }
-        }
-        return getSkillProperties().getRequiredLevel() <= getProfession().getAttachedLevel().getLevel();
+        return getRequirements().stream().allMatch(requirement -> requirement.test(object))
+                && getSkillProperties().getRequiredLevel() <= getProfession().getAttachedLevel().getLevel();
     }
 
     @Override
-    public final String getResolveReason(Hero object) {
+    @SuppressWarnings("unchecked")
+    public final String getResolveReason(Player object) {
 
-        for (Requirement<Hero> requirement : getRequirements()) {
-            if (!requirement.isMet(getHolder())) {
-                return requirement.getLongReason();
+        for (Requirement<Player> requirement : getRequirements()) {
+            if (!requirement.test(object) && requirement instanceof Reasonable) {
+                return ((Reasonable<Player>) requirement).getReason(object);
             }
         }
         if (getSkillProperties().getRequiredLevel() > getProfession().getAttachedLevel().getLevel()) {
-            return "Dein " + getProfession().getPath().getFriendlyName() + " Spezialisierungs Level ist zu niedrig.";
+            return "Dein " + getProfession().getPath().getFriendlyName() + " Level ist zu niedrig.";
         }
         return "Skill kann freigeschaltet werden.";
     }

@@ -1,14 +1,15 @@
 package de.raidcraft.skills.api.persistance;
 
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.WeaponType;
-import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.forumla.LevelFormula;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public interface ProfessionProperties {
 
     public Map<String, Skill> loadSkills(Profession profession);
 
-    public List<Requirement<Hero>> loadRequirements(Profession profession);
+    public List<Requirement<Player>> loadRequirements(Profession profession);
 
     public List<Profession> loadChildren(Profession profession);
 

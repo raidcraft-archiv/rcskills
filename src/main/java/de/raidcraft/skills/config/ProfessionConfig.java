@@ -1,10 +1,11 @@
 package de.raidcraft.skills.config;
 
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
+import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.WeaponType;
-import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.ProfessionFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -17,6 +18,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.formulas.FormulaType;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -155,9 +157,14 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     }
 
     @Override
-    public List<Requirement<Hero>> loadRequirements(Profession profession) {
+    public List<Requirement<Player>> loadRequirements(Profession profession) {
 
-        return RequirementManager.createRequirements(profession, getOverrideSection("requirements"));
+        try {
+            return RequirementFactory.getInstance().createRequirements(profession.getName(), getConfigurationSection("requirements"), Player.class);
+        } catch (RequirementException e) {
+            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
+        }
+        return new ArrayList<>();
     }
 
     @Override

@@ -2,7 +2,8 @@ package de.raidcraft.skills.api.profession;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.action.requirement.Reasonable;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.AttachedLevel;
@@ -18,6 +19,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +40,7 @@ public abstract class AbstractProfession implements Profession {
     private final Path<Profession> path;
     private final List<Profession> children;
     // list of requirements to unlock this profession
-    private final List<Requirement<Hero>> requirements = new ArrayList<>();
+    private final List<Requirement<Player>> requirements = new ArrayList<>();
     private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
     private boolean active = false;
     // can be null - if it is this profession has no parents :*(
@@ -186,11 +188,11 @@ public abstract class AbstractProfession implements Profession {
 
         for (Skill skill : getSkills()) {
             // check all skills and if we need to unlock any
-            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero())) {
+            if (!skill.isUnlocked() && isActive() && skill.isMeetingAllRequirements(getHero().getPlayer())) {
                 skill.unlock();
             }
             // check if we need to lock any skills
-            if (skill.isUnlocked() && !skill.isMeetingAllRequirements(getHero())) {
+            if (skill.isUnlocked() && !skill.isMeetingAllRequirements(getHero().getPlayer())) {
                 skill.lock();
             }
         }
@@ -285,37 +287,29 @@ public abstract class AbstractProfession implements Profession {
     }
 
     @Override
-    public Hero getObject() {
+    public List<Requirement<Player>> getRequirements() {
 
-        return getHero();
-    }
-
-    @Override
-    public List<Requirement<Hero>> getRequirements() {
-
-        if (requirements.size() < 1) {
+        if (requirements.isEmpty()) {
             requirements.addAll(getProperties().loadRequirements(this));
         }
         return requirements;
     }
 
     @Override
-    public boolean isMeetingAllRequirements(Hero object) {
+    public boolean isMeetingAllRequirements(Player player) {
 
-        for (Requirement<Hero> requirement : getRequirements()) {
-            if (!requirement.isMet(object)) {
-                return false;
-            }
-        }
-        return true;
+        return getRequirements().stream().allMatch(requirement -> requirement.test(player));
     }
 
     @Override
-    public String getResolveReason(Hero object) {
+    @SuppressWarnings("unchecked")
+    public String getResolveReason(Player player) {
 
-        for (Requirement<Hero> requirement : requirements) {
-            if (!requirement.isMet(getHero())) {
-                return requirement.getLongReason();
+        for (Requirement<Player> requirement : getRequirements()) {
+            if (!requirement.test(getHero().getPlayer())) {
+                if (requirement instanceof Reasonable) {
+                    return ((Reasonable<Player>) requirement).getReason(player);
+                }
             }
         }
         return "Spezialisierung kann freigeschaltet werden.";

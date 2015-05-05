@@ -46,8 +46,8 @@ public class ChooseProfessionAction extends AbstractAction {
                     return;
                 }
             }
-            if (!profession.isMeetingAllRequirements(hero)) {
-                hero.sendMessage(ChatColor.RED + profession.getResolveReason(hero));
+            if (!profession.isMeetingAllRequirements(hero.getPlayer())) {
+                hero.sendMessage(ChatColor.RED + profession.getResolveReason(hero.getPlayer()));
                 conversation.endConversation(EndReason.INFORM);
                 return;
             }

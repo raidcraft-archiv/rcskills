@@ -1,14 +1,15 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
+import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.ambient.AmbientManager;
 import de.raidcraft.api.ambient.UnknownAmbientEffect;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.WeaponType;
-import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.SkillFactory;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -24,6 +25,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.formulas.FormulaType;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -200,15 +202,25 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
-    public List<Requirement<Hero>> loadRequirements(Skill skill) {
+    public List<Requirement<Player>> loadRequirements(Skill skill) {
 
-        return RequirementManager.createRequirements(skill, getOverrideSection("requirements"));
+        try {
+            return RequirementFactory.getInstance().createRequirements(skill.getName(), getConfigurationSection("requirements"), Player.class);
+        } catch (RequirementException e) {
+            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
+        }
+        return new ArrayList<>();
     }
 
     @Override
-    public List<Requirement<Hero>> loadUseRequirements(Skill skill) {
+    public List<Requirement<Player>> loadUseRequirements(Skill skill) {
 
-        return RequirementManager.createRequirements(skill, getOverrideSection("use-requirements"));
+        try {
+            return RequirementFactory.getInstance().createRequirements(skill.getName(), getConfigurationSection("use-requirements"), Player.class);
+        } catch (RequirementException e) {
+            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
+        }
+        return new ArrayList<>();
     }
 
     @Override
