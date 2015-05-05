@@ -427,6 +427,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public int hero_max_level = 100;
         @Setting("hero.level-treshhold")
         public int hero_level_treshhold = 10;
+        @Setting("hero.primary-path")
+        public String primary_path = "class";
+        @Setting("hero.secundary-path")
+        public String secundary_path = "prof";
         @Setting("health-scale")
         public double health_scale = 100.0;
         @Setting("paths.skill-configs")
