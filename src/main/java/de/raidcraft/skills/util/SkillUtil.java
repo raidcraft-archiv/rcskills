@@ -7,10 +7,12 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -133,5 +135,73 @@ public final class SkillUtil {
         }
 
         return body;
+    }
+
+    public static List<FancyMessage> getSkillTooltip(Skill skill) {
+
+        List<FancyMessage> messages = new ArrayList<>();
+        messages.add(new FancyMessage("-------").color(ChatColor.YELLOW)
+                .then(" [").color(ChatColor.BLACK)
+                .then(skill.getRequiredLevel() + "").color(ChatColor.AQUA)
+                .then("] ").color(ChatColor.BLACK)
+                .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                .then(" (").color(ChatColor.YELLOW)
+                .then(skill.getProfession().getProperties().getTag()).color(ChatColor.GOLD)
+                .formattedTooltip(ProfessionUtil.getProfessionTooltip(skill.getProfession()))
+                .then(")").color(ChatColor.YELLOW)
+                .then(" -------").color(ChatColor.YELLOW));
+
+        if (skill instanceof Levelable) {
+            messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                            .then("/").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                            .then("\t|\t").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                            .then("/").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
+            );
+        }
+
+        Set<Resource> resources = skill.getHolder().getResources();
+        if (!resources.isEmpty()) {
+            messages.add(new FancyMessage("Skill Kosten:").color(ChatColor.YELLOW));
+        }
+        for (Resource resource : resources) {
+            double resourceCost = ((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
+
+            if (resourceCost == 0) {
+                continue;
+            }
+
+            FancyMessage msg = new FancyMessage("  - ").color(ChatColor.YELLOW);
+            if (resourceCost < 0) {
+                msg.then("+" + resourceCost).color(ChatColor.GREEN);
+            } else {
+                msg.then("-" + resourceCost).color(ChatColor.DARK_RED);
+            }
+            msg.then(" ").then(resource.getFriendlyName()).color(ChatColor.YELLOW);
+            messages.add(msg);
+        }
+//
+//        if (skill.getRequirements().size() > 0) {
+//            messages.add(new FancyMessage("Vorraussetzungen:").color(ChatColor.YELLOW));
+//            for (Requirement<Hero> requirement : skill.getRequirements()) {
+//                sb.append(ChatColor.YELLOW).append("  - ");
+//                sb.append((requirement.isMet(skill.getHolder()) ? ChatColor.GREEN : ChatColor.RED));
+//                sb.append(requirement.getShortReason());
+//                sb.append("\n");
+//            }
+//            body.add(sb.toString());
+//        }
+
+        if (skill.getUsage().length > 0) {
+            messages.add(new FancyMessage("Zusatzinformationen:").color(ChatColor.YELLOW));
+            for (String str : skill.getUsage()) {
+                messages.add(new FancyMessage(str).color(ChatColor.YELLOW));
+            }
+        }
+
+        return messages;
     }
 }

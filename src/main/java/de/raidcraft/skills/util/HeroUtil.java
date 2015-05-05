@@ -6,6 +6,7 @@ import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.path.Path;
@@ -14,6 +15,8 @@ import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.util.EntityUtil;
+import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
@@ -26,6 +29,7 @@ import org.bukkit.metadata.MetadataValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -248,7 +252,69 @@ public final class HeroUtil {
         }
     }
 
-    public static FancyMessage getHeroTooltip(Hero hero, FancyMessage message, Player viewer) {
+    public static List<FancyMessage> getBasicHeroInfo(Hero hero) {
+
+        ArrayList<FancyMessage> messages = new ArrayList<>();
+        messages.add(new FancyMessage("Leben: ").color(ChatColor.YELLOW)
+                        .then((int) hero.getHealth() + "").color(EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()))
+                        .then("/").color(ChatColor.AQUA)
+                        .then((int) hero.getMaxHealth() + "").color(ChatColor.GREEN)
+        );
+        messages.add(new FancyMessage("Rüstung: ").color(ChatColor.YELLOW)
+                        .then(hero.getTotalArmorValue() + "").color(ChatColor.GRAY)
+        );
+        messages.add(new FancyMessage("EXP Pool: ").color(ChatColor.YELLOW)
+                        .then(hero.getExpPool().getExp() + "").color(ChatColor.AQUA)
+        );
+
+        messages.add(new FancyMessage("Attribute:").color(ChatColor.YELLOW));
+        hero.getAttributes().stream()
+                .filter(attribute -> attribute.getCurrentValue() > 0)
+                .sorted(Comparator.comparing(Attribute::getFriendlyName)).forEachOrdered(attribute -> {
+                    FancyMessage msg = new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
+                            .then(attribute.getFriendlyName() + ": ").color(ChatColor.YELLOW)
+                            .then(attribute.getCurrentValue() + "");
+                    if (attribute.getCurrentValue() > attribute.getBaseValue()) {
+                        msg.color(ChatColor.GREEN);
+                    } else if (attribute.getCurrentValue() < attribute.getBaseValue()) {
+                        msg.color(ChatColor.DARK_RED);
+                    } else {
+                        msg.color(ChatColor.YELLOW);
+                    }
+                    messages.add(msg);
+                }
+        );
+
+        messages.add(new FancyMessage("Resourcen: ").color(ChatColor.YELLOW));
+        hero.getResources().stream()
+                .filter(Resource::isEnabled)
+                .sorted(Comparator.comparing(Resource::getFriendlyName))
+                .forEachOrdered(resource -> {
+                    FancyMessage msg = new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
+                            .then(resource.getFriendlyName() + ": ").color(ChatColor.YELLOW)
+                            .then((int) resource.getCurrent() + "").color(EntityUtil.getHealthColor(resource.getCurrent(), resource.getMax()))
+                            .then("/").color(ChatColor.YELLOW)
+                            .then((int) resource.getMax() + "").color(ChatColor.GREEN);
+                    if (resource.getRegenInterval() > 0 && resource.getRegenValue() != 0) {
+                        msg.then(" (").color(ChatColor.YELLOW);
+                        if (resource.getRegenValue() > 0) {
+                            msg.then("+" + resource.getRegenValue()).color(ChatColor.GREEN)
+                                    .then("/").color(ChatColor.YELLOW)
+                                    .then(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
+                                    .color(ChatColor.AQUA);
+                        } else {
+                            msg.then("-" + -resource.getRegenValue()).color(ChatColor.DARK_RED)
+                                    .then("/").color(ChatColor.YELLOW)
+                                    .then(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
+                                    .color(ChatColor.AQUA);
+                        }
+                    }
+                    messages.add(msg);
+                });
+        return messages;
+    }
+
+    public static List<FancyMessage> getHeroTooltip(Hero hero, Player viewer) {
 
         ArrayList<FancyMessage> messages = new ArrayList<>();
         messages.add(new FancyMessage("[").color(ChatColor.YELLOW)
@@ -256,16 +322,17 @@ public final class HeroUtil {
                 .then("]").color(ChatColor.YELLOW)
                 .then(" ").then(hero.getName()).color(getPvPColor(hero, viewer)));
 
+        messages.addAll(getBasicHeroInfo(hero));
+
+        messages.add(new FancyMessage("Klassen & Berufe:").color(ChatColor.YELLOW));
         messages.addAll(hero.getProfessions().stream()
-                .map(profession -> new FancyMessage("  - ").color(ChatColor.DARK_PURPLE)
+                .map(profession -> new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
                     .then("[").color(ChatColor.YELLOW)
                     .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
                     .then("]").color(ChatColor.YELLOW)
                     .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY))
                 .collect(Collectors.toList()));
 
-        return message.then("[").color(ChatColor.BLACK).then(hero.getName()).color(getPvPColor(hero, viewer))
-                .formattedTooltip(messages)
-                .then("]").color(ChatColor.BLACK);
+        return messages;
     }
 }

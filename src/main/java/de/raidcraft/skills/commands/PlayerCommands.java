@@ -11,7 +11,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import mkremins.fanciful.FancyMessage;
@@ -20,7 +19,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -47,26 +48,35 @@ public class PlayerCommands {
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }
-        FancyMessage msg = new FancyMessage("======= ").color(ChatColor.GOLD);
-        msg = HeroUtil.getHeroTooltip(hero, msg, (Player) sender);
-        msg = msg.then(" =======").color(ChatColor.GOLD);
+        List<FancyMessage> messages = new ArrayList<>();
+        FancyMessage msg = new FancyMessage("------- ").color(ChatColor.GOLD)
+                .then("[").color(ChatColor.YELLOW).then(hero.getVirtualProfession().getTotalLevel() + "").color(ChatColor.AQUA)
+                .formattedTooltip(ProfessionUtil.getProfessionTooltip(hero.getVirtualProfession()))
+                .then("]").color(ChatColor.YELLOW).then(" ")
+                .then("[").color(ChatColor.BLACK).then(hero.getName()).color(HeroUtil.getPvPColor(hero, (Player) sender))
+                .formattedTooltip(HeroUtil.getHeroTooltip(hero, (Player) sender))
+                .then("]").color(ChatColor.BLACK)
+                .then(" -------").color(ChatColor.GOLD);
+        messages.add(msg);
 
-        Collection<String> strings = ProfessionUtil.renderProfessionInformation(hero.getVirtualProfession());
-        strings.add(ChatColor.YELLOW + "EXP Pool: " + ChatColor.AQUA + hero.getExpPool().getExp() + ChatColor.YELLOW + " EXP");
-        for (String line : strings) {
-            hero.sendMessage(line);
-        }
-        if (hero.getResources().size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(ChatColor.YELLOW).append("Resourcen: \n");
-            for (Resource resource : hero.getResources()) {
-                sb.append(ChatColor.YELLOW).append("  - ");
-                sb.append(ChatColor.YELLOW).append(resource.getFriendlyName()).append(": ");
-                sb.append(ChatColor.AQUA).append(resource.getCurrent()).append(ChatColor.YELLOW).append("/");
-                sb.append(ChatColor.AQUA).append(resource.getMax()).append(ChatColor.YELLOW);
-                sb.append("\n");
-            }
-            hero.sendMessage(sb.toString());
+        messages.addAll(HeroUtil.getBasicHeroInfo(hero));
+
+        List<Profession> professions = hero.getProfessions().stream().filter(Profession::isActive).collect(Collectors.toList());
+        messages.addAll(professions.stream().map(profession -> new FancyMessage(profession.getFriendlyName()).color(profession.isMastered() ? ChatColor.GOLD : ChatColor.YELLOW)
+                .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                .then("  |  ").color(ChatColor.DARK_PURPLE)
+                .then("Level: ").color(ChatColor.YELLOW)
+                .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                .then("/").color(ChatColor.YELLOW)
+                .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                .then("  |  ").color(ChatColor.DARK_PURPLE)
+                .then("EXP: ").color(ChatColor.YELLOW)
+                .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                .then("/").color(ChatColor.YELLOW)
+                .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)).collect(Collectors.toList()));
+
+        for (FancyMessage message : messages) {
+            message.send(sender);
         }
     }
 

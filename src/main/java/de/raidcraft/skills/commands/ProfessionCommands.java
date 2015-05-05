@@ -12,14 +12,14 @@ import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
-import de.raidcraft.util.PaginatedResult;
+import de.raidcraft.util.FancyPaginatedResult;
 import de.raidcraft.util.UUIDUtil;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,15 +70,20 @@ public class ProfessionCommands {
 
         Collections.sort(professions);
 
-        new PaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
+        new FancyPaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
 
             @Override
-            public String format(Profession profession) {
+            public FancyMessage format(Profession profession) {
 
-                return ChatColor.YELLOW + "[" + ChatColor.AQUA + profession.getProperties().getTag() + ChatColor.YELLOW + "]" +
-                        (profession.isActive() ? ChatColor.GREEN : ChatColor.RED) + profession.getProperties().getFriendlyName() +
-                        ChatColor.GRAY + ChatColor.ITALIC + " - " + profession.getPath().getFriendlyName() + " - " +
-                        ChatColor.RESET + (profession.getAttachedLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.RED) + profession.getAttachedLevel().getLevel();
+                return new FancyMessage("[").color(ChatColor.YELLOW)
+                        .then(profession.getProperties().getTag()).color(ChatColor.AQUA)
+                        .then("]").color(ChatColor.YELLOW)
+                        .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                        .then(" - ").color(ChatColor.YELLOW)
+                        .then(profession.getPath().getFriendlyName()).color(ChatColor.GRAY).style(ChatColor.ITALIC)
+                        .then(" - ").color(ChatColor.YELLOW)
+                        .then(profession.getAttachedLevel().getLevel() + "").color(profession.getAttachedLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.DARK_RED);
             }
         }.display(sender, professions, args.getFlagInteger('p', 1));
     }
@@ -158,14 +163,14 @@ public class ProfessionCommands {
     @Command(
             aliases = {"info"},
             desc = "Shows information about a profession",
-            flags = "h:"
+            flags = "p:"
     )
     @CommandPermissions("rcskills.player.profession.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
-        if (args.hasFlag('h')) {
-                hero = plugin.getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getFlag('h')));
+        if (args.hasFlag('p')) {
+                hero = plugin.getCharacterManager().getHero(UUIDUtil.convertPlayer(args.getFlag('p')));
         }
         if(hero == null) {
             throw new CommandException("invalid Player");
@@ -176,7 +181,8 @@ public class ProfessionCommands {
             profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
         }
 
-        Collection<String> strings = ProfessionUtil.renderProfessionInformation(profession);
-        sender.sendMessage(strings.toArray(new String[strings.size()]));
+        for (FancyMessage message : ProfessionUtil.getProfessionTooltip(profession)) {
+            message.send(sender);
+        }
     }
 }

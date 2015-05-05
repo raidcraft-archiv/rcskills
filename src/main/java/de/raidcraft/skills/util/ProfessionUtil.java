@@ -8,11 +8,14 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.Skill;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -126,6 +129,57 @@ public final class ProfessionUtil {
         sb.append(profession.getFriendlyName());
         sb.append(ChatColor.YELLOW).append(" -------");
         return sb.toString();
+    }
+
+    public static List<FancyMessage> getProfessionTooltip(Profession profession) {
+
+        List<FancyMessage> messages = new ArrayList<>();
+        messages.add(new FancyMessage("------- [").color(ChatColor.YELLOW)
+                .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
+                .then("]").color(ChatColor.YELLOW).then(" ")
+                .then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY)
+                .then(profession.getPath() != null ? " (" + profession.getPath().getFriendlyName() + ")" : "").color(ChatColor.DARK_PURPLE)
+                .then(" -------").color(ChatColor.YELLOW)
+        );
+        messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
+                    .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                    .then("/").color(ChatColor.YELLOW)
+                    .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                    .then("\t|\t").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
+                    .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                    .then("/").color(ChatColor.YELLOW)
+                    .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
+        );
+        List<Skill> skills = profession.getSkills().stream().filter(Skill::isEnabled).collect(Collectors.toList());
+        if (!skills.isEmpty()) {
+            long firstColumnSize = Math.round(skills.size() / 2.0);
+            int secondStartIndex = 0;
+            if (firstColumnSize >= skills.size()) {
+                firstColumnSize = skills.size();
+            } else {
+                secondStartIndex = (int) (firstColumnSize + 1);
+            }
+            for (int i = 0; i < firstColumnSize; i++) {
+                FancyMessage msg = getSkillInfoInTooltip(skills.get(i), new FancyMessage(""));
+                if (secondStartIndex > 0 && secondStartIndex < skills.size()) {
+                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("\t|\t").color(ChatColor.DARK_PURPLE));
+                    secondStartIndex++;
+                }
+                messages.add(msg);
+            }
+        }
+        return messages;
+    }
+
+    private static FancyMessage getSkillInfoInTooltip(Skill skill, FancyMessage message) {
+
+        return message.then("[").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
+                .then(skill.getRequiredLevel() + "").color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                .then("]").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
+                .then(" ").then(skill.getFriendlyName())
+                .formattedTooltip(SkillUtil.getSkillTooltip(skill))
+                .color(skill.isUnlocked() ? (skill.isHidden() ? ChatColor.DARK_GRAY : ChatColor.GREEN)
+                        : (skill.isHidden() ? ChatColor.GRAY : ChatColor.DARK_RED));
     }
 
     public static double getProfessionChangeCost(Profession profession) {

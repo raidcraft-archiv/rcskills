@@ -44,6 +44,8 @@ public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementReso
 
     public Profession getProfession();
 
+    public int getRequiredLevel();
+
     public void save();
 
 }

@@ -506,9 +506,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 aliases = {"rcs"},
                 desc = "Base Command for Players"
         )
-        @NestedCommand(value = PlayerCommands.class)
-        public void player(CommandContext args, CommandSender sender) {
+        @NestedCommand(value = PlayerCommands.class, executeBody = true)
+        public void player(CommandContext args, CommandSender sender) throws CommandException {
 
+            new PlayerCommands(SkillsPlugin.this).info(args, sender);
         }
 
         @Command(

@@ -293,6 +293,12 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
+    public int getRequiredLevel() {
+
+        return getSkillProperties().getRequiredLevel();
+    }
+
+    @Override
     public void save() {
 
         if (getHolder() instanceof TemporaryHero) return;

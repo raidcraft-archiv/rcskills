@@ -8,12 +8,14 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
-import de.raidcraft.util.PaginatedResult;
+import de.raidcraft.skills.util.SkillUtil;
+import de.raidcraft.util.FancyPaginatedResult;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -97,26 +99,30 @@ public class SkillsCommand {
         // lets sort them by their required level
         Collections.sort((List<Skill>) skills);
         // lets list all skills
-        new PaginatedResult<Skill>("[Prof:Level] -   Name") {
+        new FancyPaginatedResult<Skill>("[Prof:Level] -   Name") {
 
             @Override
-            public String format(Skill skill) {
+            public FancyMessage format(Skill skill) {
 
-                StringBuilder sb = new StringBuilder();
-
-                int level = skill.getSkillProperties().getRequiredLevel();
+                int level = skill.getRequiredLevel();
                 Profession profession = skill.getProfession();
 
-                sb.append(ChatColor.YELLOW).append("[").append(skill.isActive() ? ChatColor.GREEN : ChatColor.RED)
-                        .append(profession.getProperties().getTag()).append(":")
-                        .append((profession.getAttachedLevel().getLevel() < level ? ChatColor.RED : ChatColor.AQUA)).append(level)
-                        .append(ChatColor.YELLOW).append("] ");
-                sb.append((skill.isActive() && skill.isUnlocked() ? ChatColor.GREEN : ChatColor.RED)).append(skill.getSkillProperties().getFriendlyName());
-                if (skill instanceof LevelableSkill) {
-                    sb.append(ChatColor.YELLOW).append("[").append(ChatColor.AQUA).append(((LevelableSkill) skill).getAttachedLevel().getLevel())
-                            .append(ChatColor.YELLOW).append("] ");
+                FancyMessage msg = new FancyMessage("[").color(ChatColor.YELLOW)
+                        .then(profession.getProperties().getTag()).color(skill.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                        .then(":").color(ChatColor.YELLOW)
+                        .then(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED : ChatColor.AQUA)
+                        .then("] ").color(ChatColor.YELLOW)
+                        .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                        .formattedTooltip(SkillUtil.getSkillTooltip(skill));
+                if (skill instanceof Levelable) {
+                    msg = msg.then(" (").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                            .then("/").color(ChatColor.YELLOW)
+                            .then(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                            .then(")").color(ChatColor.YELLOW);
                 }
-                return sb.toString();
+                return msg;
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));
     }
