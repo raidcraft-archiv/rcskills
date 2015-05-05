@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +45,11 @@ public class PlayerCommands {
 
         Hero hero;
         if (args.argsLength() > 0) {
-            hero = plugin.getCharacterManager().getHero(args.getString(0));
+            Optional<Hero> optional = plugin.getCharacterManager().getHero(args.getString(0));
+            if (!optional.isPresent()) {
+                throw new CommandException("Hero " + args.getString(0) + " not found!");
+            }
+            hero = optional.get();
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }

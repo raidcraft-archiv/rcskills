@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.effects.Summoned;
+import de.raidcraft.skills.hero.OfflineHero;
 import de.raidcraft.skills.hero.SimpleHero;
 import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THero;
@@ -24,6 +25,7 @@ import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -50,6 +52,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -178,10 +181,9 @@ public final class CharacterManager implements Listener, Component {
 
     // tag api end
 
-    @Deprecated
-    public Hero getHero(String playerName) {
+    public Optional<Hero> getHero(String playerName) {
 
-        return getHero(UUIDUtil.convertPlayer(playerName));
+        return getOfflineHero(UUIDUtil.convertPlayer(playerName));
     }
 
     // TODO: add exception, and create not a new player if command wrong
@@ -247,9 +249,27 @@ public final class CharacterManager implements Listener, Component {
         return hero;
     }
 
-    public Hero getHero(UUID player_id) {
+    public Hero getHero(UUID playerId) {
 
-        return getHero(Bukkit.getPlayer(player_id));
+        return getHero(Bukkit.getPlayer(playerId));
+    }
+
+    public Optional<Hero> getOfflineHero(UUID playerId) {
+
+        if (heroes.containsKey(playerId)) {
+            return Optional.of(heroes.get(playerId));
+        }
+        Player player = Bukkit.getPlayer(playerId);
+        if (player != null) {
+            return Optional.ofNullable(getHero(player));
+        }
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
+        THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
+                .where().eq("player_id", playerId).findUnique();
+        if (heroTable != null) {
+            return Optional.of(new OfflineHero(offlinePlayer, heroTable));
+        }
+        return Optional.empty();
     }
 
     /**

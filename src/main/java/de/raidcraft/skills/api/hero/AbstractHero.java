@@ -47,6 +47,7 @@ import de.raidcraft.util.MathUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -67,10 +68,10 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Getter
     private final int id;
 
-    private final String name;
+    private String name;
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
-    private final UserInterface userInterface;
+    private UserInterface userInterface;
     private final Map<String, Skill> virtualSkills = new CaseInsensitiveMap<>();
     private final Map<String, Profession> professions = new CaseInsensitiveMap<>();
     private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
@@ -87,9 +88,9 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Getter
     private BindManager bindings;
 
-    protected AbstractHero(Player player, HeroData data) {
+    protected AbstractHero(OfflinePlayer player, HeroData data) {
 
-        super(player);
+        super(player.isOnline() ? player.getPlayer() : null);
 
         this.id = data.getId();
         this.name = player.getName();
@@ -113,10 +114,12 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         setHealth(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId()).getHealth());
         // load the skills after the profession
         loadSkills();
-        // load the bindings after the skills
-        getBindings().load();
-        // it is important to load the user interface last or lese it will run in an endless loop
-        this.userInterface = new BukkitUserInterface(this);
+        if (player.isOnline()) {
+            // load the bindings after the skills
+            getBindings().load();
+            // it is important to load the user interface last or lese it will run in an endless loop
+            this.userInterface = new BukkitUserInterface(this);
+        }
     }
 
     @SuppressWarnings("unchecked")
