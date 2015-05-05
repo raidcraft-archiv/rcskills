@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -188,17 +189,15 @@ public final class SkillUtil {
             msg.then(" ").then(resource.getFriendlyName()).color(ChatColor.YELLOW);
             messages.add(msg);
         }
-//
-//        if (skill.getRequirements().size() > 0) {
-//            messages.add(new FancyMessage("Vorraussetzungen:").color(ChatColor.YELLOW));
-//            for (Requirement<Hero> requirement : skill.getRequirements()) {
-//                sb.append(ChatColor.YELLOW).append("  - ");
-//                sb.append((requirement.isMet(skill.getHolder()) ? ChatColor.GREEN : ChatColor.RED));
-//                sb.append(requirement.getShortReason());
-//                sb.append("\n");
-//            }
-//            body.add(sb.toString());
-//        }
+
+        if (skill.getRequirements().size() > 0) {
+            messages.add(new FancyMessage("Vorraussetzungen:").color(ChatColor.YELLOW));
+            messages.addAll(skill.getRequirements().stream()
+                    .filter(requirement -> requirement instanceof Reasonable)
+                    .map(requirement -> new FancyMessage("  - ").color(ChatColor.YELLOW)
+                        .then(((Reasonable) requirement).getReason(skill.getHolder().getPlayer()))
+                        .color(requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.DARK_RED)).collect(Collectors.toList()));
+        }
 
         if (skill.getUsage().length > 0) {
             messages.add(new FancyMessage("Zusatzinformationen:").color(ChatColor.YELLOW));
