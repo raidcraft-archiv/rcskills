@@ -77,7 +77,7 @@ public class ProfessionCommands {
                         .then(profession.getProperties().getTag()).color(ChatColor.AQUA)
                         .then("]").color(ChatColor.YELLOW)
                         .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
                         .then(" - ").color(ChatColor.YELLOW)
                         .then(profession.getPath().getFriendlyName()).color(ChatColor.GRAY).style(ChatColor.ITALIC)
                         .then(" - ").color(ChatColor.YELLOW)
@@ -179,7 +179,7 @@ public class ProfessionCommands {
             profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
         }
 
-        for (FancyMessage message : ProfessionUtil.getProfessionTooltip(profession)) {
+        for (FancyMessage message : ProfessionUtil.getProfessionTooltip(profession, false)) {
             message.send(sender);
         }
     }
