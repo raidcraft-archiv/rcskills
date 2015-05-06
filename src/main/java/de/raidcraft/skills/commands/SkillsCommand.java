@@ -114,7 +114,7 @@ public class SkillsCommand {
                         .then(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED : ChatColor.AQUA)
                         .then("] ").color(ChatColor.YELLOW)
                         .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(SkillUtil.getSkillTooltip(skill));
+                        .formattedTooltip(SkillUtil.getSkillTooltip(skill, false));
                 if (skill instanceof Levelable) {
                     msg = msg.then(" (").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)

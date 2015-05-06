@@ -36,7 +36,7 @@ public class SkillCommands {
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
-        for (FancyMessage message : SkillUtil.getSkillTooltip(skill)) {
+        for (FancyMessage message : SkillUtil.getSkillTooltip(skill, false)) {
             message.send(sender);
         }
     }

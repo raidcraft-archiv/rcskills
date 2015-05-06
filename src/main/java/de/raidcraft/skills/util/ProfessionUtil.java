@@ -182,7 +182,7 @@ public final class ProfessionUtil {
                 .then(skill.getRequiredLevel() + "").color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
                 .then("]").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
                 .then(" ").then(skill.getFriendlyName())
-                .formattedTooltip(SkillUtil.getSkillTooltip(skill))
+                .formattedTooltip(SkillUtil.getSkillTooltip(skill, true))
                 .color(skill.isUnlocked() ? (skill.isHidden() ? ChatColor.DARK_GRAY : ChatColor.GREEN)
                         : (skill.isHidden() ? ChatColor.GRAY : ChatColor.DARK_RED));
     }
