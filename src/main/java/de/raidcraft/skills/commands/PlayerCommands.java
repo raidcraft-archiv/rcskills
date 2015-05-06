@@ -56,19 +56,19 @@ public class PlayerCommands {
         List<FancyMessage> messages = new ArrayList<>();
         FancyMessage msg = new FancyMessage("------- ").color(ChatColor.GOLD)
                 .then("[").color(ChatColor.YELLOW).then(hero.getVirtualProfession().getTotalLevel() + "").color(ChatColor.AQUA)
-                .formattedTooltip(ProfessionUtil.getProfessionTooltip(hero.getVirtualProfession()))
+                .formattedTooltip(ProfessionUtil.getProfessionTooltip(hero.getVirtualProfession(), true))
                 .then("]").color(ChatColor.YELLOW).then(" ")
                 .then("[").color(ChatColor.BLACK).then(hero.getName()).color(HeroUtil.getPvPColor(hero, (Player) sender))
-                .formattedTooltip(HeroUtil.getHeroTooltip(hero, (Player) sender))
+                .formattedTooltip(HeroUtil.getHeroTooltip(hero, (Player) sender, true))
                 .then("]").color(ChatColor.BLACK)
                 .then(" -------").color(ChatColor.GOLD);
         messages.add(msg);
 
-        messages.addAll(HeroUtil.getBasicHeroInfo(hero));
+        messages.addAll(HeroUtil.getBasicHeroInfo(hero, false));
 
         List<Profession> professions = hero.getProfessions().stream().filter(Profession::isActive).collect(Collectors.toList());
         messages.addAll(professions.stream().map(profession -> new FancyMessage(profession.getFriendlyName()).color(profession.isMastered() ? ChatColor.GOLD : ChatColor.YELLOW)
-                .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
                 .then("  |  ").color(ChatColor.DARK_PURPLE)
                 .then("Level: ").color(ChatColor.YELLOW)
                 .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)

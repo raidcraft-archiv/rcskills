@@ -109,12 +109,12 @@ public class SkillsCommand {
 
                 FancyMessage msg = new FancyMessage("[").color(ChatColor.YELLOW)
                         .then(profession.getProperties().getTag()).color(skill.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession))
+                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
                         .then(":").color(ChatColor.YELLOW)
                         .then(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED : ChatColor.AQUA)
                         .then("] ").color(ChatColor.YELLOW)
                         .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(SkillUtil.getSkillTooltip(skill, false));
+                        .formattedTooltip(SkillUtil.getSkillTooltip(skill, true));
                 if (skill instanceof Levelable) {
                     msg = msg.then(" (").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)

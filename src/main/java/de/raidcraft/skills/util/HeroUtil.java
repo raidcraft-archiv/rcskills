@@ -252,7 +252,7 @@ public final class HeroUtil {
         }
     }
 
-    public static List<FancyMessage> getBasicHeroInfo(Hero hero) {
+    public static List<FancyMessage> getBasicHeroInfo(Hero hero, boolean isTooltip) {
 
         ArrayList<FancyMessage> messages = new ArrayList<>();
         messages.add(new FancyMessage("Leben: ").color(ChatColor.YELLOW)
@@ -314,7 +314,7 @@ public final class HeroUtil {
         return messages;
     }
 
-    public static List<FancyMessage> getHeroTooltip(Hero hero, Player viewer) {
+    public static List<FancyMessage> getHeroTooltip(Hero hero, Player viewer, boolean isTooltip) {
 
         ArrayList<FancyMessage> messages = new ArrayList<>();
         messages.add(new FancyMessage("[").color(ChatColor.YELLOW)
@@ -322,7 +322,7 @@ public final class HeroUtil {
                 .then("]").color(ChatColor.YELLOW)
                 .then(" ").then(hero.getName()).color(getPvPColor(hero, viewer)));
 
-        messages.addAll(getBasicHeroInfo(hero));
+        messages.addAll(getBasicHeroInfo(hero, isTooltip));
 
         messages.add(new FancyMessage("Klassen & Berufe:").color(ChatColor.YELLOW));
         messages.addAll(hero.getProfessions().stream()

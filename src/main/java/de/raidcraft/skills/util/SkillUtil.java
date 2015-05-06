@@ -143,7 +143,7 @@ public final class SkillUtil {
         return body;
     }
 
-    public static List<FancyMessage> getSkillTooltip(Skill skill, boolean forProfession) {
+    public static List<FancyMessage> getSkillTooltip(Skill skill, boolean isTooltip) {
 
         List<FancyMessage> messages = new ArrayList<>();
         messages.add(new FancyMessage("-------").color(ChatColor.YELLOW)
@@ -153,7 +153,7 @@ public final class SkillUtil {
                 .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
                 .then(" (").color(ChatColor.YELLOW)
                 .then(skill.getProfession().getProperties().getTag()).color(ChatColor.GOLD)
-                .formattedTooltip(forProfession ? new ArrayList<>() : ProfessionUtil.getProfessionTooltip(skill.getProfession()))
+                .formattedTooltip(isTooltip ? new ArrayList<>() : ProfessionUtil.getProfessionTooltip(skill.getProfession(), true))
                 .then(")").color(ChatColor.YELLOW)
                 .then(" -------").color(ChatColor.YELLOW));
 

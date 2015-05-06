@@ -136,7 +136,7 @@ public final class ProfessionUtil {
         return sb.toString();
     }
 
-    public static List<FancyMessage> getProfessionTooltip(Profession profession) {
+    public static List<FancyMessage> getProfessionTooltip(Profession profession, boolean isTooltip) {
 
         List<FancyMessage> messages = new ArrayList<>();
         messages.add(new FancyMessage("------- [").color(ChatColor.YELLOW)
@@ -165,9 +165,9 @@ public final class ProfessionUtil {
                 secondStartIndex = (int) (firstColumnSize + 1);
             }
             for (int i = 0; i < firstColumnSize; i++) {
-                FancyMessage msg = getSkillInfoInTooltip(skills.get(i), new FancyMessage(""));
+                FancyMessage msg = getSkillInfoInTooltip(skills.get(i), new FancyMessage(""), isTooltip);
                 if (secondStartIndex > 0 && secondStartIndex < skills.size()) {
-                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("\t|\t").color(ChatColor.DARK_PURPLE));
+                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("\t|\t").color(ChatColor.DARK_PURPLE), isTooltip);
                     secondStartIndex++;
                 }
                 messages.add(msg);
@@ -176,13 +176,13 @@ public final class ProfessionUtil {
         return messages;
     }
 
-    private static FancyMessage getSkillInfoInTooltip(Skill skill, FancyMessage message) {
+    private static FancyMessage getSkillInfoInTooltip(Skill skill, FancyMessage message, boolean isTooltip) {
 
         return message.then("[").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
                 .then(skill.getRequiredLevel() + "").color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
                 .then("]").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
                 .then(" ").then(skill.getFriendlyName())
-                .formattedTooltip(SkillUtil.getSkillTooltip(skill, true))
+                .formattedTooltip(isTooltip ? new ArrayList<>() : SkillUtil.getSkillTooltip(skill, true))
                 .color(skill.isUnlocked() ? (skill.isHidden() ? ChatColor.DARK_GRAY : ChatColor.GREEN)
                         : (skill.isHidden() ? ChatColor.GRAY : ChatColor.DARK_RED));
     }
