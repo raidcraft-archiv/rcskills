@@ -162,7 +162,7 @@ public final class SkillUtil {
                             .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
                             .then("/").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                            .then("\t|\t").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
+                            .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
                             .then("/").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)

@@ -150,12 +150,12 @@ public final class ProfessionUtil {
                     .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
                     .then("/").color(ChatColor.YELLOW)
                     .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                    .then("\t|\t").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
+                    .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
                     .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
                     .then("/").color(ChatColor.YELLOW)
                     .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
         );
-        List<Skill> skills = profession.getSkills().stream().filter(Skill::isEnabled).collect(Collectors.toList());
+        List<Skill> skills = profession.getSkills().stream().filter(Skill::isEnabled).sorted().collect(Collectors.toList());
         if (!skills.isEmpty()) {
             long firstColumnSize = Math.round(skills.size() / 2.0);
             int secondStartIndex = 0;
@@ -167,7 +167,7 @@ public final class ProfessionUtil {
             for (int i = 0; i < firstColumnSize; i++) {
                 FancyMessage msg = getSkillInfoInTooltip(skills.get(i), new FancyMessage(""), isTooltip);
                 if (secondStartIndex > 0 && secondStartIndex < skills.size()) {
-                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("\t|\t").color(ChatColor.DARK_PURPLE), isTooltip);
+                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("   |   ").color(ChatColor.DARK_PURPLE), isTooltip);
                     secondStartIndex++;
                 }
                 messages.add(msg);
