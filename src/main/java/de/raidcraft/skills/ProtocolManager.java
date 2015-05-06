@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * @author mdoering
  */
-public class ProtocolManager extends PacketAdapter {
+public class ProtocolManager {
 
     // http://wiki.vg/Protocol#Chat_Message
     private static final byte CHAT_ACTION_POSITION = 0x2;
@@ -25,7 +25,6 @@ public class ProtocolManager extends PacketAdapter {
 
     public ProtocolManager(SkillsPlugin plugin) {
 
-        super(plugin);
         this.plugin = plugin;
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 
