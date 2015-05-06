@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ProtocolManager {
 
     // http://wiki.vg/Protocol#Chat_Message
-    private static final byte CHAT_ACTION_POSITION = 0x2;
+    private static final int CHAT_ACTION_POSITION = 2;
     private final SkillsPlugin plugin;
 
     public ProtocolManager(SkillsPlugin plugin) {
@@ -37,7 +37,7 @@ public class ProtocolManager {
                 msg = renderProfessions(hero, msg);
                 chat.setMessage(WrappedChatComponent.fromText(EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
                         + ChatColor.YELLOW + "/" + ChatColor.GREEN + (int) hero.getMaxHealth() + ChatColor.DARK_PURPLE + "  |  "));
-                chat.setPosition(CHAT_ACTION_POSITION);
+                chat.setPosition((byte) CHAT_ACTION_POSITION);
                 chat.sendPacket(player);
             }
         }, 5L, plugin.getCommonConfig().userinterface_refresh_interval);
