@@ -147,15 +147,18 @@ public final class ProfessionUtil {
                 .then(" -------").color(ChatColor.YELLOW)
         );
         messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
-                    .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
-                    .then("/").color(ChatColor.YELLOW)
-                    .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                    .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
-                    .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
-                    .then("/").color(ChatColor.YELLOW)
-                    .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
+                        .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                        .then("/").color(ChatColor.YELLOW)
+                        .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                        .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
+                        .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                        .then("/").color(ChatColor.YELLOW)
+                        .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
         );
-        List<Skill> skills = profession.getSkills().stream().filter(Skill::isEnabled).sorted().collect(Collectors.toList());
+        List<Skill> skills = profession.getSkills().stream()
+                .filter(Skill::isEnabled)
+                .filter(skill -> !skill.isHidden())
+                .sorted().collect(Collectors.toList());
         if (!skills.isEmpty()) {
             long firstColumnSize = Math.round(skills.size() / 2.0);
             int secondStartIndex = 0;

@@ -108,7 +108,7 @@ public class SkillsCommand {
                 Profession profession = skill.getProfession();
 
                 FancyMessage msg = new FancyMessage("[").color(ChatColor.YELLOW)
-                        .then(profession.getProperties().getTag()).color(skill.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                        .then(profession.getProperties().getTag()).color(profession.getProperties().getColor())
                         .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
                         .then(":").color(ChatColor.YELLOW)
                         .then(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED : ChatColor.AQUA)

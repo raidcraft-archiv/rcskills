@@ -157,6 +157,10 @@ public final class SkillUtil {
                 .then(")").color(ChatColor.YELLOW)
                 .then(" -------").color(ChatColor.YELLOW));
 
+        if (skill.getDescription() != null && !skill.getDescription().equals("")) {
+            messages.add(new FancyMessage(skill.getDescription()).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+        }
+
         if (skill instanceof Levelable) {
             messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
                             .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
@@ -169,7 +173,9 @@ public final class SkillUtil {
             );
         }
 
-        Set<Resource> resources = skill.getHolder().getResources();
+        Set<Resource> resources = skill.getHolder().getResources().stream()
+                .filter(resource -> (((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0) != 0)
+                .collect(Collectors.toSet());
         if (!resources.isEmpty()) {
             messages.add(new FancyMessage("Skill Kosten:").color(ChatColor.YELLOW));
         }
