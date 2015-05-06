@@ -1,7 +1,6 @@
 package de.raidcraft.skills;
 
 import com.comphenix.packetwrapper.WrapperPlayServerChat;
-import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
@@ -36,7 +35,8 @@ public class ProtocolManager {
                         .then((int) hero.getMaxHealth() + "").color(ChatColor.GREEN)
                         .then("  |  ").color(ChatColor.DARK_PURPLE);
                 msg = renderProfessions(hero, msg);
-                chat.setMessage(WrappedChatComponent.fromJson(msg.toJSONString()));
+                chat.setMessage(WrappedChatComponent.fromText(EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
+                        + ChatColor.YELLOW + "/" + ChatColor.GREEN + (int) hero.getMaxHealth() + ChatColor.DARK_PURPLE + "  |  "));
                 chat.setPosition(CHAT_ACTION_POSITION);
                 chat.sendPacket(player);
             }
