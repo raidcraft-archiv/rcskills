@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -316,6 +317,18 @@ public final class CombatManager implements Listener, Triggered {
                 return;
             }
             CharacterTemplate source = plugin.getCharacterManager().getCharacter((LivingEntity) shooter);
+            if (source instanceof Hero) {
+                int heldItemSlot = ((Hero) source).getPlayer().getInventory().getHeldItemSlot();
+                CustomItemStack weapon = source.getWeapon(EquipmentSlot.SHIELD_HAND);
+                if (CustomItemUtil.OFFHAND_WEAPON_SLOT == heldItemSlot && weapon != null) {
+                    CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
+                    if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+                        ((Hero) source).sendMessage(ChatColor.RED
+                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
+                        event.setCancelled(true);
+                    }
+                }
+            }
             source.triggerCombat(source);
             // queue all ranged attacks to enable tracking of default attacks with projectiles
             RangedAttack<ProjectileCallback> rangedAttack = new RangedAttack<>(source, ProjectileType.valueOf(event.getEntity()));
