@@ -36,6 +36,8 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -94,13 +96,19 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
         int highestPlayerLevel = 0;
         int totalPlayerLevel = 0;
         HashSet<Hero> heroesToAddExp = new HashSet<>();
-        for (Hero partyHero : hero.getParty().getHeroes()) {
-            if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
-                heroesToAddExp.add(partyHero);
-                if (partyHero.getPlayerLevel() > highestPlayerLevel) {
-                    highestPlayerLevel = partyHero.getPlayerLevel();
+        List<Hero> involvedHeroes = character.getInvolvedTargets().stream()
+                .filter(involved -> involved instanceof Hero)
+                .map(involved -> (Hero) involved)
+                .collect(Collectors.toList());
+        for (Hero involvedHero : involvedHeroes) {
+            for (Hero partyHero : involvedHero.getParty().getHeroes()) {
+                if (LocationUtil.getBlockDistance(partyHero.getEntity().getLocation(), character.getEntity().getLocation()) < plugin.getCommonConfig().party_exp_range) {
+                    heroesToAddExp.add(partyHero);
+                    if (partyHero.getPlayerLevel() > highestPlayerLevel) {
+                        highestPlayerLevel = partyHero.getPlayerLevel();
+                    }
+                    totalPlayerLevel += partyHero.getPlayerLevel();
                 }
-                totalPlayerLevel += partyHero.getPlayerLevel();
             }
         }
         if (heroesToAddExp.isEmpty()) return;

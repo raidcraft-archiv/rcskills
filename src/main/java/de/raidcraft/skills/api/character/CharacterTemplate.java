@@ -215,4 +215,6 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     Material getItemTypeInHand();
 
     void reset();
+
+    List<CharacterTemplate> getInvolvedTargets();
 }

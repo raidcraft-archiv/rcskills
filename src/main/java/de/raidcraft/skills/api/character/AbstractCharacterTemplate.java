@@ -1170,4 +1170,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<CharacterTemplate> getInvolvedTargets() {
+
+        Combat combat = getLastCombat();
+        if (combat == null) {
+            return new ArrayList<>();
+        }
+        Set<CharacterTemplate> characters = combat.getInvolvedCharacters();
+        characters.add(getLastDamageCause().getAttacker());
+        return new ArrayList<>(characters);
+    }
 }
