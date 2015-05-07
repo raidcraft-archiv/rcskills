@@ -895,6 +895,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
         THero tHero = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         if (tHero == null) return;
+        tHero.setPlayer(getName());
         tHero.setHealth(getHealth());
         tHero.setSelectedProfession(getSelectedProfession().getName());
         RaidCraft.getDatabase(SkillsPlugin.class).save(tHero);

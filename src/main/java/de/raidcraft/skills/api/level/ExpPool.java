@@ -84,6 +84,7 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
             return;
         }
         db.setExp(getExp());
+        db.setPlayer(getLevelObject().getName());
         RaidCraft.getDatabase(SkillsPlugin.class).save(db);
     }
 }
