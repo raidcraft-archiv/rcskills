@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
@@ -288,7 +289,7 @@ public final class CombatManager implements Listener, Triggered {
                         event.setCancelled(true);
                         return;
                     }
-                    physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
+                    physicalAttack = new WeaponAttack(event, attacker.getWeapons(), attacker.getDamage() + attacker.swingWeapons());
                     physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                     physicalAttack.setKnockback(true);
                 }
@@ -439,7 +440,8 @@ public final class CombatManager implements Listener, Triggered {
                         }
                         // lets issue a new physical attack for the event
                         try {
-                            PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage());
+                            PhysicalAttack attack = new WeaponAttack(source, target, source.getWeapons(), source.getDamage());
+                            attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                             attack.setKnockback(knockback);
                             attack.run();
                         } catch (CombatException e) {

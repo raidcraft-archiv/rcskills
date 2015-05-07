@@ -1,44 +1,43 @@
 package de.raidcraft.skills.api.combat.action;
 
-import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
+import lombok.Getter;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+
+import java.util.Collection;
 
 /**
  * @author Silthus
  */
 public class WeaponAttack extends PhysicalAttack {
 
-    private final CustomWeapon weapon;
+    @Getter
+    private final Collection<CustomItemStack> weapons;
 
-    public WeaponAttack(CharacterTemplate source, CharacterTemplate target, CustomWeapon weapon, int damage, EffectType... types) {
+    public WeaponAttack(CharacterTemplate source, CharacterTemplate target, Collection<CustomItemStack> weapons, double damage, EffectType... types) {
 
         super(source, target, damage, types);
-        this.weapon = weapon;
+        this.weapons = weapons;
     }
 
-    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, CustomWeapon weapon, EntityAttackCallback callback, EffectType... types) {
+    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, Collection<CustomItemStack> weapons, EntityAttackCallback callback, EffectType... types) {
 
         super(attacker, target, callback, types);
-        this.weapon = weapon;
+        this.weapons = weapons;
     }
 
-    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, CustomWeapon weapon, int damage, EntityAttackCallback callback, EffectType... types) {
+    public WeaponAttack(CharacterTemplate attacker, CharacterTemplate target, Collection<CustomItemStack> weapons, double damage, EntityAttackCallback callback, EffectType... types) {
 
         super(attacker, target, damage, callback, types);
-        this.weapon = weapon;
+        this.weapons = weapons;
     }
 
-    public WeaponAttack(EntityDamageByEntityEvent event, CustomWeapon weapon, int damage) {
+    public WeaponAttack(EntityDamageByEntityEvent event, Collection<CustomItemStack> weapons, double damage) {
 
         super(event, damage);
-        this.weapon = weapon;
-    }
-
-    public CustomWeapon getWeapon() {
-
-        return weapon;
+        this.weapons = weapons;
     }
 }
