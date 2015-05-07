@@ -109,33 +109,29 @@ public class BukkitUserInterface implements UserInterface {
         if (Option.SIDEBAR_PARTY_HP.isSet(getHero())) {
             // lets update the sidebar display with the party information
             Set<Map.Entry<CharacterTemplate, HealthDisplay>> entries = healthDisplays.entrySet();
-            for (Map.Entry<CharacterTemplate, HealthDisplay> entry : entries) {
-                if (!getHero().getParty().contains(entry.getKey())) {
-                    entry.getValue().remove();
-                    entries.remove(entry);
-                }
-            }
+            entries.stream().filter(entry -> !getHero().getParty().contains(entry.getKey()))
+                    .forEach(entry -> {
+                entry.getValue().remove();
+                entries.remove(entry);
+            });
             // we need to add missing players to the party display
-            for (CharacterTemplate partyMember : getHero().getParty().getHeroes()) {
-                if (!partyMember.equals(getHero()) && !healthDisplays.containsKey(partyMember)) {
-                    PartyHealthDisplay display = new PartyHealthDisplay(getHero(), partyMember);
-                    display.refresh();
-                    healthDisplays.put(partyMember, display);
-                }
-            }
+            getHero().getParty().getHeroes().stream()
+                    .filter(partyMember -> !partyMember.equals(getHero()) && !healthDisplays.containsKey(partyMember))
+                    .forEach(partyMember -> {
+                        PartyHealthDisplay display = new PartyHealthDisplay(getHero(), partyMember);
+                        display.refresh();
+                        healthDisplays.put(partyMember, display);
+                    });
         } else {
             // lets remove all old parties
-            for (HealthDisplay display : healthDisplays.values()) {
-                display.remove();
-            }
+            healthDisplays.values().forEach(HealthDisplay::remove);
             healthDisplays.clear();
         }
 
-        for (RefreshingDisplay display : new ArrayList<>(refreshingDisplays.values())) {
-            if (display instanceof RefreshingEffectDisplay && display.getRemainingDuration() < 1) {
-                refreshingDisplays.remove(((RefreshingEffectDisplay) display).getEffect().getName());
-            }
-        }
+        new ArrayList<>(refreshingDisplays.values()).stream()
+                .filter(display -> display instanceof RefreshingEffectDisplay && display.getRemainingDuration() < 1)
+                .forEach(display -> refreshingDisplays.remove(((RefreshingEffectDisplay) display).getEffect().getName()));
+
         Scoreboards.getScoreboard(getHero()).getPlayerTeam(getHero().getPlayer());
         // lets update the scoreboard
         updateHealthDisplay();
