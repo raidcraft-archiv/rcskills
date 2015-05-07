@@ -57,6 +57,7 @@ public class CombatException extends RaidCraftException {
         OUT_OF_RANGE("Ziel ist nicht in Reichweite."),
         SWING_COOLDOWN("Du kannst mit dieser Waffe gerade nicht angreifen."),
         NO_GROUP("Dein Ziel ist nicht in deiner Gruppe."),
+        PVP("PvP ist hier nicht erlaubt."),
         STUNNED("Du bist betäubt und kannst nicht angreifen.");
 
         private final String message;
