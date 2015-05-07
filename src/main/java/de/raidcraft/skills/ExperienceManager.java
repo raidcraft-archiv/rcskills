@@ -149,8 +149,11 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
+        if (RaidCraft.isPlayerPlacedBlock(event.getBlock())) {
+            return;
+        }
         Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
-        hero.getExpPool().addExp(plugin.getExperienceConfig().getBlockExperienceFor(event.getBlock().getTypeId()));
+        hero.getExpPool().addExp(plugin.getExperienceConfig().getBlockExperienceFor(event.getBlock().getType()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -161,8 +164,8 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
         }
         Hero hero = plugin.getCharacterManager().getHero((Player) event.getWhoClicked());
         ItemStack result = event.getRecipe().getResult();
-        int exp = plugin.getExperienceConfig().getCraftingExperienceFor(result.getTypeId()) * result.getAmount();
-        hero.getExpPool().addExp(plugin.getExperienceConfig().getCraftingExperienceFor(exp));
+        int exp = plugin.getExperienceConfig().getCraftingExperienceFor(result.getType()) * result.getAmount();
+        hero.getExpPool().addExp(exp);
     }
 
     @EventHandler(ignoreCancelled = true)
