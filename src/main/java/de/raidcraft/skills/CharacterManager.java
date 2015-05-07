@@ -212,6 +212,7 @@ public final class CharacterManager implements Listener, Component {
             // create a new entry if not exists
             if (heroTable == null) {
                 heroTable = new THero();
+                heroTable.setPlayer(player.getName());
                 heroTable.setPlayerId(player_id);
                 heroTable.setHealth(20);
                 heroTable.setExp(0);
@@ -224,6 +225,7 @@ public final class CharacterManager implements Listener, Component {
             // also create a new exp pool for the hero
             if (pool == null) {
                 pool = new THeroExpPool();
+                pool.setPlayer(player.getName());
                 pool.setPlayerId(player_id);
                 plugin.getDatabase().save(pool);
             }

@@ -20,7 +20,7 @@ public class THeroExpPool implements LevelData {
 
     @Id
     private int id;
-
+    private String player;
     private int heroId;
     private UUID playerId;
     private int exp;

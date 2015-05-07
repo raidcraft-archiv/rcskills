@@ -32,7 +32,7 @@ public class THero implements LevelData, HeroData {
 
     @Id
     private int id;
-
+    private String player;
     @NotNull
     @Column(unique = true)
     private UUID playerId;
