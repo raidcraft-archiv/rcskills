@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
@@ -23,6 +24,7 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
 
     private final Set<EffectType> attackTypes = new HashSet<>();
     private final Set<EffectElement> attackElemens = new HashSet<>();
+    private final Set<CustomItemStack> weapons = new HashSet<>();
     private final AttackSource source;
     private double damage;
     private boolean knockback;
@@ -103,6 +105,24 @@ public abstract class AbstractAttack<S, T> extends AbstractTargetedAction<S, T> 
     public boolean isOfAttackType(EffectType type) {
 
         return attackTypes.contains(type);
+    }
+
+    @Override
+    public Set<CustomItemStack> getWeapons() {
+
+        return weapons;
+    }
+
+    @Override
+    public void addWeapon(CustomItemStack weapon) {
+
+        this.weapons.add(weapon);
+    }
+
+    @Override
+    public void addWeapons(Collection<CustomItemStack> weapons) {
+
+        this.weapons.addAll(weapons);
     }
 
     @Override

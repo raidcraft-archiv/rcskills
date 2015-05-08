@@ -48,6 +48,7 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     public RangedAttack(CharacterTemplate source, EntityShootBowEvent event, T callback) {
 
         this(source, ProjectileType.ARROW, callback);
+        this.projectile = (Projectile) event.getProjectile();
         this.force = event.getForce();
     }
 

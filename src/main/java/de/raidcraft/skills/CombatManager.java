@@ -12,7 +12,6 @@ import de.raidcraft.skills.api.combat.ThreatTable;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
-import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
@@ -38,6 +37,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -139,13 +139,21 @@ public final class CombatManager implements Listener, Triggered {
             @Override
             public void run() {
 
-                entityHitCallbacks.remove(sourcedCallback.getTaskId());
+                locationCallbacks.remove(sourcedCallback.getTaskId());
             }
         }, plugin.getCommonConfig().callback_purge_time));
         locationCallbacks.put(sourcedCallback.getTaskId(), sourcedCallback);
         if (sourcedCallback.getSource() instanceof Hero) {
             ((Hero) sourcedCallback.getSource()).debug("Queued Range Location Callback - " + sourcedCallback.getTaskId());
         }
+    }
+
+    public boolean isQueuedRangeAttack(Projectile projectile) {
+
+        boolean hitCallback = entityHitCallbacks.values().stream().anyMatch(c -> c.getProjectile().equals(projectile));
+        boolean locationCallback = locationCallbacks.values().stream().anyMatch(c -> c.getProjectile().equals(projectile));
+        boolean rangedCallback = rangedAttacks.values().stream().anyMatch(c -> c.getProjectile().equals(projectile));
+        return hitCallback || locationCallback || rangedCallback;
     }
 
     @TriggerHandler(ignoreCancelled = true, filterTargets = false, priority = TriggerPriority.LOWEST)
@@ -289,7 +297,8 @@ public final class CombatManager implements Listener, Triggered {
                         event.setCancelled(true);
                         return;
                     }
-                    physicalAttack = new WeaponAttack(event, attacker.getWeapons(), attacker.getDamage() + attacker.swingWeapons());
+                    physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
+                    physicalAttack.addWeapons(attacker.getWeapons());
                     physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                     physicalAttack.setKnockback(true);
                 }
@@ -306,10 +315,45 @@ public final class CombatManager implements Listener, Triggered {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void shootBowEvent(EntityShootBowEvent event) {
+
+        if (!(event.getProjectile() instanceof Projectile)) {
+            return;
+        }
+        if (isQueuedRangeAttack((Projectile) event.getProjectile())) {
+            return;
+        }
+        try {
+            CharacterTemplate source = plugin.getCharacterManager().getCharacter(event.getEntity());
+            if (source instanceof Hero) {
+                int heldItemSlot = ((Hero) source).getPlayer().getInventory().getHeldItemSlot();
+                CustomItemStack weapon = source.getWeapon(EquipmentSlot.SHIELD_HAND);
+                if (CustomItemUtil.OFFHAND_WEAPON_SLOT == heldItemSlot && weapon != null) {
+                    CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
+                    if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+                        ((Hero) source).sendMessage(ChatColor.RED
+                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
+                        event.setCancelled(true);
+                    }
+                }
+            }
+            source.triggerCombat(source);
+            // queue all ranged attacks to enable tracking of default attacks with projectiles
+            RangedAttack<ProjectileCallback> rangedAttack = new RangedAttack<>(source, event);
+            rangedAttack.addWeapons(source.getWeapons());
+            new SourcedRangeCallback<>(rangedAttack).queueCallback();
+        } catch (CombatException ignored) {
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void fireProjectileEvent(ProjectileLaunchEvent event) {
 
         EntityType type = event.getEntityType();
         if (type != EntityType.ARROW || type != EntityType.FIREBALL || type != EntityType.SPLASH_POTION) {
+            return;
+        }
+        if (isQueuedRangeAttack(event.getEntity())) {
             return;
         }
         try {
@@ -440,7 +484,8 @@ public final class CombatManager implements Listener, Triggered {
                         }
                         // lets issue a new physical attack for the event
                         try {
-                            PhysicalAttack attack = new WeaponAttack(source, target, source.getWeapons(), source.getDamage());
+                            PhysicalAttack attack = new PhysicalAttack(source, target, source.getDamage());
+                            attack.addWeapons(source.getWeapons());
                             attack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                             attack.setKnockback(knockback);
                             attack.run();
