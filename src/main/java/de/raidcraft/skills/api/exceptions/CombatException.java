@@ -49,6 +49,7 @@ public class CombatException extends RaidCraftException {
         DEAD("Ziel ist bereits tot."),
         IMMUNE("Ziel ist immun."),
         EVADED("Deinem Angriff wurde ausgewichen."),
+        MISSED("Verfehlt."),
         PARRIED("Dein Angriff wurde parriert."),
         PASSIVE("Passive Skills können nicht gezaubert werden."),
         UNKNOWN("Unbekannter Fehlschlag."),

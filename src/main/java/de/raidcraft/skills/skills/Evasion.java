@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Evasion",
         description = "Chance einem physischen Angriff auszuweichen.",
-        types = {EffectType.PROTECTION, EffectType.HELPFUL, EffectType.PHYSICAL}
+        types = {EffectType.PROTECTION, EffectType.HELPFUL, EffectType.PHYSICAL, EffectType.SYSTEM}
 )
 public class Evasion extends AbstractSkill implements Triggered {
 

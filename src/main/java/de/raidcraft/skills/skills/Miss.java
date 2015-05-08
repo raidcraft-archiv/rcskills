@@ -20,17 +20,16 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author mdoering
  */
 @SkillInformation(
-        name = "Critical Strike",
-        description = "Chance bei einem Angriff einen kritischen Treffer zu erzielen.",
-        types = {EffectType.DAMAGING, EffectType.HELPFUL, EffectType.SYSTEM}
+        name = "Miss",
+        description = "Chance bei einen Angriff zu verfehlen.",
+        types = {EffectType.HARMFUL, EffectType.SYSTEM}
 )
-public class CriticalStrike extends AbstractSkill implements Triggered {
+public class Miss extends AbstractSkill implements Triggered {
 
     private ConfigurationSection chance;
-    private double damageModifier;
     private PseudoRandomGenerator randomGenerator;
 
-    public CriticalStrike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Miss(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -39,11 +38,10 @@ public class CriticalStrike extends AbstractSkill implements Triggered {
     public void load(ConfigurationSection data) {
 
         chance = data.getConfigurationSection("chance");
-        damageModifier = ConfigUtil.getTotalValue(this, data.getConfigurationSection("damage-modifier"));
-        randomGenerator = new PseudoRandomGenerator(getCriticalStrikeChance());
+        randomGenerator = new PseudoRandomGenerator(getMissChance());
     }
 
-    public double getCriticalStrikeChance() {
+    public double getMissChance() {
 
         return ConfigUtil.getTotalValue(this, chance);
     }
@@ -53,11 +51,10 @@ public class CriticalStrike extends AbstractSkill implements Triggered {
 
         if (randomGenerator.getIteration() <= 1) {
             // recalculate the chance from our config
-            randomGenerator.setChance(getCriticalStrikeChance());
+            randomGenerator.setChance(getMissChance());
         }
         if (randomGenerator.isHit()) {
-            trigger.getAttack().addAttackTypes(EffectType.CRITICAL);
-            trigger.getAttack().setDamage(trigger.getAttack().getDamage() * damageModifier);
+            throw new CombatException(CombatException.Type.MISSED);
         }
     }
 }
