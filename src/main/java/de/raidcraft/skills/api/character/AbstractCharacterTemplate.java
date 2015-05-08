@@ -635,6 +635,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 // lets also play the damage visual effects
                 ((Effect) attack.getSource()).executeAmbientEffects(EffectEffectStage.DAMAGE, getEntity().getLocation());
             }
+            if (attack.isOfAttackType(EffectType.CRITICAL)) {
+                EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.CRIT, 1, 50);
+            }
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
             // also actually damage the entity
@@ -656,12 +659,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (attacker != null && attacker instanceof Hero) {
                 ((Hero) attacker).combatLog("Du hast " + getName() + " (" + getAttachedLevel().getLevel() + ")" +
                         (!(attack.getSource() instanceof CharacterTemplate) ? " mit " + attack.getSource() + " " : " ")
-                        + attack.getDamage() + " Schaden zugefügt.");
+                        + attack.getDamage()
+                        + (attack.isOfAttackType(EffectType.CRITICAL) ? " KRITISCHEN" : "")
+                        + " Schaden zugefügt.");
             }
             if (this instanceof Hero) {
                 ((Hero) this).combatLog((attacker != null && attack.getSource() != attacker ? "[" + attacker.getName() + " ("
                         + attacker.getAttachedLevel().getLevel() + ")" + "] " : " ") + " hat dir "
-                        + attack.getDamage() + " Schaden" + (!(attack.getSource() instanceof CharacterTemplate) ? " mit "
+                        + attack.getDamage()
+                        + (attack.isOfAttackType(EffectType.CRITICAL) ? " KRITISCHEN" : "")
+                        + " Schaden" + (!(attack.getSource() instanceof CharacterTemplate) ? " mit "
                         + attack.getSource() : "") + " zugefügt.");
             }
         }
