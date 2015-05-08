@@ -1,5 +1,7 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentProvider;
@@ -32,7 +34,7 @@ import java.util.Set;
  * @author Silthus
  */
 @ProviderInformation("skills")
-public final class SkillManager extends GenericJarFileManager<Skill> implements ItemAttachmentProvider {
+public final class SkillManager extends GenericJarFileManager<Skill> implements ItemAttachmentProvider, Component {
 
     private final SkillsPlugin plugin;
     private final Map<String, SkillFactory> skillFactories = new CaseInsensitiveMap<>();
@@ -48,7 +50,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         this.plugin = plugin;
         // create the config path
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
-
+        RaidCraft.registerComponent(SkillManager.class, this);
     }
 
     @Override

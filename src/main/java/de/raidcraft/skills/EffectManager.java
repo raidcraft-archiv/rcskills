@@ -1,5 +1,7 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.Effect;
@@ -17,7 +19,7 @@ import java.util.Map;
  * @author Silthus
  */
 @SuppressWarnings("unchecked")
-public final class EffectManager extends GenericJarFileManager<Effect> {
+public final class EffectManager extends GenericJarFileManager<Effect> implements Component {
 
     private final SkillsPlugin plugin;
     private final Map<Class<? extends Effect>, EffectFactory<? extends Effect>> effectFactoryClasses = new HashMap<>();
@@ -29,6 +31,7 @@ public final class EffectManager extends GenericJarFileManager<Effect> {
         super(Effect.class, new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_jar_path));
         this.plugin = plugin;
         new File(plugin.getDataFolder(), plugin.getCommonConfig().effect_config_path).mkdirs();
+        RaidCraft.registerComponent(EffectManager.class, this);
     }
 
     @Override

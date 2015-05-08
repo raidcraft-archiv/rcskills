@@ -113,9 +113,13 @@ public class SkillsPlugin extends BasePlugin implements Component {
         RaidCraft.registerComponent(SkillsPlugin.class, this);
         // create the config
         this.configuration = configure(new LocalConfiguration(this));
-        this.pathConfig = configure(new PathConfig(this), false);
-        this.levelConfig = configure(new LevelConfig(this), false);
-        this.experienceConfig = configure(new ExperienceConfig(this), false);
+        this.pathConfig = configure(new PathConfig(this));
+        this.levelConfig = configure(new LevelConfig(this));
+        this.experienceConfig = configure(new ExperienceConfig(this));
+
+        this.skillManager = new SkillManager(this);
+        this.abilityManager = new AbilityManager(this);
+        this.effectManager = new EffectManager(this);
 
         // and commands gogogo
         registerCommands(SkillsCommand.class);
@@ -250,9 +254,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
         // load some config stuff
         levelConfig.loadFormulas();
         // the skill manager takes care of all skills currently loaded
-        this.skillManager = new SkillManager(this);
-        this.abilityManager = new AbilityManager(this);
-        this.effectManager = new EffectManager(this);
         this.skillManager.loadFactories();
         this.abilityManager.loadFactories();
         this.effectManager.loadFactories();
