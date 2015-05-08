@@ -34,7 +34,8 @@ public enum EffectType {
     DISABLEING,
     RANGE,
     COMBO,
-    SYSTEM;
+    SYSTEM,
+    CRITICAL;
 
     public static EffectType fromString(String str) {
 
