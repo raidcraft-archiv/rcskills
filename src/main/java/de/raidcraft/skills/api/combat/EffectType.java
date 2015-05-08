@@ -35,7 +35,8 @@ public enum EffectType {
     RANGE,
     COMBO,
     SYSTEM,
-    CRITICAL;
+    CRITICAL,
+    COMBAT_STANCE;
 
     public static EffectType fromString(String str) {
 
