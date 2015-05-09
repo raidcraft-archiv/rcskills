@@ -159,10 +159,9 @@ public final class SkillUtil {
 
         String description = skill.getDescription();
         if (description != null && !description.equals("")) {
-            if (description.length() > 50) {
-                // TODO: calculate width like item tooltip
-                messages.add(new FancyMessage(description.substring(0, 50)).color(ChatColor.GOLD).style(ChatColor.ITALIC));
-                messages.add(new FancyMessage(description.substring(50)).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+            String[] split = description.split("\\|");
+            for (String str : split) {
+                messages.add(new FancyMessage(str).color(ChatColor.GOLD).style(ChatColor.ITALIC));
             }
         }
 
