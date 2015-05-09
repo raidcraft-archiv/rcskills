@@ -331,11 +331,12 @@ public final class HeroUtil {
 
         messages.add(new FancyMessage("Klassen & Berufe:").color(ChatColor.YELLOW));
         messages.addAll(hero.getProfessions().stream()
+                .filter(Profession::isActive)
                 .map(profession -> new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
-                    .then("[").color(ChatColor.YELLOW)
-                    .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
-                    .then("]").color(ChatColor.YELLOW)
-                    .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY))
+                        .then("[").color(ChatColor.YELLOW)
+                        .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
+                        .then("]").color(ChatColor.YELLOW)
+                        .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY))
                 .collect(Collectors.toList()));
 
         return messages;
