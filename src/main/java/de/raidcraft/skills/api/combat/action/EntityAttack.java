@@ -71,6 +71,10 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         }
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
+            // add the weapon damage
+            if (!getWeapons().isEmpty()) {
+                setDamage(getDamage() + getSource().swingWeapons());
+            }
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             // call the attack trigger
             AttackTrigger attackTrigger = new AttackTrigger(getSource(), this, cause);
