@@ -314,6 +314,11 @@ public final class HeroUtil {
         return messages;
     }
 
+    public static List<FancyMessage> getHeroTooltip(Player hero, Player viewer, boolean isTooltip) {
+
+        return getHeroTooltip(RaidCraft.getComponent(CharacterManager.class).getHero(hero), viewer, isTooltip);
+    }
+
     public static List<FancyMessage> getHeroTooltip(Hero hero, Player viewer, boolean isTooltip) {
 
         ArrayList<FancyMessage> messages = new ArrayList<>();
