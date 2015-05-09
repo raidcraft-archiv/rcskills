@@ -609,6 +609,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         // call the attack trigger
+        if (attack.getTarget() == null || !(attack.getTarget() instanceof CharacterTemplate)) {
+            attack.setTarget(this);
+        }
         CharacterTemplate attacker = attack.getAttacker();
         if (attacker != null) {
             AttackTrigger attackTrigger = new AttackTrigger(attacker, attack, attack.getCause());
@@ -616,11 +619,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (attackTrigger.isCancelled()) attack.setCancelled(true);
         }
         // call the damage trigger
-        if (attack.getTarget() != null && attack.getTarget() instanceof CharacterTemplate) {
-            DamageTrigger damageTrigger = new DamageTrigger((CharacterTemplate) attack.getTarget(), attack, attack.getCause());
-            TriggerManager.callTrigger(damageTrigger);
-            if (damageTrigger.isCancelled()) attack.setCancelled(true);
-        }
+        DamageTrigger damageTrigger = new DamageTrigger(this, attack, attack.getCause());
+        TriggerManager.callTrigger(damageTrigger);
+        if (damageTrigger.isCancelled()) attack.setCancelled(true);
 
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // lets get the actual attacker

@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.hero.Hero;
  */
 public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> implements TargetedAction<S, T> {
 
-    protected final T target;
+    protected T target;
     private boolean cancelled = false;
 
     protected AbstractTargetedAction(S source, T target) {
@@ -32,6 +32,11 @@ public abstract class AbstractTargetedAction<S, T> extends AbstractAction<S> imp
         return target;
     }
 
+    @Override
+    public void setTarget(T target) {
+
+        this.target = target;
+    }
 
     @Override
     public void combatLog(Object o, String message) {
