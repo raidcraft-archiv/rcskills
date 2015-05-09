@@ -9,9 +9,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.trigger.TriggerManager;
-import de.raidcraft.skills.trigger.AttackTrigger;
-import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.block.Block;
@@ -64,6 +61,11 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         this.lineEffects = lineEffects;
     }
 
+    public EntityDamageEvent.DamageCause getCause() {
+
+        return cause;
+    }
+
     @Override
     public void run() throws CombatException {
 
@@ -72,23 +74,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         }
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
-            // lets run the triggers first to give the skills a chance to cancel the attack or do what not
-            // call the attack trigger
-            AttackTrigger attackTrigger = new AttackTrigger(getSource(), this, cause);
-            TriggerManager.callTrigger(attackTrigger);
-            if (attackTrigger.isCancelled()) setCancelled(true);
-            // call the damage trigger
-            DamageTrigger damageTrigger = new DamageTrigger(getTarget(), this, cause);
-            TriggerManager.callTrigger(damageTrigger);
-            if (damageTrigger.isCancelled()) setCancelled(true);
-
-            if (isCancelled()) {
-                throw new CombatException(CombatException.Type.CANCELLED);
-            }
-            // if no exceptions was thrown to this point issue the callback
-            if (callback != null && callback instanceof EntityAttackCallback) {
-                callback.run(this);
-            }
             // only add weapon damage if it is a physical attack
             if (!isOfAttackType(EffectType.DEFAULT_ATTACK) && isOfAttackType(EffectType.PHYSICAL)) {
                 // if this is a special attack add weapon damage
@@ -103,14 +88,22 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
                     setDamage(damage);
                 }
             }
+
+            if (isCancelled()) {
+                throw new CombatException(CombatException.Type.CANCELLED);
+            }
+            // now actually damage the target
+            getTarget().damage(this);
+            // if no exceptions was thrown to this point issue the callback
+            if (callback != null && callback instanceof EntityAttackCallback) {
+                callback.run(this);
+            }
             // player some ambient effects
             for (Block block : getSource().getEntity().getLineOfSight(BlockUtil.TRANSPARENT_BLOCKS, 100)) {
                 for (AmbientEffect effect : lineEffects) {
                     effect.run(block.getLocation());
                 }
             }
-            // now actually damage the target
-            getTarget().damage(this);
             // set the last damage source
             getTarget().getEntity().setLastDamageCause(event);
             getSource().setLastAction(this);

@@ -31,6 +31,8 @@ import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.ui.HealthDisplay;
+import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.BukkitUtil;
@@ -605,6 +607,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (getEntity().isDead()) {
             throw new CombatException(CombatException.Type.DEAD);
         }
+        // lets run the triggers first to give the skills a chance to cancel the attack or do what not
+        // call the attack trigger
+        AttackTrigger attackTrigger = new AttackTrigger(attack.getAttacker(), attack, attack.getCause());
+        TriggerManager.callTrigger(attackTrigger);
+        if (attackTrigger.isCancelled()) attack.setCancelled(true);
+        // call the damage trigger
+        DamageTrigger damageTrigger = new DamageTrigger(getTarget(), attack, attack.getCause());
+        TriggerManager.callTrigger(damageTrigger);
+        if (damageTrigger.isCancelled()) attack.setCancelled(true);
+
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // lets get the actual attacker
             CharacterTemplate attacker = attack.getAttacker();

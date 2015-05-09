@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Collection;
 import java.util.Set;
@@ -21,6 +22,11 @@ public interface Attack<S, T> extends TargetedAction<S, T> {
     public boolean hasKnockback();
 
     public void setKnockback(boolean knockback);
+
+    public default EntityDamageEvent.DamageCause getCause() {
+
+        return EntityDamageEvent.DamageCause.CUSTOM;
+    }
 
     public Set<EffectElement> getAttackElements();
 
