@@ -497,6 +497,7 @@ public final class CombatManager implements Listener, Triggered {
                         }
                     }
                 }
+                event.getDamager().remove();
                 event.setCancelled(true);
             } catch (CombatException e) {
                 if (source instanceof Hero) {
