@@ -616,8 +616,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (attackTrigger.isCancelled()) attack.setCancelled(true);
         }
         // call the damage trigger
-        if (getTarget() != null) {
-            DamageTrigger damageTrigger = new DamageTrigger(getTarget(), attack, attack.getCause());
+        if (attack.getTarget() != null && attack.getTarget() instanceof CharacterTemplate) {
+            DamageTrigger damageTrigger = new DamageTrigger((CharacterTemplate) attack.getTarget(), attack, attack.getCause());
             TriggerManager.callTrigger(damageTrigger);
             if (damageTrigger.isCancelled()) attack.setCancelled(true);
         }
