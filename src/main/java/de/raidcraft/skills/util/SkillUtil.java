@@ -157,8 +157,13 @@ public final class SkillUtil {
                 .then(")").color(ChatColor.YELLOW)
                 .then(" -------").color(ChatColor.YELLOW));
 
-        if (skill.getDescription() != null && !skill.getDescription().equals("")) {
-            messages.add(new FancyMessage(skill.getDescription()).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+        String description = skill.getDescription();
+        if (description != null && !description.equals("")) {
+            if (description.length() > 50) {
+                // TODO: calculate width like item tooltip
+                messages.add(new FancyMessage(description.substring(0, 50)).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+                messages.add(new FancyMessage(description.substring(50)).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+            }
         }
 
         if (skill instanceof Levelable) {
