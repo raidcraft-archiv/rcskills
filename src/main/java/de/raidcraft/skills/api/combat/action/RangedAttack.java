@@ -106,7 +106,11 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
     @Override
     public double getDamage() {
 
-        return super.getDamage() * getForce();
+        double damage = super.getDamage();
+        if (!getWeapons().isEmpty()) {
+            damage += getSource().swingWeapons();
+        }
+        return damage * getForce();
     }
 
     public float getForce() {

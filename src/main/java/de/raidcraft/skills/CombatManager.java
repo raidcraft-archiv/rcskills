@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.api.items.InventorySlot;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -327,14 +328,16 @@ public final class CombatManager implements Listener, Triggered {
             CharacterTemplate source = plugin.getCharacterManager().getCharacter(event.getEntity());
             if (source instanceof Hero) {
                 int heldItemSlot = ((Hero) source).getPlayer().getInventory().getHeldItemSlot();
-                CustomItemStack weapon = source.getWeapon(EquipmentSlot.SHIELD_HAND);
-                if (CustomItemUtil.OFFHAND_WEAPON_SLOT == heldItemSlot && weapon != null) {
-                    CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
-                    if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-                        ((Hero) source).sendMessage(ChatColor.RED
-                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu kÃ¶nnen.");
-                        event.setCancelled(true);
-                    }
+                if (heldItemSlot == InventorySlot.OFFHAND_WEAPON_SLOT.getSlot()) {
+                    ((Hero) source).sendMessage(ChatColor.RED
+                            + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
+                    event.setCancelled(true);
+                    return;
+                } else if (heldItemSlot != InventorySlot.MAIN_WEAPON_SLOT.getSlot()) {
+                    ((Hero) source).sendMessage(ChatColor.RED
+                            + "Du musst den Bogen in deinen ersten Hotbarslot legen um ihn benutzen zu können.");
+                    event.setCancelled(true);
+                    return;
                 }
             }
             source.triggerCombat(source);
@@ -369,7 +372,7 @@ public final class CombatManager implements Listener, Triggered {
                     CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
                     if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
                         ((Hero) source).sendMessage(ChatColor.RED
-                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu kÃ¶nnen.");
+                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
                         event.setCancelled(true);
                     }
                 }
