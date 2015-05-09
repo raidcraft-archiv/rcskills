@@ -298,7 +298,7 @@ public final class CombatManager implements Listener, Triggered {
                         event.setCancelled(true);
                         return;
                     }
-                    physicalAttack = new PhysicalAttack(event, attacker.getDamage());
+                    physicalAttack = new PhysicalAttack(event, attacker.getDamage() + attacker.swingWeapons());
                     physicalAttack.addWeapons(attacker.getWeapons());
                     physicalAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
                     physicalAttack.setKnockback(true);

@@ -72,15 +72,6 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         }
         EntityDamageByEntityEvent event = CombatManager.fakeDamageEvent(this);
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
-            // add the weapon damage
-            if (!getWeapons().isEmpty()) {
-                double damage = getDamage();
-                damage += getWeapons().stream()
-                        .map(CustomItemUtil::getWeapon)
-                        .mapToDouble(customWeapon -> getSource().getWeaponDamage(customWeapon.getEquipmentSlot()))
-                        .sum();
-                setDamage(damage);
-            }
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             // call the attack trigger
             AttackTrigger attackTrigger = new AttackTrigger(getSource(), this, cause);
@@ -102,6 +93,15 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
             if (!isOfAttackType(EffectType.DEFAULT_ATTACK) && isOfAttackType(EffectType.PHYSICAL)) {
                 // if this is a special attack add weapon damage
                 setDamage(getDamage() + getSource().getDamage());
+                // add the weapon damage
+                if (!getWeapons().isEmpty()) {
+                    double damage = getDamage();
+                    damage += getWeapons().stream()
+                            .map(CustomItemUtil::getWeapon)
+                            .mapToDouble(customWeapon -> getSource().getWeaponDamage(customWeapon.getEquipmentSlot()))
+                            .sum();
+                    setDamage(damage);
+                }
             }
             // player some ambient effects
             for (Block block : getSource().getEntity().getLineOfSight(BlockUtil.TRANSPARENT_BLOCKS, 100)) {
