@@ -609,9 +609,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         // lets run the triggers first to give the skills a chance to cancel the attack or do what not
         // call the attack trigger
-        AttackTrigger attackTrigger = new AttackTrigger(attack.getAttacker(), attack, attack.getCause());
-        TriggerManager.callTrigger(attackTrigger);
-        if (attackTrigger.isCancelled()) attack.setCancelled(true);
+        CharacterTemplate attacker = attack.getAttacker();
+        if (attacker != null) {
+            AttackTrigger attackTrigger = new AttackTrigger(attacker, attack, attack.getCause());
+            TriggerManager.callTrigger(attackTrigger);
+            if (attackTrigger.isCancelled()) attack.setCancelled(true);
+        }
         // call the damage trigger
         DamageTrigger damageTrigger = new DamageTrigger(getTarget(), attack, attack.getCause());
         TriggerManager.callTrigger(damageTrigger);
@@ -619,12 +622,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         if (!attack.isCancelled() && attack.getDamage() > 0) {
             // lets get the actual attacker
-            CharacterTemplate attacker = attack.getAttacker();
             // this all needs to happen before we damage the entity because of the events that are fired
             if (!(attack instanceof EnvironmentAttack)) {
                 // lets add the combat effect
-                if (attacker != null) attack.getAttacker().addEffect(this, Combat.class);
-                addEffect(attack.getAttacker(), Combat.class);
+                if (attacker != null) attacker.addEffect(this, Combat.class);
+                addEffect(attacker, Combat.class);
                 // set the last attack variable to track death
                 lastDamageCause = attack;
                 // lets increase the thread against the attacker
