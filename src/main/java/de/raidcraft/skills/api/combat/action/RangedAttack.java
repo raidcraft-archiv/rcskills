@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.combat.callback.SourcedRangeCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Explosive;
@@ -108,7 +109,10 @@ public class RangedAttack<T extends ProjectileCallback> extends AbstractAttack<C
 
         double damage = super.getDamage();
         if (!getWeapons().isEmpty()) {
-            damage += getSource().swingWeapons();
+            damage += getWeapons().stream()
+                    .map(CustomItemUtil::getWeapon)
+                    .mapToDouble(customWeapon -> getSource().getWeaponDamage(customWeapon.getEquipmentSlot()))
+                    .sum();
         }
         return damage * getForce();
     }

@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.util.BlockUtil;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -73,7 +74,12 @@ public class EntityAttack extends AbstractAttack<CharacterTemplate, CharacterTem
         if (!event.isCancelled() && !getSource().isFriendly(getTarget())) {
             // add the weapon damage
             if (!getWeapons().isEmpty()) {
-                setDamage(getDamage() + getSource().swingWeapons());
+                double damage = getDamage();
+                damage += getWeapons().stream()
+                        .map(CustomItemUtil::getWeapon)
+                        .mapToDouble(customWeapon -> getSource().getWeaponDamage(customWeapon.getEquipmentSlot()))
+                        .sum();
+                setDamage(damage);
             }
             // lets run the triggers first to give the skills a chance to cancel the attack or do what not
             // call the attack trigger
