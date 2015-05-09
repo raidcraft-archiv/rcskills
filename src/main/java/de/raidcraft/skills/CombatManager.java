@@ -330,12 +330,12 @@ public final class CombatManager implements Listener, Triggered {
                 int heldItemSlot = ((Hero) source).getPlayer().getInventory().getHeldItemSlot();
                 if (heldItemSlot == InventorySlot.OFFHAND_WEAPON_SLOT.getSlot()) {
                     ((Hero) source).sendMessage(ChatColor.RED
-                            + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
+                            + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie zu benutzen.");
                     event.setCancelled(true);
                     return;
                 } else if (heldItemSlot != InventorySlot.MAIN_WEAPON_SLOT.getSlot()) {
                     ((Hero) source).sendMessage(ChatColor.RED
-                            + "Du musst den Bogen in deinen ersten Hotbarslot legen um ihn benutzen zu können.");
+                            + "Du musst den Bogen in deinen ersten Hotbarslot legen um ihn zu benutzen.");
                     event.setCancelled(true);
                     return;
                 }
