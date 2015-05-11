@@ -151,6 +151,11 @@ public final class ProfessionManager {
         return professions;
     }
 
+    public Map<String, ProfessionFactory> getProfessionFactories() {
+
+        return professionFactories;
+    }
+
     public Profession getProfession(Hero hero, String profId) throws UnknownSkillException, UnknownProfessionException {
 
         return getProfession(hero, null, profId);

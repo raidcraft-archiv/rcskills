@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -138,6 +139,11 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         return skills;
     }
 
+    public Map<String, SkillFactory> getSkillFactories() {
+
+        return skillFactories;
+    }
+
     public Collection<? extends Skill> getAllVirtualSkills(Hero hero) {
 
         List<Skill> skills = new ArrayList<>();
@@ -183,13 +189,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
     protected Collection<SkillFactory> getSkillFactoriesFor(Class<? extends Skill> sClass) {
 
-        Set<SkillFactory> skills = new HashSet<>();
-        for (SkillFactory factory : skillFactories.values()) {
-            if (factory.getSkillClass() == sClass) {
-                skills.add(factory);
-            }
-        }
-        return skills;
+        return skillFactories.values().stream()
+                .filter(factory -> factory.getSkillClass() == sClass)
+                .collect(Collectors.toSet());
     }
 
     public boolean hasSkill(String skill) {
@@ -202,11 +204,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
         Map<CachedSkill, Skill> cache = cachedSkills.remove(StringUtils.formatName(heroName));
         if (cache == null) return;
-        for (Skill skill : cache.values()) {
-            if (skill instanceof Triggered) {
-                TriggerManager.unregisterListeners((Triggered) skill);
-            }
-        }
+        cache.values().stream()
+                .filter(skill -> skill instanceof Triggered)
+                .forEach(skill -> TriggerManager.unregisterListeners((Triggered) skill));
     }
 
     public static class CachedSkill {

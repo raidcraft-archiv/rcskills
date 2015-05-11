@@ -54,7 +54,7 @@ public final class AliasManager {
             }
             if (file.getName().endsWith(".yml")) {
                 String alias = StringUtils.formatName(file.getName().replace(".yml", ""));
-                AliasesConfig config = plugin.configure(new AliasesConfig(plugin, file, alias), false);
+                AliasesConfig config = plugin.configure(new AliasesConfig(plugin, file, alias));
                 if (config.getString("skill") == null || !plugin.getSkillManager().hasSkill(config.getString("skill"))) {
                     plugin.getLogger().warning(
                             "Der Alias " + alias + " ist falsch konfiguriert! Es gibt keinen Skill: " + config.getString("skill"));

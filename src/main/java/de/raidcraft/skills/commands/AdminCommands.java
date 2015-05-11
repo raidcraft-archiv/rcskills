@@ -1,5 +1,6 @@
 package de.raidcraft.skills.commands;
 
+import com.avaje.ebean.EbeanServer;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -27,6 +28,8 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
@@ -42,6 +45,8 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -609,5 +614,75 @@ public class AdminCommands {
                 hero.sendMessage(ChatColor.AQUA + "Cooldown von " + s + " wurde zurückgesetzt.");
             });
         }
+    }
+
+    @Command(
+            aliases = {"cleanup", "prune", "clean"},
+            desc = "Cleans the database from old skills and professions.",
+            flags = "sp"
+    )
+    @CommandPermissions("rcskills.admin.cleanup")
+    public void cleanup(CommandContext args, CommandSender sender) throws CommandException {
+
+        EbeanServer database = plugin.getDatabase();
+        if (!args.hasFlag('s') && !args.hasFlag('p')) {
+            throw new CommandException("You need to specify at least one flag: -p to clean professions and -s to clean skills");
+        }
+        if (args.hasFlag('s')) {
+            Set<String> loadedSkills = plugin.getSkillManager().getSkillFactories().keySet();
+            List<THeroSkill> databaseSkills = database.find(THeroSkill.class).findList();
+            List<THeroSkill> obsoleteSkills = databaseSkills.stream()
+                    .filter(dbSkill -> !loadedSkills.contains(dbSkill.getName()))
+                    .collect(Collectors.toList());
+            sender.sendMessage(ChatColor.DARK_RED + "The following skills would be deleted: ");
+            String distinctSkills = obsoleteSkills.stream().map(THeroSkill::getName).distinct().collect(Collectors.joining(","));
+            sender.sendMessage(ChatColor.YELLOW + distinctSkills);
+            sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
+            String heroes = obsoleteSkills.stream().map(skill -> skill.getHero().getPlayer()).distinct().collect(Collectors.joining(","));
+            sender.sendMessage(ChatColor.AQUA + heroes);
+            try {
+                new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteSkills);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new CommandException(e.getMessage());
+            }
+        } else if (args.hasFlag('p')) {
+            Set<String> loadedProfessions = plugin.getProfessionManager().getProfessionFactories().keySet();
+            List<THeroProfession> databaseProfessions = database.find(THeroProfession.class).findList();
+            List<THeroProfession> obsoleteProfessions = databaseProfessions.stream()
+                    .filter(dbProfession -> !loadedProfessions.contains(dbProfession.getName()))
+                    .collect(Collectors.toList());
+            sender.sendMessage(ChatColor.DARK_RED + "The following professions would be deleted: ");
+            String distinctSkills = obsoleteProfessions.stream()
+                    .map(THeroProfession::getName)
+                    .distinct()
+                    .collect(Collectors.joining(","));
+            sender.sendMessage(ChatColor.RED + distinctSkills);
+            sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
+            String heroes = obsoleteProfessions.stream()
+                    .map(professions -> professions.getHero().getPlayer())
+                    .distinct()
+                    .collect(Collectors.joining(","));
+            sender.sendMessage(ChatColor.AQUA + heroes);
+            sender.sendMessage(ChatColor.DARK_RED + "The following skills would also be deleted: ");
+            String skills = obsoleteProfessions.stream()
+                    .map(THeroProfession::getSkills)
+                    .flatMap(Collection::stream)
+                    .map(THeroSkill::getName)
+                    .distinct()
+                    .collect(Collectors.joining(","));
+            sender.sendMessage(ChatColor.YELLOW + skills);
+            try {
+                new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteProfessions);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new CommandException(e.getMessage());
+            }
+        }
+    }
+
+    private void pruneDatabase(Collection<Object> elements) {
+
+        plugin.getDatabase().delete(elements);
     }
 }

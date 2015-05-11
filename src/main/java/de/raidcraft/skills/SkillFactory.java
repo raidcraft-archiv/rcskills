@@ -54,7 +54,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
     protected void createDefaults() {
 
         // simply create new config
-        SkillProperties config = plugin.configure(new SkillConfig(this), false);
+        SkillProperties config = plugin.configure(new SkillConfig(this));
         // calling these methods will create default entries if none exist
         config.getFriendlyName();
         config.getDescription();
@@ -67,14 +67,14 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
 
     protected Skill createDummy() throws UnknownSkillException {
 
-        SkillConfig config = plugin.configure(new SkillConfig(this), false);
+        SkillConfig config = plugin.configure(new SkillConfig(this));
         // we need to set all the overrides to null because they are used multiple times
         if (useAlias()) {
             config.merge(aliasConfig);
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + getName() + " is not enabled!");
+            throw new UnknownSkillException("The skill " + getName() + " is disabled!");
         }
 
         // its reflection time yay!
@@ -113,7 +113,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
 
         SkillConfig config;
         if (!skillConfigs.containsKey(profession.getName())) {
-            config = plugin.configure(new SkillConfig(this), false);
+            config = plugin.configure(new SkillConfig(this));
             // we need to set all the overrides to null because they are used multiple times
             if (useAlias()) {
                 config.merge(aliasConfig);
@@ -133,7 +133,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + getName() + " is not enabled!");
+            throw new UnknownSkillException("The skill " + getName() + " is disabled!");
         }
 
         // also save the profession to generate a db entry if none exists
