@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -150,6 +151,11 @@ public final class HeroUtil {
             throw  new UnknownPlayerException("No hero found for: " + name);
         }
         return hero;
+    }
+
+    public static boolean isCachedHero(UUID uuid) {
+
+        return RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().isPlayerCached(uuid);
     }
 
     public static Profession getActivePathProfession(Hero hero, Path<Profession> path) {
