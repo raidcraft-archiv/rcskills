@@ -3,6 +3,7 @@ package de.raidcraft.skills.api.ability;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
+import de.raidcraft.api.ambient.CustomAmbientEffect;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
@@ -145,6 +146,19 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         if (effects == null) {
             return new ArrayList<>();
         }
+        effects.stream()
+                .filter(effect -> effect instanceof CustomAmbientEffect)
+                .forEach(effect -> ((CustomAmbientEffect) effect).setEntity(getHolder().getEntity()));
+        return effects;
+    }
+
+    @Override
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage, CharacterTemplate target) {
+
+        List<AmbientEffect> effects = getAmbientEffects(stage);
+        effects.stream()
+                .filter(effect -> effect instanceof CustomAmbientEffect)
+                .forEach(effect -> ((CustomAmbientEffect) effect).setTarget(target.getEntity()));
         return effects;
     }
 
@@ -364,8 +378,8 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
         magicalAttack.addAttackElement(getElements());
-        magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT));
-        magicalAttack.setLineEffects(getAmbientEffects(AbilityEffectStage.LINE));
+        magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT, target));
+        magicalAttack.setLineEffects(getAmbientEffects(AbilityEffectStage.LINE, target));
         magicalAttack.run();
         return magicalAttack;
     }

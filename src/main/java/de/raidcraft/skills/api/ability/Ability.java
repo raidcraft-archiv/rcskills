@@ -80,9 +80,11 @@ public interface Ability<T extends CharacterTemplate> {
 
     boolean matches(String name);
 
-    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage);
+    List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage);
 
-    public void executeAmbientEffects(AbilityEffectStage stage, Location location);
+    List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage, CharacterTemplate target);
+
+    void executeAmbientEffects(AbilityEffectStage stage, Location location);
 
     /**
      * Applies the skill to the {@link de.raidcraft.skills.api.hero.Hero}. Is called when the skill is first added to the hero.
