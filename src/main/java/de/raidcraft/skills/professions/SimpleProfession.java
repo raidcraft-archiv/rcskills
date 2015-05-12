@@ -1,6 +1,7 @@
 package de.raidcraft.skills.professions;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.ambient.AmbientManager;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.skills.api.hero.Hero;
@@ -10,6 +11,8 @@ import de.raidcraft.skills.api.profession.AbstractProfession;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.slikey.effectlib.effect.CylinderEffect;
+import de.slikey.effectlib.util.ParticleEffect;
 import org.bukkit.ChatColor;
 
 /**
@@ -48,6 +51,16 @@ public class SimpleProfession extends AbstractProfession {
     @Override
     public void onLevelGain() {
 
+        CylinderEffect effect = new CylinderEffect(AmbientManager.getEffectManager());
+        effect.setEntity(getHero().getEntity());
+        effect.height = 2;
+        effect.particle = ParticleEffect.FLAME;
+        effect.solid = true;
+        effect.delay = 5;
+        effect.angularVelocityY = 2;
+        effect.radius = 1;
+        effect.period = 30;
+        effect.run();
         // lets update the max health
         getHero().recalculateHealth();
         getHero().sendMessage(ChatColor.GREEN + "Du bist ein Level aufgestiegen: " +
