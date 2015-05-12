@@ -1,5 +1,6 @@
 package de.raidcraft.skills.effects;
 
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import de.raidcraft.api.ambient.ParticleEffect;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -40,7 +41,7 @@ public class Burn extends PeriodicExpirableEffect<Ability> {
     @Override
     protected void renew(CharacterTemplate target) {
 
-        ParticleEffect.sendToLocation(ParticleEffect.FLAME, target.getEntity().getLocation(), 0.25F, 0.25F, 0.25F, 1.0F, 3);
+        ParticleEffect.sendToLocation(EnumWrappers.Particle.FLAME, target.getEntity().getLocation(), 0.25F, 0.25F, 0.25F, 3);
     }
 
     @Override
