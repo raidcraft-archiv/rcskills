@@ -127,12 +127,13 @@ public class SkillAction extends AbilityAction<Hero> {
             return;
         }
 
-        // and call the trigger
-        ((CommandTriggered) skill).runCommand(args);
         // run ambient stuff
         for (AmbientEffect ambientEffect : getSkill().getAmbientEffects(AbilityEffectStage.CAST)) {
             ambientEffect.run(getSource().getEntity().getLocation());
         }
+
+        // and call the trigger
+        ((CommandTriggered) skill).runCommand(args);
 
         // lets remove the costs
         // it is important to remove them after the skill usage in order to calculate all the variable properly
@@ -154,6 +155,11 @@ public class SkillAction extends AbilityAction<Hero> {
 
         // lets start the global cooldown
         getSource().addEffect(skill, GlobalCooldown.class);
+
+        // run ambient stuff
+        for (AmbientEffect ambientEffect : getSkill().getAmbientEffects(AbilityEffectStage.CASTED)) {
+            ambientEffect.run(getSource().getEntity().getLocation());
+        }
 
         getSource().setLastAction(this);
         RaidCraft.callEvent(new PlayerCastSkillEvent(this));

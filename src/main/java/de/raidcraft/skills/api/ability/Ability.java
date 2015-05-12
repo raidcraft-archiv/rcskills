@@ -84,6 +84,8 @@ public interface Ability<T extends CharacterTemplate> {
 
     List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage, CharacterTemplate target);
 
+    List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage, Location target);
+
     void executeAmbientEffects(AbilityEffectStage stage, Location location);
 
     /**

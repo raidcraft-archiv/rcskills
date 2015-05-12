@@ -162,6 +162,16 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return effects;
     }
 
+    @Override
+    public List<AmbientEffect> getAmbientEffects(AbilityEffectStage stage, Location target) {
+
+        List<AmbientEffect> effects = getAmbientEffects(stage);
+        effects.stream()
+                .filter(effect -> effect instanceof CustomAmbientEffect)
+                .forEach(effect -> ((CustomAmbientEffect) effect).setLocationTarget(target));
+        return effects;
+    }
+
     public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.getEffect(eClass, this);

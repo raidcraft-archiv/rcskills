@@ -87,7 +87,7 @@ public class AbilityAction<S extends CharacterTemplate> extends AbstractAction<S
         // substract the usage costs
         ability.substractUsageCost(this);
         // run ambient stuff
-        for (AmbientEffect ambientEffect : getAbility().getAmbientEffects(AbilityEffectStage.CAST)) {
+        for (AmbientEffect ambientEffect : getAbility().getAmbientEffects(AbilityEffectStage.CASTED)) {
             ambientEffect.run(getSource().getEntity().getLocation());
         }
 

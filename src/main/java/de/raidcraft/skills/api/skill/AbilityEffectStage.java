@@ -9,6 +9,7 @@ public enum AbilityEffectStage {
 
     CASTING,
     CAST,
+    CASTED,
     LINE,
     IMPACT,
     HIT,
