@@ -53,13 +53,8 @@ public class SimpleProfession extends AbstractProfession {
 
         CylinderEffect effect = new CylinderEffect(AmbientManager.getEffectManager());
         effect.setEntity(getHero().getEntity());
-        effect.height = 2;
         effect.particle = ParticleEffect.FLAME;
         effect.solid = true;
-        effect.delay = 5;
-        effect.angularVelocityY = 2;
-        effect.radius = 1;
-        effect.period = 30;
         effect.run();
         // lets update the max health
         getHero().recalculateHealth();
