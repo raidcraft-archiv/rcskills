@@ -372,7 +372,7 @@ public final class CombatManager implements Listener, Triggered {
                     CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
                     if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
                         ((Hero) source).sendMessage(ChatColor.RED
-                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
+                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu kï¿½nnen.");
                         event.setCancelled(true);
                     }
                 }
