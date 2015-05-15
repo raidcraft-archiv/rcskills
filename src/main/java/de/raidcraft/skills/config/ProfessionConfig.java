@@ -1,8 +1,7 @@
 package de.raidcraft.skills.config;
 
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.WeaponType;
@@ -159,12 +158,7 @@ public class ProfessionConfig extends ConfigurationBase<SkillsPlugin> implements
     @Override
     public List<Requirement<Player>> loadRequirements(Profession profession) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(profession.getName(), getConfigurationSection("requirements"), Player.class);
-        } catch (RequirementException e) {
-            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
-        }
-        return new ArrayList<>();
+        return ActionAPI.createRequirements(profession.getName(), getConfigurationSection("requirements"), Player.class);
     }
 
     @Override

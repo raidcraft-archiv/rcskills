@@ -1,9 +1,8 @@
 package de.raidcraft.skills.config;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.ambient.AmbientManager;
 import de.raidcraft.api.ambient.UnknownAmbientEffect;
@@ -204,23 +203,13 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     @Override
     public List<Requirement<Player>> loadRequirements(Skill skill) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(skill.getName(), getConfigurationSection("requirements"), Player.class);
-        } catch (RequirementException e) {
-            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
-        }
-        return new ArrayList<>();
+        return ActionAPI.createRequirements(skill.getName(), getConfigurationSection("requirements"), Player.class);
     }
 
     @Override
     public List<Requirement<Player>> loadUseRequirements(Skill skill) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(skill.getName(), getConfigurationSection("use-requirements"), Player.class);
-        } catch (RequirementException e) {
-            getPlugin().getLogger().warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(this));
-        }
-        return new ArrayList<>();
+        return ActionAPI.createRequirements(skill.getName(), getConfigurationSection("use-requirements"), Player.class);
     }
 
     @Override
