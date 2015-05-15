@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TriggerHandler {
 
-    public TriggerPriority priority() default TriggerPriority.NORMAL;
+    TriggerPriority priority() default TriggerPriority.NORMAL;
 
-    public boolean ignoreCancelled() default false;
+    boolean ignoreCancelled() default false;
 
-    public boolean filterTargets() default true;
+    boolean filterTargets() default true;
 }

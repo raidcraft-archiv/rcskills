@@ -3,7 +3,7 @@ package de.raidcraft.skills.config;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.api.ambient.AmbientManager;
 import de.raidcraft.api.ambient.UnknownAmbientEffect;

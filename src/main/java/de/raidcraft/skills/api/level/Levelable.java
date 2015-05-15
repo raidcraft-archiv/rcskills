@@ -5,23 +5,23 @@ package de.raidcraft.skills.api.level;
  */
 public interface Levelable<T extends Levelable> {
 
-    public String getName();
+    String getName();
 
-    public AttachedLevel<T> getAttachedLevel();
+    AttachedLevel<T> getAttachedLevel();
 
-    public void attachLevel(AttachedLevel<T> attachedLevel);
+    void attachLevel(AttachedLevel<T> attachedLevel);
 
-    public int getMaxLevel();
+    int getMaxLevel();
 
-    public void onExpGain(int exp);
+    void onExpGain(int exp);
 
-    public void onExpLoss(int exp);
+    void onExpLoss(int exp);
 
-    public void onLevelGain();
+    void onLevelGain();
 
-    public void onLevelLoss();
+    void onLevelLoss();
 
-    public boolean isMastered();
+    boolean isMastered();
 
-    public void saveLevelProgress(AttachedLevel<T> attachedLevel);
+    void saveLevelProgress(AttachedLevel<T> attachedLevel);
 }

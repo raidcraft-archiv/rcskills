@@ -5,9 +5,9 @@ package de.raidcraft.skills.api.effect;
  */
 public interface Stackable {
 
-    public int getStacks();
+    int getStacks();
 
-    public void setStacks(int stacks);
+    void setStacks(int stacks);
 
-    public int getMaxStacks();
+    int getMaxStacks();
 }

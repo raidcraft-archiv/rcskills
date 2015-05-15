@@ -8,25 +8,25 @@ import de.raidcraft.skills.api.combat.EffectType;
  */
 public interface Attribute {
 
-    public String getName();
+    String getName();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public AttributeType getType();
+    AttributeType getType();
 
-    public Hero getHero();
+    Hero getHero();
 
-    public int getBaseValue();
+    int getBaseValue();
 
-    public void setBaseValue(int value);
+    void setBaseValue(int value);
 
-    public int getCurrentValue();
+    int getCurrentValue();
 
-    public void setCurrentValue(int value);
+    void setCurrentValue(int value);
 
-    public void addValue(int value);
+    void addValue(int value);
 
-    public void removeValue(int value);
+    void removeValue(int value);
 
-    public double getBonusDamage(EffectType type);
+    double getBonusDamage(EffectType type);
 }

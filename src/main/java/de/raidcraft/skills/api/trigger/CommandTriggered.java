@@ -8,5 +8,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface CommandTriggered {
 
-    public void runCommand(CommandContext args) throws CombatException;
+    void runCommand(CommandContext args) throws CombatException;
 }

@@ -7,11 +7,11 @@ import org.bukkit.event.Cancellable;
  */
 public interface TargetedAction<S, T> extends Action<S>, Cancellable {
 
-    public T getTarget();
+    T getTarget();
 
-    public void setTarget(T target);
+    void setTarget(T target);
 
-    public double getThreat();
+    double getThreat();
 
-    public void combatLog(Object o, String message);
+    void combatLog(Object o, String message);
 }

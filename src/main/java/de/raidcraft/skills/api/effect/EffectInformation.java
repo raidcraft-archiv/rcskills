@@ -15,19 +15,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EffectInformation {
 
-    public String name();
+    String name();
 
-    public String description();
+    String description();
 
-    public String[] configUsage() default {};
+    String[] configUsage() default {};
 
-    public EffectType[] types() default {};
+    EffectType[] types() default {};
 
-    public EffectElement[] elements() default {};
+    EffectElement[] elements() default {};
 
-    public DiminishingReturnType diminishingReturn() default DiminishingReturnType.NULL;
+    DiminishingReturnType diminishingReturn() default DiminishingReturnType.NULL;
 
-    public double priority() default 0.0;
+    double priority() default 0.0;
 
-    public boolean global() default false;
+    boolean global() default false;
 }

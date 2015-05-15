@@ -7,9 +7,9 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
  */
 public interface HealthDisplay {
 
-    public CharacterTemplate getCharacter();
+    CharacterTemplate getCharacter();
 
-    public void refresh();
+    void refresh();
 
-    public void remove();
+    void remove();
 }

@@ -20,39 +20,39 @@ import java.util.Set;
  */
 public interface ProfessionProperties {
 
-    public String getName();
+    String getName();
 
-    public String getTag();
+    String getTag();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public String getDescription();
+    String getDescription();
 
-    public ChatColor getColor();
+    ChatColor getColor();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public Profession getParentProfession(Hero hero);
+    Profession getParentProfession(Hero hero);
 
-    public LevelFormula getLevelFormula();
+    LevelFormula getLevelFormula();
 
-    public int getMaxLevel();
+    int getMaxLevel();
 
-    public ConfigurationSection getBaseHealth();
+    ConfigurationSection getBaseHealth();
 
-    public Set<String> getResources();
+    Set<String> getResources();
 
-    public ConfigurationSection getResourceConfig(String type);
+    ConfigurationSection getResourceConfig(String type);
 
-    public ConfigurationSection getExpMoneyConversionRate();
+    ConfigurationSection getExpMoneyConversionRate();
 
-    public Map<String, Skill> loadSkills(Profession profession);
+    Map<String, Skill> loadSkills(Profession profession);
 
-    public List<Requirement<Player>> loadRequirements(Profession profession);
+    List<Requirement<Player>> loadRequirements(Profession profession);
 
-    public List<Profession> loadChildren(Profession profession);
+    List<Profession> loadChildren(Profession profession);
 
-    public Map<WeaponType, Integer> getAllowedWeapons();
+    Map<WeaponType, Integer> getAllowedWeapons();
 
-    public Map<ArmorType, Integer> getAllowedArmor();
+    Map<ArmorType, Integer> getAllowedArmor();
 }

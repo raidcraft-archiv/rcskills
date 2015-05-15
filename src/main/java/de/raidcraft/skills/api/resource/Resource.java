@@ -12,59 +12,59 @@ import java.util.Set;
  */
 public interface Resource {
 
-    public Hero getHero();
+    Hero getHero();
 
-    public Profession getProfession();
+    Profession getProfession();
 
-    public ConfigurationSection getConfig();
+    ConfigurationSection getConfig();
 
-    public Set<VisualResourceType> getTypes();
+    Set<VisualResourceType> getTypes();
 
-    public String getName();
+    String getName();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public double getDefault();
+    double getDefault();
 
-    public double getMin();
+    double getMin();
 
-    public boolean isMin();
+    boolean isMin();
 
-    public double getCurrent();
+    double getCurrent();
 
-    public void setCurrent(double current);
+    void setCurrent(double current);
 
-    public double getBaseValue();
+    double getBaseValue();
 
-    public double getPercentage();
+    double getPercentage();
 
-    public double getMax();
+    double getMax();
 
-    public boolean isMax();
+    boolean isMax();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
-    public long getRegenInterval();
+    long getRegenInterval();
 
-    public void setRegenInterval(long interval);
+    void setRegenInterval(long interval);
 
-    public double getRegenValue();
+    double getRegenValue();
 
-    public void setRegenValue(double percent);
+    void setRegenValue(double percent);
 
-    public long getRegenUseageDelay();
+    long getRegenUseageDelay();
 
-    public void setRegenUseageDelay(long delay);
+    void setRegenUseageDelay(long delay);
 
-    public void regen();
+    void regen();
 
-    public void destroy();
+    void destroy();
 
-    public void save();
+    void save();
 
-    public enum Type {
+    enum Type {
 
         PERCENTAGE,
         FLAT;

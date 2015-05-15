@@ -5,9 +5,9 @@ package de.raidcraft.skills.api.inheritance;
  */
 public interface Child<T extends Parent> {
 
-    public boolean hasParent();
+    boolean hasParent();
 
-    public T getParent();
+    T getParent();
 
     void setParent(T parent);
 }

@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface Parent<T extends Child> {
 
-    public Path getPath();
+    Path getPath();
 
-    public boolean hasChildren();
+    boolean hasChildren();
 
-    public List<T> getChildren();
+    List<T> getChildren();
 }

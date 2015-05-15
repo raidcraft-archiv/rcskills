@@ -10,11 +10,11 @@ import java.util.List;
  */
 public interface Path<T extends Parent> {
 
-    public String getName();
+    String getName();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public int getPriority();
+    int getPriority();
 
     /**
      * Counts together the current levels of all active professions in the path.
@@ -22,11 +22,11 @@ public interface Path<T extends Parent> {
      *
      * @return sum of levels for all active professions in the path
      */
-    public int getTotalPathLevel(Hero hero);
+    int getTotalPathLevel(Hero hero);
 
-    public boolean isSelectedInCombat();
+    boolean isSelectedInCombat();
 
-    public boolean isSelectedOutOfCombat();
+    boolean isSelectedOutOfCombat();
 
     /**
      * Will return a list of the very first parents.
@@ -36,12 +36,12 @@ public interface Path<T extends Parent> {
      *
      * @return root parents from which more childs fork off
      */
-    public List<T> getParents(Hero hero);
+    List<T> getParents(Hero hero);
 
     /**
      * Gets a list of all the parents names.
      *
      * @return list of names defined in the config
      */
-    public List<String> getParents();
+    List<String> getParents();
 }

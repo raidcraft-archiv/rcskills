@@ -5,5 +5,5 @@ package de.raidcraft.skills.api.resource;
  */
 public interface VisualResource {
 
-    public void update(Resource resource);
+    void update(Resource resource);
 }

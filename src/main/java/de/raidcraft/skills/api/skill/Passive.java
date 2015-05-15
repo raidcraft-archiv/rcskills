@@ -7,5 +7,5 @@ package de.raidcraft.skills.api.skill;
  */
 public interface Passive {
 
-    public void tick();
+    void tick();
 }

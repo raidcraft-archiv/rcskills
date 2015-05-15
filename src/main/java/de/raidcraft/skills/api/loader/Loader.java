@@ -22,9 +22,9 @@ import java.util.Collection;
 
 public interface Loader<T> {
 
-    public Class<T> getRequiredClass();
+    Class<T> getRequiredClass();
 
-    public boolean isClass(Class<?> clazz);
+    boolean isClass(Class<?> clazz);
 
-    public Collection<Class<? extends T>> loadClasses();
+    Collection<Class<? extends T>> loadClasses();
 }

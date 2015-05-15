@@ -7,5 +7,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Callback<T> {
 
-    public void run(T trigger) throws CombatException;
+    void run(T trigger) throws CombatException;
 }

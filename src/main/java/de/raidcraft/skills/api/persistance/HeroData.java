@@ -8,19 +8,19 @@ import java.util.UUID;
  */
 public interface HeroData {
 
-    public int getId();
+    int getId();
 
-    public UUID getPlayerId();
+    UUID getPlayerId();
 
-    public String getSelectedProfession();
+    String getSelectedProfession();
 
-    public double getHealth();
+    double getHealth();
 
-    public int getMaxLevel();
+    int getMaxLevel();
 
-    public List<String> getProfessionNames();
+    List<String> getProfessionNames();
 
-    public LevelData getLevelData();
+    LevelData getLevelData();
 
-    public LevelData getExpPool();
+    LevelData getExpPool();
 }

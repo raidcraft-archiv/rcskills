@@ -16,19 +16,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SkillInformation {
 
-    public String name();
+    String name();
 
-    public String description();
+    String description();
 
-    public String[] configUsage() default {};
+    String[] configUsage() default {};
 
-    public Class<? extends Effect>[] effects() default {};
+    Class<? extends Effect>[] effects() default {};
 
-    public EffectType[] types() default {};
+    EffectType[] types() default {};
 
-    public EffectElement[] elements() default {};
+    EffectElement[] elements() default {};
 
-    public boolean triggerCombat() default false;
+    boolean triggerCombat() default false;
 
-    public boolean queuedAttack() default false;
+    boolean queuedAttack() default false;
 }

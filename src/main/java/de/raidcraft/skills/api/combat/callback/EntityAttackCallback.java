@@ -9,5 +9,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 public interface EntityAttackCallback extends Callback<EntityAttack> {
 
     @Override
-    public void run(EntityAttack attack) throws CombatException;
+    void run(EntityAttack attack) throws CombatException;
 }

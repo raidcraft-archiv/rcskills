@@ -7,13 +7,13 @@ import org.bukkit.scheduler.BukkitTask;
  */
 public interface Scheduled extends Runnable {
 
-    public BukkitTask getTask();
+    BukkitTask getTask();
 
-    public void setTask(BukkitTask task);
+    void setTask(BukkitTask task);
 
-    public boolean isStarted();
+    boolean isStarted();
 
-    public void startTask();
+    void startTask();
 
-    public void stopTask();
+    void stopTask();
 }

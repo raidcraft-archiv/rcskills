@@ -24,21 +24,21 @@ public interface AbilityProperties<T> extends ConfigurationSection {
 
     String[] getUsage();
 
-    public int getOverrideInt(String key, int def);
+    int getOverrideInt(String key, int def);
 
-    public double getOverrideDouble(String key, double def);
+    double getOverrideDouble(String key, double def);
 
-    public String getOverrideString(String key, String def);
+    String getOverrideString(String key, String def);
 
-    public boolean getOverrideBool(String key, boolean def);
+    boolean getOverrideBool(String key, boolean def);
 
-    public ConfigurationSection getOverrideSection(String path);
+    ConfigurationSection getOverrideSection(String path);
 
-    public DataMap getOverrideConfig();
+    DataMap getOverrideConfig();
 
-    public void setOverrideConfig(DataMap override);
+    void setOverrideConfig(DataMap override);
 
-    public ConfigurationSection getSafeConfigSection(String path);
+    ConfigurationSection getSafeConfigSection(String path);
 
     boolean isEnabled();
 
@@ -50,11 +50,11 @@ public interface AbilityProperties<T> extends ConfigurationSection {
 
     boolean canUseOutOfCombat();
 
-    public Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects();
+    Map<AbilityEffectStage, List<AmbientEffect>> getAmbientEffects();
 
-    public Set<EffectType> getTypes();
+    Set<EffectType> getTypes();
 
-    public Set<EffectElement> getElements();
+    Set<EffectElement> getElements();
 
     ConfigurationSection getData();
 

@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Action<T> {
 
-    public T getSource();
+    T getSource();
 
-    public void run() throws CombatException;
+    void run() throws CombatException;
 }

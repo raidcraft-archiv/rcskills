@@ -5,5 +5,5 @@ package de.raidcraft.skills.api.level.forumla;
  */
 public interface LevelFormula {
 
-    public int getNeededExpForLevel(int level);
+    int getNeededExpForLevel(int level);
 }

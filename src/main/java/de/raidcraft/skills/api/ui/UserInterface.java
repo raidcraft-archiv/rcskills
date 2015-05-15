@@ -8,17 +8,17 @@ import de.raidcraft.skills.api.hero.Hero;
  */
 public interface UserInterface {
 
-    public Hero getHero();
+    Hero getHero();
 
-    public void removeSidebarScore(String name);
+    void removeSidebarScore(String name);
 
-    public void updateSidebarScore(String name, int score);
+    void updateSidebarScore(String name, int score);
 
-    public void addEffect(Effect effect, int duration);
+    void addEffect(Effect effect, int duration);
 
-    public void renewEffect(Effect effect, int duration);
+    void renewEffect(Effect effect, int duration);
 
-    public void removeEffect(Effect effect);
+    void removeEffect(Effect effect);
 
-    public void refresh();
+    void refresh();
 }

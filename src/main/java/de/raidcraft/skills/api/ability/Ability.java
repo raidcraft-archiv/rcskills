@@ -20,9 +20,9 @@ import java.util.Set;
  */
 public interface Ability<T extends CharacterTemplate> {
 
-    public T getHolder();
+    T getHolder();
 
-    public AbilityProperties getProperties();
+    AbilityProperties getProperties();
 
     void load(ConfigurationSection data);
 

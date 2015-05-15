@@ -5,5 +5,5 @@ package de.raidcraft.skills.api.effect;
  */
 public interface Debuff {
 
-    public String displayDebuff();
+    String displayDebuff();
 }

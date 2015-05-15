@@ -18,27 +18,27 @@ import java.util.Set;
  */
 public interface SkillProperties extends AbilityProperties<SkillInformation> {
 
-    public List<Requirement<Player>> loadRequirements(Skill skill);
+    List<Requirement<Player>> loadRequirements(Skill skill);
 
-    public List<Requirement<Player>> loadUseRequirements(Skill skill);
+    List<Requirement<Player>> loadUseRequirements(Skill skill);
 
-    public ItemStack[] getReagents();
+    ItemStack[] getReagents();
 
-    public Set<Skill> getLinkedSkills(Hero hero);
+    Set<Skill> getLinkedSkills(Hero hero);
 
-    public boolean isHidden();
+    boolean isHidden();
 
-    public boolean isCastable();
+    boolean isCastable();
 
-    public LevelFormula getLevelFormula();
+    LevelFormula getLevelFormula();
 
-    public int getMaxLevel();
+    int getMaxLevel();
 
-    public ConfigurationSection getResourceCost(String resource);
+    ConfigurationSection getResourceCost(String resource);
 
-    public int getRequiredLevel();
+    int getRequiredLevel();
 
-    public ConfigurationSection getUseExp();
+    ConfigurationSection getUseExp();
 
-    public Set<WeaponType> getRequiredWeapons();
+    Set<WeaponType> getRequiredWeapons();
 }

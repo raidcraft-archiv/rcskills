@@ -10,31 +10,31 @@ import java.util.Set;
  */
 public interface Party {
 
-    public CharacterTemplate getOwner();
+    CharacterTemplate getOwner();
 
-    public void setOwner(CharacterTemplate owner);
+    void setOwner(CharacterTemplate owner);
 
-    public boolean isOwner(CharacterTemplate character);
+    boolean isOwner(CharacterTemplate character);
 
-    public void sendMessage(String... msg);
+    void sendMessage(String... msg);
 
-    public Set<CharacterTemplate> getMembers();
+    Set<CharacterTemplate> getMembers();
 
-    public Set<Hero> getHeroes();
+    Set<Hero> getHeroes();
 
-    public void addMember(CharacterTemplate member);
+    void addMember(CharacterTemplate member);
 
-    public void inviteMember(Hero hero);
+    void inviteMember(Hero hero);
 
-    public boolean isInvited(Hero hero);
+    boolean isInvited(Hero hero);
 
-    public void removeMember(CharacterTemplate member);
+    void removeMember(CharacterTemplate member);
 
-    public void kickMember(Hero hero);
+    void kickMember(Hero hero);
 
-    public void dispandParty();
+    void dispandParty();
 
-    public boolean contains(CharacterTemplate member);
+    boolean contains(CharacterTemplate member);
 
-    public <S> void heal(S source, int amount);
+    <S> void heal(S source, int amount);
 }

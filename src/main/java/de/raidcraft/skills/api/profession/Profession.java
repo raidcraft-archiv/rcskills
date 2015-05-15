@@ -18,39 +18,39 @@ import java.util.Set;
  */
 public interface Profession extends Levelable<Profession>, Comparable<Profession>, Parent<Profession>, Child<Profession>, RequirementResolver<Player> {
 
-    public int getId();
+    int getId();
 
-    public String getName();
+    String getName();
 
-    public boolean isMastered();
+    boolean isMastered();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public Hero getHero();
+    Hero getHero();
 
-    public boolean isActive();
+    boolean isActive();
 
-    public void setActive(boolean active);
+    void setActive(boolean active);
 
-    public Set<Resource> getResources();
+    Set<Resource> getResources();
 
-    public ProfessionProperties getProperties();
+    ProfessionProperties getProperties();
 
-    public Collection<Skill> getSkills();
+    Collection<Skill> getSkills();
 
-    public void addSkill(Skill skill);
+    void addSkill(Skill skill);
 
-    public void removeSkill(Skill skill);
+    void removeSkill(Skill skill);
 
-    public void save();
+    void save();
 
-    public void checkSkillsForUnlock();
+    void checkSkillsForUnlock();
 
-    public boolean hasSkill(String id);
+    boolean hasSkill(String id);
 
-    public Skill getSkill(String id);
+    Skill getSkill(String id);
 
-    public int getTotalMaxLevel();
+    int getTotalMaxLevel();
 
-    public int getTotalLevel();
+    int getTotalLevel();
 }

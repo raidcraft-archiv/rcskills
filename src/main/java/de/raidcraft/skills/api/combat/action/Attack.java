@@ -15,43 +15,43 @@ import java.util.Set;
  */
 public interface Attack<S, T> extends TargetedAction<S, T> {
 
-    public double getDamage();
+    double getDamage();
 
-    public void setDamage(double damage);
+    void setDamage(double damage);
 
-    public boolean hasKnockback();
+    boolean hasKnockback();
 
-    public void setKnockback(boolean knockback);
+    void setKnockback(boolean knockback);
 
-    public default EntityDamageEvent.DamageCause getCause() {
+    default EntityDamageEvent.DamageCause getCause() {
 
         return EntityDamageEvent.DamageCause.CUSTOM;
     }
 
-    public Set<EffectElement> getAttackElements();
+    Set<EffectElement> getAttackElements();
 
-    public void addAttackElement(Collection<EffectElement> elements);
+    void addAttackElement(Collection<EffectElement> elements);
 
-    public boolean isOfAttackElement(EffectElement element);
+    boolean isOfAttackElement(EffectElement element);
 
-    public Set<EffectType> getAttackTypes();
+    Set<EffectType> getAttackTypes();
 
-    public void addAttackTypes(EffectType... type);
+    void addAttackTypes(EffectType... type);
 
-    public boolean isOfAttackType(EffectType type);
+    boolean isOfAttackType(EffectType type);
 
-    public Set<CustomItemStack> getWeapons();
+    Set<CustomItemStack> getWeapons();
 
-    public void addWeapon(CustomItemStack weapon);
+    void addWeapon(CustomItemStack weapon);
 
-    public void addWeapons(Collection<CustomItemStack> weapons);
+    void addWeapons(Collection<CustomItemStack> weapons);
 
-    public AttackSource getAttackSource();
+    AttackSource getAttackSource();
 
-    public boolean hasSource(AttackSource source);
+    boolean hasSource(AttackSource source);
 
-    public CharacterTemplate getAttacker();
+    CharacterTemplate getAttacker();
 
-    public boolean isAttacker(CharacterTemplate source);
+    boolean isAttacker(CharacterTemplate source);
 
 }

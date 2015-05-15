@@ -8,5 +8,5 @@ import org.bukkit.event.EventException;
  */
 public interface TriggerExecutor {
 
-    public void execute(Triggered listener, Trigger trigger) throws CombatException, EventException;
+    void execute(Triggered listener, Trigger trigger) throws CombatException, EventException;
 }

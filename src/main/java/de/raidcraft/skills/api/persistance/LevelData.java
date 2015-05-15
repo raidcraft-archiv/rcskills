@@ -5,7 +5,7 @@ package de.raidcraft.skills.api.persistance;
  */
 public interface LevelData {
 
-    public int getLevel();
+    int getLevel();
 
-    public int getExp();
+    int getExp();
 }

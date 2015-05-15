@@ -20,43 +20,43 @@ import java.util.List;
 @IgnoredEffect
 public interface Effect<S> {
 
-    public String getName();
+    String getName();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public String getDescription();
+    String getDescription();
 
-    public EffectType[] getTypes();
+    EffectType[] getTypes();
 
-    public EffectElement[] getElements();
+    EffectElement[] getElements();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
-    public int getDamage();
+    int getDamage();
 
-    public boolean isOfType(EffectType type);
+    boolean isOfType(EffectType type);
 
-    public boolean isOfAnyType(EffectType... types);
+    boolean isOfAnyType(EffectType... types);
 
-    public double getPriority();
+    double getPriority();
 
-    public void setPriority(double priority);
+    void setPriority(double priority);
 
-    public S getSource();
+    S getSource();
 
-    public CharacterTemplate getTarget();
+    CharacterTemplate getTarget();
 
-    public void executeAmbientEffects(EffectEffectStage stage, Location location);
+    void executeAmbientEffects(EffectEffectStage stage, Location location);
 
-    public List<AmbientEffect> getAmbientEffects(EffectEffectStage stage);
+    List<AmbientEffect> getAmbientEffects(EffectEffectStage stage);
 
-    public void load(ConfigurationSection data);
+    void load(ConfigurationSection data);
 
-    public void apply() throws CombatException;
+    void apply() throws CombatException;
 
-    public void remove() throws CombatException;
+    void remove() throws CombatException;
 
-    public void renew() throws CombatException;
+    void renew() throws CombatException;
 }

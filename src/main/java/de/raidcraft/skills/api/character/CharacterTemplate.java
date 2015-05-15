@@ -28,59 +28,59 @@ import java.util.UUID;
  */
 public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
-    public default UUID getUniqueId() {
+    default UUID getUniqueId() {
 
         return getEntity().getUniqueId();
     }
 
-    public String getName();
+    String getName();
 
-    public void updateEntity(LivingEntity entity);
+    void updateEntity(LivingEntity entity);
 
-    public LivingEntity getEntity();
+    LivingEntity getEntity();
 
-    public CharacterType getCharacterType();
+    CharacterType getCharacterType();
 
-    public ThreatTable getThreatTable();
+    ThreatTable getThreatTable();
 
-    public Combat getLastCombat();
+    Combat getLastCombat();
 
-    public Attack getLastDamageCause();
+    Attack getLastDamageCause();
 
     @Nullable
-    public Action<? extends CharacterTemplate> getLastAction();
+    Action<? extends CharacterTemplate> getLastAction();
 
-    public void setLastAction(Action<? extends CharacterTemplate> action);
+    void setLastAction(Action<? extends CharacterTemplate> action);
 
-    public CustomItemStack getWeapon(EquipmentSlot slot);
+    CustomItemStack getWeapon(EquipmentSlot slot);
 
-    public Collection<CustomItemStack> getWeapons();
+    Collection<CustomItemStack> getWeapons();
 
-    public boolean hasWeapon(EquipmentSlot slot);
+    boolean hasWeapon(EquipmentSlot slot);
 
-    public boolean hasWeaponsEquiped();
+    boolean hasWeaponsEquiped();
 
-    public void setWeapon(CustomItemStack weapon);
+    void setWeapon(CustomItemStack weapon);
 
-    public CustomItemStack removeWeapon(EquipmentSlot slot);
+    CustomItemStack removeWeapon(EquipmentSlot slot);
 
-    public void clearWeapons();
+    void clearWeapons();
 
     boolean canAttack();
 
-    public int getWeaponDamage(EquipmentSlot slot);
+    int getWeaponDamage(EquipmentSlot slot);
 
-    public int getTotalWeaponDamage();
+    int getTotalWeaponDamage();
 
-    public boolean canSwing(EquipmentSlot slot);
+    boolean canSwing(EquipmentSlot slot);
 
-    public int swingWeapons();
+    int swingWeapons();
 
-    public int swingWeapon(EquipmentSlot slot);
+    int swingWeapon(EquipmentSlot slot);
 
-    public long getLastSwing(EquipmentSlot slot);
+    long getLastSwing(EquipmentSlot slot);
 
-    public void setLastSwing(EquipmentSlot slot);
+    void setLastSwing(EquipmentSlot slot);
 
     Collection<CustomItemStack> getArmor();
 
@@ -104,86 +104,86 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     void leaveParty();
 
-    public double getDamage();
+    double getDamage();
 
-    public void setDamage(double damage);
+    void setDamage(double damage);
 
-    public void attachHealthDisplay(HealthDisplay display);
+    void attachHealthDisplay(HealthDisplay display);
 
-    public void removeHealthDisplay(HealthDisplay display);
+    void removeHealthDisplay(HealthDisplay display);
 
-    public void recalculateHealth();
+    void recalculateHealth();
 
-    public double getHealth();
+    double getHealth();
 
-    public void setHealth(double health);
+    void setHealth(double health);
 
-    public double getMaxHealth();
+    double getMaxHealth();
 
-    public void setMaxHealth(double maxHealth);
+    void setMaxHealth(double maxHealth);
 
-    public void increaseMaxHealth(double amount);
+    void increaseMaxHealth(double amount);
 
-    public void decreaseMaxHealth(double amount);
+    void decreaseMaxHealth(double amount);
 
-    public double getDefaultHealth();
+    double getDefaultHealth();
 
-    public void damage(Attack attack) throws CombatException;
+    void damage(Attack attack) throws CombatException;
 
-    public void heal(HealAction action);
+    void heal(HealAction action);
 
-    public default void remove() {
+    default void remove() {
         kill();
     }
 
-    public void kill(CharacterTemplate killer);
+    void kill(CharacterTemplate killer);
 
-    public void kill();
+    void kill();
 
-    public void setLastKill(CharacterTemplate lastKill);
+    void setLastKill(CharacterTemplate lastKill);
 
     @Nullable
-    public CharacterTemplate getLastKill();
+    CharacterTemplate getLastKill();
 
-    public boolean isFriendly(CharacterTemplate source);
+    boolean isFriendly(CharacterTemplate source);
 
-    public boolean isBehind(CharacterTemplate target);
+    boolean isBehind(CharacterTemplate target);
 
-    public <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException;
+    <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException;
 
-    public <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass) throws CombatException;
+    <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass) throws CombatException;
 
-    public <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException;
+    <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException;
 
-    public <E> void removeEffect(Class<E> eClass) throws CombatException;
+    <E> void removeEffect(Class<E> eClass) throws CombatException;
 
-    public <E> void removeEffect(Class<E> eClass, Object source) throws CombatException;
+    <E> void removeEffect(Class<E> eClass, Object source) throws CombatException;
 
-    public void removeEffect(Effect effect) throws CombatException;
+    void removeEffect(Effect effect) throws CombatException;
 
-    public <E extends Effect> boolean hasEffect(Class<E> eClass);
+    <E extends Effect> boolean hasEffect(Class<E> eClass);
 
-    public <E extends Effect> boolean hasEffect(Class<E> eClass, Object source);
+    <E extends Effect> boolean hasEffect(Class<E> eClass, Object source);
 
-    public <E extends Effect> List<E> getEffects(Class<E> eClass);
+    <E extends Effect> List<E> getEffects(Class<E> eClass);
 
-    public <E extends Effect> E getEffect(Class<E> eClass, Object source);
+    <E extends Effect> E getEffect(Class<E> eClass, Object source);
 
-    public boolean hasEffectType(EffectType type);
+    boolean hasEffectType(EffectType type);
 
-    public void removeEffectTypes(EffectType type) throws CombatException;
+    void removeEffectTypes(EffectType type) throws CombatException;
 
-    public List<Effect> getEffects();
+    List<Effect> getEffects();
 
-    public List<Effect> getEffects(EffectType... type);
+    List<Effect> getEffects(EffectType... type);
 
-    public void clearEffects();
+    void clearEffects();
 
-    public boolean isInCombat();
+    boolean isInCombat();
 
-    public void setInCombat(boolean inCombat);
+    void setInCombat(boolean inCombat);
 
-    public void triggerCombat(Object source) throws CombatException;
+    void triggerCombat(Object source) throws CombatException;
 
     CharacterTemplate getTarget(int range) throws CombatException;
 

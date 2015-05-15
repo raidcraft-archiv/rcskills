@@ -2,7 +2,7 @@ package de.raidcraft.skills.config;
 
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.WeaponType;

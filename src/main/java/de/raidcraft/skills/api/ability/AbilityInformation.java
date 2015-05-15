@@ -15,11 +15,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AbilityInformation {
 
-    public String name();
+    String name();
 
-    public String description();
+    String description();
 
-    public EffectType[] types() default {};
+    EffectType[] types() default {};
 
-    public EffectElement[] elements() default {};
+    EffectElement[] elements() default {};
 }

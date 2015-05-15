@@ -7,5 +7,5 @@ import de.raidcraft.skills.api.exceptions.CombatException;
  */
 public interface Useable {
 
-    public void use() throws CombatException;
+    void use() throws CombatException;
 }

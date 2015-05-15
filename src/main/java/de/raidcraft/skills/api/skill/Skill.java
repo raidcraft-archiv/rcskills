@@ -15,38 +15,38 @@ import org.bukkit.entity.Player;
 @IgnoredSkill
 public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementResolver<Player> {
 
-    public int getId();
+    int getId();
 
-    public boolean isHidden();
+    boolean isHidden();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
     void checkUsage(SkillAction action) throws CombatException;
 
     void substractUsageCost(SkillAction action);
 
-    public Hero getHolder();
+    Hero getHolder();
 
-    public boolean isActive();
+    boolean isActive();
 
-    public boolean isUnlocked();
+    boolean isUnlocked();
 
-    public void unlock();
+    void unlock();
 
-    public void lock();
+    void lock();
 
-    public double getTotalResourceCost(String resource);
+    double getTotalResourceCost(String resource);
 
-    public int getUseExp();
+    int getUseExp();
 
-    public SkillProperties getSkillProperties();
+    SkillProperties getSkillProperties();
 
-    public Profession getProfession();
+    Profession getProfession();
 
-    public int getRequiredLevel();
+    int getRequiredLevel();
 
-    public void save();
+    void save();
 
 }

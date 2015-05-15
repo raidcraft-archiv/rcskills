@@ -13,31 +13,31 @@ import java.util.Map;
  */
 public interface EffectData {
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public String getActivateMessage();
+    String getActivateMessage();
 
-    public String getDeactivateMessage();
+    String getDeactivateMessage();
 
-    public String getRenewMessage();
+    String getRenewMessage();
 
-    public EffectInformation getInformation();
+    EffectInformation getInformation();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public ConfigurationSection getDataMap();
+    ConfigurationSection getDataMap();
 
-    public int getMaxStacks();
+    int getMaxStacks();
 
-    public double getEffectPriority();
+    double getEffectPriority();
 
-    public ConfigurationSection getEffectDuration();
+    ConfigurationSection getEffectDuration();
 
-    public ConfigurationSection getEffectDelay();
+    ConfigurationSection getEffectDelay();
 
-    public ConfigurationSection getEffectInterval();
+    ConfigurationSection getEffectInterval();
 
-    public ConfigurationSection getEffectDamage();
+    ConfigurationSection getEffectDamage();
 
-    public Map<EffectEffectStage, List<AmbientEffect>> getAmbientEffects();
+    Map<EffectEffectStage, List<AmbientEffect>> getAmbientEffects();
 }

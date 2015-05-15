@@ -7,11 +7,11 @@ import de.raidcraft.api.database.Bean;
  */
 public interface ResourceData extends Bean {
 
-    public int getId();
+    int getId();
 
-    public String getName();
+    String getName();
 
-    public double getValue();
+    double getValue();
 
-    public void setValue(double value);
+    void setValue(double value);
 }

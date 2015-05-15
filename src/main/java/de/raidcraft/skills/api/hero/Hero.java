@@ -25,107 +25,107 @@ import java.util.Set;
  */
 public interface Hero extends SkilledCharacter<Hero> {
 
-    public int getId();
+    int getId();
 
-    public Player getPlayer();
+    Player getPlayer();
 
-    public boolean isOnline();
+    boolean isOnline();
 
-    public AttachedLevel<Hero> getExpPool();
+    AttachedLevel<Hero> getExpPool();
 
-    public UserInterface getUserInterface();
+    UserInterface getUserInterface();
 
-    public Collection<Attribute> getAttributes();
+    Collection<Attribute> getAttributes();
 
-    public Attribute getAttribute(String attribute);
+    Attribute getAttribute(String attribute);
 
-    public Attribute getAttribute(ItemAttribute attribute);
+    Attribute getAttribute(ItemAttribute attribute);
 
-    public boolean isAllowedWeapon(WeaponType type);
+    boolean isAllowedWeapon(WeaponType type);
 
-    public boolean isAllowedArmor(ArmorType type);
+    boolean isAllowedArmor(ArmorType type);
 
     void checkWeapons();
 
-    public void checkArmor();
+    void checkArmor();
 
-    public Party getPendingPartyInvite();
+    Party getPendingPartyInvite();
 
-    public void setPendingPartyInvite(Party partyInvite);
+    void setPendingPartyInvite(Party partyInvite);
 
-    public int getAttributeValue(String attribute);
+    int getAttributeValue(String attribute);
 
-    public void setAttributeValue(String attribute, int value);
+    void setAttributeValue(String attribute, int value);
 
-    public HeroOptions getOptions();
+    HeroOptions getOptions();
 
-    public void debug(String message);
+    void debug(String message);
 
-    public void combatLog(String message);
+    void combatLog(String message);
 
-    public void combatLog(Object o, String message);
+    void combatLog(Object o, String message);
 
-    public boolean isPvPEnabled();
+    boolean isPvPEnabled();
 
     void setPvPEnabled(boolean enablePvP);
 
-    public long getLastCombatAction();
+    long getLastCombatAction();
 
-    public Resource getResource(String name);
+    Resource getResource(String name);
 
-    public boolean hasResource(String name);
+    boolean hasResource(String name);
 
-    public void attachResource(Resource resource);
+    void attachResource(Resource resource);
 
-    public Resource detachResource(String name);
+    Resource detachResource(String name);
 
-    public Set<Resource> getResources();
+    Set<Resource> getResources();
 
-    public Profession getHighestRankedProfession();
+    Profession getHighestRankedProfession();
 
-    public Profession getSelectedProfession();
+    Profession getSelectedProfession();
 
-    public Profession getVirtualProfession();
+    Profession getVirtualProfession();
 
-    public int getPlayerLevel();
+    int getPlayerLevel();
 
-    public boolean hasPath(Path path);
+    boolean hasPath(Path path);
 
-    public Set<Path<Profession>> getPaths();
+    Set<Path<Profession>> getPaths();
 
-    public Path<Profession> getPath(String name);
+    Path<Profession> getPath(String name);
 
-    public void changeProfession(Profession profession);
+    void changeProfession(Profession profession);
 
-    public List<Skill> getSkills();
+    List<Skill> getSkills();
 
-    public Skill getSkill(String name) throws UnknownSkillException;
+    Skill getSkill(String name) throws UnknownSkillException;
 
-    public List<Profession> getProfessions();
+    List<Profession> getProfessions();
 
-    public void saveProfessions();
+    void saveProfessions();
 
-    public void saveSkills();
+    void saveSkills();
 
-    public void save();
+    void save();
 
-    public boolean hasSkill(Skill skill);
+    boolean hasSkill(Skill skill);
 
-    public boolean hasSkill(String id);
+    boolean hasSkill(String id);
 
-    public boolean hasProfession(Profession profession);
+    boolean hasProfession(Profession profession);
 
-    public boolean hasProfession(String id);
+    boolean hasProfession(String id);
 
-    public Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
+    Profession getProfession(String id) throws UnknownSkillException, UnknownProfessionException;
 
-    public void sendMessage(String... messages);
+    void sendMessage(String... messages);
 
-    public void addSkill(Skill skill);
+    void addSkill(Skill skill);
 
-    public void removeSkill(Skill skill);
+    void removeSkill(Skill skill);
 
     void updatePermissions();
 
-    public BindManager getBindings();
+    BindManager getBindings();
 }

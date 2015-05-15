@@ -9,13 +9,13 @@ import java.util.List;
  */
 public interface SkilledCharacter<T extends CharacterTemplate> extends CharacterTemplate {
 
-    public List<Ability<T>> getAbilties();
+    List<Ability<T>> getAbilties();
 
-    public List<Ability<T>> getUseableAbilities();
+    List<Ability<T>> getUseableAbilities();
 
-    public void addAbility(Ability<T> ability);
+    void addAbility(Ability<T> ability);
 
-    public Ability<T> removeAbility(String name);
+    Ability<T> removeAbility(String name);
 
-    public Ability<T> getAbility(String name);
+    Ability<T> getAbility(String name);
 }

@@ -7,17 +7,17 @@ import de.raidcraft.skills.api.level.forumla.LevelFormula;
  */
 public interface AttachedLevel<T extends Levelable> {
 
-    public T getLevelObject();
+    T getLevelObject();
 
-    public int getLevel();
+    int getLevel();
 
-    public void setLevel(int level);
+    void setLevel(int level);
 
-    public int getMaxLevel();
+    int getMaxLevel();
 
-    public int getExp();
+    int getExp();
 
-    public void setExp(int exp);
+    void setExp(int exp);
 
     /**
      * Gets the level formula containing the information
@@ -25,14 +25,14 @@ public interface AttachedLevel<T extends Levelable> {
      *
      * @return formula to calculate exp
      */
-    public LevelFormula getFormula();
+    LevelFormula getFormula();
 
     /**
      * Gets the maximum amount of exp for this level.
      *
      * @return max exp for level
      */
-    public int getMaxExp();
+    int getMaxExp();
 
     /**
      * Calculates the total amount of exp needed to that level from level 0 and 0 exp.
@@ -41,7 +41,7 @@ public interface AttachedLevel<T extends Levelable> {
      *
      * @return total exp
      */
-    public int getTotalNeededExpForLevel(int level);
+    int getTotalNeededExpForLevel(int level);
 
     /**
      * Gets the exp needed to reach that level from the current level.
@@ -51,14 +51,14 @@ public interface AttachedLevel<T extends Levelable> {
      *
      * @return exp needed
      */
-    public int getNeededExpForLevel(int startLevel, int endLevel);
+    int getNeededExpForLevel(int startLevel, int endLevel);
 
-    public int getLevelAmountForExp(int exp);
+    int getLevelAmountForExp(int exp);
 
     /**
      * Calculates and sets the maxp exp for the current level.
      */
-    public void calculateMaxExp();
+    void calculateMaxExp();
 
     /**
      * Gets the amount of exp needed for the next level.
@@ -66,21 +66,21 @@ public interface AttachedLevel<T extends Levelable> {
      * @return exp needed for the next level
      * minus the one you already have
      */
-    public int getExpToNextLevel();
+    int getExpToNextLevel();
 
-    public void addExp(int exp);
+    void addExp(int exp);
 
-    public void addExp(int exp, boolean callEvent);
+    void addExp(int exp, boolean callEvent);
 
-    public void removeExp(int exp);
+    void removeExp(int exp);
 
-    public void removeExp(int exp, boolean callEvent);
+    void removeExp(int exp, boolean callEvent);
 
-    public void setExp(int exp, boolean callEvent);
+    void setExp(int exp, boolean callEvent);
 
-    public void addLevel(int level);
+    void addLevel(int level);
 
-    public void removeLevel(int level);
+    void removeLevel(int level);
 
     /**
      * Checks if the player can level.
@@ -88,9 +88,9 @@ public interface AttachedLevel<T extends Levelable> {
      *
      * @return true if player can level
      */
-    public boolean canLevel();
+    boolean canLevel();
 
-    public boolean hasReachedMaxLevel();
+    boolean hasReachedMaxLevel();
 
-    public void saveLevelProgress();
+    void saveLevelProgress();
 }
