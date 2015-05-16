@@ -343,6 +343,7 @@ public final class CombatManager implements Listener, Triggered {
             source.triggerCombat(source);
             // queue all ranged attacks to enable tracking of default attacks with projectiles
             RangedAttack<ProjectileCallback> rangedAttack = new RangedAttack<>(source, event);
+            rangedAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
             rangedAttack.addWeapons(source.getWeapons());
             new SourcedRangeCallback<>(rangedAttack).queueCallback();
         } catch (CombatException ignored) {
@@ -372,7 +373,7 @@ public final class CombatManager implements Listener, Triggered {
                     CustomWeapon customWeapon = CustomItemUtil.getWeapon(weapon);
                     if (customWeapon.getWeaponType().getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
                         ((Hero) source).sendMessage(ChatColor.RED
-                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu k�nnen.");
+                                + "Du musst Zweihand Waffen in deinen ersten Hotbarslot legen um sie benutzen zu können.");
                         event.setCancelled(true);
                     }
                 }
@@ -380,6 +381,7 @@ public final class CombatManager implements Listener, Triggered {
             source.triggerCombat(source);
             // queue all ranged attacks to enable tracking of default attacks with projectiles
             RangedAttack<ProjectileCallback> rangedAttack = new RangedAttack<>(source, ProjectileType.valueOf(event.getEntity()));
+            rangedAttack.addAttackTypes(EffectType.DEFAULT_ATTACK);
             rangedAttack.setProjectile(event.getEntity());
             new SourcedRangeCallback<>(rangedAttack).queueCallback();
         } catch (CombatException ignored) {
