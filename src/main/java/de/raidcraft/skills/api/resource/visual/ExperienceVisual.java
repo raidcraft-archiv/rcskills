@@ -14,6 +14,7 @@ public class ExperienceVisual implements VisualResource {
 
         Player player = resource.getHero().getPlayer();
         player.setExp((float) resource.getPercentage());
+        player.setLevel((int) resource.getCurrent());
         player.setTotalExperience(0);
     }
 }

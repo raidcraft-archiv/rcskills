@@ -197,7 +197,5 @@ public class BukkitUserInterface implements UserInterface {
     private void updateHealthDisplay() {
 
         Scoreboards.updateHealthDisplays();
-        // update what the player sees in his exp bar
-        getHero().getPlayer().setLevel((int) getHero().getHealth());
     }
 }
