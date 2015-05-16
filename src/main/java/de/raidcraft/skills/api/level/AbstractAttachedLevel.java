@@ -159,7 +159,7 @@ public abstract class AbstractAttachedLevel<T extends Levelable> implements Atta
     @Override
     public void addExp(int exp, boolean callEvent) {
 
-        if (getLevelObject().isMastered() || exp == 0) {
+        if (exp == 0) {
             return;
         }
         RCExpGainEvent event = new RCExpGainEvent(this, exp);
