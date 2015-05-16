@@ -148,7 +148,7 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // refresh the action bar
-        String msg = EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
+        String msg = ChatColor.DARK_RED + "HP: " + EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
                 + ChatColor.YELLOW + "/"
                 + ChatColor.GREEN + (int) hero.getMaxHealth();
         msg += renderProfessions(getHero());
