@@ -170,17 +170,18 @@ public class BukkitUserInterface implements UserInterface {
             }
         }
         if (primary != null) {
-            message = renderProfession(primary, message + ChatColor.DARK_PURPLE + "  |  ");
+            message = ChatColor.DARK_PURPLE + "  |  ";
+            message += renderProfession(primary);
         }
         if (secundary != null) {
-            message += renderProfession(secundary, message + ChatColor.DARK_PURPLE + "  |  ");
+            message += ChatColor.DARK_PURPLE + "  |  " + renderProfession(secundary);
         }
         return message;
     }
 
-    private String renderProfession(Profession profession, String message) {
+    private String renderProfession(Profession profession) {
 
-        message += profession.getProperties().getColor() + profession.getProperties().getTag()
+        return profession.getProperties().getColor() + profession.getProperties().getTag()
                 + ChatColor.DARK_PURPLE + " - "
                 + ChatColor.YELLOW + "LvL: "
                 + ChatColor.AQUA + profession.getAttachedLevel().getLevel()
@@ -191,7 +192,6 @@ public class BukkitUserInterface implements UserInterface {
                 + ChatColor.AQUA + profession.getAttachedLevel().getExp()
                 + ChatColor.YELLOW + "/"
                 + ChatColor.AQUA + profession.getAttachedLevel().getMaxExp();
-        return message;
     }
 
     private void updateHealthDisplay() {
