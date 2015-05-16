@@ -180,9 +180,9 @@ public class BukkitUserInterface implements UserInterface {
 
     private String renderProfession(Profession profession, String message) {
 
-        message += profession.getProperties().getColor() + profession.getFriendlyName()
+        message += profession.getProperties().getColor() + profession.getProperties().getTag()
                 + ChatColor.DARK_PURPLE + " - "
-                + ChatColor.YELLOW + "Level: "
+                + ChatColor.YELLOW + "LvL: "
                 + ChatColor.AQUA + profession.getAttachedLevel().getLevel()
                 + ChatColor.YELLOW + "/"
                 + ChatColor.AQUA + profession.getAttachedLevel().getMaxLevel()
