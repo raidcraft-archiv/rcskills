@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.util.EntityUtil;
+import de.raidcraft.util.ReflectionUtil;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import mkremins.fanciful.FancyMessage;
@@ -27,6 +28,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -346,5 +349,40 @@ public final class HeroUtil {
                 .collect(Collectors.toList()));
 
         return messages;
+    }
+
+    public static void sendActionBar(Player player, String message){
+
+        try {
+            Class<?> craftPlayer = ReflectionUtil.getNmsClass("org.bukkit.craftbukkit", "entity", "CraftPlayer");
+            Object p = craftPlayer.cast(player);
+            Object ppoc = null;
+            Class<?> playerOutChat = ReflectionUtil.getNmsClass("net.minecraft.server", "PacketPlayOutChat");
+            Class<?> packet = ReflectionUtil.getNmsClass("net.minecraft.server", "Packet");
+
+            String nmsver = Bukkit.getServer().getClass().getPackage().getName();
+            nmsver = nmsver.substring(nmsver.lastIndexOf(".") + 1);
+
+            if (nmsver.equalsIgnoreCase("v1_8_R1") || !nmsver.startsWith("v1_8_")) {
+                Class<?> chatSerializer = ReflectionUtil.getNmsClass("net.minecraft.server", "ChatSerializer");
+                Class<?> chatBaseComponent = ReflectionUtil.getNmsClass("net.minecraft.server", "IChatBaseComponent");
+                Method m3 = chatSerializer.getDeclaredMethod("a", new Class<?>[] {String.class});
+                Object cbc = chatBaseComponent.cast(m3.invoke(chatSerializer, "{\"text\": \"" + message + "\"}"));
+                ppoc = playerOutChat.getConstructor(new Class<?>[] {chatBaseComponent, byte.class}).newInstance(new Object[] {cbc, (byte) 2});
+            } else {
+                Class<?> chatComponentText = ReflectionUtil.getNmsClass("net.minecraft.server", "ChatComponentText");
+                Class<?> chatBaseComponent = ReflectionUtil.getNmsClass("net.minecraft.server", "IChatBaseComponent");
+                Object o = chatComponentText.getConstructor(new Class<?>[] {String.class}).newInstance(new Object[] {message});
+                ppoc = playerOutChat.getConstructor(new Class<?>[] {chatBaseComponent, byte.class}).newInstance(new Object[] {o, (byte) 2});
+            }
+            Method m1 = craftPlayer.getDeclaredMethod("getHandle", new Class<?>[] {});
+            Object handle = m1.invoke(p);
+            Field playerConnection = handle.getClass().getDeclaredField("playerConnection");
+            Object pc = playerConnection.get(handle);
+            Method m5 = pc.getClass().getDeclaredMethod("sendPacket",new Class<?>[] {packet});
+            m5.invoke(pc, ppoc);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

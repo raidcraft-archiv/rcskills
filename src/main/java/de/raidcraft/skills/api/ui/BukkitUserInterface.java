@@ -1,7 +1,5 @@
 package de.raidcraft.skills.api.ui;
 
-import com.comphenix.packetwrapper.WrapperPlayServerChat;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.Scoreboards;
 import de.raidcraft.skills.SkillsPlugin;
@@ -11,6 +9,7 @@ import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.EntityUtil;
 import org.bukkit.ChatColor;
@@ -149,14 +148,11 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // refresh the action bar
-        WrapperPlayServerChat chat = new WrapperPlayServerChat();
         String msg = EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
                 + ChatColor.YELLOW + "/"
                 + ChatColor.GREEN + (int) hero.getMaxHealth();
         msg += renderProfessions(getHero());
-        chat.setMessage(WrappedChatComponent.fromText(msg));
-        chat.setPosition((byte) CHAT_ACTION_POSITION);
-        chat.sendPacket(getHero().getPlayer());
+        HeroUtil.sendActionBar(getHero().getPlayer(), msg);
     }
 
     private String renderProfessions(Hero hero) {
