@@ -342,7 +342,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.addAttackElement(getElements());
-        attack.run();
         return attack;
     }
 
@@ -365,7 +364,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
         attack.addAttackElement(getElements());
-        attack.run();
         return attack;
     }
 
@@ -390,7 +388,6 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         magicalAttack.addAttackElement(getElements());
         magicalAttack.setImpactEffects(getAmbientEffects(AbilityEffectStage.IMPACT, target));
         magicalAttack.setLineEffects(getAmbientEffects(AbilityEffectStage.LINE, target));
-        magicalAttack.run();
         return magicalAttack;
     }
 
