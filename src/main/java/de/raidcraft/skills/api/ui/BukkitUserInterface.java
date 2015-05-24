@@ -17,6 +17,7 @@ import org.bukkit.scoreboard.Score;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,7 +116,7 @@ public class BukkitUserInterface implements UserInterface {
 
         if (Option.SIDEBAR_PARTY_HP.isSet(getHero())) {
             // lets update the sidebar display with the party information
-            Set<Map.Entry<CharacterTemplate, HealthDisplay>> entries = healthDisplays.entrySet();
+            Set<Map.Entry<CharacterTemplate, HealthDisplay>> entries = new HashSet<>(healthDisplays.entrySet());
             entries.stream().filter(entry -> !getHero().getParty().contains(entry.getKey()))
                     .forEach(entry -> {
                         entry.getValue().remove();
