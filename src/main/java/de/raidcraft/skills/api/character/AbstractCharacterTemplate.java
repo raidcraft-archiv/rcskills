@@ -939,7 +939,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
         for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
-            entry.values().stream().filter(effect -> effect.isOfType(type))
+            entry.values().stream().filter(effect -> effect.isOfType(type)).collect(Collectors.toList())
                     .forEach(effect -> {
                         try {
                             effect.remove();
