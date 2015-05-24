@@ -68,12 +68,7 @@ public class SkillsCommand {
             skills.addAll(plugin.getSkillManager().getAllSkills(hero));
             if (args.hasFlag('v')) skills.addAll(plugin.getSkillManager().getAllVirtualSkills(hero));
         } else if (args.hasFlag('v')) {
-            // only add virtual skills we have
-            for (Skill skill : hero.getSkills()) {
-                if (skill.getProfession().getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION)) {
-                    skills.add(skill);
-                }
-            }
+            skills.addAll(hero.getVirtualProfession().getSkills());
         } else {
             // lets get the skills the sender wants to have displayed
             skills.addAll(hero.getSkills());
