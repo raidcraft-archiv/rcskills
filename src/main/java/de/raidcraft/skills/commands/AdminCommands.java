@@ -635,10 +635,17 @@ public class AdminCommands {
                     .filter(dbSkill -> !loadedSkills.contains(dbSkill.getName()))
                     .collect(Collectors.toList());
             sender.sendMessage(ChatColor.DARK_RED + "The following skills would be deleted: ");
-            String distinctSkills = obsoleteSkills.stream().map(THeroSkill::getName).distinct().collect(Collectors.joining(","));
+            String distinctSkills = obsoleteSkills.stream()
+                    .map(THeroSkill::getName)
+                    .distinct()
+                    .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.YELLOW + distinctSkills);
             sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
-            String heroes = obsoleteSkills.stream().map(skill -> skill.getHero().getPlayer()).distinct().collect(Collectors.joining(","));
+            String heroes = obsoleteSkills.stream()
+                    .filter(tHeroSkill -> tHeroSkill.getHero() != null)
+                    .map(skill -> skill.getHero().getPlayer())
+                    .distinct()
+                    .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.AQUA + heroes);
             try {
                 new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteSkills);
