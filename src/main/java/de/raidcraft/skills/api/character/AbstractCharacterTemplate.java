@@ -938,18 +938,15 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        for (Map<Object, Effect> entry : new ArrayList<>(effects.values())) {
-            entry.values().stream().filter(effect -> effect.isOfType(type)).collect(Collectors.toList())
-                    .forEach(effect -> {
-                        try {
-                            effect.remove();
-                        } catch (CombatException e) {
-                            if (effect.getTarget() instanceof Hero) {
-                                ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
-                            }
-                        }
-                    });
-        }
+        effects.values().forEach(objectEffectMap -> objectEffectMap.values().stream().filter(effect -> effect.isOfType(type)).forEach(effect -> {
+            try {
+                effect.remove();
+            } catch (CombatException e) {
+                if (effect.getTarget() instanceof Hero) {
+                    ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
+        }));
     }
 
     @Override
