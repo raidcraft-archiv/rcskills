@@ -189,6 +189,10 @@ public class SkillsPlugin extends BasePlugin implements Component {
         TriggerManager.unregisterAll();
         // also unregister all of our bukkit events
         HandlerList.unregisterAll(this);
+        // initialize our skill handler
+        this.skillManager = new SkillManager(this);
+        this.abilityManager = new AbilityManager(this);
+        this.effectManager = new EffectManager(this);
         // and reload the complete engine leaving all the stuff to the garbage collector
         loadEngine();
         // reload the skill permissions provider
