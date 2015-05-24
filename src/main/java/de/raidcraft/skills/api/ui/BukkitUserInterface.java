@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.EntityUtil;
+import de.raidcraft.util.SimpleScoreboard;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Score;
 
@@ -32,10 +33,24 @@ public class BukkitUserInterface implements UserInterface {
     private final Hero hero;
     private final Map<String, RefreshingDisplay> refreshingDisplays = new CaseInsensitiveMap<>();
     private final Map<CharacterTemplate, HealthDisplay> healthDisplays = new HashMap<>();
+    private final SimpleScoreboard sidebar;
 
     public BukkitUserInterface(final Hero hero) {
 
         this.hero = hero;
+        String sidebarTitle;
+
+        this.sidebar = new SimpleScoreboard(getSidebarTitle());
+        sidebar.add(ChatColor.BLUE + "Cooldowns:");
+    }
+
+    private String getSidebarTitle() {
+
+        if (hero.isOnline() && hero.getEntity().hasMetadata("GHOST")) {
+            return ChatColor.BOLD + "" + ChatColor.WHITE + "»»»»»" + ChatColor.GRAY + " Geist " + ChatColor.WHITE + "«««««";
+        } else {
+            return ChatColor.BOLD + ""+ ChatColor.WHITE + "»»»»» " + HeroUtil.getPvPColor(hero, null) + HeroUtil.getPvPTag(hero) + ChatColor.WHITE + "«««««";
+        }
     }
 
     @Override
@@ -149,7 +164,7 @@ public class BukkitUserInterface implements UserInterface {
         }
 
         // refresh the action bar
-        String msg = ChatColor.DARK_RED + "HP: " + EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
+        String msg = ChatColor.DARK_RED + "" + ChatColor.BOLD + "HP: " + EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
                 + ChatColor.YELLOW + "/"
                 + ChatColor.GREEN + (int) hero.getMaxHealth();
         msg += renderProfessions(getHero());
