@@ -645,6 +645,7 @@ public class AdminCommands {
                     .filter(tHeroSkill -> tHeroSkill.getHero() != null)
                     .map(skill -> skill.getHero().getPlayer())
                     .distinct()
+                    .limit(20)
                     .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.AQUA + heroes);
             try {
@@ -669,6 +670,7 @@ public class AdminCommands {
             String heroes = obsoleteProfessions.stream()
                     .map(professions -> professions.getHero().getPlayer())
                     .distinct()
+                    .limit(20)
                     .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.AQUA + heroes);
             sender.sendMessage(ChatColor.DARK_RED + "The following skills would also be deleted: ");
