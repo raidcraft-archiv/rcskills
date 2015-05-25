@@ -215,7 +215,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     public List<CharacterTemplate> getNearbyTargets() throws CombatException {
 
-        return getNearbyTargets(true);
+        return getHolder().getNearbyTargets(getTotalRange());
     }
 
     public List<CharacterTemplate> getNearbyTargets(boolean friendly) throws CombatException {
