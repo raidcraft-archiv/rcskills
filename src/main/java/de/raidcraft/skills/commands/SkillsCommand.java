@@ -41,7 +41,7 @@ public class SkillsCommand {
     @Command(
             aliases = "skills",
             desc = "Shows all skills for the selected profession.",
-            usage = "[profession] -p #",
+            usage = "[profession] [-o <player>] -p #",
             flags = "p:avsho:"
     )
     @CommandPermissions("rcskills.player.skill.list")
