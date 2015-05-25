@@ -652,7 +652,7 @@ public class AdminCommands {
                 sender.sendMessage(ChatColor.AQUA + affectedPlayers.stream().collect(Collectors.joining(",")));
             }
             try {
-                new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteSkills);
+                new QueuedCaptchaCommand(sender, this, "pruneDatabase", sender, obsoleteSkills);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
                 throw new CommandException(e.getMessage());
@@ -688,7 +688,7 @@ public class AdminCommands {
                     .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.YELLOW + skills);
             try {
-                new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteProfessions);
+                new QueuedCaptchaCommand(sender, this, "pruneDatabase", sender, obsoleteProfessions);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
                 throw new CommandException(e.getMessage());
@@ -696,8 +696,9 @@ public class AdminCommands {
         }
     }
 
-    private void pruneDatabase(Collection<Object> elements) {
+    private void pruneDatabase(CommandSender sender, Collection<Object> elements) {
 
         plugin.getDatabase().delete(elements);
+        sender.sendMessage(ChatColor.GREEN + "" + elements.size() + " entries deleted from the database!");
     }
 }
