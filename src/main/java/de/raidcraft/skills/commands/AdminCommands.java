@@ -640,14 +640,17 @@ public class AdminCommands {
                     .distinct()
                     .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.YELLOW + distinctSkills);
-            sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
-            String heroes = obsoleteSkills.stream()
+            List<String> affectedPlayers = obsoleteSkills.stream()
                     .filter(tHeroSkill -> tHeroSkill.getHero() != null)
                     .map(skill -> skill.getHero().getPlayer())
                     .distinct()
-                    .limit(20)
-                    .collect(Collectors.joining(","));
-            sender.sendMessage(ChatColor.AQUA + heroes);
+                    .collect(Collectors.toList());
+            if (affectedPlayers.size() > 20) {
+                sender.sendMessage(ChatColor.DARK_RED + "" + affectedPlayers.size() + " players would be affected.");
+            } else {
+                sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
+                sender.sendMessage(ChatColor.AQUA + affectedPlayers.stream().collect(Collectors.joining(",")));
+            }
             try {
                 new QueuedCaptchaCommand(sender, this, "pruneDatabase", obsoleteSkills);
             } catch (NoSuchMethodException e) {
@@ -666,13 +669,16 @@ public class AdminCommands {
                     .distinct()
                     .collect(Collectors.joining(","));
             sender.sendMessage(ChatColor.RED + distinctSkills);
-            sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
-            String heroes = obsoleteProfessions.stream()
+            List<String> affectedPlayers = obsoleteProfessions.stream()
                     .map(professions -> professions.getHero().getPlayer())
                     .distinct()
-                    .limit(20)
-                    .collect(Collectors.joining(","));
-            sender.sendMessage(ChatColor.AQUA + heroes);
+                    .collect(Collectors.toList());
+            if (affectedPlayers.size() > 20) {
+                sender.sendMessage(ChatColor.DARK_RED + "" + affectedPlayers.size() + " players would be affected.");
+            } else {
+                sender.sendMessage(ChatColor.DARK_RED + "The following players would be affected: ");
+                affectedPlayers.stream().collect(Collectors.joining(","));
+            }
             sender.sendMessage(ChatColor.DARK_RED + "The following skills would also be deleted: ");
             String skills = obsoleteProfessions.stream()
                     .map(THeroProfession::getSkills)
