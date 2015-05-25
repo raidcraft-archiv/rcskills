@@ -938,7 +938,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public final void removeEffectTypes(EffectType type) throws CombatException {
 
-        effects.values().forEach(objectEffectMap -> objectEffectMap.values().stream().filter(effect -> effect.isOfType(type)).forEach(effect -> {
+        List<Effect> effectsToRemove = new ArrayList<>();
+        for (Map<Object, Effect> effectMap : effects.values()) {
+            effectMap.values().stream().filter(effect -> effect.isOfType(type)).forEach(effectsToRemove::add);
+        }
+        effectsToRemove.forEach(effect -> {
             try {
                 effect.remove();
             } catch (CombatException e) {
@@ -946,7 +950,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                     ((Hero) effect.getTarget()).sendMessage(ChatColor.RED + e.getMessage());
                 }
             }
-        }));
+        });
     }
 
     @Override
