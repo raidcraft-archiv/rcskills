@@ -233,7 +233,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
 
     public List<CharacterTemplate> getNearbyPartyMembers() {
 
-        List<CharacterTemplate> targets = getSafeNearbyTargets();
+        List<CharacterTemplate> targets = getNearbyFriendlyTargets();
         for (CharacterTemplate target : new ArrayList<>(targets)) {
             if (!target.isInParty(getHolder().getParty())) {
                 targets.remove(target);
@@ -242,7 +242,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return targets;
     }
 
-    public List<CharacterTemplate> getSafeNearbyTargets() {
+    public List<CharacterTemplate> getNearbyFriendlyTargets() {
 
         return getSafeNearbyTargets(true);
     }
