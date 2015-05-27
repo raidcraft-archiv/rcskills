@@ -221,4 +221,17 @@ public class PlayerCommands {
         sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Die Gruppen Anzeige " + ChatColor.AQUA +
                 (Option.SIDEBAR_PARTY_HP.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
     }
+
+    @Command(
+            aliases = {"actionbar", "ab", "leveldisplay", "ld", "hud"},
+            desc = "Zeigt Gruppenmitglieder in der Seitenleiste an."
+    )
+    @CommandPermissions("rcskills.player.cmd.actionbar")
+    public void actionBar(CommandContext args, CommandSender sender) {
+
+        Hero hero = plugin.getCharacterManager().getHero((Player) sender);
+        Option.ACTION_BAR.set(hero, !Option.ACTION_BAR.isSet(hero));
+        sender.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Das Level HUD wurde " + ChatColor.AQUA +
+                (Option.ACTION_BAR.isSet(hero) ? "eingeschaltet." : "ausgeschaltet."));
+    }
 }

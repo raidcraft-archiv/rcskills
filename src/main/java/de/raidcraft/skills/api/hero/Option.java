@@ -9,7 +9,8 @@ public enum Option {
     COMBAT_LOGGING("combatlog", false),
     EXP_POOL_LINK("exp_pool_link", null),
     SIDEBAR_PARTY_HP("display_sidebar_party_hp", true),
-    PVP("pvp", false);
+    PVP("pvp", false),
+    ACTION_BAR("action_bar", true);
 
     private final String key;
     private final Object defaultValue;

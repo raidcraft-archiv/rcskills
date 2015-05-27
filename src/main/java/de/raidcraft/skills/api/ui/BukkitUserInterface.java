@@ -163,12 +163,14 @@ public class BukkitUserInterface implements UserInterface {
             hero.getPlayer().setFoodLevel(19);
         }
 
-        // refresh the action bar
-        String msg = ChatColor.DARK_RED + "" + ChatColor.BOLD + "HP: " + EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
-                + ChatColor.YELLOW + "/"
-                + ChatColor.GREEN + (int) hero.getMaxHealth();
-        msg += renderProfessions(getHero());
-        HeroUtil.sendActionBar(getHero().getPlayer(), msg);
+        if (Option.ACTION_BAR.isSet(getHero())) {
+            // refresh the action bar
+            String msg = ChatColor.DARK_RED + "" + ChatColor.BOLD + "HP: " + EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()) + "" + (int) hero.getHealth()
+                    + ChatColor.YELLOW + "/"
+                    + ChatColor.GREEN + (int) hero.getMaxHealth();
+            msg += renderProfessions(getHero());
+            HeroUtil.sendActionBar(getHero().getPlayer(), msg);
+        }
     }
 
     private String renderProfessions(Hero hero) {
