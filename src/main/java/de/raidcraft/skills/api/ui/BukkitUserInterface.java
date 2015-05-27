@@ -135,7 +135,7 @@ public class BukkitUserInterface implements UserInterface {
             entries.stream().filter(entry -> !getHero().getParty().contains(entry.getKey()))
                     .forEach(entry -> {
                         entry.getValue().remove();
-                        entries.remove(entry);
+                        healthDisplays.remove(entry.getKey());
                     });
             // we need to add missing players to the party display
             getHero().getParty().getHeroes().stream()
