@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.AbilityAction;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
@@ -353,6 +354,16 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
 
         return attack(target, getTotalDamage(), callback);
+    }
+
+    public final HealAction<CharacterTemplate> heal(CharacterTemplate target) {
+
+        return heal(target, getTotalDamage());
+    }
+
+    public final HealAction<CharacterTemplate> heal(CharacterTemplate target, double amount) {
+
+        return new HealAction<>(getHolder(), target, amount);
     }
 
     public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
