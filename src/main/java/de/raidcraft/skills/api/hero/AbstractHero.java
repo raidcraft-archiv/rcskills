@@ -37,6 +37,7 @@ import de.raidcraft.skills.binds.BindManager;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.ProfessionConfig;
 import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -372,6 +373,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public void saveLevelProgress(AttachedLevel<CharacterTemplate> attachedLevel) {
 
+        if (this instanceof TemporaryHero) return;
         THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, getId());
         heroTable.setExp(getAttachedLevel().getExp());
         heroTable.setLevel(getAttachedLevel().getLevel());

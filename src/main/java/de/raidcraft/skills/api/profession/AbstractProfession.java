@@ -255,6 +255,7 @@ public abstract class AbstractProfession implements Profession {
     @Override
     public void saveLevelProgress(AttachedLevel<Profession> attachedLevel) {
 
+        if (getHero() instanceof TemporaryHero) return;
         THeroProfession profession = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class, getId());
         profession.setLevel(attachedLevel.getLevel());
         profession.setExp(attachedLevel.getExp());

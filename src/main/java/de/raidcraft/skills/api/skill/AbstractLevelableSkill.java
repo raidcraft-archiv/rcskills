@@ -81,6 +81,7 @@ public abstract class AbstractLevelableSkill extends AbstractSkill implements Le
     @Override
     public final void saveLevelProgress(AttachedLevel<LevelableSkill> attachedLevel) {
 
+        if (getHolder() instanceof TemporaryHero) return;
         THeroSkill skill = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class, getId());
         skill.setLevel(attachedLevel.getLevel());
         skill.setExp(attachedLevel.getExp());

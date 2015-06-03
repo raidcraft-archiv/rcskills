@@ -5,6 +5,7 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.formulas.FormulaType;
+import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THeroExpPool;
 
 /**
@@ -76,6 +77,7 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
     @Override
     public void saveLevelProgress() {
 
+        if (getLevelObject() instanceof TemporaryHero) return;
         THeroExpPool db = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class)
                 .where().eq("player_id", getLevelObject().getPlayer().getUniqueId()).findUnique();
         if (db == null) {
