@@ -666,7 +666,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 setHealth(newHealth);
                 getEntity().playEffect(EntityEffect.HURT);
                 if (attacker != null && getEntity() instanceof Monster) {
-                    ((Monster) getEntity()).getTarget();
                     ((Monster) getEntity()).setTarget(attacker.getEntity());
                 }
                 if (attack.hasKnockback()) {
