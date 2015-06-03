@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -925,10 +926,20 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
+        Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());
         if (eClass.getAnnotation(EffectInformation.class).global()) {
-            return (E) effects.getOrDefault(eClass, new HashMap<>()).values().stream().findAny().orElseGet(null);
+            return (E) effects.values().stream().findAny().orElseGet(null);
         }
-        return (E) effects.getOrDefault(eClass, new HashMap<>()).get(source);
+        if (effects.containsKey(source)) {
+            return (E) effects.get(source);
+        }
+        if (effects.size() == 1) {
+            Optional<Effect> first = effects.values().stream().findFirst();
+            if (first.isPresent()) {
+                return (E) first.get();
+            }
+        }
+        return null;
     }
 
     @Override
