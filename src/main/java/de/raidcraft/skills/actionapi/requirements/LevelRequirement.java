@@ -32,6 +32,7 @@ public class LevelRequirement implements ReasonableRequirement<Player> {
     public boolean test(Player player, ConfigurationSection config) {
 
         Hero hero = RaidCraft.getComponent(CharacterManager.class).getHero(player);
+        if (hero == null) return false;
         String type = config.getString("type", "hero");
         int currentLevel = 1;
         switch (type) {

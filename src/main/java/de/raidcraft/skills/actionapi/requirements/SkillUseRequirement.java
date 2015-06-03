@@ -6,6 +6,7 @@ import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Action;
 import de.raidcraft.skills.api.combat.action.SkillAction;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,9 @@ public class SkillUseRequirement implements Requirement<Player> {
     )
     public boolean test(Player player, ConfigurationSection config) {
 
-        Action<? extends CharacterTemplate> lastAction = RaidCraft.getComponent(CharacterManager.class).getHero(player).getLastAction();
+        Hero hero = RaidCraft.getComponent(CharacterManager.class).getHero(player);
+        if (hero == null) return false;
+        Action<? extends CharacterTemplate> lastAction = hero.getLastAction();
         return lastAction instanceof SkillAction
                 && ((SkillAction) lastAction).getSkill().getName().equalsIgnoreCase(config.getString("skill"));
     }

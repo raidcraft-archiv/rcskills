@@ -1,4 +1,4 @@
-package de.raidcraft.skills.actions;
+package de.raidcraft.skills.actionapi.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
@@ -28,6 +28,7 @@ public class AddHeroExpAction implements Action<Player> {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
         Hero hero = plugin.getCharacterManager().getHero(player);
+        if (hero == null) return;
 	    int exp = config.getInt("exp");
         hero.getExpPool().addExp(exp);
 	    hero.sendMessage("Deinem EXP Pool wurden "+exp+" EXP hinzugefügt.");

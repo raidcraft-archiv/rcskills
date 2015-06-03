@@ -4,7 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.events.PlayerChangeProfessionEvent;
+import de.raidcraft.api.events.RCPlayerChangedProfessionEvent;
 import de.raidcraft.api.player.PlayerStatisticProvider;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.action.Attack;
@@ -71,7 +71,7 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onProfessionChange(PlayerChangeProfessionEvent event) {
+    public void onProfessionChange(RCPlayerChangedProfessionEvent event) {
 
         // set the exp pool link
         Option.EXP_POOL_LINK.set(plugin.getCharacterManager().getHero(event.getPlayer()), event.getNewProfession());

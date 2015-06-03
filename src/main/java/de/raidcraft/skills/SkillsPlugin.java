@@ -17,8 +17,9 @@ import de.raidcraft.api.random.RDS;
 import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
 import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
+import de.raidcraft.skills.actionapi.trigger.ProfessionTrigger;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
-import de.raidcraft.skills.actions.AddHeroExpAction;
+import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -203,6 +204,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         ActionAPI.register(this)
                 .action(new AddHeroExpAction())
+                .trigger(new SkillTrigger())
+                .trigger(new ProfessionTrigger())
                 .requirement(new SkillUseRequirement())
                 .requirement(new LevelRequirement())
                 .requirement(new Requirement<Player>() {
@@ -231,8 +234,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                         }
                         return false;
                     }
-                })
-                .trigger(new SkillTrigger());
+                });
     }
 
     public CharacterManager getCharacterManager() {

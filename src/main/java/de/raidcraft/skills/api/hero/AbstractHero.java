@@ -1,7 +1,7 @@
 package de.raidcraft.skills.api.hero;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.events.PlayerChangeProfessionEvent;
+import de.raidcraft.api.events.RCPlayerChangedProfessionEvent;
 import de.raidcraft.api.events.RCPlayerGainExpEvent;
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
@@ -833,7 +833,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         Scoreboards.removeScoreboard(getPlayer());
         save();
         // lets fire an informal event
-        RaidCraft.callEvent(new PlayerChangeProfessionEvent(getPlayer(), profession.getName(), profession.getAttachedLevel().getLevel()));
+        RaidCraft.callEvent(new RCPlayerChangedProfessionEvent(getPlayer(), profession.getName(), profession.getAttachedLevel().getLevel()));
     }
 
     @Override
