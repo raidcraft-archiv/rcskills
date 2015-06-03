@@ -48,6 +48,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -664,6 +665,10 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             } else {
                 setHealth(newHealth);
                 getEntity().playEffect(EntityEffect.HURT);
+                if (attacker != null && getEntity() instanceof Monster) {
+                    ((Monster) getEntity()).getTarget();
+                    ((Monster) getEntity()).setTarget(attacker.getEntity());
+                }
                 if (attack.hasKnockback()) {
                     if (attacker != null) {
                         getEntity().damage(0, attacker.getEntity());
