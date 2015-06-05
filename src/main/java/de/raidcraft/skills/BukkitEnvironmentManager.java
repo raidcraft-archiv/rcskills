@@ -7,10 +7,12 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
+import de.raidcraft.skills.api.hero.Hero;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -75,6 +77,9 @@ public final class BukkitEnvironmentManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onFoodGain(FoodLevelChangeEvent event) {
 
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
         if (plugin.getCommonConfig().disable_vanilla_hunger) {
             // make sure we are never above 19 to allow eating
             // and prevent any food changes
@@ -83,6 +88,12 @@ public final class BukkitEnvironmentManager implements Listener {
             // make sure we are never above 19 to allow eating
             if (event.getFoodLevel() > 19) {
                 event.setFoodLevel(19);
+            } else if (event.getFoodLevel() > 16) {
+                Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
+                hero.getResource("health").setEnabled(true);
+            } else {
+                Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
+                hero.getResource("health").setEnabled(false);
             }
         }
     }
