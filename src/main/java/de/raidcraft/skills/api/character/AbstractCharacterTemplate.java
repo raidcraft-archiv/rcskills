@@ -411,7 +411,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         CustomItem customItem = item.getItem();
         if (customItem instanceof CustomArmor) {
             CustomItemStack customItemStack = armorPieces.get(((CustomArmor) customItem).getEquipmentSlot());
-            if (customItemStack.getItem().equals(customItem)) return;
+            if (customItemStack != null && customItemStack.getItem().equals(customItem)) return;
             removeArmor(((CustomArmor) customItem).getEquipmentSlot());
             armorPieces.put(((CustomArmor) customItem).getEquipmentSlot(), item);
         }
