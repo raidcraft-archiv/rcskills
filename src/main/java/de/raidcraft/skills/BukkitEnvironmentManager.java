@@ -90,10 +90,10 @@ public final class BukkitEnvironmentManager implements Listener {
                 event.setFoodLevel(19);
             } else if (event.getFoodLevel() > 16) {
                 Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
-                hero.getResource("health").setEnabled(true);
+                hero.getResource("health").setRegenEnabled(true);
             } else {
                 Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
-                hero.getResource("health").setEnabled(false);
+                hero.getResource("health").setRegenEnabled(false);
             }
         }
     }

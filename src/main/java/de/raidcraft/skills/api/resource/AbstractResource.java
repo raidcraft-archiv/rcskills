@@ -38,6 +38,7 @@ public abstract class AbstractResource implements Resource {
     private double regenValue;
     private double current;
     private boolean enabled = false;
+    private boolean regenEnabled = true;
 
     public AbstractResource(ResourceData data, Profession profession, ConfigurationSection config) {
 
@@ -87,7 +88,7 @@ public abstract class AbstractResource implements Resource {
 
     private void startTask() {
 
-        if (getRegenInterval() < 1 || !enabled) {
+        if (getRegenInterval() < 1 || !regenEnabled || task != null) {
             return;
         }
         task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
@@ -190,6 +191,19 @@ public abstract class AbstractResource implements Resource {
     public void setEnabled(boolean enabled) {
 
         this.enabled = enabled;
+        setRegenEnabled(enabled);
+    }
+
+    @Override
+    public boolean isRegenEnabled() {
+
+        return this.regenEnabled;
+    }
+
+    @Override
+    public void setRegenEnabled(boolean enabled) {
+
+        this.regenEnabled = enabled;
         if (enabled) {
             startTask();
         } else {
@@ -282,7 +296,7 @@ public abstract class AbstractResource implements Resource {
     @Override
     public void regen() {
 
-        if (!isEnabled() || !profession.isActive()) {
+        if (!isRegenEnabled() || !profession.isActive()) {
             return;
         }
         if (isMax() && getRegenValue() > 0) {

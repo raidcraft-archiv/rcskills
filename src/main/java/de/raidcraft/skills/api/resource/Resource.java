@@ -42,6 +42,10 @@ public interface Resource {
 
     boolean isMax();
 
+    boolean isRegenEnabled();
+
+    void setRegenEnabled(boolean enabled);
+
     boolean isEnabled();
 
     void setEnabled(boolean enabled);
