@@ -68,8 +68,9 @@ public class ConfigurableAttribute implements Attribute {
     @Override
     public void setBaseValue(int value) {
 
+        boolean recalculate = this.baseValue != value;
         this.baseValue = value;
-        hero.recalculateHealth();
+        if (recalculate) hero.recalculateHealth();
     }
 
     @Override
@@ -84,8 +85,9 @@ public class ConfigurableAttribute implements Attribute {
         if (currentValue < baseValue) {
             currentValue = baseValue;
         }
+        boolean recalculate = this.currentValue != currentValue;
         this.currentValue = currentValue;
-        hero.recalculateHealth();
+        if (recalculate) hero.recalculateHealth();
     }
 
     @Override

@@ -271,13 +271,19 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setWeapon(CustomItemStack customItem) {
 
+        if (customItem == null) return;
         CustomItem item = customItem.getItem();
         if (item instanceof CustomWeapon) {
             CustomWeapon weapon = (CustomWeapon) item;
-            if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-                weapons.remove(EquipmentSlot.ONE_HANDED);
-                weapons.remove(EquipmentSlot.SHIELD_HAND);
+            CustomItemStack currentWeapon = weapons.get(weapon.getEquipmentSlot());
+            if (currentWeapon != null && currentWeapon.getItem().equals(weapon)) {
+                return;
             }
+            if (weapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
+                removeWeapon(EquipmentSlot.ONE_HANDED);
+                removeWeapon(EquipmentSlot.SHIELD_HAND);
+            }
+            removeWeapon(weapon.getEquipmentSlot());
             weapons.put(weapon.getEquipmentSlot(), customItem);
         }
     }
@@ -402,8 +408,12 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     @Override
     public void setArmor(CustomItemStack item) {
 
-        if (item.getItem() instanceof CustomArmor) {
-            armorPieces.put(((CustomArmor) item.getItem()).getEquipmentSlot(), item);
+        CustomItem customItem = item.getItem();
+        if (customItem instanceof CustomArmor) {
+            CustomItemStack customItemStack = armorPieces.get(((CustomArmor) customItem).getEquipmentSlot());
+            if (customItemStack.getItem().equals(customItem)) return;
+            removeArmor(((CustomArmor) customItem).getEquipmentSlot());
+            armorPieces.put(((CustomArmor) customItem).getEquipmentSlot(), item);
         }
         // if hero update the user interface
         if (this instanceof Hero) {
