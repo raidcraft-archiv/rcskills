@@ -424,6 +424,8 @@ public class SkillsPlugin extends BasePlugin implements Component {
         public double skeletons_knockback_chance = 1.0;
         @Setting("defaults.pvp-combat-timeout")
         public double combat_pvp_timeout = 300;
+        @Setting("defaults.disable-vanilla-hunger")
+        public boolean disable_vanilla_hunger = false;
         @Setting("profession.change-cost")
         public int profession_change_cost = 100;
         @Setting("profession.change-level-modifier")

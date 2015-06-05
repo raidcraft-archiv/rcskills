@@ -75,7 +75,15 @@ public final class BukkitEnvironmentManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onFoodGain(FoodLevelChangeEvent event) {
 
-        // make sure we are never above 19 to allow eating
-        event.setFoodLevel(19);
+        if (plugin.getCommonConfig().disable_vanilla_hunger) {
+            // make sure we are never above 19 to allow eating
+            // and prevent any food changes
+            event.setFoodLevel(19);
+        } else {
+            // make sure we are never above 19 to allow eating
+            if (event.getFoodLevel() > 19) {
+                event.setFoodLevel(19);
+            }
+        }
     }
 }
