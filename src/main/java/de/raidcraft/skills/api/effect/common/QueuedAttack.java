@@ -47,10 +47,6 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
             remove();
             return;
         }
-        // lets substract the usage cost if the skill is marked as a queued attack
-        if (getSource().getSkillProperties().getInformation().queuedAttack()) {
-            getSource().substractUsageCost(new SkillAction(getSource()));
-        }
         // and now do some attack magic :)
         attacked = true;
         trigger.getAttack().setDamage(getSource().getTotalDamage());
@@ -59,6 +55,10 @@ public class QueuedAttack extends ExpirableEffect<Skill> implements Triggered {
         if (callback != null) {
             callback.run(trigger);
             getSource().executeAmbientEffects(AbilityEffectStage.HIT, trigger.getAttack().getTarget().getEntity().getLocation());
+        }
+        // lets substract the usage cost if the skill is marked as a queued attack
+        if (getSource().getSkillProperties().getInformation().queuedAttack()) {
+            getSource().substractUsageCost(new SkillAction(getSource()));
         }
         info(getSource().getFriendlyName() + " ausgeführt!");
         remove();
