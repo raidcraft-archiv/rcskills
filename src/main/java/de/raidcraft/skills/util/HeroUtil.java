@@ -131,6 +131,11 @@ public final class HeroUtil {
         entity.setMetadata(key, new FixedMetadataValue(RaidCraft.getComponent(SkillsPlugin.class), value));
     }
 
+    public static void removeEntityMetaData(LivingEntity entity, String key) {
+
+        entity.removeMetadata(key, RaidCraft.getComponent(SkillsPlugin.class));
+    }
+
     public static Hero getHeroFromEntity(LivingEntity entity) throws UnknownPlayerException {
 
         CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(entity);
