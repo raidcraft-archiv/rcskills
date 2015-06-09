@@ -26,11 +26,7 @@ public class RefreshingEffectDisplay extends RefreshingDisplay {
         } else if (getEffect().isOfType(EffectType.HARMFUL)) {
             color = ChatColor.RED;
         }
-        String name = color + "";
-        if (getEffect().getStacks() > 0) {
-            name += getEffect().getStacks() + "x ";
-        }
-        name += getEffect().getFriendlyName();
+        String name = color + getEffect().getFriendlyName();
         if (name.length() > 15) {
             name = name.substring(0, 15);
         }
