@@ -34,6 +34,10 @@ public interface Effect<S> {
 
     void setEnabled(boolean enabled);
 
+    int getStacks();
+
+    void setStacks(int stacks);
+
     int getDamage();
 
     boolean isOfType(EffectType type);
