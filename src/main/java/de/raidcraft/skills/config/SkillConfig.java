@@ -78,6 +78,12 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
     }
 
     @Override
+    public List<String> getWorlds() {
+
+        return getStringList("worlds");
+    }
+
+    @Override
     public boolean isEnabled() {
 
         return getOverrideBool("enabled", true);
