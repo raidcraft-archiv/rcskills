@@ -24,6 +24,8 @@ public interface AbilityProperties<T> extends ConfigurationSection {
 
     String[] getUsage();
 
+    List<String> getWorlds();
+
     int getOverrideInt(String key, int def);
 
     double getOverrideDouble(String key, double def);

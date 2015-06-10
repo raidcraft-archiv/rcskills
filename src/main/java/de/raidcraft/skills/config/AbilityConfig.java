@@ -65,6 +65,12 @@ public class AbilityConfig extends ConfigurationBase<SkillsPlugin> implements Ab
     }
 
     @Override
+    public List<String> getWorlds() {
+
+        return getStringList("worlds");
+    }
+
+    @Override
     public boolean isEnabled() {
 
         return getOverrideBool("enabled", true);

@@ -81,6 +81,9 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
     @Override
     public final void checkUsage(AbilityAction<T> action) throws CombatException {
 
+        if (!getProperties().getWorlds().isEmpty() && !getProperties().getWorlds().contains(getHolder().getEntity().getWorld().getName())) {
+            throw new CombatException("Du kannst diesen Skill nicht in dieser Welt verwenden!");
+        }
         if (this instanceof Passive) {
             throw new CombatException(CombatException.Type.PASSIVE);
         }
