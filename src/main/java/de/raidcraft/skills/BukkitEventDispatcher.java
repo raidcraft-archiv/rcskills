@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.events.RCEntityDeathEvent;
 import de.raidcraft.skills.api.events.RCMaxHealthChangeEvent;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.*;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
@@ -320,6 +321,14 @@ public final class BukkitEventDispatcher implements Listener {
 
         TriggerManager.callSafeTrigger(
                 new MaxHealthChangeTrigger(event.getCharacter(), event)
+        );
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onNPCClick(NPCRightClickEvent event) {
+
+        TriggerManager.callSafeTrigger(
+                new NPCRightClickTrigger(plugin.getCharacterManager().getHero(event.getClicker()), event)
         );
     }
 }
