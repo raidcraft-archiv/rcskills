@@ -25,5 +25,4 @@ public class TSkillData {
 
     private String dataKey;
     private String dataValue;
-
 }

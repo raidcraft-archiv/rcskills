@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Reasonable;
 import de.raidcraft.api.action.requirement.Requirement;
@@ -25,6 +26,7 @@ import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -39,6 +41,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -286,6 +289,39 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     public SkillProperties getSkillProperties() {
 
         return properties;
+    }
+
+    public void setData(String key, String value) {
+
+        EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
+        Optional<TSkillData> data = getData(key);
+        TSkillData skillData;
+        if (data.isPresent()) {
+            skillData = data.get();
+        } else {
+            skillData = new TSkillData();
+            skillData.setDataKey(key);
+            skillData.setSkill(database.find(THeroSkill.class, getId()));
+        }
+        skillData.setDataValue(value);
+        database.save(skillData);
+    }
+
+    public Optional<TSkillData> getData(String key) {
+
+        return Optional.ofNullable(RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where()
+                .eq("skill", getId())
+                .eq("data_key", key)
+                .findUnique());
+    }
+
+    public Optional<TSkillData> removeData(String key) {
+
+        Optional<TSkillData> data = getData(key);
+        if (data.isPresent()) {
+            RaidCraft.getDatabase(SkillsPlugin.class).delete(data.get());
+        }
+        return data;
     }
 
     /*/////////////////////////////////////////////////////////////////
