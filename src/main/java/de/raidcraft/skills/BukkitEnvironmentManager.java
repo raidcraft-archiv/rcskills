@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.resource.Resource;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -90,10 +91,12 @@ public final class BukkitEnvironmentManager implements Listener {
                 event.setFoodLevel(19);
             } else if (event.getFoodLevel() > 16) {
                 Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
-                hero.getResource("health").setRegenEnabled(true);
+                Resource health = hero.getResource("health");
+                if (health != null) health.setRegenEnabled(true);
             } else {
                 Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity());
-                hero.getResource("health").setRegenEnabled(false);
+                Resource health = hero.getResource("health");
+                if (health != null) health.setRegenEnabled(false);
             }
         }
     }
