@@ -99,6 +99,9 @@ public class ProfessionCommands {
 
 
         boolean force = args.hasFlag('f');
+        if(force && !sender.hasPermission("rcskills.admin")) {
+            throw  new CommandException("Du hast nicht genügend Rechte um den Klassenwechsel zu erzwingen!");
+        }
 
         try {
             Hero hero = plugin.getCharacterManager().getHero((Player) sender);
@@ -117,6 +120,12 @@ public class ProfessionCommands {
                 double cost = 0.0;
                 if (profession.getAttachedLevel().getLevel() > 1) {
                     cost = ProfessionUtil.getProfessionChangeCost(profession);
+                }
+                if(cost > RaidCraft.getEconomy().getBalance(((Player) sender).getUniqueId())) {
+                    sender.sendMessage(ChatColor.RED + "Du kannst dir den Wechsel nicht leisten.");
+                    sender.sendMessage(ChatColor.RED + "Dir fehlen noch " +
+                            (cost-RaidCraft.getEconomy().getBalance(((Player) sender).getUniqueId())));
+                    return;
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
                         "deine " + ChatColor.AQUA + profession.getPath().getFriendlyName()
