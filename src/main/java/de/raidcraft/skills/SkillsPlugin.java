@@ -66,6 +66,7 @@ import de.raidcraft.skills.tables.TProfession;
 import de.raidcraft.skills.tables.TProfessionTranslation;
 import de.raidcraft.skills.tables.TRunestone;
 import de.raidcraft.skills.tables.TSkill;
+import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
@@ -310,6 +311,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
         classes.add(TBinding.class);
         classes.add(TLanguage.class);
         classes.add(TSkill.class);
+        classes.add(TSkillData.class);
         classes.add(TSkillTranslation.class);
         classes.add(TProfession.class);
         classes.add(TProfessionTranslation.class);
