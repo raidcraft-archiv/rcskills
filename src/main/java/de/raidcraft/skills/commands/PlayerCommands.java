@@ -160,10 +160,20 @@ public class PlayerCommands {
     private void addExp(AttachedLevel<Hero> expPool, AttachedLevel attachedLevel, int exp) throws InvalidChoiceException {
 
         Hero hero = expPool.getLevelObject();
+
+        // pool -> level
+        // check if pool contains enough exp
         if (exp > expPool.getExp()) {
             plugin.getLogger().warning(hero.getName() + " tried to exploit the system by adding more exp than he has!");
             throw new InvalidChoiceException("Du kannst maximal " + expPool.getExp() + "exp verteilen.");
         }
+        // level -> pool
+        // check if level contains enough exp
+        if(exp < 0 && attachedLevel.getExp() < Math.abs(exp)) {
+            plugin.getLogger().warning(hero.getName() + " tried to exploit the system by removing more exp than he has!");
+            throw new InvalidChoiceException("Du kannst maximal " + attachedLevel.getExp() + "exp abziehen.");
+        }
+
         int level = attachedLevel.getLevel() + attachedLevel.getLevelAmountForExp(exp);
         if (level >= attachedLevel.getMaxLevel()) {
             exp = attachedLevel.getNeededExpForLevel(attachedLevel.getLevel(), attachedLevel.getMaxLevel() - 1);
