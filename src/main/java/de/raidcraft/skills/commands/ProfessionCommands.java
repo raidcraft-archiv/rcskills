@@ -124,7 +124,7 @@ public class ProfessionCommands {
                 if(cost > RaidCraft.getEconomy().getBalance(((Player) sender).getUniqueId())) {
                     sender.sendMessage(ChatColor.RED + "Du kannst dir den Wechsel nicht leisten.");
                     sender.sendMessage(ChatColor.RED + "Dir fehlen noch " +
-                            (cost-RaidCraft.getEconomy().getBalance(((Player) sender).getUniqueId())));
+                            RaidCraft.getEconomy().getFormattedAmount(cost-RaidCraft.getEconomy().getBalance(((Player) sender).getUniqueId())));
                     return;
                 }
                 sender.sendMessage(ChatColor.GREEN + "Bist du dir sicher dass du " +
