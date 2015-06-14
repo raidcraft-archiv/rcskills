@@ -324,7 +324,7 @@ public final class BukkitEventDispatcher implements Listener {
         );
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onNPCClick(NPCRightClickEvent event) {
 
         TriggerManager.callSafeTrigger(

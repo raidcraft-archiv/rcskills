@@ -310,7 +310,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     public Optional<TSkillData> getData(String key) {
 
         return Optional.ofNullable(RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where()
-                .eq("skill", getId())
+                .eq("skill_id", getId())
                 .eq("data_key", key)
                 .findUnique());
     }
