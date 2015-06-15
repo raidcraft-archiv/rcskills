@@ -136,6 +136,9 @@ public class PlayerCommands {
                 throw new CommandException("Du kannst maximal " + expPool.getExp() + "exp verteilen. " +
                         "Gebe /rcs addxp <beruf/klasse> -a ein um alle EXP zu vergeben.");
             }
+            if (exp < 0) {
+                throw new CommandException("Du kannst dir nicht EXP wegnehmen sondern nur hinzufügen!");
+            }
             AttachedLevel attachedLevel = ProfessionUtil.getProfessionFromArgs(hero, args.getString(0)).getAttachedLevel();
             if (attachedLevel == null) {
                 throw new CommandException("Bitte gebe eine Spezialisierung an, der du EXP geben willst.");
@@ -169,9 +172,9 @@ public class PlayerCommands {
         }
         // level -> pool
         // check if level contains enough exp
-        if(exp < 0 && attachedLevel.getExp() < Math.abs(exp)) {
+        if(exp < 0) {
             plugin.getLogger().warning(hero.getName() + " tried to exploit the system by removing more exp than he has!");
-            throw new InvalidChoiceException("Du kannst maximal " + attachedLevel.getExp() + "exp abziehen.");
+            throw new InvalidChoiceException("Du kannst dir nicht EXP wegnehmen sondern nur hinzufügen!");
         }
 
         int level = attachedLevel.getLevel() + attachedLevel.getLevelAmountForExp(exp);
