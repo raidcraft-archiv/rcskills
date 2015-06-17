@@ -12,7 +12,6 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.EntityUtil;
-import de.raidcraft.util.SimpleScoreboard;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Score;
 
@@ -33,15 +32,10 @@ public class BukkitUserInterface implements UserInterface {
     private final Hero hero;
     private final Map<String, RefreshingDisplay> refreshingDisplays = new CaseInsensitiveMap<>();
     private final Map<CharacterTemplate, HealthDisplay> healthDisplays = new HashMap<>();
-    private final SimpleScoreboard sidebar;
 
     public BukkitUserInterface(final Hero hero) {
 
         this.hero = hero;
-        String sidebarTitle;
-
-        this.sidebar = new SimpleScoreboard(getSidebarTitle());
-        sidebar.add(ChatColor.BLUE + "Cooldowns:");
     }
 
     private String getSidebarTitle() {
