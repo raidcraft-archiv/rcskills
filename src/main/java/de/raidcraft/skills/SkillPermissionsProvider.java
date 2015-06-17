@@ -6,6 +6,7 @@ import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.permissions.groups.SimpleGroup;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
@@ -109,7 +110,7 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
         groups.addAll(hero.getSkills().stream()
                 .filter(skill -> skill.isActive()
                         && skill.isUnlocked()
-                        && skill instanceof PermissionSkill)
+                        && skill.isOfType(EffectType.PERMISSION))
                 .map(Skill::getName)
                 .collect(Collectors.toList()));
         return groups;
