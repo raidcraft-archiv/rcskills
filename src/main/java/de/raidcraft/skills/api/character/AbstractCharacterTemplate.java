@@ -275,6 +275,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         CustomItem item = customItem.getItem();
         if (item instanceof CustomWeapon) {
             CustomWeapon weapon = (CustomWeapon) item;
+            if (hasWeapon(weapon.getEquipmentSlot())) {
+                removeWeapon(weapon.getEquipmentSlot());
+            }
             CustomItemStack currentWeapon = weapons.get(weapon.getEquipmentSlot());
             if (currentWeapon != null && currentWeapon.getItem().equals(weapon)) {
                 return;
@@ -410,6 +413,9 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
         CustomItem customItem = item.getItem();
         if (customItem instanceof CustomArmor) {
+            if (hasArmor(((CustomArmor) customItem).getEquipmentSlot())) {
+                removeArmor(((CustomArmor) customItem).getEquipmentSlot());
+            }
             CustomItemStack customItemStack = armorPieces.get(((CustomArmor) customItem).getEquipmentSlot());
             if (customItemStack != null && customItemStack.getItem().equals(customItem)) return;
             removeArmor(((CustomArmor) customItem).getEquipmentSlot());
