@@ -2,6 +2,7 @@ package de.raidcraft.skills.skills;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.permissions.PermissionsPlugin;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -24,7 +25,8 @@ import java.util.Set;
 @SkillInformation(
         name = "permission",
         description = "Represents a generic permissions skill.",
-        triggerCombat = false
+        triggerCombat = false,
+        types = EffectType.PERMISSION
 )
 public class PermissionSkill extends AbstractSkill {
 

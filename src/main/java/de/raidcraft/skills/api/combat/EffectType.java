@@ -36,7 +36,8 @@ public enum EffectType {
     COMBO,
     SYSTEM,
     CRITICAL,
-    COMBAT_STANCE;
+    COMBAT_STANCE,
+    PERMISSION;
 
     public static EffectType fromString(String str) {
 
