@@ -73,7 +73,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     private final AttachedLevel<Hero> expPool;
     private final HeroOptions options;
     private UserInterface userInterface;
-    private final Map<String, Skill> virtualSkills = new CaseInsensitiveMap<>();
     private final Map<String, Profession> professions = new CaseInsensitiveMap<>();
     private final Map<String, Resource> resources = new CaseInsensitiveMap<>();
     private final Map<String, Attribute> attributes = new CaseInsensitiveMap<>();
@@ -416,26 +415,15 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
 
     private void loadSkills() {
 
-        virtualSkills.clear();
         // check all the profession skills for unlock
-        for (Profession profession : professions.values()) {
-            if (profession.isActive()) {
-                // apply all skills that are already unlocked
-                for (Skill skill : profession.getSkills()) {
-                    if (skill.isUnlocked()) {
-                        skill.apply();
-                    }
-                }
-                profession.checkSkillsForUnlock();
-            }
-        }
+        // apply all skills that are already unlocked
+        professions.values().stream().filter(Profession::isActive).forEach(profession -> {
+            // apply all skills that are already unlocked
+            profession.getSkills().stream().filter(Skill::isUnlocked).forEach(Skill::apply);
+            profession.checkSkillsForUnlock();
+        });
         // make sure all virtual skills are added last and override normal skills
-        for (Skill skill : getVirtualProfession().getSkills()) {
-            if (skill.isUnlocked()) {
-                skill.apply();
-                virtualSkills.put(skill.getName(), skill);
-            }
-        }
+        getVirtualProfession().getSkills().stream().filter(Skill::isUnlocked).forEach(Skill::apply);
         getVirtualProfession().checkSkillsForUnlock();
     }
 
@@ -854,12 +842,11 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     @Override
     public List<Skill> getSkills() {
 
-        ArrayList<Skill> skills = new ArrayList<>(virtualSkills.values());
-        for (Profession profession : professions.values()) {
-            if (!profession.getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION) && profession.isActive()) {
-                skills.addAll(profession.getSkills());
-            }
-        }
+        ArrayList<Skill> skills = new ArrayList<>(getVirtualProfession().getSkills());
+        professions.values().stream()
+                .filter(Profession::isActive)
+                .filter(profession -> !profession.getName().equalsIgnoreCase(ProfessionManager.VIRTUAL_PROFESSION))
+                .forEach(profession -> skills.addAll(profession.getSkills()));
         return skills;
     }
 
@@ -933,11 +920,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public boolean hasSkill(String id) {
+    public boolean hasSkill(String name) {
 
-        if (id == null || id.equals("")) return false;
-        id = id.toLowerCase();
-        boolean hasSkill = virtualSkills.containsKey(id);
+        if (name == null || name.equals("")) return false;
+        String id = name.toLowerCase();
+        boolean hasSkill = getVirtualProfession().getSkills().stream()
+                .filter(Skill::isUnlocked)
+                .anyMatch(skill -> skill.getName().equalsIgnoreCase(id));
         if (getPlayer().isOnline()) {
             for (Profession profession : getProfessions()) {
                 try {
