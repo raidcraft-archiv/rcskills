@@ -594,7 +594,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
         if (!isOnline()) {
             return;
         }
-        ItemStack[] armorContents = getEntity().getEquipment().getArmorContents();
+        ItemStack[] armorContents = getPlayer().getInventory().getArmorContents();
         for (int i = 0; i < armorContents.length; i++) {
             if (armorContents[i] == null || armorContents[i].getType() == Material.AIR) {
                 removeArmor(EquipmentSlot.fromArmorSlotIndex(i));

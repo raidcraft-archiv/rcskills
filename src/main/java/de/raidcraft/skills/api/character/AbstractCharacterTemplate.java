@@ -602,7 +602,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         RaidCraft.callEvent(event);
         double newMaxHealth = getMaxHealth() + event.getValue();
         setMaxHealth(newMaxHealth);
-        setHealth(getHealth() + event.getValue());
+        setHealth(getHealth() + event.getValue());  
     }
 
     @Override
