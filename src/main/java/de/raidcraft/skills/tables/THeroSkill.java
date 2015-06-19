@@ -5,13 +5,18 @@ import de.raidcraft.skills.api.persistance.LevelData;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -41,6 +46,9 @@ public class THeroSkill implements LevelData {
     private boolean unlocked;
     private Timestamp unlockTime;
     private int castCount;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "hero_id")
+    private List<TSkillData> skillDatas = new ArrayList<>();
 
     public void setLastCast(Timestamp lastCast) {
 
