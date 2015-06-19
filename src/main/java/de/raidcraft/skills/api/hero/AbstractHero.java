@@ -248,10 +248,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void setWeapon(CustomItemStack item) {
+    public boolean setWeapon(CustomItemStack item) {
 
-        super.setWeapon(item);
-        if (item != null) addAttributes(item.getAttributes());
+        if (super.setWeapon(item)) {
+            addAttributes(item.getAttributes());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -273,10 +276,13 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void setArmor(CustomItemStack item) {
+    public boolean setArmor(CustomItemStack item) {
 
-        super.setArmor(item);
-        if (item != null) addAttributes(item.getAttributes());
+        if (super.setArmor(item)) {
+            addAttributes(item.getAttributes());
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -60,7 +60,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     boolean hasWeaponsEquiped();
 
-    void setWeapon(CustomItemStack weapon);
+    boolean setWeapon(CustomItemStack weapon);
 
     CustomItemStack removeWeapon(EquipmentSlot slot);
 
@@ -84,7 +84,7 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     Collection<CustomItemStack> getArmor();
 
-    void setArmor(CustomItemStack armorPiece);
+    boolean setArmor(CustomItemStack armorPiece);
 
     CustomItemStack getArmor(EquipmentSlot slot);
 
