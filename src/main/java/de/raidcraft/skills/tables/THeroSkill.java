@@ -47,7 +47,7 @@ public class THeroSkill implements LevelData {
     private Timestamp unlockTime;
     private int castCount;
     @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "hero_id")
+    @JoinColumn(name = "skill_id")
     private List<TSkillData> skillDatas = new ArrayList<>();
 
     public void setLastCast(Timestamp lastCast) {
