@@ -14,12 +14,11 @@ import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
-import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
 import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
 import de.raidcraft.skills.actionapi.trigger.ProfessionTrigger;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
-import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -41,11 +40,6 @@ import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
-import de.raidcraft.skills.conversations.CanChooseProfessionAction;
-import de.raidcraft.skills.conversations.ChooseProfessionAction;
-import de.raidcraft.skills.conversations.LinkExpPoolAction;
-import de.raidcraft.skills.conversations.ListProfessionSkills;
-import de.raidcraft.skills.conversations.MaxOutHeroAction;
 import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
@@ -285,11 +279,11 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
     private void registerConversationActions() {
 
-        ActionManager.registerAction(new ChooseProfessionAction());
-        ActionManager.registerAction(new ListProfessionSkills());
-        ActionManager.registerAction(new MaxOutHeroAction());
-        ActionManager.registerAction(new CanChooseProfessionAction());
-        ActionManager.registerAction(new LinkExpPoolAction());
+//        ActionManager.registerAction(new ChooseProfessionAction());
+//        ActionManager.registerAction(new ListProfessionSkills());
+//        ActionManager.registerAction(new MaxOutHeroAction());
+//        ActionManager.registerAction(new CanChooseProfessionAction());
+//        ActionManager.registerAction(new LinkExpPoolAction());
     }
 
     public SkillManager getSkillManager() {
