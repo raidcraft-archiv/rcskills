@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-public class CanChooseProfessionAction implements Requirement<Player> {
+public class CanChooseProfessionRequirement implements Requirement<Player> {
 
     @Override
     @Information(

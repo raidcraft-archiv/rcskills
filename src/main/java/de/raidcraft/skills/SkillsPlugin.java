@@ -40,6 +40,9 @@ import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
+import de.raidcraft.skills.conversations.CanChooseProfessionRequirement;
+import de.raidcraft.skills.conversations.ChooseProfessionAction;
+import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
@@ -199,8 +202,11 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
         ActionAPI.register(this)
                 .action(new AddHeroExpAction())
+                .action(new ChooseProfessionAction())
+                .action(new ListProfessionSkills())
                 .trigger(new SkillTrigger())
                 .trigger(new ProfessionTrigger())
+                .requirement(new CanChooseProfessionRequirement())
                 .requirement(new SkillUseRequirement())
                 .requirement(new LevelRequirement())
                 .requirement(new Requirement<Player>() {
