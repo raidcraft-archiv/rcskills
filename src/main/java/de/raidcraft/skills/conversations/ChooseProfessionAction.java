@@ -3,7 +3,6 @@ package de.raidcraft.skills.conversations;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.commands.QueuedCommand;
-import de.raidcraft.api.config.builder.ConfigGenerator;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.conversations.answer.Answer;
 import de.raidcraft.api.conversations.conversation.Conversation;
@@ -28,7 +27,7 @@ import java.util.Optional;
 public class ChooseProfessionAction implements Action<Player> {
 
     @Override
-    @ConfigGenerator.Information(
+    @Information(
             value = "profession.choose",
             desc = "Chooses the given profession for the player.",
             conf = {
@@ -91,7 +90,12 @@ public class ChooseProfessionAction implements Action<Player> {
                                             + profession.getFriendlyName() + " wählen willst?" +
                                             (cost > 0.0 ? "| Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""))
                                     .addAnswer(Answer.of("Ja bin ich.")
-                                            .addAction(Action.ofMethod(this, "changeProfession", hero, profession, quiet)))
+                                            .addAction(Action.of(ChooseProfessionAction.class)
+                                                    .withArgs("profession", profession.getName())
+                                                    .withArgs("confirmed", true)
+                                                    .withArgs("quiet", quiet)
+                                                    .withArgs("force", forced)
+                                            ))
                                     .addAnswer(Answer.of("Nein, ich habe es mir anders überlegt.")
                                             .addAction(Action.of(EndConversationAction.class)));
                             activeConversation.get().changeToStage(stage);

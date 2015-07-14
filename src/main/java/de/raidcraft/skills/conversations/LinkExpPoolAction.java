@@ -1,6 +1,7 @@
 package de.raidcraft.skills.conversations;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.action.Action;
 import de.raidcraft.rcconversations.api.action.AbstractAction;
 import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
@@ -14,15 +15,25 @@ import de.raidcraft.skills.api.path.Path;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 /**
  * @author Silthus
  */
 @ActionInformation(name = "LINK_EXP_POOL")
-public class LinkExpPoolAction extends AbstractAction {
+public class LinkExpPoolAction implements Action<Player> {
 
     @Override
-    public void run(Conversation conversation, ActionArgumentList args) throws ActionArgumentException {
+    @Information(
+            value = "exppool.link",
+            desc = "Links the EXP Pool to the active profession of the given path.",
+            conf = {
+                    "path"
+            },
+            aliases = {"LINK_EXP_POOL"}
+    )
+    public void accept(Player player, ConfigurationSection config) {
 
         SkillsPlugin plugin = RaidCraft.getComponent(SkillsPlugin.class);
         Hero hero = plugin.getCharacterManager().getHero(conversation.getPlayer());
