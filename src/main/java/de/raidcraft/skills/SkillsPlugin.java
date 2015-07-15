@@ -43,6 +43,7 @@ import de.raidcraft.skills.config.PathConfig;
 import de.raidcraft.skills.conversations.CanChooseProfessionRequirement;
 import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
+import de.raidcraft.skills.conversations.MaxOutHeroAction;
 import de.raidcraft.skills.items.SkillsRequirementProvider;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
@@ -145,10 +146,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
 
                 try {
-                    if (Bukkit.getPluginManager().getPlugin("RCConversations") != null) {
-                        // lets register our conversation actions
-                        registerConversationActions();
-                    }
                     if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
                         try {
                             RaidCraft.registerItemAttachmentProvider(getSkillManager());
@@ -204,6 +201,7 @@ public class SkillsPlugin extends BasePlugin implements Component {
                 .action(new AddHeroExpAction())
                 .action(new ChooseProfessionAction())
                 .action(new ListProfessionSkills())
+                .action(new MaxOutHeroAction())
                 .trigger(new SkillTrigger())
                 .trigger(new ProfessionTrigger())
                 .requirement(new CanChooseProfessionRequirement())
@@ -281,15 +279,6 @@ public class SkillsPlugin extends BasePlugin implements Component {
 
 
         Bukkit.getPluginManager().registerEvents(new BindListener(this), this);
-    }
-
-    private void registerConversationActions() {
-
-//        ActionManager.registerAction(new ChooseProfessionAction());
-//        ActionManager.registerAction(new ListProfessionSkills());
-//        ActionManager.registerAction(new MaxOutHeroAction());
-//        ActionManager.registerAction(new CanChooseProfessionAction());
-//        ActionManager.registerAction(new LinkExpPoolAction());
     }
 
     public SkillManager getSkillManager() {

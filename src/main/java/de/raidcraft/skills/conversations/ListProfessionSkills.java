@@ -2,6 +2,8 @@ package de.raidcraft.skills.conversations;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.conversations.Conversations;
+import de.raidcraft.api.conversations.conversation.ConversationEndReason;
 import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
@@ -54,14 +56,16 @@ public class ListProfessionSkills implements Action<Player> {
                 }
                 msg.then(skill.getFriendlyName()).color(color).formattedTooltip(SkillUtil.getSkillTooltip(skill, true));
             }
+            msg.send(player);
 
-            msg.send(hero.getPlayer());
             new FancyMessage("Du kannst dir deine Skills auch mit ")
                     .color(ChatColor.YELLOW).then("/skills ").color(ChatColor.AQUA).command("/skills")
-                    .then("anzeigen lassen.").color(ChatColor.YELLOW);
+                    .then("anzeigen lassen.").color(ChatColor.YELLOW)
+            .send(player);
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            Conversations.endActiveConversation(player, ConversationEndReason.ERROR);
         }
     }
 }
