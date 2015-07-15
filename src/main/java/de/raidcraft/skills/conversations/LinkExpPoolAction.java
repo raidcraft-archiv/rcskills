@@ -4,7 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.conversations.conversation.ConversationEndReason;
-import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.hero.Option;
@@ -19,7 +18,6 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-@ActionInformation(name = "LINK_EXP_POOL")
 public class LinkExpPoolAction implements Action<Player> {
 
     @Override

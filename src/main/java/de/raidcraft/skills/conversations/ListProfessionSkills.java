@@ -4,7 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.conversations.conversation.ConversationEndReason;
-import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -20,7 +19,6 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-@ActionInformation(name = "LIST_PROFESSION_SKILLS")
 public class ListProfessionSkills implements Action<Player> {
 
     @Override
