@@ -52,7 +52,7 @@ public class MaxOutHeroAction implements Action<Player> {
             if (config.getBoolean("confirmed")) {
                 maxOut(hero);
             } else {
-                Optional<Conversation<Player>> activeConversation = Conversations.getActiveConversation(player);
+                Optional<Conversation> activeConversation = Conversations.getActiveConversation(player);
                 if (activeConversation.isPresent()) {
                     Stage stage = Stage.confirm(activeConversation.get(),
                             "Bist du dir sicher dass du alle deine Spezialisierungen auf das max. Level setzen möchtest?",

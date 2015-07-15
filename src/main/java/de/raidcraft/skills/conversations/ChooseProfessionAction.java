@@ -6,9 +6,9 @@ import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.conversations.answer.Answer;
 import de.raidcraft.api.conversations.conversation.Conversation;
+import de.raidcraft.api.conversations.conversation.ConversationEndReason;
 import de.raidcraft.api.conversations.stage.Stage;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.conversations.actions.EndConversationAction;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.exceptions.UnknownProfessionException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
@@ -76,7 +76,7 @@ public class ChooseProfessionAction implements Action<Player> {
                     hero.sendMessage("", ChatColor.AQUA + "Viel Spaß mit deiner neuen " + profession.getPath().getFriendlyName() + " Spezialisierung!", "");
                 } else {
                     if (cost <= 0.0 || RaidCraft.getEconomy().hasEnough(hero.getPlayer().getUniqueId(), cost)) {
-                        Optional<Conversation<Player>> activeConversation = Conversations.getActiveConversation(player);
+                        Optional<Conversation> activeConversation = Conversations.getActiveConversation(player);
                         if (!activeConversation.isPresent()) {
                             // issue a confirm command
                             try {
@@ -97,7 +97,7 @@ public class ChooseProfessionAction implements Action<Player> {
                                                     .withArgs("force", forced)
                                             ))
                                     .addAnswer(Answer.of("Nein, ich habe es mir anders überlegt.")
-                                            .addAction(Action.of(EndConversationAction.class)));
+                                            .addAction(Action.endConversation(ConversationEndReason.ENDED)));
                             activeConversation.get().changeToStage(stage);
                         }
                     } else {
