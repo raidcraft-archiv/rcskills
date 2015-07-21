@@ -74,14 +74,14 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + getName() + " is disabled!");
+            throw new UnknownSkillException("The skill " + (useAlias() ? getAlias() : getName()) + " is disabled!");
         }
 
         // its reflection time yay!
         try {
             Skill skill = constructor.newInstance(null, config, null, null);
             if (!skill.isEnabled()) {
-                throw new UnknownSkillException("The Skill " + getName() + " is disabled!");
+                throw new UnknownSkillException("The skill " + (useAlias() ? getAlias() : getName()) + " is disabled!");
             }
             skill.load(config.getData());
             return skill;
@@ -133,7 +133,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         }
 
         if (!config.isEnabled()) {
-            throw new UnknownSkillException("The skill " + getName() + " is disabled!");
+            throw new UnknownSkillException("The skill " + (useAlias() ? getAlias() : getName()) + " is disabled!");
         }
 
         // also save the profession to generate a db entry if none exists
@@ -146,7 +146,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         try {
             Skill skill = constructor.newInstance(hero, config, profession, database);
             if (!skill.isEnabled()) {
-                throw new UnknownSkillException("The Skill " + getName() + " is disabled!");
+                throw new UnknownSkillException("The skill " + (useAlias() ? getAlias() : getName()) + " is disabled!");
             }
             // this is called after the skill is created in order
             // to give local variables of the skill a chance to init
