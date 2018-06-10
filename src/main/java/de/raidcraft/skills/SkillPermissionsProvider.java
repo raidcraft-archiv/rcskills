@@ -12,11 +12,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.skills.PermissionSkill;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**

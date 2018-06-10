@@ -9,12 +9,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
-import de.raidcraft.skills.api.combat.action.AbilityAction;
-import de.raidcraft.skills.api.combat.action.Attack;
-import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.action.HealAction;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
-import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.action.*;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.Effect;
@@ -41,11 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -176,7 +167,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return effects;
     }
 
-    public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E getEffect(CharacterTemplate target, Class<E> eClass) {
 
         return target.getEffect(eClass, this);
     }
@@ -189,7 +180,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         }
     }
 
-    public final <E extends Effect<S>, S> E getEffect(Class<E> eClass) throws CombatException {
+    public final <E extends Effect<S>, S> E getEffect(Class<E> eClass) {
 
         return getHolder().getEffect(eClass, this);
     }
@@ -337,24 +328,24 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return getHolder().getBlockTarget(getTotalRange());
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage) {
 
         return attack(target, damage, null);
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, double damage, EntityAttackCallback callback) {
 
         EntityAttack attack = new EntityAttack(getHolder(), target, damage, callback, getTypes().toArray(new EffectType[getTypes().size()]));
         attack.addAttackElement(getElements());
         return attack;
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target) {
 
         return attack(target, getTotalDamage(), null);
     }
 
-    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
+    public final Attack<CharacterTemplate, CharacterTemplate> attack(CharacterTemplate target, EntityAttackCallback callback) {
 
         return attack(target, getTotalDamage(), callback);
     }
@@ -369,24 +360,24 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return new HealAction<>(getHolder(), target, amount);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type) {
 
         return rangedAttack(type, getTotalDamage(), null);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage, T callback) {
 
         RangedAttack<T> attack = new RangedAttack<>(getHolder(), type, damage, callback);
         attack.addAttackElement(getElements());
         return attack;
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, double damage) {
 
         return rangedAttack(type, damage, null);
     }
 
-    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, T callback) throws CombatException {
+    public final <T extends ProjectileCallback> RangedAttack<T> rangedAttack(ProjectileType type, T callback) {
 
         return rangedAttack(type, getTotalDamage(), callback);
     }
@@ -396,7 +387,7 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(getTarget(), getTotalDamage(), callback);
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate target, double damage, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, double damage, EntityAttackCallback callback) {
 
         MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, callback);
         magicalAttack.addAttackElement(getElements());
@@ -420,12 +411,12 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return magicalAttack(getTarget(), damage, callback);
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate target, EntityAttackCallback callback) {
 
         return magicalAttack(target, getTotalDamage(), callback);
     }
 
-    public final MagicalAttack magicalAttack(CharacterTemplate taraget, double damage) throws CombatException {
+    public final MagicalAttack magicalAttack(CharacterTemplate taraget, double damage) {
 
         return magicalAttack(taraget, damage, null);
     }

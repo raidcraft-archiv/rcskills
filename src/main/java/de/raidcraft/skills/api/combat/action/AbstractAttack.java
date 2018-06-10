@@ -10,12 +10,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.util.MathUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus

@@ -15,16 +15,12 @@ import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
 import de.raidcraft.util.FancyPaginatedResult;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Silthus

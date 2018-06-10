@@ -9,11 +9,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.util.EffectUtil;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 
 /**
  * @author Silthus
@@ -48,8 +44,8 @@ public class Bleed extends PeriodicExpirableEffect<Ability> {
         World world = target.getEntity().getWorld();
         Location location = target.getEntity().getLocation();
         EffectUtil.playFirework(world, location, BLEED_EFFECT);
-        world.playSound(location, Sound.SHEEP_SHEAR, 10F, 1F);
-        world.playSound(location, Sound.SLIME_ATTACK, 10F, 0.0001F);
+        world.playSound(location, Sound.ENTITY_SHEEP_SHEAR, 10F, 1F);
+        world.playSound(location, Sound.ENTITY_SLIME_ATTACK, 10F, 0.0001F);
         warn("Blutungseffekt erhalten!");
     }
 

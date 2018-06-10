@@ -1,11 +1,7 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.CustomWeapon;
-import de.raidcraft.api.items.EquipmentSlot;
-import de.raidcraft.api.items.InventorySlot;
-import de.raidcraft.api.items.WeaponType;
+import de.raidcraft.api.items.*;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
@@ -28,27 +24,14 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus

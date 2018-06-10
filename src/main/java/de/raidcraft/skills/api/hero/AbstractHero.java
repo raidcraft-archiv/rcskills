@@ -3,13 +3,7 @@ package de.raidcraft.skills.api.hero;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.events.RCPlayerChangedProfessionEvent;
 import de.raidcraft.api.events.RCPlayerGainExpEvent;
-import de.raidcraft.api.items.ArmorType;
-import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.CustomWeapon;
-import de.raidcraft.api.items.EquipmentSlot;
-import de.raidcraft.api.items.ItemAttribute;
-import de.raidcraft.api.items.WeaponType;
+import de.raidcraft.api.items.*;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.ProfessionManager;
 import de.raidcraft.skills.Scoreboards;
@@ -54,12 +48,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus

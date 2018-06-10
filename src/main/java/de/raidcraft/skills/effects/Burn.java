@@ -34,7 +34,7 @@ public class Burn extends PeriodicExpirableEffect<Ability> {
     public void apply(CharacterTemplate target) {
 
         Location location = target.getEntity().getLocation();
-        location.getWorld().playSound(location, Sound.FIRE_IGNITE, 10F, 1F);
+        location.getWorld().playSound(location, Sound.BLOCK_FIRE_AMBIENT, 10F, 1F);
         renew(target);
     }
 

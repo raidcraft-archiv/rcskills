@@ -1,11 +1,7 @@
 package de.raidcraft.skills.api.character;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.CustomWeapon;
-import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.api.items.*;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.Ability;
@@ -34,36 +30,14 @@ import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
-import de.raidcraft.util.BlockUtil;
-import de.raidcraft.util.BukkitUtil;
-import de.raidcraft.util.EffectUtil;
-import de.raidcraft.util.LocationUtil;
-import de.raidcraft.util.MathUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import de.raidcraft.util.*;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +74,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             if (!usingHealthBar && entity.getCustomName() != null && !entity.getCustomName().equals("")) {
                 this.name = entity.getCustomName();
             } else if (entity instanceof Player) {
-                this.name = ((Player) entity).getName();
+                this.name = entity.getName();
             } else {
                 this.name = entity.getType().getName();
             }
@@ -127,36 +101,36 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         switch (type) {
 
             case COW:
-                return Sound.COW_IDLE;
+                return Sound.ENTITY_COW_AMBIENT;
             case BLAZE:
-                return Sound.BLAZE_DEATH;
+                return Sound.ENTITY_BLAZE_DEATH;
             case CHICKEN:
-                return Sound.CHICKEN_HURT;
+                return Sound.ENTITY_CHICKEN_HURT;
             case CREEPER:
-                return Sound.CREEPER_DEATH;
+                return Sound.ENTITY_CREEPER_DEATH;
             case SKELETON:
-                return Sound.SKELETON_DEATH;
+                return Sound.ENTITY_SKELETON_DEATH;
             case IRON_GOLEM:
-                return Sound.IRONGOLEM_DEATH;
+                return Sound.ENTITY_IRONGOLEM_DEATH;
             case GHAST:
-                return Sound.GHAST_DEATH;
+                return Sound.ENTITY_GHAST_DEATH;
             case PIG:
-                return Sound.PIG_DEATH;
+                return Sound.ENTITY_PIG_DEATH;
             case OCELOT:
-                return Sound.CAT_HIT;
+                return Sound.ENTITY_CAT_HURT;
             case SHEEP:
-                return Sound.SHEEP_IDLE;
+                return Sound.ENTITY_SHEEP_AMBIENT;
             case SPIDER:
             case CAVE_SPIDER:
-                return Sound.SPIDER_DEATH;
+                return Sound.ENTITY_SPIDER_DEATH;
             case WOLF:
-                return Sound.WOLF_DEATH;
+                return Sound.ENTITY_WOLF_DEATH;
             case ZOMBIE:
-                return Sound.ZOMBIE_DEATH;
+                return Sound.ENTITY_ZOMBIE_DEATH;
             case PIG_ZOMBIE:
-                return Sound.ZOMBIE_PIG_DEATH;
+                return Sound.ENTITY_ZOMBIE_PIG_DEATH;
             default:
-                return Sound.HURT_FLESH;
+                return Sound.ENTITY_GENERIC_DEATH;
         }
     }
 
@@ -821,7 +795,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             // lets check priorities
             if (existingEffect instanceof Stackable) {
                 // we dont replace or renew stackable effects, we increase their stacks :)
-                ((Stackable) existingEffect).setStacks(((Stackable) existingEffect).getStacks() + 1);
+                existingEffect.setStacks(existingEffect.getStacks() + 1);
                 if (existingEffect instanceof Combat) {
                     lastCombat = (Combat) existingEffect;
                 }
@@ -965,7 +939,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    public final void removeEffectTypes(EffectType type) throws CombatException {
+    public final void removeEffectTypes(EffectType type) {
 
         List<Effect> effectsToRemove = new ArrayList<>();
         for (Map<Object, Effect> effectMap : effects.values()) {
@@ -1113,7 +1087,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public List<CharacterTemplate> getNearbyTargets(int range, boolean friendly) throws CombatException {
 
         return getNearbyTargets(range).stream()
-                .filter(target -> friendly ? target.isFriendly(this) : !target.isFriendly(this))
+                .filter(target -> friendly == target.isFriendly(this))
                 .collect(Collectors.toList());
     }
 

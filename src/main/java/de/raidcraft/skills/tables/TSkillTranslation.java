@@ -3,16 +3,7 @@ package de.raidcraft.skills.tables;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Represents a Ebean-mapped skill translation object model.

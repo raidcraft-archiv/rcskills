@@ -8,13 +8,12 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.skills.SkillsPlugin;
-import de.raidcraft.skills.api.exceptions.InvalidChoiceException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.util.FancyPaginatedResult;
 import de.raidcraft.util.UUIDUtil;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -138,15 +137,13 @@ public class ProfessionCommands {
                 }
                 new QueuedCommand(sender, this, "chooseProfession", hero, profession);
             }
-        } catch (InvalidChoiceException e) {
-            throw new CommandException(e.getMessage());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             throw new CommandException(e.getMessage());
         }
     }
 
-    public void chooseProfession(Hero hero, Profession profession) throws InvalidChoiceException {
+    public void chooseProfession(Hero hero, Profession profession) {
 
         if (!profession.isMeetingAllRequirements(hero.getPlayer())) {
             return;

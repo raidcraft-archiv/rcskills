@@ -15,12 +15,7 @@ import de.raidcraft.util.EntityUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Score;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**

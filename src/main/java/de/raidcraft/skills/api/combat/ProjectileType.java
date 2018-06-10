@@ -2,19 +2,7 @@ package de.raidcraft.skills.api.combat;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Fish;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SmallFireball;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.ThrownExpBottle;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.*;
 
 /**
  * @author Silthus
@@ -35,7 +23,7 @@ public enum ProjectileType {
 
     private final Class<? extends Projectile> clazz;
 
-    private ProjectileType(Class<? extends Projectile> clazz) {
+    ProjectileType(Class<? extends Projectile> clazz) {
 
         this.clazz = clazz;
     }

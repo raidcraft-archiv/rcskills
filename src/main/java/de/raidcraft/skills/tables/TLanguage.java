@@ -4,12 +4,7 @@ import com.avaje.ebean.validation.Length;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Represents a Ebean-mapped language object model.

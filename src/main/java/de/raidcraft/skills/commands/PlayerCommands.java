@@ -13,7 +13,7 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -196,7 +196,7 @@ public class PlayerCommands {
             desc = "Kicks the player and clears his cache"
     )
     @CommandPermissions("rcskills.player.cmd.clearcache")
-    public void kick(CommandContext args, CommandSender sender) throws CommandException {
+    public void kick(CommandContext args, CommandSender sender) {
 
         final Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         hero.getPlayer().kickPlayer("Dein RPG Profil Cache wird geleert. Bitte warte 10 Sekunden.");

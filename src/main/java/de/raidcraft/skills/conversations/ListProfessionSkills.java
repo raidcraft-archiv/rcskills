@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.SkillUtil;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

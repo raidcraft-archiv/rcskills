@@ -90,14 +90,14 @@ public class ChooseProfessionAction implements Action<Player> {
                                             + profession.getFriendlyName() + " wählen willst?" +
                                             (cost > 0.0 ? "| Dies kostet dich " + RaidCraft.getEconomy().getFormattedAmount(ProfessionUtil.getProfessionChangeCost(profession)) : ""))
                                     .addAnswer(Answer.of("Ja bin ich.")
-                                            .addAction(Action.of(ChooseProfessionAction.class)
+                                            .addActionToAnswer(Action.of(ChooseProfessionAction.class)
                                                     .withArgs("profession", profession.getName())
                                                     .withArgs("confirmed", true)
                                                     .withArgs("quiet", quiet)
                                                     .withArgs("force", forced)
                                             ))
                                     .addAnswer(Answer.of("Nein, ich habe es mir anders überlegt.")
-                                            .addAction(Action.endConversation(ConversationEndReason.ENDED)));
+                                            .addActionToAnswer(Action.endConversation(ConversationEndReason.ENDED)));
                             activeConversation.get().changeToStage(stage);
                         }
                     } else {

@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
