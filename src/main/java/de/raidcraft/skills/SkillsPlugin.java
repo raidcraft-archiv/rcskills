@@ -55,7 +55,8 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class SkillsPlugin extends BasePlugin implements Component {
+public class
+SkillsPlugin extends BasePlugin implements Component {
 
     private SkillManager skillManager;
     private AbilityManager abilityManager;

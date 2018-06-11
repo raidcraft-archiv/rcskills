@@ -54,7 +54,9 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
     protected void createDefaults() {
 
         // simply create new config
-        SkillProperties config = plugin.configure(new SkillConfig(this));
+        SkillConfig skillConfig = new SkillConfig(this);
+        skillConfig.setSaveDefaults(true);
+        SkillProperties config = plugin.configure(skillConfig);
         // calling these methods will create default entries if none exist
         config.getFriendlyName();
         config.getDescription();

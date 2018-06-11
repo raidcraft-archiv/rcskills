@@ -30,6 +30,8 @@ public class LevelConfig extends ConfigurationBase<SkillsPlugin> {
 
     private void loadFormulas(ConfigurationSection section, Map<String, ConfigurationSection> map) {
 
+        if (section == null) return;
+
         for (String key : section.getKeys(false)) {
             map.put(key, section.getConfigurationSection(key));
         }
