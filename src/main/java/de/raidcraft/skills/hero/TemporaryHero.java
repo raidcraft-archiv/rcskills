@@ -18,7 +18,5 @@ public class TemporaryHero extends AbstractHero {
     public void save() {
 
         // do not save
-        saveProfessions();
-        saveSkills();
     }
 }

@@ -363,7 +363,7 @@ public final class HeroUtil {
             String nmsver = Bukkit.getServer().getClass().getPackage().getName();
             nmsver = nmsver.substring(nmsver.lastIndexOf(".") + 1);
 
-            if (nmsver.equalsIgnoreCase("v1_8_R1") || !nmsver.startsWith("v1_8_")) {
+            if (nmsver.equalsIgnoreCase("v1_8_R1") || nmsver.startsWith("v1_8_")) {
                 Class<?> chatSerializer = ReflectionUtil.getNmsClass("net.minecraft.server", "ChatSerializer");
                 Class<?> chatBaseComponent = ReflectionUtil.getNmsClass("net.minecraft.server", "IChatBaseComponent");
                 Method m3 = chatSerializer.getDeclaredMethod("a", String.class);
