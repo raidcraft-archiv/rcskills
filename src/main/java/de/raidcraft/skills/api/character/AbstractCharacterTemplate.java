@@ -894,16 +894,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <E extends Effect> List<E> getEffects(Class<E> eClass) {
 
-        List<E> effects = new ArrayList<>();
-        this.effects.values().stream().forEach(entry -> effects.addAll((Collection<? extends E>) entry.values()));
-        return effects;
+        return this.effects.get(eClass).values().stream()
+                .map(eClass::cast)
+                .collect(Collectors.toList());
     }
 
     @Nullable
-    @SuppressWarnings("unchecked")
     public <E extends Effect> E getGlobalEffect(Class<E> eClass) {
 
         return getEffect(eClass, null);
@@ -911,7 +909,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
 
     @Override
     @Nullable
-    @SuppressWarnings("unchecked")
     public <E extends Effect> E getEffect(Class<E> eClass, Object source) {
 
         Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());

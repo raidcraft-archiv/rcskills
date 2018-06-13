@@ -25,6 +25,8 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
     private final SkillsPlugin plugin;
     private final Map<String, AbilityFactory> abilityFactories = new CaseInsensitiveMap<>();
     private final Map<String, Class<? extends Ability>> abilityClasses = new CaseInsensitiveMap<>();
+    private int loadedAbilities;
+    private int failedAbilities;
 
     protected AbilityManager(SkillsPlugin plugin) {
 
@@ -43,8 +45,10 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
                 registerClass(clazz);
             } catch (UnknownSkillException e) {
                 plugin.getLogger().warning(e.getMessage());
+                failedAbilities++;
             }
         }
+        plugin.getLogger().info("Loaded " + loadedAbilities + "/" + (loadedAbilities + failedAbilities) + " skills.");
     }
 
     /**
@@ -69,7 +73,7 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
             AbilityFactory factory = new AbilityFactory(plugin, skillClass, skillName);
             abilityFactories.put(skillName, factory);
             abilityClasses.put(skillName, skillClass);
-            // lets create the skill once to make a default config
+            loadedAbilities++;
         } else {
             plugin.getLogger().warning("Found ability without AbilityInformation: " + skillClass.getCanonicalName());
         }
