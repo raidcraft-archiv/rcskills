@@ -11,7 +11,9 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.SkillUtil;
-import de.raidcraft.util.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -44,7 +46,7 @@ public class ListProfessionSkills implements Action<Player> {
 
             int i = 0;
             ChatColor color;
-            FancyMessage msg = new FancyMessage("");
+            ComponentBuilder msg = new ComponentBuilder("");
             for (Skill skill : profession.getSkills()) {
                 i++;
                 if (i % 2 == 0) {
@@ -52,14 +54,16 @@ public class ListProfessionSkills implements Action<Player> {
                 } else {
                     color = ChatColor.WHITE;
                 }
-                msg.then(skill.getFriendlyName()).color(color).formattedTooltip(SkillUtil.getSkillTooltip(skill, true));
+                msg.append(skill.getFriendlyName()).color(color.asBungee())
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, SkillUtil.getSkillTooltip(skill, true)));
             }
-            msg.send(player);
+            player.spigot().sendMessage(msg.create());
 
-            new FancyMessage("Du kannst dir deine Skills auch mit ")
-                    .color(ChatColor.YELLOW).then("/skills ").color(ChatColor.AQUA).command("/skills")
-                    .then("anzeigen lassen.").color(ChatColor.YELLOW)
-            .send(player);
+            player.spigot().sendMessage(new ComponentBuilder("Du kannst dir deine Skills auch mit ")
+                    .color(ChatColor.YELLOW.asBungee()).append("/skills ").color(ChatColor.AQUA.asBungee())
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/skills"))
+                    .append("anzeigen lassen.").color(ChatColor.YELLOW.asBungee())
+                    .create());
         } catch (UnknownSkillException | UnknownProfessionException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();

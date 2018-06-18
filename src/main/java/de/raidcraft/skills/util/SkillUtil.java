@@ -8,11 +8,14 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.util.fanciful.FancyMessage;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -143,37 +146,37 @@ public final class SkillUtil {
         return body;
     }
 
-    public static List<FancyMessage> getSkillTooltip(Skill skill, boolean isTooltip) {
+    public static BaseComponent[] getSkillTooltip(Skill skill, boolean isTooltip) {
 
-        List<FancyMessage> messages = new ArrayList<>();
-        messages.add(new FancyMessage("-------").color(ChatColor.YELLOW)
-                .then(" [").color(ChatColor.BLACK)
-                .then(skill.getRequiredLevel() + "").color(ChatColor.AQUA)
-                .then("] ").color(ChatColor.BLACK)
-                .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                .then(" (").color(ChatColor.YELLOW)
-                .then(skill.getProfession().getProperties().getTag()).color(ChatColor.GOLD)
-                .formattedTooltip(isTooltip ? new ArrayList<>() : ProfessionUtil.getProfessionTooltip(skill.getProfession(), true))
-                .then(")").color(ChatColor.YELLOW)
-                .then(" -------").color(ChatColor.YELLOW));
+        List<BaseComponent> messages = new ArrayList<>();
+        messages.addAll(Arrays.asList(new ComponentBuilder("-------").color(ChatColor.YELLOW)
+                .append(" [").color(ChatColor.BLACK)
+                .append(skill.getRequiredLevel() + "").color(ChatColor.AQUA)
+                .append("] ").color(ChatColor.BLACK)
+                .append(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                .append(" (").color(ChatColor.YELLOW)
+                .append(skill.getProfession().getProperties().getTag()).color(ChatColor.GOLD)
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, isTooltip ? new BaseComponent[0] : ProfessionUtil.getProfessionTooltip(skill.getProfession(), true)))
+                .append(")").color(ChatColor.YELLOW)
+                .append(" -------").color(ChatColor.YELLOW).create()));
 
         String description = skill.getDescription();
         if (description != null && !description.equals("")) {
             String[] split = description.split("\\|");
             for (String str : split) {
-                messages.add(new FancyMessage(str).color(ChatColor.GOLD).style(ChatColor.ITALIC));
+                messages.addAll(Arrays.asList(new ComponentBuilder(str).color(ChatColor.GOLD).italic(true).create()));
             }
         }
 
         if (skill instanceof Levelable) {
-            messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
-                            .then("/").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                            .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
-                            .then("/").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
+            messages.addAll(Arrays.asList(new ComponentBuilder("Level: ").color(ChatColor.YELLOW)
+                    .append(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                    .append("/").color(ChatColor.YELLOW)
+                    .append(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                    .append("   |   ").color(ChatColor.GREEN).append("EXP: ").color(ChatColor.YELLOW)
+                    .append(((Levelable) skill).getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                    .append("/").color(ChatColor.YELLOW)
+                    .append(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA).create())
             );
         }
 
@@ -181,7 +184,7 @@ public final class SkillUtil {
                 .filter(resource -> (((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0) != 0)
                 .collect(Collectors.toSet());
         if (!resources.isEmpty()) {
-            messages.add(new FancyMessage("Skill Kosten:").color(ChatColor.YELLOW));
+            messages.addAll(Arrays.asList(new ComponentBuilder("Skill Kosten:").color(ChatColor.YELLOW).create()));
         }
         for (Resource resource : resources) {
             double resourceCost = ((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
@@ -190,32 +193,33 @@ public final class SkillUtil {
                 continue;
             }
 
-            FancyMessage msg = new FancyMessage("  - ").color(ChatColor.YELLOW);
+            ComponentBuilder msg = new ComponentBuilder("  - ").color(ChatColor.YELLOW);
             if (resourceCost < 0) {
-                msg.then("+" + resourceCost).color(ChatColor.GREEN);
+                msg.append("+" + resourceCost).color(ChatColor.GREEN);
             } else {
-                msg.then("-" + resourceCost).color(ChatColor.DARK_RED);
+                msg.append("-" + resourceCost).color(ChatColor.DARK_RED);
             }
-            msg.then(" ").then(resource.getFriendlyName()).color(ChatColor.YELLOW);
-            messages.add(msg);
+            msg.append(" ").append(resource.getFriendlyName()).color(ChatColor.YELLOW);
+            messages.addAll(Arrays.asList(msg.create()));
         }
 
         if (skill.getRequirements().size() > 0) {
-            messages.add(new FancyMessage("Vorraussetzungen:").color(ChatColor.YELLOW));
-            messages.addAll(skill.getRequirements().stream()
+            messages.addAll(Arrays.asList(new ComponentBuilder("Vorraussetzungen:").color(ChatColor.YELLOW).create()));
+            skill.getRequirements().stream()
                     .filter(requirement -> requirement instanceof Reasonable)
-                    .map(requirement -> new FancyMessage("  - ").color(ChatColor.YELLOW)
-                        .then(((Reasonable) requirement).getReason(skill.getHolder().getPlayer()))
-                        .color(requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.DARK_RED)).collect(Collectors.toList()));
+                    .map(requirement -> new ComponentBuilder("  - ").color(ChatColor.YELLOW)
+                            .append(((Reasonable) requirement).getReason(skill.getHolder().getPlayer()))
+                            .color(requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.DARK_RED).create())
+                    .forEach(components -> messages.addAll(Arrays.asList(components)));
         }
 
         if (skill.getUsage().length > 0) {
-            messages.add(new FancyMessage("Zusatzinformationen:").color(ChatColor.YELLOW));
+            messages.addAll(Arrays.asList(new ComponentBuilder("Zusatzinformationen:").color(ChatColor.YELLOW).create()));
             for (String str : skill.getUsage()) {
-                messages.add(new FancyMessage(str).color(ChatColor.YELLOW));
+                messages.addAll(Arrays.asList(new ComponentBuilder(str).color(ChatColor.YELLOW).create()));
             }
         }
 
-        return messages;
+        return messages.toArray(new BaseComponent[0]);
     }
 }

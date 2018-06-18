@@ -11,9 +11,11 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.ProfessionUtil;
-import de.raidcraft.util.FancyPaginatedResult;
+import de.raidcraft.util.ComponentPaginatedResult;
 import de.raidcraft.util.UUIDUtil;
-import de.raidcraft.util.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -67,20 +69,21 @@ public class ProfessionCommands {
 
         Collections.sort(professions);
 
-        new FancyPaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
+        new ComponentPaginatedResult<Profession>("Tag   -   Spezialisierung   -   Pfad   -   Level") {
 
             @Override
-            public FancyMessage format(Profession profession) {
+            public BaseComponent[] format(Profession profession) {
 
-                return new FancyMessage("[").color(ChatColor.YELLOW)
-                        .then(profession.getProperties().getTag()).color(ChatColor.AQUA)
-                        .then("]").color(ChatColor.YELLOW)
-                        .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
-                        .then(" - ").color(ChatColor.YELLOW)
-                        .then(profession.getPath().getFriendlyName()).color(ChatColor.GRAY).style(ChatColor.ITALIC)
-                        .then(" - ").color(ChatColor.YELLOW)
-                        .then(profession.getAttachedLevel().getLevel() + "").color(profession.getAttachedLevel().getLevel() > 0 ? ChatColor.GREEN : ChatColor.DARK_RED);
+                return new ComponentBuilder("[").color(ChatColor.YELLOW.asBungee())
+                        .append(profession.getProperties().getTag()).color(ChatColor.AQUA.asBungee())
+                        .append("]").color(ChatColor.YELLOW.asBungee())
+                        .append(" ").append(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN.asBungee() : ChatColor.DARK_RED.asBungee())
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ProfessionUtil.getProfessionTooltip(profession, true)))
+                        .append(" - ").color(ChatColor.YELLOW.asBungee())
+                        .append(profession.getPath().getFriendlyName()).color(ChatColor.GRAY.asBungee()).italic(true)
+                        .append(" - ").color(ChatColor.YELLOW.asBungee())
+                        .append(profession.getAttachedLevel().getLevel() + "").color(profession.getAttachedLevel().getLevel() > 0 ? ChatColor.GREEN.asBungee() : ChatColor.DARK_RED.asBungee())
+                        .create();
             }
         }.display(sender, professions, args.getFlagInteger('p', 1));
     }
@@ -185,8 +188,6 @@ public class ProfessionCommands {
             profession = ProfessionUtil.getProfessionFromArgs(hero, args.getJoinedStrings(0));
         }
 
-        for (FancyMessage message : ProfessionUtil.getProfessionTooltip(profession, false)) {
-            message.send(sender);
-        }
+        sender.spigot().sendMessage(ProfessionUtil.getProfessionTooltip(profession, false));
     }
 }

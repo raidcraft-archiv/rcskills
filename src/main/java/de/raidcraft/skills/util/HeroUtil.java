@@ -18,8 +18,9 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.util.EntityUtil;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
-import de.raidcraft.util.fanciful.FancyMessage;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +31,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -260,92 +260,93 @@ public final class HeroUtil {
         }
     }
 
-    public static List<FancyMessage> getBasicHeroInfo(Hero hero, boolean isTooltip) {
+    public static List<BaseComponent> getBasicHeroInfo(Hero hero, boolean isTooltip) {
 
-        ArrayList<FancyMessage> messages = new ArrayList<>();
-        messages.add(new FancyMessage("Leben: ").color(ChatColor.YELLOW)
-                        .then((int) hero.getHealth() + "").color(EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()))
-                        .then("/").color(ChatColor.AQUA)
-                        .then((int) hero.getMaxHealth() + "").color(ChatColor.GREEN)
+        ArrayList<BaseComponent> messages = new ArrayList<>();
+        messages.addAll(Arrays.asList(new ComponentBuilder("Leben: ").color(ChatColor.YELLOW.asBungee())
+                .append((int) hero.getHealth() + "").color(EntityUtil.getHealthColor(hero.getHealth(), hero.getMaxHealth()).asBungee())
+                .append("/").color(ChatColor.AQUA.asBungee())
+                .append((int) hero.getMaxHealth() + "").color(ChatColor.GREEN.asBungee()).create())
         );
-        messages.add(new FancyMessage("Rüstung: ").color(ChatColor.YELLOW)
-                        .then(hero.getTotalArmorValue() + "").color(ChatColor.GRAY)
+        messages.addAll(Arrays.asList(new ComponentBuilder("Rüstung: ").color(ChatColor.YELLOW.asBungee())
+                .append(hero.getTotalArmorValue() + "").color(ChatColor.GRAY.asBungee()).create())
         );
-        messages.add(new FancyMessage("EXP Pool: ").color(ChatColor.YELLOW)
-                        .then(hero.getExpPool().getExp() + "").color(ChatColor.AQUA)
+        messages.addAll(Arrays.asList(new ComponentBuilder("EXP Pool: ").color(ChatColor.YELLOW.asBungee())
+                .append(hero.getExpPool().getExp() + "").color(ChatColor.AQUA.asBungee()).create())
         );
 
-        messages.add(new FancyMessage("Attribute:").color(ChatColor.YELLOW));
+        messages.addAll(Arrays.asList(new ComponentBuilder("Attribute:").color(ChatColor.YELLOW.asBungee()).create()));
         hero.getAttributes().stream()
                 .filter(attribute -> attribute.getCurrentValue() > 0)
                 .sorted(Comparator.comparing(Attribute::getFriendlyName)).forEachOrdered(attribute -> {
-                    FancyMessage msg = new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
-                            .then(attribute.getFriendlyName() + ": ").color(ChatColor.YELLOW)
-                            .then(attribute.getCurrentValue() + "");
+            ComponentBuilder msg = new ComponentBuilder("| ").color(ChatColor.DARK_PURPLE.asBungee())
+                    .append(attribute.getFriendlyName() + ": ").color(ChatColor.YELLOW.asBungee())
+                    .append(attribute.getCurrentValue() + "");
                     if (attribute.getCurrentValue() > attribute.getBaseValue()) {
-                        msg.color(ChatColor.GREEN);
+                        msg.color(ChatColor.GREEN.asBungee());
                     } else if (attribute.getCurrentValue() < attribute.getBaseValue()) {
-                        msg.color(ChatColor.DARK_RED);
+                        msg.color(ChatColor.DARK_RED.asBungee());
                     } else {
-                        msg.color(ChatColor.YELLOW);
+                        msg.color(ChatColor.YELLOW.asBungee());
                     }
-                    messages.add(msg);
+            messages.addAll(Arrays.asList(msg.create()));
                 }
         );
 
-        messages.add(new FancyMessage("Resourcen: ").color(ChatColor.YELLOW));
+        messages.addAll(Arrays.asList(new ComponentBuilder("Resourcen: ").color(ChatColor.YELLOW.asBungee()).create()));
         hero.getResources().stream()
                 .filter(Resource::isEnabled)
                 .sorted(Comparator.comparing(Resource::getFriendlyName))
                 .forEachOrdered(resource -> {
-                    FancyMessage msg = new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
-                            .then(resource.getFriendlyName() + ": ").color(ChatColor.YELLOW)
-                            .then((int) resource.getCurrent() + "").color(EntityUtil.getHealthColor(resource.getCurrent(), resource.getMax()))
-                            .then("/").color(ChatColor.YELLOW)
-                            .then((int) resource.getMax() + "").color(ChatColor.GREEN);
+                    ComponentBuilder msg = new ComponentBuilder("| ").color(ChatColor.DARK_PURPLE.asBungee())
+                            .append(resource.getFriendlyName() + ": ").color(ChatColor.YELLOW.asBungee())
+                            .append((int) resource.getCurrent() + "").color(EntityUtil.getHealthColor(resource.getCurrent(), resource.getMax()).asBungee())
+                            .append("/").color(ChatColor.YELLOW.asBungee())
+                            .append((int) resource.getMax() + "").color(ChatColor.GREEN.asBungee());
                     if (resource.getRegenInterval() > 0 && resource.getRegenValue() != 0) {
-                        msg.then(" (").color(ChatColor.YELLOW);
+                        msg.append(" (").color(ChatColor.YELLOW.asBungee());
                         if (resource.getRegenValue() > 0) {
-                            msg.then("+" + resource.getRegenValue()).color(ChatColor.GREEN)
-                                    .then("/").color(ChatColor.YELLOW)
-                                    .then(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
-                                    .color(ChatColor.AQUA);
+                            msg.append("+" + resource.getRegenValue()).color(ChatColor.GREEN.asBungee())
+                                    .append("/").color(ChatColor.YELLOW.asBungee())
+                                    .append(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
+                                    .color(ChatColor.AQUA.asBungee());
                         } else {
-                            msg.then("-" + -resource.getRegenValue()).color(ChatColor.DARK_RED)
-                                    .then("/").color(ChatColor.YELLOW)
-                                    .then(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
-                                    .color(ChatColor.AQUA);
+                            msg.append("-" + -resource.getRegenValue()).color(ChatColor.DARK_RED.asBungee())
+                                    .append("/").color(ChatColor.YELLOW.asBungee())
+                                    .append(TimeUtil.getFormattedTime(TimeUtil.ticksToSeconds(resource.getRegenInterval())))
+                                    .color(ChatColor.AQUA.asBungee());
                         }
                     }
-                    messages.add(msg);
+                    messages.addAll(Arrays.asList(msg.create()));
                 });
         return messages;
     }
 
-    public static List<FancyMessage> getHeroTooltip(Player hero, Player viewer, boolean isTooltip) {
+    public static List<BaseComponent> getHeroTooltip(Player hero, Player viewer, boolean isTooltip) {
 
         return getHeroTooltip(RaidCraft.getComponent(CharacterManager.class).getHero(hero), viewer, isTooltip);
     }
 
-    public static List<FancyMessage> getHeroTooltip(Hero hero, Player viewer, boolean isTooltip) {
+    public static List<BaseComponent> getHeroTooltip(Hero hero, Player viewer, boolean isTooltip) {
 
-        ArrayList<FancyMessage> messages = new ArrayList<>();
-        messages.add(new FancyMessage("[").color(ChatColor.YELLOW)
-                .then(hero.getPlayerLevel() + "").color(ChatColor.AQUA)
-                .then("]").color(ChatColor.YELLOW)
-                .then(" ").then(hero.getName()).color(getPvPColor(hero, viewer)));
+        ArrayList<BaseComponent> messages = new ArrayList<>();
+        messages.addAll(Arrays.asList(new ComponentBuilder("[").color(ChatColor.YELLOW.asBungee())
+                .append(hero.getPlayerLevel() + "").color(ChatColor.AQUA.asBungee())
+                .append("]").color(ChatColor.YELLOW.asBungee())
+                .append(" ").append(hero.getName()).color(getPvPColor(hero, viewer).asBungee()).create()));
 
         messages.addAll(getBasicHeroInfo(hero, isTooltip));
 
-        messages.add(new FancyMessage("Klassen & Berufe:").color(ChatColor.YELLOW));
-        messages.addAll(hero.getProfessions().stream()
+        messages.addAll(Arrays.asList(new ComponentBuilder("Klassen & Berufe:").color(ChatColor.YELLOW.asBungee()).create()));
+
+        hero.getProfessions().stream()
                 .filter(Profession::isActive)
-                .map(profession -> new FancyMessage("| ").color(ChatColor.DARK_PURPLE)
-                        .then("[").color(ChatColor.YELLOW)
-                        .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
-                        .then("]").color(ChatColor.YELLOW)
-                        .then(" ").then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY))
-                .collect(Collectors.toList()));
+                .map(profession -> new ComponentBuilder("| ").color(ChatColor.DARK_PURPLE.asBungee())
+                        .append("[").color(ChatColor.YELLOW.asBungee())
+                        .append(profession.getTotalLevel() + "").color(ChatColor.AQUA.asBungee())
+                        .append("]").color(ChatColor.YELLOW.asBungee())
+                        .append(" ").append(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN.asBungee() : ChatColor.GRAY.asBungee()).create())
+                .forEach(baseComponents -> messages.addAll(Arrays.asList(baseComponents)));
 
         return messages;
     }

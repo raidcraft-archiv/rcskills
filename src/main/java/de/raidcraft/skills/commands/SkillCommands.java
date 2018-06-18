@@ -8,7 +8,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.SkillUtil;
-import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,8 +35,6 @@ public class SkillCommands {
         Hero hero = plugin.getCharacterManager().getHero((Player) sender);
         Skill skill = SkillUtil.getSkillFromArgs(hero, args.getJoinedStrings(0));
 
-        for (FancyMessage message : SkillUtil.getSkillTooltip(skill, false)) {
-            message.send(sender);
-        }
+        sender.spigot().sendMessage(SkillUtil.getSkillTooltip(skill, false));
     }
 }

@@ -10,11 +10,14 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.util.fanciful.FancyMessage;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -136,24 +139,24 @@ public final class ProfessionUtil {
         return sb.toString();
     }
 
-    public static List<FancyMessage> getProfessionTooltip(Profession profession, boolean isTooltip) {
+    public static BaseComponent[] getProfessionTooltip(Profession profession, boolean isTooltip) {
 
-        List<FancyMessage> messages = new ArrayList<>();
-        messages.add(new FancyMessage("------- [").color(ChatColor.YELLOW)
-                .then(profession.getTotalLevel() + "").color(ChatColor.AQUA)
-                .then("]").color(ChatColor.YELLOW).then(" ")
-                .then(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY)
-                .then(profession.getPath() != null ? " (" + profession.getPath().getFriendlyName() + ")" : "").color(ChatColor.DARK_PURPLE)
-                .then(" -------").color(ChatColor.YELLOW)
-        );
-        messages.add(new FancyMessage("Level: ").color(ChatColor.YELLOW)
-                        .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
-                        .then("/").color(ChatColor.YELLOW)
-                        .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                        .then("   |   ").color(ChatColor.GREEN).then("EXP: ").color(ChatColor.YELLOW)
-                        .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
-                        .then("/").color(ChatColor.YELLOW)
-                        .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)
+        List<BaseComponent> messages = new ArrayList<>();
+        messages.addAll(Arrays.asList(new ComponentBuilder("------- [").color(ChatColor.YELLOW)
+                .append(profession.getTotalLevel() + "").color(ChatColor.AQUA)
+                .append("]").color(ChatColor.YELLOW).append(" ")
+                .append(profession.getFriendlyName()).color(profession.isActive() ? ChatColor.GREEN : ChatColor.GRAY)
+                .append(profession.getPath() != null ? " (" + profession.getPath().getFriendlyName() + ")" : "").color(ChatColor.DARK_PURPLE)
+                .append(" -------").color(ChatColor.YELLOW).create()));
+
+        messages.addAll(Arrays.asList(new ComponentBuilder("Level: ").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                .append("/").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                .append("   |   ").color(ChatColor.GREEN).append("EXP: ").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                .append("/").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA).create())
         );
         List<Skill> skills = profession.getSkills().stream()
                 .filter(Skill::isEnabled)
@@ -168,24 +171,24 @@ public final class ProfessionUtil {
                 secondStartIndex = (int) (firstColumnSize + 1);
             }
             for (int i = 0; i < firstColumnSize; i++) {
-                FancyMessage msg = getSkillInfoInTooltip(skills.get(i), new FancyMessage(""), isTooltip);
+                ComponentBuilder msg = getSkillInfoInTooltip(skills.get(i), new ComponentBuilder(""), isTooltip);
                 if (secondStartIndex > 0 && secondStartIndex < skills.size()) {
-                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.then("   |   ").color(ChatColor.DARK_PURPLE), isTooltip);
+                    msg = getSkillInfoInTooltip(skills.get(secondStartIndex), msg.append("   |   ").color(ChatColor.DARK_PURPLE), isTooltip);
                     secondStartIndex++;
                 }
-                messages.add(msg);
+                messages.addAll(Arrays.asList(msg.create()));
             }
         }
-        return messages;
+        return messages.toArray(new BaseComponent[0]);
     }
 
-    private static FancyMessage getSkillInfoInTooltip(Skill skill, FancyMessage message, boolean isTooltip) {
+    private static ComponentBuilder getSkillInfoInTooltip(Skill skill, ComponentBuilder message, boolean isTooltip) {
 
-        return message.then("[").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
-                .then(skill.getRequiredLevel() + "").color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                .then("]").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
-                .then(" ").then(skill.getFriendlyName())
-                .formattedTooltip(isTooltip ? new ArrayList<>() : SkillUtil.getSkillTooltip(skill, true))
+        return message.append("[").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
+                .append(skill.getRequiredLevel() + "").color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
+                .append("]").color(skill.isHidden() ? ChatColor.GRAY : ChatColor.YELLOW)
+                .append(" ").append(skill.getFriendlyName())
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, isTooltip ? new BaseComponent[0] : SkillUtil.getSkillTooltip(skill, true)))
                 .color(skill.isUnlocked() ? (skill.isHidden() ? ChatColor.DARK_GRAY : ChatColor.GREEN)
                         : (skill.isHidden() ? ChatColor.GRAY : ChatColor.DARK_RED));
     }

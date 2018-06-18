@@ -14,8 +14,10 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
 import de.raidcraft.skills.util.SkillUtil;
-import de.raidcraft.util.FancyPaginatedResult;
-import de.raidcraft.util.fanciful.FancyMessage;
+import de.raidcraft.util.ComponentPaginatedResult;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -90,30 +92,30 @@ public class SkillsCommand {
         // lets sort them by their required level
         Collections.sort((List<Skill>) skills);
         // lets list all skills
-        new FancyPaginatedResult<Skill>("[Prof:Level] -   Name") {
+        new ComponentPaginatedResult<Skill>("[Prof:Level] -   Name") {
 
             @Override
-            public FancyMessage format(Skill skill) {
+            public BaseComponent[] format(Skill skill) {
 
                 int level = skill.getRequiredLevel();
                 Profession profession = skill.getProfession();
 
-                FancyMessage msg = new FancyMessage("[").color(ChatColor.YELLOW)
-                        .then(profession.getProperties().getTag()).color(profession.getProperties().getColor())
-                        .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
-                        .then(":").color(ChatColor.YELLOW)
-                        .then(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED : ChatColor.AQUA)
-                        .then("] ").color(ChatColor.YELLOW)
-                        .then(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN : ChatColor.DARK_RED)
-                        .formattedTooltip(SkillUtil.getSkillTooltip(skill, true));
+                ComponentBuilder msg = new ComponentBuilder("[").color(ChatColor.YELLOW.asBungee())
+                        .append(profession.getProperties().getTag()).color(profession.getProperties().getColor().asBungee())
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ProfessionUtil.getProfessionTooltip(profession, true)))
+                        .append(":").color(ChatColor.YELLOW.asBungee())
+                        .append(level + "").color(profession.getAttachedLevel().getLevel() < level ? ChatColor.DARK_RED.asBungee() : ChatColor.AQUA.asBungee())
+                        .append("] ").color(ChatColor.YELLOW.asBungee())
+                        .append(skill.getFriendlyName()).color(skill.isUnlocked() ? ChatColor.GREEN.asBungee() : ChatColor.DARK_RED.asBungee())
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, SkillUtil.getSkillTooltip(skill, true)));
                 if (skill instanceof Levelable) {
-                    msg = msg.then(" (").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
-                            .then("/").color(ChatColor.YELLOW)
-                            .then(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                            .then(")").color(ChatColor.YELLOW);
+                    msg = msg.append(" (").color(ChatColor.YELLOW.asBungee())
+                            .append(((Levelable) skill).getAttachedLevel().getLevel() + "").color(ChatColor.AQUA.asBungee())
+                            .append("/").color(ChatColor.YELLOW.asBungee())
+                            .append(((Levelable) skill).getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA.asBungee())
+                            .append(")").color(ChatColor.YELLOW.asBungee());
                 }
-                return msg;
+                return msg.create();
             }
         }.display(sender, skills, args.getFlagInteger('p', 1));
     }

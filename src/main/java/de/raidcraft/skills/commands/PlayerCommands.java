@@ -13,13 +13,16 @@ import de.raidcraft.skills.api.level.AttachedLevel;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.skills.util.ProfessionUtil;
-import de.raidcraft.util.fanciful.FancyMessage;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,36 +56,35 @@ public class PlayerCommands {
         } else {
             hero = plugin.getCharacterManager().getHero((Player) sender);
         }
-        List<FancyMessage> messages = new ArrayList<>();
-        FancyMessage msg = new FancyMessage("------- ").color(ChatColor.GOLD)
-                .then("[").color(ChatColor.YELLOW).then(hero.getVirtualProfession().getTotalLevel() + "").color(ChatColor.AQUA)
-                .formattedTooltip(ProfessionUtil.getProfessionTooltip(hero.getVirtualProfession(), true))
-                .then("]").color(ChatColor.YELLOW).then(" ")
-                .then("[").color(ChatColor.BLACK).then(hero.getName()).color(HeroUtil.getPvPColor(hero, (Player) sender))
-                .formattedTooltip(HeroUtil.getHeroTooltip(hero, (Player) sender, true))
-                .then("]").color(ChatColor.BLACK)
-                .then(" -------").color(ChatColor.GOLD);
-        messages.add(msg);
+        List<BaseComponent> messages = new ArrayList<>();
+        ComponentBuilder cb = new ComponentBuilder("------- ").color(ChatColor.GOLD)
+                .append("[").color(ChatColor.YELLOW).append(hero.getVirtualProfession().getTotalLevel() + "").color(ChatColor.AQUA)
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ProfessionUtil.getProfessionTooltip(hero.getVirtualProfession(), true)))
+                .append("]").color(ChatColor.YELLOW).append(" ")
+                .append("[").color(ChatColor.BLACK).append(hero.getName()).color(HeroUtil.getPvPColor(hero, (Player) sender).asBungee())
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, HeroUtil.getHeroTooltip(hero, (Player) sender, true).toArray(new BaseComponent[0])))
+                .append("]").color(ChatColor.BLACK)
+                .append(" -------").color(ChatColor.GOLD);
+        messages.addAll(Arrays.asList(cb.create()));
 
         messages.addAll(HeroUtil.getBasicHeroInfo(hero, false));
 
         List<Profession> professions = hero.getProfessions().stream().filter(Profession::isActive).collect(Collectors.toList());
-        messages.addAll(professions.stream().map(profession -> new FancyMessage(profession.getFriendlyName()).color(profession.isMastered() ? ChatColor.GOLD : ChatColor.YELLOW)
-                .formattedTooltip(ProfessionUtil.getProfessionTooltip(profession, true))
-                .then("  |  ").color(ChatColor.DARK_PURPLE)
-                .then("Level: ").color(ChatColor.YELLOW)
-                .then(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
-                .then("/").color(ChatColor.YELLOW)
-                .then(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
-                .then("  |  ").color(ChatColor.DARK_PURPLE)
-                .then("EXP: ").color(ChatColor.YELLOW)
-                .then(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
-                .then("/").color(ChatColor.YELLOW)
-                .then(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA)).collect(Collectors.toList()));
+        professions.stream().map(profession -> new ComponentBuilder(profession.getFriendlyName()).color(profession.isMastered() ? ChatColor.GOLD : ChatColor.YELLOW)
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ProfessionUtil.getProfessionTooltip(profession, true)))
+                .append("  |  ").color(ChatColor.DARK_PURPLE)
+                .append("Level: ").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getLevel() + "").color(ChatColor.AQUA)
+                .append("/").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getMaxLevel() + "").color(ChatColor.AQUA)
+                .append("  |  ").color(ChatColor.DARK_PURPLE)
+                .append("EXP: ").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
+                .append("/").color(ChatColor.YELLOW)
+                .append(profession.getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA).create())
+                .forEach(componentBuilder -> messages.addAll(Arrays.asList(componentBuilder)));
 
-        for (FancyMessage message : messages) {
-            message.send(sender);
-        }
+        sender.spigot().sendMessage(messages.toArray(new BaseComponent[0]));
     }
 
     @Command(
