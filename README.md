@@ -23,7 +23,7 @@ Zusätzlich zum Grundplugin werden Skills & Effekte benötigt. Sehr viele davon 
 
 ### Installation
 
-Beim ersten Start des Plugins werden alle relevanten Configs mit Default Werten angelegt. Mehr zum Bearbeiten der Configs in der [Admin Dokumentation](docs/ADMIN.md#Konfiguration).
+Beim ersten Start des Plugins werden alle relevanten Configs mit Default Werten angelegt. Mehr zum Bearbeiten der Configs in der [Admin Dokumentation](docs/ADMIN.md#config.yml).
 
 Nach dem ersten Start sollten das extra [`Skills & Effects`](https://git.faldoria.de/raidcraft/skills-and-effects) in den Ordner `skills-and-effects/` kopiert werden. Nach einem Neustart des Servers werden nun Default Configs für alle geladenen Skills und Effekte angelegt. Die Ordner der Configs können in der `config.yml` Datei festgelegt werden.
 

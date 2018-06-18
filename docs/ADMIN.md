@@ -2,12 +2,12 @@
 
 In dieser Dokumentation zum [RCSkills Plugin](../README.md) wird detailiert beschrieben, wie man folgendes konfiguriert:
 
-- [Skills](#skills)
+- [Skills](SKILLS.md)
 - [Effekte](#effekte)
-- [Klassen](#klassen)
-- [Berufe](#berufe)
-- [Pfade](#pfade)
-- [Erfahrungspunkte](#erfahrungspunkte)
+- [Klassen](Professions.md#klassen)
+- [Berufe](Professions.md#berufe)
+- [Pfade](Pfade.md)
+- [Erfahrungspunkte](Erfahrungspunkte.md)
 
 ## Getting Started
 
@@ -27,7 +27,7 @@ Folgende Begrifflichkeiten spielen beim Konfigurieren von RCSkills immer wieder 
 | Effect | Ein Effekt ist zeitlich begrenzt und wird von Skills auf Spieler und Mobs angewendet. |
 | Profession | Eine Profession ist der Übergriff für Berufe und Klassen. |
 
------------------------------------------------------------
+## Konfiguration
 
 ### config.yml
 
@@ -130,71 +130,3 @@ sidebar-effect-types:
 In dieser Datei wird der Grundschaden aller Monster und Umwelteinflüsse festgelegt.
 
 > Wenn `defaults.environment-damage-in-percent: true` gesetzt wurde sind alle Werte unterhalb von `environmental-damage` Prozentwerte.
-
-## Pfade
-
-In der `paths.yml` können mehrere Pfade und ihrere jeweiligen Klassen festgelegt werden. Somit ist es möglich, dass ein Spieler z.B. einen Beruf und eine Klasse hat.
-
-Ein Spieler kann theoretisch beliebig viele Pfade begehen, allerdings wird es irgendwann schwierig die EXP aufzuteilen, da immer nur ein aktiver Pfad die Erfahrungspunkte erhält.
-
-In den Configs der [Klassen](#klassen) und [Berufs](#berufe) lassen sich weitere Unterklassen und Berufe definieren, die der Spieler nach dem Erreichen des max. Levels auswählen kann. Diese müssen nicht in der Pfad Config aufgeführt werden.
-
-Anbei eine Beispiel Konfiguration für das klassische Beruf und Klassen Szenario:
-
-```yml
-# Eindeutiger beliebiger name für den Pfad
-# Wird an anderen Stellen referenziert
-class:
-  # Der Name den der Spieler zu sehen bekommt
-  name: Klassen
-  # Die Priorität gibt teilweise an was priorisiert verwendet oder angezeigt wird, z.B. Attribute oder Effekte.
-  priority: 10
-  # Alle "Professions" (Klassen) die in diesem Pfad wählbar sind.
-  parents:
-  - warrior
-  - rogue
-  - mage
-  - priest
-  # Man kann einen Pfad automatisch im oder außerhalb des Kampfes auswählen.
-  # Wenn das der Fall ist ändert sich das UI entsprechend dem Kampfstatus.
-  # Im Kampf werden z.B. die EXP des Klassen Pfades angezeigt
-  # und außerhalb vom Kampf die EXP des Berufs.
-  select-in-combat: true
-  select-out-of-combat: false
-prof:
-  name: Beruf
-  priority: 5
-  parents:
-  - bergarbeiter
-  - bauer
-  - alchemist
-  select-in-combat: false
-  select-out-of-combat: true
-```
-
-## Erfahrungspunkte
-
-Ein Spieler kann in fast allem Level aufsteigen und erhält über viele Wege EXP. Eine Haupt Quelle für Erfahrungspunkte ist das Erledigen von [Quests](https://git.faldoria.de/raidcraft/rcquests) und Töten von [Custom Mobs](https://git.faldoria.de/raidcraft/rcmobs).
-
-Mit diesen Erfahrungspunkten steigt der Spieler in seiner [Klasse](#klassen) oder [Beruf](#berufe) im Level auf. Zusätzlich dazu kann der Spieler seine [Skills](#skills) durch Benutzung nach und nach im Level steigern.
-
-Es gibt zusätzlich einen übergreifenden Heldenrang der alle Erfahrungspunkte summiert und die gesamte Erfahrung des Spielers wiederspieglt. Der Heldenrang bringt an sich keine direkten Vorteile, kann aber z.B. zum Freischalten spezieller VIP Skills verwendet werden.
-
-### Level Typen
-
-| Level | Beschreibung |
-|:-----:| ------------ |
-| Helden Level | Das Helden Level spiegelt die gesamte Erfahrung des Spielers wieder und bietet keine direkten Vorteile. Auch beim Wechseln von Klassen und Berufen bleibt das Helden Level erhalten und summiert weiter die Erfahrungspunkte auf. |
-| Pfad Level | Dieses Level spiegelt das gesamte Level des aktuell Pfades wieder, inkl. Subklassen. Das Level kann z.B. als Schadens-Multiplikator verwendet werden. |
-| Profession Level | Dieses Level spiegelt das Level der aktiven Profession (Klassen oder Beruf) wieder und wird für EXP und Schadens Modifikatoren verwendet. |
-| Skill Level | Skills steigen mit ihrer Benutzung im Level und werden dadurch stärker. Das Leveln von Skills hängt vom Skill und der Config ab. Nicht jeder Skill kann im Level aufsteigen. |
-
-### experience.yml
-
-In dieser Datei ist festgelegt welche Standard Mobs und Blöcke wie viel Erfahrung geben. Wenn [Custom Mobs](https://git.faldoria.de/raidcraft/rcmobs) genutzt werden sind die Erfahrungspunkte für Mobs deutlich höher und vom Level der Mobs abhängig.
-
-Außerdem kann man mit `*-exp-rate` Einstellungen temporär oder dauerhaft die Levelgeschwindigkeit der Spieler erhöhen.
-
-### levels.yml
-
-In dieser Dateien können beliebig viele unabhängige EXP Formeln konfiguriert werden. Die Formeln können dann in den verschiedenen Skills und Professions verwendet werden.
