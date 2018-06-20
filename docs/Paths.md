@@ -4,7 +4,7 @@ In der `paths.yml` können mehrere Pfade und ihrere jeweiligen Klassen festgeleg
 
 Ein Spieler kann theoretisch beliebig viele Pfade begehen, allerdings wird es irgendwann schwierig die EXP aufzuteilen, da immer nur ein aktiver Pfad die Erfahrungspunkte erhält.
 
-In den Configs der [Klassen](Professions.md#klassen) und [Berufs](Professions.md#berufe) lassen sich weitere Unterklassen und Berufe definieren, die der Spieler nach dem Erreichen des max. Levels auswählen kann. Diese müssen nicht in der Pfad Config aufgeführt werden.
+In den Configs der [Klassen](Professions.md) und [Berufs](Professions.md) lassen sich weitere Unterklassen und Berufe definieren, die der Spieler nach dem Erreichen des max. Levels auswählen kann. Diese müssen nicht in der Pfad Config aufgeführt werden.
 
 ## paths.yml
 

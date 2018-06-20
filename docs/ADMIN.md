@@ -2,12 +2,19 @@
 
 In dieser Dokumentation zum [RCSkills Plugin](../README.md) wird detailiert beschrieben, wie man folgendes konfiguriert:
 
-- [Skills](SKILLS.md)
-- [Effekte](#effekte)
-- [Klassen](Professions.md#klassen)
-- [Berufe](Professions.md#berufe)
-- [Pfade](Pfade.md)
+- [Skills](Skills.md)
+- [Effekte](Skills.md#skills-mit-effekten)
+- [Klassen](Professions.md)
+- [Berufe](Professions.md)
+- [Pfade](Paths.md)
 - [Erfahrungspunkte](Erfahrungspunkte.md)
+
+- [Getting Started](#getting-started)
+  - [Terminologie](#terminologie)
+  - [Ordner Struktur](#ordner-struktur)
+- [Konfiguration](#konfiguration)
+  - [config.yml](#configyml)
+  - [damages.yml](#damagesyml)
 
 ## Getting Started
 
@@ -26,6 +33,19 @@ Folgende Begrifflichkeiten spielen beim Konfigurieren von RCSkills immer wieder 
 | Permission Skill | Skills können auch Permissions beinhalten. |
 | Effect | Ein Effekt ist zeitlich begrenzt und wird von Skills auf Spieler und Mobs angewendet. |
 | Profession | Eine Profession ist der Übergriff für Berufe und Klassen. |
+
+### Ordner Struktur
+
+Im Standard wird folgende Ordner Struktur angelegt. In der [config.yml](#config.yml) kann die Ordner Struktur jederzeit angepasst werden.
+
+| Ordner | Beschreibung |
+| ------ | ------------ |
+| abilities | Hier kommen alle `.jar` Dateien mit Abilities für Mobs, etc. rein. |
+| alias-configs | Der Hauptordner an dem neue Configs für Skills erstellt werden. Es können beliebig viele Unterordner erstellt werden. |
+| custom-configs | Hier befinden sich spezielle Configs zur Anpassung von Vanilla Minecraft Verhalten. |
+| effect-configs | In diesem Ordner wird für jeden geladenen [Effekt](Effects.md) eine Default Config erzeugt. In diesen Configs können globale Konfigurationen an den Effekten vorgenommen werden. |
+| skill-configs | Analog dem `effects-configs` Ordner befinden sich hier alle globalen Default Configs der Skills. |
+| skills-and-effects | Hier kommen alle `.jar` Dateien mit eigenen Skills und Effekten hin. |
 
 ## Konfiguration
 

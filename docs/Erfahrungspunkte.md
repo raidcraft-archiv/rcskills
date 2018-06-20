@@ -2,9 +2,13 @@
 
 Ein Spieler kann in fast allem Level aufsteigen und erhält über viele Wege EXP. Eine Haupt Quelle für Erfahrungspunkte ist das Erledigen von [Quests](https://git.faldoria.de/raidcraft/rcquests) und Töten von [Custom Mobs](https://git.faldoria.de/raidcraft/rcmobs).
 
-Mit diesen Erfahrungspunkten steigt der Spieler in seiner [Klasse](#klassen) oder [Beruf](#berufe) im Level auf. Zusätzlich dazu kann der Spieler seine [Skills](#skills) durch Benutzung nach und nach im Level steigern.
+Mit diesen Erfahrungspunkten steigt der Spieler in seiner [Klasse](Professions.md) oder [Beruf](Professions.md) im Level auf. Zusätzlich dazu kann der Spieler seine [Skills](Skills.md) durch Benutzung nach und nach im Level steigern.
 
 Es gibt zusätzlich einen übergreifenden Heldenrang der alle Erfahrungspunkte summiert und die gesamte Erfahrung des Spielers wiederspieglt. Der Heldenrang bringt an sich keine direkten Vorteile, kann aber z.B. zum Freischalten spezieller VIP Skills verwendet werden.
+
+- [Level Typen](#level-typen)
+- [experience.yml](#experienceyml)
+- [levels.yml](#levelsyml)
 
 ## Level Typen
 
