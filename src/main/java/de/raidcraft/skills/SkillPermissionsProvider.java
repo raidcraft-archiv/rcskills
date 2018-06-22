@@ -1,11 +1,10 @@
 package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.permissions.Group;
+import de.raidcraft.api.permissions.GroupManager;
+import de.raidcraft.api.permissions.RCPermissionsProvider;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.groups.Group;
-import de.raidcraft.permissions.groups.SimpleGroup;
-import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -27,17 +26,17 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
     protected SkillPermissionsProvider(SkillsPlugin plugin) {
 
         this.plugin = plugin;
-        PermissionsPlugin rcPermissions = RaidCraft.getComponent(PermissionsPlugin.class);
-        if (rcPermissions != null) {
-            rcPermissions.registerProvider(this);
-        } else {
-            plugin.getLogger().warning("RCPermissions was not found! Not using our cool skill group feature :)");
-            return;
-        }
+        RaidCraft.registerPermissionsProvider(this);
         load();
     }
 
     private void load() {
+
+        GroupManager groupManager = RaidCraft.getPermissionGroupManager();
+        if (groupManager == null) {
+            plugin.getLogger().warning("Not registering RCSkill Skills as Permission Groups. No GroupManager found!");
+            return;
+        }
 
         String defaultGroup = plugin.getCommonConfig().default_permission_group;
         // every permission skill is handled as a group
@@ -46,12 +45,12 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
                 Skill skill = skillFactory.createDummy();
                 if (skill instanceof PermissionSkill) {
                     Set<String> globalPermissions = ((PermissionSkill) skill).getGlobalPermissions();
-                    SimpleGroup simpleGroup = new SimpleGroup(this, skill.getName(),
+                    Group group = groupManager.createGroup(this, skill.getName(),
                             ((PermissionSkill) skill).getWorldPermissions(),
                             globalPermissions.toArray(new String[globalPermissions.size()]));
-                    groups.add(simpleGroup);
-                    if (simpleGroup.getName().equalsIgnoreCase(defaultGroup)) {
-                        this.defaultGroup = simpleGroup;
+                    groups.add(group);
+                    if (group.getName().equalsIgnoreCase(defaultGroup)) {
+                        this.defaultGroup = group;
                     }
                 }
             } catch (UnknownSkillException e) {
@@ -68,8 +67,6 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
         groups.clear();
         defaultGroup = null;
         load();
-        // reload the permissions
-        RaidCraft.getComponent(PermissionsPlugin.class).reload();
     }
 
     @Override

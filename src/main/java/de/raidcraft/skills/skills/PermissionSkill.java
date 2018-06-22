@@ -1,7 +1,7 @@
 package de.raidcraft.skills.skills;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.permissions.PermissionsPlugin;
+import de.raidcraft.api.permissions.GroupManager;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -54,8 +54,9 @@ public class PermissionSkill extends AbstractSkill {
     public void apply() {
 
         if (getHolder().isOnline()) {
-            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager()
-                    .addPlayerToGroup(getHolder().getPlayer().getUniqueId(), getName());
+            GroupManager groupManager = RaidCraft.getPermissionGroupManager();
+            if (groupManager == null) return;
+            groupManager.addPlayerToGroup(getHolder().getPlayer().getUniqueId(), getName());
         }
         if (timed) {
             try {
@@ -71,8 +72,9 @@ public class PermissionSkill extends AbstractSkill {
     public void remove() {
 
         if (getHolder().isOnline()) {
-            RaidCraft.getComponent(PermissionsPlugin.class).getGroupManager()
-                    .removePlayerFromGroup(getHolder().getPlayer().getUniqueId(), getName());
+            GroupManager groupManager = RaidCraft.getPermissionGroupManager();
+            if (groupManager == null) return;
+            groupManager.removePlayerFromGroup(getHolder().getPlayer().getUniqueId(), getName());
         }
     }
 
