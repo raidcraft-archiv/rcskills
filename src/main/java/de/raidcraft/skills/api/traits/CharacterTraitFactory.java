@@ -1,61 +1,84 @@
 package de.raidcraft.skills.api.traits;
 
-import de.raidcraft.skills.api.character.CharacterTemplate;
+import com.google.common.base.Preconditions;
 
-public interface CharacterTraitFactory {
+import java.util.function.Supplier;
+
+/**
+ * Builds a trait.
+ */
+public final class CharacterTraitFactory {
+    private boolean defaultTrait;
+    private String name;
+    private Supplier<? extends CharacterTrait> supplier;
+    private final Class<? extends CharacterTrait> trait;
+    private boolean triedAnnotation;
+
+    private CharacterTraitFactory(Class<? extends CharacterTrait> trait) {
+        this.trait = trait;
+    }
+
+    public CharacterTraitFactory asDefaultTrait() {
+        this.defaultTrait = true;
+        return this;
+    }
+
+    public Class<? extends CharacterTrait> getTraitClass() {
+        return trait;
+    }
+
+    public String getTraitName() {
+        if (name == null && !triedAnnotation) {
+            CharacterTraitInfo anno = trait.getAnnotation(CharacterTraitInfo.class);
+            if (anno != null) {
+                name = anno.value();
+            }
+            triedAnnotation = true;
+        }
+        return name;
+    }
+
+    public boolean isDefaultTrait() {
+        return defaultTrait;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends CharacterTrait> T tryCreateInstance() {
+        if (supplier != null)
+            return (T) supplier.get();
+        try {
+            return (T) trait.newInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public CharacterTraitFactory withName(String name) {
+        Preconditions.checkNotNull(name);
+        this.name = name.toLowerCase();
+        return this;
+    }
+
+    public CharacterTraitFactory withSupplier(Supplier<? extends CharacterTrait> supplier) {
+        this.supplier = supplier;
+        return this;
+    }
 
     /**
-     * Adds all default traits to a given CharacterTemplate.
+     * Constructs a factory with the given trait class. The trait class must have a no-arguments constructor.
      *
-     * @param character The {@link CharacterTemplate} to add default traits to
+     * @param trait Class of the trait
+     * @return The created {@link CharacterTraitFactory}
+     * @throws IllegalArgumentException If the trait class does not have a no-arguments constructor
      */
-    void addDefaultTraits(CharacterTemplate character);
-
-    /**
-     * Removes a trait. This prevents a trait from being added to an CharacterTemplate but does not remove existing traits from the
-     * CharacterTemplates.
-     *
-     * @param info The TraitInfo to deregister
-     */
-    void deregisterTrait(CharacterTraitInfo info);
-
-    /**
-     * Gets a trait with the given class.
-     *
-     * @param clazz Class of the trait
-     * @return Trait with the given class
-     */
-    <T extends CharacterTrait> T getTrait(Class<T> clazz);
-
-    /**
-     * Gets a trait with the given name.
-     *
-     * @param name Name of the trait
-     * @return Trait with the given name
-     */
-    <T extends CharacterTrait> T getTrait(String name);
-
-    /**
-     * Gets the {@link CharacterTrait} class with the given name, or null if not found.
-     *
-     * @param name The trait name
-     * @return The trait class
-     */
-    Class<? extends CharacterTrait> getTraitClass(String name);
-
-    /**
-     * Checks whether the given trait is 'internal'. An internal trait is implementation-defined and is default or
-     * built-in.
-     *
-     * @param trait The trait to check
-     * @return Whether the trait is an internal trait
-     */
-    boolean isInternalTrait(CharacterTrait trait);
-
-    /**
-     * Registers a trait using the given information.
-     *
-     * @param info Registration information
-     */
-    void registerTrait(CharacterTraitInfo info);
+    public static CharacterTraitFactory create(Class<? extends CharacterTrait> trait) {
+        Preconditions.checkNotNull(trait);
+        try {
+            trait.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Trait class must have a no-arguments constructor");
+        }
+        return new CharacterTraitFactory(trait);
+    }
 }

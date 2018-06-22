@@ -5,15 +5,14 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 
-public abstract class CharacterTrait<TCharacter extends CharacterTemplate> implements Triggered, Listener, Runnable {
+public abstract class CharacterTrait<TCharacter extends CharacterTemplate> implements Triggered, Listener {
 
-    private final String name;
-    protected TCharacter character = null;
-    private boolean runImplemented = true;
-
-    protected CharacterTrait(String name) {
-        this.name = name.toLowerCase();
-    }
+    /**
+     * The name will be set by the {@link CharacterTraitFactory} when
+     * instantiating the {@link CharacterTrait}.
+     */
+    private String name = "NOT SET";
+    private TCharacter character = null;
 
     /**
      * Gets the name of this trait.
@@ -29,11 +28,6 @@ public abstract class CharacterTrait<TCharacter extends CharacterTemplate> imple
      */
     public final TCharacter getCharacter() {
         return character;
-    }
-
-    public boolean isRunImplemented() {
-        run();
-        return runImplemented;
     }
 
     public void linkToCharacter(TCharacter character) {
@@ -59,12 +53,6 @@ public abstract class CharacterTrait<TCharacter extends CharacterTemplate> imple
     }
 
     /**
-     * Called when the trait has been newly copied to an {@link CharacterTemplate}.
-     */
-    public void onCopy() {
-    }
-
-    /**
      * Called just before the attached {@link CharacterTemplate} is despawned. {@link CharacterTemplate#getEntity()} will be non-null.
      */
     public void onDespawn() {
@@ -82,11 +70,6 @@ public abstract class CharacterTrait<TCharacter extends CharacterTemplate> imple
      * For {@link org.bukkit.entity.Player}s this will be called when they join the server and their "Profile" is loaded.
      */
     public void onSpawn() {
-    }
-
-    @Override
-    public void run() {
-        runImplemented = false;
     }
 
     /**
