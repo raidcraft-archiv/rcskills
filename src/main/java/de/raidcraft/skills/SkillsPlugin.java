@@ -19,7 +19,6 @@ import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.modules.SkillModule;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerManager;
@@ -33,7 +32,6 @@ import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.conversations.MaxOutHeroAction;
 import de.raidcraft.skills.items.SkillsRequirementProvider;
-import de.raidcraft.skills.modules.hotbar.HotbarModule;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
 import de.raidcraft.skills.random.RunestoneLootObject;
@@ -53,7 +51,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -80,15 +77,8 @@ SkillsPlugin extends BasePlugin implements Component {
     private SkillPermissionsProvider permissionsProvider;
     private BukkitEventDispatcher bukkitEventDispatcher;
 
-    private final List<SkillModule> skillModules = new ArrayList<>();
-
     @Override
     public void enable() {
-
-        // for now register all custom modules here
-        // TODO: automagically load modules via reflection
-        skillModules.add(new HotbarModule(this));
-
         setupDatabase();
         // register ourself as a RPG Component
         RaidCraft.registerComponent(SkillsPlugin.class, this);
@@ -101,9 +91,6 @@ SkillsPlugin extends BasePlugin implements Component {
         this.skillManager = new SkillManager(this);
         this.abilityManager = new AbilityManager(this);
         this.effectManager = new EffectManager(this);
-
-        // load all module configuration
-        skillModules.forEach(SkillModule::load);
 
         // and commands gogogo
         registerCommands(SkillsCommand.class);
@@ -125,9 +112,6 @@ SkillsPlugin extends BasePlugin implements Component {
         // to avoid dependency hickups
         loadEngine();
 
-        // enable all modules -- this should be after the primary engine
-        skillModules.forEach(SkillModule::enable);
-
         // lets register our permissions provider last
         permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
 
@@ -148,8 +132,6 @@ SkillsPlugin extends BasePlugin implements Component {
 
     @Override
     public void disable() {
-        // disable all modules
-        skillModules.forEach(SkillModule::disable);
         // clear the cache of all heroes, saving them to the database
         getCharacterManager().getCachedHeroes().forEach(Hero::save);
     }
@@ -176,8 +158,6 @@ SkillsPlugin extends BasePlugin implements Component {
         this.effectManager = new EffectManager(this);
         // and reload the complete engine leaving all the stuff to the garbage collector
         loadEngine();
-        // reload all modules after the engine
-        skillModules.forEach(SkillModule::reload);
         // reload the skill permissions provider
         permissionsProvider.reload();
     }
@@ -294,8 +274,6 @@ SkillsPlugin extends BasePlugin implements Component {
         classes.add(TDataAlias.class);
         classes.add(TDataProfession.class);
 	    classes.add(TRunestone.class);
-
-        classes.addAll(skillModules.stream().flatMap(module -> module.getDatabaseClasses().stream()).collect(Collectors.toList()));
         return classes;
     }
 
