@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.skill;
 
 import com.avaje.ebean.EbeanServer;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Reasonable;
 import de.raidcraft.api.action.requirement.Requirement;
@@ -315,6 +316,24 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
             RaidCraft.getDatabase(SkillsPlugin.class).delete(data.get());
         }
         return data;
+    }
+
+    @Override
+    public final void use() {
+        try {
+            new SkillAction(this).run();
+        } catch (CombatException e) {
+            getHolder().sendMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    public final void use(CommandContext args) {
+        try {
+            new SkillAction(this, args).run();
+        } catch (CombatException e) {
+            getHolder().sendMessage(e.getMessage());
+        }
     }
 
     /*/////////////////////////////////////////////////////////////////

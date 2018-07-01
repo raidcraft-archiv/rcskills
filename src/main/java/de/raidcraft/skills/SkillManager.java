@@ -171,7 +171,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         if (cachedSkills.get(heroName).containsKey(cache)) {
             return cachedSkills.get(heroName).get(cache);
         }
-        // lets create a new skill for this name
+        // lets create a new skill for this displayName
         skill = skillFactories.get(skillName).create(hero, profession);
         cachedSkills.get(heroName).put(cache, skill);
         // lets add the skill as a trigger handler

@@ -17,7 +17,7 @@ Lege im Ordner `professions/klassen/` die Datei `schurke.yml` an.
 > Tipp: Durch eine gute Ordnerstruktur lässt sich später ein Chaos vermeiden.
 
 ```yml
-name: Schurke
+displayName: Schurke
 description: Der Schurke versteht sich auf das Brauen von Giften und ist auf den heimlichen Angriff aus dem Schatten spezialisiert.
 # Prefix im Chat
 tag: SCH
@@ -85,7 +85,7 @@ resources:
   # Eindeutiger Name der Ressource.
   # Wird vom Entwickler bekannt gegeben.
   health:
-    name: Leben
+    displayName: Leben
     # Die Regneration der Ressource außerhalb vom Kampf.
     # In diesem Beispiel wird das Leben des Spielers außerhalb vom Kampf alle 5s um 2.5% regeneriert.
     out-of-combat-regen:
@@ -96,7 +96,7 @@ resources:
       base: 5
   # In diesem Fall wird Ernergie jede 1/10s um 1 erhöht und kann maximal 100 erreichen, egal welches Level der Spieler hat.
   energy:
-    name: Energie
+    displayName: Energie
     # Die Anzeige der Ressource im GUI.
     types:
     - experience
@@ -121,7 +121,7 @@ Die Manaregeneration unterscheidet sich im und außerhalb des Kampfes. Zusätzli
 
 ```yml
 mana:
-  name: Mana
+  displayName: Mana
   types:
   - EXPERIENCE
   default: 0

@@ -11,11 +11,11 @@ In den Configs der [Klassen](Professions.md) und [Berufs](Professions.md) lassen
 Anbei eine Beispiel Konfiguration für das klassische Beruf und Klassen Szenario:
 
 ```yml
-# Eindeutiger beliebiger name für den Pfad
+# Eindeutiger beliebiger displayName für den Pfad
 # Wird an anderen Stellen referenziert
 class:
   # Der Name den der Spieler zu sehen bekommt
-  name: Klassen
+  displayName: Klassen
   # Die Priorität gibt teilweise an was priorisiert verwendet oder angezeigt wird, z.B. Attribute oder Effekte.
   priority: 10
   # Alle "Professions" (Klassen) die in diesem Pfad wählbar sind.
@@ -31,7 +31,7 @@ class:
   select-in-combat: true
   select-out-of-combat: false
 prof:
-  name: Beruf
+  displayName: Beruf
   priority: 5
   parents:
   - bergarbeiter

@@ -36,7 +36,7 @@ public class TProfessionTranslation {
     private TLanguage language;
 
     /**
-     * The name of the profession.
+     * The displayName of the profession.
      */
     @Column(length = 32)
     private String name;
@@ -70,7 +70,7 @@ public class TProfessionTranslation {
         result.append(" id: ").append(this.id).append(newLine);
         result.append(" profession: ").append(this.profession).append(newLine);
         result.append(" language: ").append(this.language).append(newLine);
-        result.append(" name: ").append(this.name).append(newLine);
+        result.append(" displayName: ").append(this.name).append(newLine);
         result.append(" description: ").append(this.description).append(newLine);
         result.append(" tag: ").append(this.tag).append(newLine);
         result.append("}");

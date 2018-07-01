@@ -22,7 +22,7 @@ public class SkillTrigger extends Trigger implements Listener {
             value = "skill.use",
             desc = "Is triggered when the player casts the given skill.",
             conf = {
-                    "skill: <name>"
+                    "skill: <displayName>"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -38,7 +38,7 @@ public class SkillTrigger extends Trigger implements Listener {
             value = "skill.unlock",
             desc = "Is triggered when the player unlocks the given skill.",
             conf = {
-                    "skill: <name>"
+                    "skill: <displayName>"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -54,7 +54,7 @@ public class SkillTrigger extends Trigger implements Listener {
             value = "skill.level",
             desc = "Is triggered when the player levels the given skill above the defined level.",
             conf = {
-                    "skill: <name>",
+                    "skill: <displayName>",
                     "[level]"
             }
     )
@@ -66,10 +66,7 @@ public class SkillTrigger extends Trigger implements Listener {
             if (config.isSet("skill") && !config.getString("skill").equalsIgnoreCase(event.getSource().getName())) {
                 return false;
             }
-            if (config.isSet("level") && !(config.getInt("level") < event.getNewLevel())) {
-                return false;
-            }
-            return true;
+            return !config.isSet("level") || config.getInt("level") < event.getNewLevel();
         });
     }
 }

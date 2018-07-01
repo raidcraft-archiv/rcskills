@@ -46,7 +46,7 @@ public class RunestoneLootObject extends ItemLootObject {
                     config.getInt("uses", config.getInt("max-uses", 1)),
                     config.getInt("max-uses", 1),
                     location,
-                    config.getString("location-name")
+                    config.getString("location-displayName")
             );
         }
     }

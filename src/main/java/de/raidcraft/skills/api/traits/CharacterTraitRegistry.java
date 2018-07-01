@@ -28,17 +28,17 @@ public interface CharacterTraitRegistry {
     <T extends CharacterTrait> T getTrait(Class<T> clazz);
 
     /**
-     * Gets a trait with the given name.
+     * Gets a trait with the given displayName.
      *
      * @param name Name of the trait
-     * @return Trait with the given name
+     * @return Trait with the given displayName
      */
     <T extends CharacterTrait> T getTrait(String name);
 
     /**
-     * Gets the {@link CharacterTrait} class with the given name, or null if not found.
+     * Gets the {@link CharacterTrait} class with the given displayName, or null if not found.
      *
-     * @param name The trait name
+     * @param name The trait displayName
      * @return The trait class
      */
     Class<? extends CharacterTrait> getTraitClass(String name);

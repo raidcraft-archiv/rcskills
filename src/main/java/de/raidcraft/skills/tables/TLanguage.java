@@ -26,7 +26,7 @@ public class TLanguage {
     private String code;
 
     /**
-     * A name for the language that is appropriate for display to the user.
+     * A displayName for the language that is appropriate for display to the user.
      */
     @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false, length = 32)
@@ -45,7 +45,7 @@ public class TLanguage {
 
         result.append(this.getClass().getName()).append(" Object {").append(newLine);
         result.append(" code: ").append(this.code).append(newLine);
-        result.append(" name: ").append(this.name).append(newLine);
+        result.append(" displayName: ").append(this.name).append(newLine);
         result.append("}");
 
         return result.toString();

@@ -35,7 +35,7 @@ public class TSkillTranslation {
     private TLanguage language;
 
     /**
-     * The name of the skill.
+     * The displayName of the skill.
      */
     @Column(length = 32)
     private String name;
@@ -62,7 +62,7 @@ public class TSkillTranslation {
         result.append(" id: ").append(this.id).append(newLine);
         result.append(" skill: ").append(this.skill).append(newLine);
         result.append(" language: ").append(this.language).append(newLine);
-        result.append(" name: ").append(this.name).append(newLine);
+        result.append(" displayName: ").append(this.name).append(newLine);
         result.append(" description: ").append(this.description).append(newLine);
         result.append("}");
 

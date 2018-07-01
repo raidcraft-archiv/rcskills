@@ -1,5 +1,6 @@
 package de.raidcraft.skills.api.skill;
 
+import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.ability.Ability;
 import de.raidcraft.skills.api.combat.action.SkillAction;
@@ -42,6 +43,10 @@ public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementReso
     int getUseExp();
 
     SkillProperties getSkillProperties();
+
+    void use();
+
+    void use(CommandContext args);
 
     Profession getProfession();
 

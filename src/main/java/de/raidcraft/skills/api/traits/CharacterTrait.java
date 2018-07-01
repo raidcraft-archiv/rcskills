@@ -8,14 +8,14 @@ import org.bukkit.event.Listener;
 public abstract class CharacterTrait<TCharacter extends CharacterTemplate> implements Triggered, Listener {
 
     /**
-     * The name will be set by the {@link CharacterTraitFactory} when
+     * The displayName will be set by the {@link CharacterTraitFactory} when
      * instantiating the {@link CharacterTrait}.
      */
     private String name = "NOT SET";
     private TCharacter character = null;
 
     /**
-     * Gets the name of this trait.
+     * Gets the displayName of this trait.
      *
      * @return Name of this trait
      */

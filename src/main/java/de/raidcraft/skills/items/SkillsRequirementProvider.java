@@ -21,6 +21,6 @@ public class SkillsRequirementProvider implements ItemAttachmentProvider {
         } else if (attachmentName.equalsIgnoreCase("level")) {
             return new LevelRequirementAttachment();
         }
-        throw new ItemAttachmentException("Unknown Item Attachment with the name: " + attachmentName);
+        throw new ItemAttachmentException("Unknown Item Attachment with the displayName: " + attachmentName);
     }
 }

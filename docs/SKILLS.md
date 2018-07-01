@@ -22,7 +22,7 @@ Lege eine neue Datei im Ordner `alias-configs/klassen/magier/` mit dem Namen `fe
 
 ```yml
 # Der Name wird dem Spieler angezeigt.
-name: Feuerball
+displayName: Feuerball
 # Die Beschreibung steht in der Skill Liste.
 description: 'Schiesst einen Feuerball auf den Gegner.'
 # Der eindeutige Name des Basis-Skills. 
@@ -54,7 +54,7 @@ Editiere nun die `professions/klassen/magier.yml` Config und füge den `Feuerbal
 > Tipp: Wie du Klassen Konfigurationen anlegst erfährst du in der [Klassen & Berufe](#Professions.md) Dokumentation.
 
 ```yml
-name: Magier
+displayName: Magier
 ...
 skills:
   prefix-mage:
@@ -91,7 +91,7 @@ skill-configs/*
 `alias-configs/feuerball.yml`
 
 ```yml
-name: Feuerball
+displayName: Feuerball
 description: 'Schiesst einen Feuerball auf den Gegner.'
 skill: fireball
 levelable: false
@@ -110,7 +110,7 @@ resources:
 `professions/firemage.yml`
 
 ```yml
-name: Feuermagier
+displayName: Feuermagier
 description: Der Feuermagier vermag es, ganze Armeen in einem Flammenmeer zu vertilgen.
 tag: FEU
 max-level: 30
@@ -189,7 +189,7 @@ Erstelle dafür eine Config `wilder-schlag.yml` unterhalb von `alias-configs/kla
 > Tipp: Die Dateinamen von Skills können Bindestriche enthalten, dürfen aber keine Leerzeichen haben.
 
 ```yml
-name: Heldenhafter Stoss
+displayName: Heldenhafter Stoss
 description: 'Du schlägst dein Ziel mit voller Wucht und stößt es dabei zurück.'
 skill: strike
 # Der Skill kann nur verwendet werden wenn eine der folgenden Waffen ausgerüstet ist.
@@ -226,7 +226,7 @@ Erstelle dafür eine Config `erneuerung.yml` unterhalb von `alias-configs/klasse
 > Tipp: Skills können mit Halten von <kbd>Shift</kbd> auf den Zauberer gewirkt werden.
 
 ```yml
-name: Erneuerung
+displayName: Erneuerung
 description: 'Erneuert die Lebensenergie von einem Gruppenmitglied oder dem Priester für 12s.'
 skill: heal-over-time
 range:
@@ -238,7 +238,7 @@ effects:
   # Der eindeutige Name des Effekts muss vom Entwickler des Skills dokumentiert werden.
   heal-over-time:
     # Dieser Name wird dem Spieler in der Seitenleiste angezeigt.
-    name: 'Erneuerung'
+    displayName: 'Erneuerung'
     duration: # BASIS-CONFIG
       base: 12
     # Das Intervall wird in Sekunden angegeben.
