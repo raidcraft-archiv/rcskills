@@ -72,11 +72,11 @@ public final class SkillUtil {
     public static String formatHeader(Skill skill) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.YELLOW).append("------- [").append(skill.getProfession().isActive() ? ChatColor.GREEN : ChatColor.RED);
+        sb.append(ChatColor.YELLOW).append("-= [").append(skill.getProfession().isActive() ? ChatColor.GREEN : ChatColor.RED);
         sb.append(skill.getProfession().getProperties().getTag());
         sb.append(ChatColor.YELLOW).append("] ").append(skill.isUnlocked() ? ChatColor.AQUA : ChatColor.RED).append(skill.getFriendlyName());
-        sb.append(ChatColor.YELLOW).append("[").append(ChatColor.GRAY).append("ID:").append(skill.getId()).append(ChatColor.YELLOW).append("]");
-        sb.append(ChatColor.YELLOW).append(" -------");
+        sb.append(ChatColor.YELLOW).append(" [").append(ChatColor.GRAY).append("ID:").append(skill.getId()).append(ChatColor.YELLOW).append("]");
+        sb.append(ChatColor.YELLOW).append(" =-");
         return sb.toString();
     }
 
