@@ -1,6 +1,10 @@
 package de.raidcraft.skills;
 
-import com.sk89q.minecraft.util.commands.*;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
@@ -21,9 +25,19 @@ import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.traits.CharacterTraitRegistry;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.binds.BindListener;
-import de.raidcraft.skills.commands.*;
+import de.raidcraft.skills.commands.AdminCommands;
+import de.raidcraft.skills.commands.BindAutoCommand;
+import de.raidcraft.skills.commands.BindCommand;
+import de.raidcraft.skills.commands.CastCommand;
+import de.raidcraft.skills.commands.PartyCommands;
+import de.raidcraft.skills.commands.PlayerCommands;
+import de.raidcraft.skills.commands.ProfessionCommands;
+import de.raidcraft.skills.commands.PvPCommands;
+import de.raidcraft.skills.commands.SkillCommands;
+import de.raidcraft.skills.commands.SkillsCommand;
 import de.raidcraft.skills.config.ExperienceConfig;
 import de.raidcraft.skills.config.LevelConfig;
 import de.raidcraft.skills.config.PathConfig;
@@ -36,7 +50,23 @@ import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
 import de.raidcraft.skills.random.RunestoneLootObject;
 import de.raidcraft.skills.skills.PermissionSkill;
-import de.raidcraft.skills.tables.*;
+import de.raidcraft.skills.tables.TBinding;
+import de.raidcraft.skills.tables.TDataAlias;
+import de.raidcraft.skills.tables.TDataProfession;
+import de.raidcraft.skills.tables.THero;
+import de.raidcraft.skills.tables.THeroAttribute;
+import de.raidcraft.skills.tables.THeroExpPool;
+import de.raidcraft.skills.tables.THeroOption;
+import de.raidcraft.skills.tables.THeroProfession;
+import de.raidcraft.skills.tables.THeroResource;
+import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.tables.TLanguage;
+import de.raidcraft.skills.tables.TProfession;
+import de.raidcraft.skills.tables.TProfessionTranslation;
+import de.raidcraft.skills.tables.TRunestone;
+import de.raidcraft.skills.tables.TSkill;
+import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.tables.TSkillTranslation;
 import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
@@ -76,6 +106,10 @@ SkillsPlugin extends BasePlugin implements Component {
     private ExperienceConfig experienceConfig;
     private SkillPermissionsProvider permissionsProvider;
     private BukkitEventDispatcher bukkitEventDispatcher;
+
+    public static CharacterTraitRegistry getCharacterTraitRegistry() {
+
+    }
 
     @Override
     public void enable() {

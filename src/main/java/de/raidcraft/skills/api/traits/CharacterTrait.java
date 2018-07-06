@@ -42,41 +42,42 @@ public abstract class CharacterTrait<TCharacter extends CharacterTemplate> imple
      *
      * @param config {@link ConfigurationSection} to load from
      */
-    public void load(ConfigurationSection config) {
-    }
+    public void load(ConfigurationSection config) {}
 
     /**
      * Called when the trait has been attached to an {@link CharacterTemplate}.
      * {@link #character} will be null until this is called.
      */
-    public void onAttach() {
-    }
+    public void onAttach() {}
 
     /**
      * Called just before the attached {@link CharacterTemplate} is despawned. {@link CharacterTemplate#getEntity()} will be non-null.
      */
-    public void onDespawn() {
-    }
+    public void onDespawn() {}
+
+    /**
+     * Called everytime a {@link CharacterTemplate} dies.
+     * For normal entities this will be called just before {@link #onDespawn()}.
+     * For {@link de.raidcraft.skills.api.hero.Hero}s this will be called everytime they died.
+     */
+    public void onDeath() {}
 
     /**
      * Called when a trait is removed from the attached {@link CharacterTemplate}.
      */
-    public void onRemove() {
-    }
+    public void onRemove() {}
 
     /**
      * Called when an {@link CharacterTemplate} is spawned. {@link CharacterTemplate#getEntity()} will return null until this is called. This is
      * also called onAttach when the Character is already spawned.
-     * For {@link org.bukkit.entity.Player}s this will be called when they join the server and their "Profile" is loaded.
+     * For {@link org.bukkit.entity.Player}s this will be called everytime they respawn after a death.
      */
-    public void onSpawn() {
-    }
+    public void onSpawn() {}
 
     /**
      * Saves a trait.
      *
      * @param config {@link ConfigurationSection} to save to
      */
-    public void save(ConfigurationSection config) {
-    }
+    public void save(ConfigurationSection config) {}
 }

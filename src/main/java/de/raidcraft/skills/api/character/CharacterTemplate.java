@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.effect.common.Combat;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.party.Party;
+import de.raidcraft.skills.api.traits.CharacterTrait;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ import org.bukkit.entity.LivingEntity;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -40,6 +42,50 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     LivingEntity getEntity();
 
     CharacterType getCharacterType();
+
+    /**
+     * Gets a trait of the given type from the {@link CharacterTemplate}.
+     *
+     * @param traitClass class of the trait
+     * @param <TTrait> type of the trait
+     * @return empty optional if trait is not present or trait
+     */
+    <TTrait extends CharacterTrait<?>> Optional<TTrait> getTrait(Class<TTrait> traitClass);
+
+    /**
+     * Gets a list of all traits that are attached to this {@link CharacterTemplate}.
+     *
+     * @return list of all {@link CharacterTrait}s.
+     */
+    Iterable<CharacterTrait> getTraits();
+
+    /**
+     * Tests if the {@link CharacterTemplate} has the given trait.
+     *
+     * @param traitClass to test for
+     * @return true if trait is attached to the character.
+     */
+    boolean hasTrait(Class<? extends CharacterTrait> traitClass);
+
+    /**
+     * Adds the given {@link CharacterTrait} to the {@link CharacterTemplate}.
+     * Will instantiate a new trait and attach it to the character.
+     *
+     * @param traitClass to attach
+     * @param <TTrait> type
+     * @return attached trait or existing trait if trait existed.
+     */
+    <TTrait extends CharacterTrait> TTrait addTrait(Class<TTrait> traitClass);
+
+    /**
+     * Adds the given {@link CharacterTrait} to the {@link CharacterTemplate}.
+     * Will instantiate a new trait and attach it to the character.
+     *
+     * @param trait to attach
+     * @param <TTrait> type
+     * @return attached trait or existing trait if trait existed.
+     */
+    <TTrait extends CharacterTrait> TTrait addTrait(TTrait trait);
 
     ThreatTable getThreatTable();
 

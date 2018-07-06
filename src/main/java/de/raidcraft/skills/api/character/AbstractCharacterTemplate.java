@@ -1,7 +1,12 @@
 package de.raidcraft.skills.api.character;
 
+import com.google.common.collect.Maps;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.*;
+import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.ability.Ability;
@@ -25,19 +30,46 @@ import de.raidcraft.skills.api.party.SimpleParty;
 import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.EffectEffectStage;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.traits.AddCharacterTraitEvent;
+import de.raidcraft.skills.api.traits.CharacterTrait;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.ui.HealthDisplay;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
-import de.raidcraft.util.*;
-import org.bukkit.*;
+import de.raidcraft.util.BlockUtil;
+import de.raidcraft.util.BukkitUtil;
+import de.raidcraft.util.EffectUtil;
+import de.raidcraft.util.LocationUtil;
+import de.raidcraft.util.MathUtil;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +83,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private final Map<EquipmentSlot, Long> lastSwing = new EnumMap<>(EquipmentSlot.class);
     private final Map<EquipmentSlot, CustomItemStack> armorPieces = new EnumMap<>(EquipmentSlot.class);
     private final Set<HealthDisplay> healthDisplays = new HashSet<>();
+    private final Map<Class<? extends CharacterTrait>, CharacterTrait> traits = Maps.newHashMap();
     protected int maxLevel;
     protected boolean usingHealthBar = true;
     private String name;
@@ -65,6 +98,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
     private CharacterTemplate lastKill;
+    @Getter
+    private boolean spawned = false;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -186,6 +221,69 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public CharacterType getCharacterType() {
 
         return CharacterType.NATURAL;
+    }
+
+
+    @Override
+    public boolean hasTrait(Class<? extends CharacterTrait> traitClass) {
+
+        return traits.containsKey(traitClass);
+    }
+
+    @Override
+    public <TTrait extends CharacterTrait> TTrait addTrait(Class<TTrait> traitClass) {
+        return addTrait(getTraitFor(traitClass));
+    }
+
+    @Override
+    public <TTrait extends CharacterTrait> TTrait addTrait(TTrait trait) {
+        if (trait == null) {
+            RaidCraft.severe("Cannot register a null trait. Was it registered properly?");
+            return null;
+        }
+
+        if (trait.getCharacter() == null) {
+            trait.linkToCharacter(this);
+        }
+
+        // if an existing trait is being replaced, we need to remove the
+        // currently registered runnable to avoid conflicts
+        CharacterTrait replaced = traits.remove(trait.getClass());
+        if (replaced != null) {
+            HandlerList.unregisterAll(replaced);
+            TriggerManager.unregisterListeners(replaced);
+        }
+
+        RaidCraft.registerEvents(trait, RaidCraft.getComponent(SkillsPlugin.class));
+        TriggerManager.registerListeners(trait);
+
+        traits.put(trait.getClass(), trait);
+        if (isSpawned())
+            trait.onSpawn();
+
+
+        Bukkit.getPluginManager().callEvent(new AddCharacterTraitEvent(this, trait));
+        return trait;
+    }
+
+    @Override
+    public <TTrait extends CharacterTrait<?>> Optional<TTrait> getTrait(Class<TTrait> clazz) {
+
+        CharacterTrait trait = traits.get(clazz);
+        if (trait == null) {
+            trait = getTraitFor(clazz);
+            addTrait(trait);
+        }
+        return trait != null ? Optional.of(clazz.cast(trait)) : Optional.empty();
+    }
+
+    protected <TTrait extends CharacterTrait<?>> TTrait getTraitFor(Class<TTrait> clazz) {
+        return SkillsPlugin.getCharacterTraitRegistry().getTrait(clazz);
+    }
+
+    @Override
+    public Iterable<CharacterTrait> getTraits() {
+        return traits.values();
     }
 
     @Override
@@ -735,6 +833,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         }
         // we need to damage not set health the entity or else it wont fire an death event
         getEntity().damage(getMaxHealth());
+        getTraits().forEach(CharacterTrait::onDeath);
         RaidCraft.callEvent(new RCEntityDeathEvent(this));
     }
 
