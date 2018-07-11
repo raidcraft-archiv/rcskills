@@ -1,6 +1,7 @@
 package de.raidcraft.skills.api.combat.action;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ambient.AmbientEffect;
 import de.raidcraft.skills.api.effect.common.CastTime;
@@ -26,9 +27,9 @@ import java.util.Map;
 public class SkillAction extends AbilityAction<Hero> {
 
     private final Skill skill;
-    private final CommandContext args;
     private final Map<String, Double> resourceCosts = new HashMap<>();
     private final PlayerCastSkillTrigger trigger;
+    private CommandContext args;
     private double castTime;
     private double cooldown;
     private boolean delayed = false;
@@ -130,6 +131,12 @@ public class SkillAction extends AbilityAction<Hero> {
         // run ambient stuff
         for (AmbientEffect ambientEffect : getSkill().getAmbientEffects(AbilityEffectStage.CAST)) {
             ambientEffect.run(getSource().getEntity().getLocation());
+        }
+
+        try {
+            if (args == null) args = new CommandContext(new String[0]);
+        } catch (CommandException e) {
+            throw new CombatException(e.getMessage());
         }
 
         // and call the trigger

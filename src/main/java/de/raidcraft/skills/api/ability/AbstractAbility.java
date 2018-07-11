@@ -295,7 +295,8 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return new ArrayList<>();
     }
 
-    public CharacterTemplate getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
+    public CharacterTemplate
+    getTarget(CommandContext args, boolean friendlyOnly, boolean self) throws CombatException {
 
         CharacterTemplate target;
         if (args.argsLength() > 0) {
