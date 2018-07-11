@@ -134,7 +134,7 @@ public class SkillAction extends AbilityAction<Hero> {
         }
 
         try {
-            if (args == null) args = new CommandContext(new String[0]);
+            if (args == null) args = new CommandContext("");
         } catch (CommandException e) {
             throw new CombatException(e.getMessage());
         }
