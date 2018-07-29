@@ -222,7 +222,7 @@ public class SkillConfig extends ConfigurationBase<SkillsPlugin> implements Skil
         int i = 0;
         for (String key : keys) {
             try {
-                ItemStack item = RaidCraft.getItem(key, section.getInt(key));
+                ItemStack item = RaidCraft.getSafeItem(key, section.getInt(key));
                 reagents[i] = item;
             } catch (CustomItemException e) {
                 getPlugin().getLogger().warning("Wrong item '" + key + "' configured in the skill '" + getName() + "'");
