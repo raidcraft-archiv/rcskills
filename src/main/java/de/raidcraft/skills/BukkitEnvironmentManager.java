@@ -46,9 +46,9 @@ public final class BukkitEnvironmentManager implements Listener {
                 }
                 CharacterTemplate character = BukkitEnvironmentManager.this.plugin.getCharacterManager().getCharacter((LivingEntity) entity);
 
-                int animation = event.getPacket().getIntegers().read(1);
+                int animation = event.getPacket().getIntegers().read(0);
                 // See if this is a "move arm" action
-                if (animation == 1 && !character.canAttack() && !character.hasEffect(QueuedAttack.class)) {
+                if (animation == 0 && !character.canAttack() && !character.hasEffect(QueuedAttack.class)) {
                     event.setCancelled(true);
                 }
             }
