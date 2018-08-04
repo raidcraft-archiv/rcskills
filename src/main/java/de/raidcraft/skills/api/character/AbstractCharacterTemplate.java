@@ -31,6 +31,8 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerGainedEffectTrigger;
 import de.raidcraft.util.*;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -65,6 +67,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     private AttachedLevel<CharacterTemplate> attachedLevel;
     private boolean recalculateHealth = false;
     private CharacterTemplate lastKill;
+    @Setter(AccessLevel.PROTECTED)
+    private CharacterTemplate killer = null;
 
     public AbstractCharacterTemplate(LivingEntity entity) {
 
@@ -82,6 +86,11 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
             this.name = "UNKNOWN";
         }
         this.party = new SimpleParty(this);
+    }
+
+    @Override
+    public Optional<CharacterTemplate> getKiller() {
+        return Optional.ofNullable(killer);
     }
 
     protected float getSoundStrength(LivingEntity target) {
@@ -733,6 +742,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         if (killer != null) {
             killer.setLastKill(this);
         }
+        setKiller(killer);
         // we need to damage not set health the entity or else it wont fire an death event
         getEntity().damage(getMaxHealth());
         RaidCraft.callEvent(new RCEntityDeathEvent(this));

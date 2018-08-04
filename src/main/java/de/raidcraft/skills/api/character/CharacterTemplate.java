@@ -21,6 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -32,6 +33,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
         return getEntity().getUniqueId();
     }
+
+    Optional<CharacterTemplate> getKiller();
 
     String getName();
 
