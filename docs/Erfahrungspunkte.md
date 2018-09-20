@@ -1,6 +1,6 @@
 # Erfahrungspunkte
 
-Ein Spieler kann in fast allem Level aufsteigen und erhält über viele Wege EXP. Eine Haupt Quelle für Erfahrungspunkte ist das Erledigen von [Quests](https://git.faldoria.de/raidcraft/rcquests) und Töten von [Custom Mobs](https://git.faldoria.de/raidcraft/rcmobs).
+Ein Spieler kann in fast allem Level aufsteigen und erhält über viele Wege EXP. Eine Haupt Quelle für Erfahrungspunkte ist das Erledigen von [Quests](https://git.faldoria.de/tof/plugins/raidcraft/rcquests) und Töten von [Custom Mobs](https://git.faldoria.de/tof/plugins/raidcraft/rcmobs).
 
 Mit diesen Erfahrungspunkten steigt der Spieler in seiner [Klasse](Professions.md) oder [Beruf](Professions.md) im Level auf. Zusätzlich dazu kann der Spieler seine [Skills](Skills.md) durch Benutzung nach und nach im Level steigern.
 
@@ -21,7 +21,7 @@ Es gibt zusätzlich einen übergreifenden Heldenrang der alle Erfahrungspunkte s
 
 ## experience.yml
 
-In dieser Datei ist festgelegt welche Standard Mobs und Blöcke wie viel Erfahrung geben. Wenn [Custom Mobs](https://git.faldoria.de/raidcraft/rcmobs) genutzt werden sind die Erfahrungspunkte für Mobs deutlich höher und vom Level der Mobs abhängig.
+In dieser Datei ist festgelegt welche Standard Mobs und Blöcke wie viel Erfahrung geben. Wenn [Custom Mobs](https://git.faldoria.de/tof/plugins/raidcraft/rcmobs) genutzt werden sind die Erfahrungspunkte für Mobs deutlich höher und vom Level der Mobs abhängig.
 
 Außerdem kann man mit `*-exp-rate` Einstellungen temporär oder dauerhaft die Levelgeschwindigkeit der Spieler erhöhen.
 

@@ -5,7 +5,7 @@ Das `RCSkills` Plugin bietet die Möglichkeit beliebige Klassen, Berufe und Skil
 ## Getting Started
 
 - [Latest stable download](https://ci.faldoria.de/view/RaidCraft/job/RCSkills/lastStableBuild/)
-- [Issue Tracker](https://git.faldoria.de/raidcraft/rcskills/issues)
+- [Issue Tracker](https://git.faldoria.de/tof/plugins/raidcraft/rcskills/issues)
 - [Developer Dokumentation](docs/DEVELOPER.md)
 - [Admin Dokumentation](docs/ADMIN.md)
 
@@ -13,7 +13,7 @@ Das `RCSkills` Plugin bietet die Möglichkeit beliebige Klassen, Berufe und Skil
 
 `RCSkills` benötigt folgende Plugins um zu funktionieren:
 
-- [RaidCraft API](https://git.faldoria.de/raidcraft/raidcraft-api)
+- [RaidCraft API](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api)
 - [RCPermissions](https://git.faldoria.de/raidcraft/rcpermissions)
 - [Effect Lib](https://github.com/Slikey/EffectLib)
 - [Vault](https://github.com/MilkBowl/Vault/)
