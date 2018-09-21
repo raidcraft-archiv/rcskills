@@ -1,11 +1,11 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.persistance.HeroData;
 import de.raidcraft.skills.api.persistance.LevelData;
 import de.raidcraft.skills.util.CollectionUtils;
+import io.ebean.annotation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
