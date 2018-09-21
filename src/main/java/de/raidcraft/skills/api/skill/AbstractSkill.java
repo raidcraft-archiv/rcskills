@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.skill;
 
-import com.avaje.ebean.EbeanServer;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Reasonable;
@@ -29,6 +28,7 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
+import io.ebean.EbeanServer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -306,7 +306,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
         return Optional.ofNullable(RaidCraft.getDatabase(SkillsPlugin.class).find(TSkillData.class).where()
                 .eq("skill_id", getId())
                 .eq("data_key", key)
-                .findUnique());
+                .findOne());
     }
 
     public Optional<TSkillData> removeData(String key) {

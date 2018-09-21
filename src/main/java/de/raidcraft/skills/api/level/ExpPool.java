@@ -79,7 +79,7 @@ public class ExpPool extends AbstractAttachedLevel<Hero> {
 
         if (getLevelObject() instanceof TemporaryHero) return;
         THeroExpPool db = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroExpPool.class)
-                .where().eq("player_id", getLevelObject().getPlayer().getUniqueId()).findUnique();
+                .where().eq("player_id", getLevelObject().getPlayer().getUniqueId()).findOne();
         if (db == null) {
             RaidCraft.getComponent(SkillsPlugin.class).getLogger()
                     .warning("Cannot save ExpPool for " + getLevelObject().getName());

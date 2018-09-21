@@ -54,7 +54,7 @@ class HeroOptions {
         for (Map.Entry<String, String> entry : options.entrySet()) {
 
             THeroOption option = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroOption.class).where()
-                    .eq("hero_id", hero.getId()).eq("option_key", entry.getKey()).findUnique();
+                    .eq("hero_id", hero.getId()).eq("option_key", entry.getKey()).findOne();
             if (option == null) {
                 option = new THeroOption();
                 option.setHero(RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class, hero.getId()));

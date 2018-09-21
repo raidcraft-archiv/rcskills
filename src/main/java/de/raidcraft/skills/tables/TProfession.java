@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Represents a Ebean-mapped profession object model.
@@ -25,8 +26,15 @@ public class TProfession {
      * The parent of this profession.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
     private TProfession parent;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "parent_id")
+    private List<TProfession> children;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "profession_id")
+    private List<TSkill> skills;
 
     /**
      * When the profession is max out.

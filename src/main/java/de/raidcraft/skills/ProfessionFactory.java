@@ -44,7 +44,7 @@ public final class ProfessionFactory {
         // then load the hero stats from the database
         THeroProfession database = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroProfession.class).where()
                 .eq("name", name)
-                .eq("hero_id", hero.getId()).findUnique();
+                .eq("hero_id", hero.getId()).findOne();
 
         if (database == null) {
             // create a new entry

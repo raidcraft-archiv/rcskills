@@ -196,7 +196,7 @@ public final class CharacterManager implements Listener, Component {
             }
             // try to load hero
             THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
-                    .where().eq("player_id", player_id).findUnique();
+                    .where().eq("player_id", player_id).findOne();
             // create a new entry if not exists
             if (heroTable == null) {
                 heroTable = new THero();
@@ -209,7 +209,7 @@ public final class CharacterManager implements Listener, Component {
             }
 
             THeroExpPool pool = plugin.getDatabase().find(THeroExpPool.class)
-                    .where().eq("player_id", player_id).findUnique();
+                    .where().eq("player_id", player_id).findOne();
             // also create a new exp pool for the hero
             if (pool == null) {
                 pool = new THeroExpPool();
@@ -255,7 +255,7 @@ public final class CharacterManager implements Listener, Component {
         }
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
         THero heroTable = RaidCraft.getDatabase(SkillsPlugin.class).find(THero.class)
-                .where().eq("player_id", playerId).findUnique();
+                .where().eq("player_id", playerId).findOne();
         if (heroTable != null) {
             return Optional.of(new OfflineHero(offlinePlayer, heroTable));
         }

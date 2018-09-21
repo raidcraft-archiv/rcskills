@@ -28,7 +28,6 @@ public class TSkill {
      * The associated profession.
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @PrimaryKeyJoinColumn
     private TProfession profession;
 
     /**

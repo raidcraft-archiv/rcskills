@@ -1,6 +1,5 @@
 package de.raidcraft.skills.binds;
 
-import com.avaje.ebean.SqlUpdate;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.RaidCraft;
@@ -11,6 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.tables.TBinding;
 import de.raidcraft.skills.util.CollectionUtils;
+import io.ebean.SqlUpdate;
 import lombok.NonNull;
 import org.bukkit.Material;
 
@@ -58,7 +58,7 @@ public class BindManager {
                     .eq("ownerId", heroId)
                     .eq("item", item)
                     .eq("skill", stSkill)
-                    .findUnique();
+                    .findOne();
 
             if (result != null) {
                 return false;

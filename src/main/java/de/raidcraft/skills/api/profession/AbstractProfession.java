@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.profession;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Reasonable;
 import de.raidcraft.api.action.requirement.Requirement;
@@ -20,6 +19,7 @@ import de.raidcraft.skills.tables.THeroProfession;
 import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
+import io.ebean.EbeanServer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -70,7 +70,7 @@ public abstract class AbstractProfession implements Profession {
             EbeanServer database = RaidCraft.getComponent(SkillsPlugin.class).getDatabase();
             THeroResource tHeroResource = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroResource.class).where()
                     .eq("name", key)
-                    .eq("profession_id", getId()).findUnique();
+                    .eq("profession_id", getId()).findOne();
             // create a new entry if none exists
             if (tHeroResource == null) {
                 tHeroResource = new THeroResource();

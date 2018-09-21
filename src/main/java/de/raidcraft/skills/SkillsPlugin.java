@@ -212,12 +212,11 @@ SkillsPlugin extends BasePlugin implements Component {
 
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
-                getDatabase().find(clazz).findRowCount();
+                getDatabase().find(clazz).findCount();
             }
         } catch (PersistenceException ex) {
             this.getLogger().info(String.format("Installing database for %s due to first time usage.", getDescription().getName()));
             ex.printStackTrace();
-            installDDL();
         }
     }
 
@@ -268,9 +267,7 @@ SkillsPlugin extends BasePlugin implements Component {
         classes.add(TLanguage.class);
         classes.add(TSkill.class);
         classes.add(TSkillData.class);
-        classes.add(TSkillTranslation.class);
         classes.add(TProfession.class);
-        classes.add(TProfessionTranslation.class);
         classes.add(TDataAlias.class);
         classes.add(TDataProfession.class);
 	    classes.add(TRunestone.class);

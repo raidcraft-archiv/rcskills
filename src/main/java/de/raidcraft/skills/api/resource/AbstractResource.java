@@ -1,6 +1,5 @@
 package de.raidcraft.skills.api.resource;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.skills.SkillsPlugin;
@@ -12,6 +11,7 @@ import de.raidcraft.skills.tables.THeroResource;
 import de.raidcraft.skills.trigger.ResourceChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
+import io.ebean.EbeanServer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
@@ -345,7 +345,7 @@ public abstract class AbstractResource implements Resource {
         EbeanServer database = RaidCraft.getDatabase(SkillsPlugin.class);
         THeroResource resource = database.find(THeroResource.class).where()
                 .eq("profession_id", getProfession().getId())
-                .eq("name", getName()).findUnique();
+                .eq("name", getName()).findOne();
         resource.setValue(getCurrent());
         database.update(resource);
     }

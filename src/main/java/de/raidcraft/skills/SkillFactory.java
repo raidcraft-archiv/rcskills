@@ -172,7 +172,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         THeroSkill database = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroSkill.class).where()
                 .eq("hero_id", hero.getId())
                 .eq("name", (useAlias() ? getAlias() : getName()))
-                .eq("profession_id", profession.getId()).findUnique();
+                .eq("profession_id", profession.getId()).findOne();
 
         if (database == null) {
             database = new THeroSkill();
