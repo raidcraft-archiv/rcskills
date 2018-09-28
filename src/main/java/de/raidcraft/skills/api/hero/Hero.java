@@ -91,6 +91,8 @@ public interface Hero extends SkilledCharacter<Hero> {
 
     boolean hasPath(Path path);
 
+    boolean hasPath(String path);
+
     Set<Path<Profession>> getPaths();
 
     Path<Profession> getPath(String name);

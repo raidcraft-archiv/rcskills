@@ -772,6 +772,11 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
+    public boolean hasPath(String path) {
+        return getPaths().stream().anyMatch(professionPath -> professionPath.getName().equalsIgnoreCase(path));
+    }
+
+    @Override
     public Set<Path<Profession>> getPaths() {
 
         return new HashSet<>(paths.values());

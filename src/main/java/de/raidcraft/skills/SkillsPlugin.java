@@ -12,6 +12,8 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
+import de.raidcraft.skills.actionapi.requirements.PathRequirement;
+import de.raidcraft.skills.actionapi.requirements.ProfessionRequirement;
 import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
 import de.raidcraft.skills.actionapi.trigger.ProfessionTrigger;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
@@ -174,6 +176,8 @@ SkillsPlugin extends BasePlugin implements Component {
                 .requirement(new CanChooseProfessionRequirement())
                 .requirement(new SkillUseRequirement())
                 .requirement(new LevelRequirement())
+                .requirement(new ProfessionRequirement())
+                .requirement(new PathRequirement())
                 .requirement(new Requirement<Player>() {
                     @Override
                     @Information(
@@ -212,7 +216,7 @@ SkillsPlugin extends BasePlugin implements Component {
 
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
-                getDatabase().find(clazz).findCount();
+                getRcDatabase().find(clazz).findCount();
             }
         } catch (PersistenceException ex) {
             this.getLogger().info(String.format("Installing database for %s due to first time usage.", getDescription().getName()));

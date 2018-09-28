@@ -205,23 +205,23 @@ public final class CharacterManager implements Listener, Component {
                 heroTable.setHealth(20);
                 heroTable.setExp(0);
                 heroTable.setLevel(0);
-                plugin.getDatabase().save(heroTable);
+                plugin.getRcDatabase().save(heroTable);
             }
 
-            THeroExpPool pool = plugin.getDatabase().find(THeroExpPool.class)
+            THeroExpPool pool = plugin.getRcDatabase().find(THeroExpPool.class)
                     .where().eq("player_id", player_id).findOne();
             // also create a new exp pool for the hero
             if (pool == null) {
                 pool = new THeroExpPool();
                 pool.setPlayer(player.getName());
                 pool.setPlayerId(player_id);
-                plugin.getDatabase().save(pool);
+                plugin.getRcDatabase().save(pool);
             }
             pool.setHeroId(heroTable.getId());
-            plugin.getDatabase().update(pool);
+            plugin.getRcDatabase().update(pool);
 
             heroTable.setExpPool(pool);
-            plugin.getDatabase().update(heroTable);
+            plugin.getRcDatabase().update(heroTable);
 
             if (plugin.getCommonConfig().getTemporaryWorlds().contains(player.getLocation().getWorld().getName().toLowerCase())) {
                 hero = new TemporaryHero(player, heroTable);

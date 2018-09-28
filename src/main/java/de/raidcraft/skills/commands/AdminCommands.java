@@ -624,7 +624,7 @@ public class AdminCommands {
     @CommandPermissions("rcskills.admin.cleanup")
     public void cleanup(CommandContext args, CommandSender sender) throws CommandException {
 
-        EbeanServer database = plugin.getDatabase();
+        EbeanServer database = plugin.getRcDatabase();
         if (!args.hasFlag('s') && !args.hasFlag('p')) {
             throw new CommandException("You need to specify at least one flag: -p to clean professions and -s to clean skills");
         }
@@ -698,7 +698,7 @@ public class AdminCommands {
 
     private void pruneDatabase(CommandSender sender, Collection<Object> elements) {
 
-        plugin.getDatabase().delete(elements);
+        plugin.getRcDatabase().delete(elements);
         sender.sendMessage(ChatColor.GREEN + "" + elements.size() + " entries deleted from the database!");
     }
 }

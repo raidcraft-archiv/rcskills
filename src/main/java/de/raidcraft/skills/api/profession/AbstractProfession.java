@@ -67,7 +67,7 @@ public abstract class AbstractProfession implements Profession {
             key = StringUtils.formatName(key);
             boolean healthResource = key.equalsIgnoreCase("health");
             // query the database and check if we already have an entry for the player
-            EbeanServer database = RaidCraft.getComponent(SkillsPlugin.class).getDatabase();
+            EbeanServer database = RaidCraft.getComponent(SkillsPlugin.class).getRcDatabase();
             THeroResource tHeroResource = RaidCraft.getDatabase(SkillsPlugin.class).find(THeroResource.class).where()
                     .eq("name", key)
                     .eq("profession_id", getId()).findOne();
