@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "runestones")
+@Table(name = "rc_runestones")
 public class TRunestone {
 
     public static TRunestone getRunestone(CustomItemStack customItemStack) {

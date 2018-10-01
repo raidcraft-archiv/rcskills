@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "skills_skill")
+@Table(name = "rc_skills_skill")
 public class TSkill {
 
     /**

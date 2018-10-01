@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "skills_data_profession")
+@Table(name = "rc_skills_data_profession")
 public class TDataProfession {
 
     @Id

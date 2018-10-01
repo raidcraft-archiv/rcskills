@@ -14,7 +14,7 @@ import javax.persistence.Table;
  * Container for a binding.
  */
 @Entity
-@Table(name = "skills_bindings")
+@Table(name = "rc_skills_bindings")
 @Getter
 @Setter
 public class TBinding {

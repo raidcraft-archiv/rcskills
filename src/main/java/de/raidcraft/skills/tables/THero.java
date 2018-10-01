@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_heroes")
+@Table(name = "rc_skills_heroes")
 @Getter
 @Setter
 public class THero implements LevelData, HeroData {

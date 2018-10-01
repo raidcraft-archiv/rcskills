@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "skills_profession")
+@Table(name = "rc_skills_profession")
 public class TProfession {
 
     /**

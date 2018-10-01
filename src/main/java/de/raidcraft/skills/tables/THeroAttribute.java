@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_attributes")
+@Table(name = "rc_skills_attributes")
 @Getter
 @Setter
 public class THeroAttribute {

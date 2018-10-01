@@ -14,7 +14,7 @@ import javax.persistence.Table;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_hero_resources")
+@Table(name = "rc_skills_hero_resources")
 @Getter
 @Setter
 public class THeroResource implements ResourceData {

@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_hero_options")
+@Table(name = "rc_skills_hero_options")
 @Getter
 @Setter
 public class THeroOption {

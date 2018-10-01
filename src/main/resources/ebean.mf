@@ -1,0 +1,3 @@
+entity-packages: de.raidcraft.skills
+transactional-packages: de.raidcraft.skills
+querybean-packages: de.raidcraft.skills

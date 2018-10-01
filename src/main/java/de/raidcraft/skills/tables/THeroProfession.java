@@ -12,7 +12,7 @@ import java.util.List;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_hero_professions")
+@Table(name = "rc_skills_hero_professions")
 @Getter
 @Setter
 public class THeroProfession implements LevelData {

@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author Silthus
  */
 @Entity
-@Table(name = "skills_exp_pool")
+@Table(name = "rc_skills_exp_pool")
 @Getter
 @Setter
 public class THeroExpPool implements LevelData {
