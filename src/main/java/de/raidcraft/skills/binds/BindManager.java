@@ -181,7 +181,7 @@ public class BindManager {
             try {
 
                 Skill skill = hero.getSkill(result.getSkill());
-                Material material = Material.getMaterial(result.getItem());
+                Material material = Material.matchMaterial(result.getItem());
 
                 addToList(material, new BindWrapper(skill, new CommandContext(result.getArgs())));
 
