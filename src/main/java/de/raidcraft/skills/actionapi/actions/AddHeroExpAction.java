@@ -15,13 +15,9 @@ public class AddHeroExpAction implements Action<Player> {
     @Override
     @Information(
             value = "hero.addxp",
-            desc = "Checks if the player is at or in a radius of the given location.",
+            desc = "Gives the player the given amount of exp.",
             conf = {
-                    "world: [current]",
-                    "x",
-                    "y",
-                    "z",
-                    "radius: [0]"
+                    "exp: exp amount"
             }
     )
     public void accept(Player player, ConfigurationSection config) {
