@@ -15,6 +15,7 @@ import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
 import de.raidcraft.skills.actionapi.requirements.PathRequirement;
 import de.raidcraft.skills.actionapi.requirements.ProfessionRequirement;
 import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
+import de.raidcraft.skills.actionapi.trigger.HeroTrigger;
 import de.raidcraft.skills.actionapi.trigger.ProfessionTrigger;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -34,6 +35,7 @@ import de.raidcraft.skills.conversations.ChooseProfessionAction;
 import de.raidcraft.skills.conversations.ListProfessionSkills;
 import de.raidcraft.skills.conversations.MaxOutHeroAction;
 import de.raidcraft.skills.items.SkillsRequirementProvider;
+import de.raidcraft.skills.listener.PlayerListener;
 import de.raidcraft.skills.random.ExpLootObject;
 import de.raidcraft.skills.random.RandomExpLootObject;
 import de.raidcraft.skills.random.RunestoneLootObject;
@@ -173,6 +175,7 @@ SkillsPlugin extends BasePlugin implements Component {
                 .action(new MaxOutHeroAction())
                 .trigger(new SkillTrigger())
                 .trigger(new ProfessionTrigger())
+                .trigger(new HeroTrigger())
                 .requirement(new CanChooseProfessionRequirement())
                 .requirement(new SkillUseRequirement())
                 .requirement(new LevelRequirement())
@@ -248,7 +251,8 @@ SkillsPlugin extends BasePlugin implements Component {
         this.bukkitEventDispatcher = new BukkitEventDispatcher(this);
 
 
-        Bukkit.getPluginManager().registerEvents(new BindListener(this), this);
+        registerEvents(new BindListener(this));
+        registerEvents(new PlayerListener(this));
     }
 
     public SkillManager getSkillManager() {

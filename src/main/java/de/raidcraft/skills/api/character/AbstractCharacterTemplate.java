@@ -694,6 +694,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public void heal(double amount) throws CombatException {
+        heal(amount, null);
+    }
+
+    @Override
+    public void heal(double amount, String source) throws CombatException {
+        new HealAction<>(source, this, amount).run();
+    }
+
+    @Override
     public void heal(HealAction action) {
 
         if (getEntity() == null || getEntity().isDead()) {
@@ -727,16 +737,25 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         } else if (this instanceof Hero) {
             ((Hero) this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
         } else if (source != null) {
-            source.combatLog("Du hast " + this + " um " + action.getAmount() + " geheilt.");
+            if (action.getSource() instanceof String) {
+                ((Hero) this).combatLog("Du wurdest von " + action.getSource() + " um " + action.getAmount() + "HP geheilt.");
+            } else {
+                source.combatLog("Du hast " + this + " um " + action.getAmount() + " geheilt.");
+            }
         }
     }
 
     @Override
-    public void kill(CharacterTemplate killer) {
+    public boolean kill(CharacterTemplate killer) {
 
         if (getEntity().isDead()) {
-            return;
+            return false;
         }
+        RCEntityDeathEvent event = new RCEntityDeathEvent(this);
+        RaidCraft.callEvent(event);
+
+        if (event.isCancelled()) return false;
+
         clearEffects();
         getEntity().setCustomNameVisible(false);
         if (killer != null) {
@@ -745,13 +764,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         setKiller(killer);
         // we need to damage not set health the entity or else it wont fire an death event
         getEntity().damage(getMaxHealth());
-        RaidCraft.callEvent(new RCEntityDeathEvent(this));
+
+        return true;
     }
 
     @Override
-    public void kill() {
+    public boolean kill() {
 
-        kill(null);
+        return kill(null);
     }
 
     @Nullable

@@ -320,18 +320,6 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
     }
 
     @Override
-    public void kill(CharacterTemplate attacker) {
-
-        super.kill(attacker);
-        String sttackerName = "UNKNOWN";
-        // attack can be null, e.g. console
-        if (attacker != null) {
-            sttackerName = attacker.getName();
-        }
-        debug(sttackerName + " killed YOU");
-    }
-
-    @Override
     public boolean isFriendly(CharacterTemplate source) {
 
         if (source instanceof Hero) {

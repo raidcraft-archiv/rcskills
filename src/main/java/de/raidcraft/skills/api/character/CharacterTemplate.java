@@ -135,13 +135,30 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
 
     void heal(HealAction action);
 
+    void heal(double amount) throws CombatException;
+
+    void heal(double amount, String source) throws CombatException;
+
     default void remove() {
         kill();
     }
 
-    void kill(CharacterTemplate killer);
+    /**
+     * Kills the character by damaging him with his {@link #getMaxHealth()}.
+     * Can be cancelled by cancelling the {@link de.raidcraft.skills.api.events.RCEntityDeathEvent}.
+     *
+     * @param killer of the character
+     * @return true if the character was killed, false if the kill was cancelled
+     */
+    boolean kill(CharacterTemplate killer);
 
-    void kill();
+    /**
+     * Kills the character by damaging him with his {@link #getMaxHealth()}.
+     * Can be cancelled by cancelling the {@link de.raidcraft.skills.api.events.RCEntityDeathEvent}.
+     *
+     * @return true if the character was killed, false if the kill was cancelled
+     */
+    boolean kill();
 
     void setLastKill(CharacterTemplate lastKill);
 
