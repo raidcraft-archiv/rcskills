@@ -158,14 +158,11 @@ public final class SkillUtil {
                 .append(skill.getProfession().getProperties().getTag()).color(ChatColor.GOLD)
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, isTooltip ? new BaseComponent[0] : ProfessionUtil.getProfessionTooltip(skill.getProfession(), true)))
                 .append(")").color(ChatColor.YELLOW)
-                .append(" -------").color(ChatColor.YELLOW).create()));
+                .append(" -------").color(ChatColor.YELLOW).append("\n").create()));
 
         String description = skill.getDescription();
         if (description != null && !description.equals("")) {
-            String[] split = description.split("\\|");
-            for (String str : split) {
-                messages.addAll(Arrays.asList(new ComponentBuilder(str).color(ChatColor.GOLD).italic(true).create()));
-            }
+            messages.addAll(Arrays.asList(new ComponentBuilder(description).color(ChatColor.GOLD).italic(true).append("\n").create()));
         }
 
         if (skill instanceof Levelable) {
@@ -176,7 +173,7 @@ public final class SkillUtil {
                     .append("   |   ").color(ChatColor.GREEN).append("EXP: ").color(ChatColor.YELLOW)
                     .append(((Levelable) skill).getAttachedLevel().getExp() + "").color(ChatColor.AQUA)
                     .append("/").color(ChatColor.YELLOW)
-                    .append(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA).create())
+                    .append(((Levelable) skill).getAttachedLevel().getMaxExp() + "").color(ChatColor.AQUA).append("\n").create())
             );
         }
 
@@ -184,7 +181,7 @@ public final class SkillUtil {
                 .filter(resource -> (((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0) != 0)
                 .collect(Collectors.toSet());
         if (!resources.isEmpty()) {
-            messages.addAll(Arrays.asList(new ComponentBuilder("Skill Kosten:").color(ChatColor.YELLOW).create()));
+            messages.addAll(Arrays.asList(new ComponentBuilder("Skill Kosten:").color(ChatColor.YELLOW).append("\n").create()));
         }
         for (Resource resource : resources) {
             double resourceCost = ((int) (skill.getTotalResourceCost(resource.getName()) * 100)) / 100.0;
@@ -200,23 +197,23 @@ public final class SkillUtil {
                 msg.append("-" + resourceCost).color(ChatColor.DARK_RED);
             }
             msg.append(" ").append(resource.getFriendlyName()).color(ChatColor.YELLOW);
-            messages.addAll(Arrays.asList(msg.create()));
+            messages.addAll(Arrays.asList(msg.append("\n").create()));
         }
 
         if (skill.getRequirements().size() > 0) {
-            messages.addAll(Arrays.asList(new ComponentBuilder("Vorraussetzungen:").color(ChatColor.YELLOW).create()));
+            messages.addAll(Arrays.asList(new ComponentBuilder("Vorraussetzungen:").color(ChatColor.YELLOW).append("\n").create()));
             skill.getRequirements().stream()
                     .filter(requirement -> requirement instanceof Reasonable)
                     .map(requirement -> new ComponentBuilder("  - ").color(ChatColor.YELLOW)
                             .append(((Reasonable) requirement).getReason(skill.getHolder().getPlayer()))
-                            .color(requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.DARK_RED).create())
+                            .color(requirement.test(skill.getHolder().getPlayer()) ? ChatColor.GREEN : ChatColor.DARK_RED).append("\n").create())
                     .forEach(components -> messages.addAll(Arrays.asList(components)));
         }
 
         if (skill.getUsage().length > 0) {
-            messages.addAll(Arrays.asList(new ComponentBuilder("Zusatzinformationen:").color(ChatColor.YELLOW).create()));
+            messages.addAll(Arrays.asList(new ComponentBuilder("Zusatzinformationen:").color(ChatColor.YELLOW).append("\n").create()));
             for (String str : skill.getUsage()) {
-                messages.addAll(Arrays.asList(new ComponentBuilder(str).color(ChatColor.YELLOW).create()));
+                messages.addAll(Arrays.asList(new ComponentBuilder(str).color(ChatColor.YELLOW).append("\n").create()));
             }
         }
 
