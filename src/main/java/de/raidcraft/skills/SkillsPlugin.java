@@ -12,6 +12,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.actionapi.actions.CastSkillAction;
+import de.raidcraft.skills.actionapi.actions.RemoveEffectAction;
 import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
 import de.raidcraft.skills.actionapi.requirements.PathRequirement;
 import de.raidcraft.skills.actionapi.requirements.ProfessionRequirement;
@@ -210,7 +211,8 @@ SkillsPlugin extends BasePlugin implements Component {
                     }
                 })
                 .global()
-                .action(new CastSkillAction());
+                .action(new CastSkillAction())
+                .action(new RemoveEffectAction(this));
     }
 
     public CharacterManager getCharacterManager() {

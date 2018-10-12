@@ -958,6 +958,16 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     }
 
     @Override
+    public Optional<Effect> getEffect(String name) {
+        List<Effect> effects = this.effects.values().stream()
+                .flatMap(map -> map.values().stream())
+                .filter(effect -> effect.getName().equalsIgnoreCase(name) || effect.getFriendlyName().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
+        if (effects.size() == 1) return Optional.of(effects.get(0));
+        return Optional.empty();
+    }
+
+    @Override
     public final boolean hasEffectType(EffectType type) {
 
         return effects.values().stream()
