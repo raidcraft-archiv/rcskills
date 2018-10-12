@@ -1,9 +1,12 @@
 package de.raidcraft.skills;
 
+import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.config.AliasesConfig;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.Map;

@@ -319,9 +319,11 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     }
 
     @Override
-    public final void use() {
+    public final void use(boolean bypassChecks) {
         try {
-            new SkillAction(this).run();
+            SkillAction skillAction = new SkillAction(this);
+            skillAction.setBypassChecks(bypassChecks);
+            skillAction.run();
         } catch (CombatException e) {
             getHolder().sendMessage(e.getMessage());
         }

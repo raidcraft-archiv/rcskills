@@ -42,7 +42,7 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
         // every permission skill is handled as a group
         for (SkillFactory skillFactory : plugin.getSkillManager().getSkillFactoriesFor(PermissionSkill.class)) {
             try {
-                Skill skill = skillFactory.createDummy();
+                Skill skill = skillFactory.create();
                 if (skill instanceof PermissionSkill) {
                     Set<String> globalPermissions = ((PermissionSkill) skill).getGlobalPermissions();
                     Group group = groupManager.createGroup(this, skill.getName(),

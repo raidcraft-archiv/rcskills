@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+import lombok.Data;
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
+@Data
 public class SkillAction extends AbilityAction<Hero> {
 
     private final Skill skill;
@@ -33,6 +35,7 @@ public class SkillAction extends AbilityAction<Hero> {
     private double castTime;
     private double cooldown;
     private boolean delayed = false;
+    private boolean bypassChecks = false;
 
     public SkillAction(Skill skill) {
 
@@ -95,20 +98,20 @@ public class SkillAction extends AbilityAction<Hero> {
     @Override
     public void run() throws CombatException {
 
-        if (skill.getHolder().getPlayer().hasMetadata("GHOST")) {
+        if (!bypassChecks && skill.getHolder().getPlayer().hasMetadata("GHOST")) {
             throw new CombatException("Du kannst als Geist keine Skills nutzen.");
         }
-        if (!skill.isActive()) {
+        if (!bypassChecks && !skill.isActive()) {
             throw new CombatException("Der gewählte Skill gehört zu keiner aktiven Spezialisierung von dir.");
         }
-        if (!skill.isUnlocked()) {
+        if (!bypassChecks && !skill.isUnlocked()) {
             throw new CombatException("Du hast diesen Skill noch nicht freigeschaltet.");
         }
-        if (!(skill instanceof CommandTriggered)) {
+        if (!bypassChecks && !(skill instanceof CommandTriggered)) {
             throw new CombatException("Der Skill ist passiv und kann nicht aktiv genutzt werden.");
         }
 
-        if (getSource().hasEffect(GlobalCooldown.class)) {
+        if (!bypassChecks && getSource().hasEffect(GlobalCooldown.class)) {
             throw new CombatException(CombatException.Type.ON_GLOBAL_COOLDOWN);
         }
 
@@ -120,7 +123,7 @@ public class SkillAction extends AbilityAction<Hero> {
         }
 
         // check if we meet all requirements to use the skill
-        getSkill().checkUsage(this);
+        if (!bypassChecks) getSkill().checkUsage(this);
 
         if (delayed) {
             getSource().addEffect(skill, this, CastTime.class);

@@ -28,7 +28,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
     private final Class<? extends Skill> sClass;
     // every profession needs its own config instance
     private final Map<String, SkillConfig> skillConfigs = new CaseInsensitiveMap<>();
-    private final AliasesConfig aliasConfig;
+    private final ConfigurationSection aliasConfig;
     private Constructor<? extends Skill> constructor;
 
     protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName) throws UnknownSkillException {
@@ -36,7 +36,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         this(plugin, sClass, skillName, null);
     }
 
-    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, AliasesConfig aliasConfig) throws UnknownSkillException {
+    protected SkillFactory(SkillsPlugin plugin, Class<? extends Skill> sClass, String skillName, ConfigurationSection aliasConfig) throws UnknownSkillException {
 
         super(plugin, skillName);
         this.plugin = plugin;
@@ -67,7 +67,7 @@ public final class SkillFactory extends AbstractFactory<SkillInformation> {
         config.getCastTime();
     }
 
-    protected Skill createDummy() throws UnknownSkillException {
+    protected Skill create() throws UnknownSkillException {
 
         SkillConfig config = plugin.configure(new SkillConfig(this));
         // we need to set all the overrides to null because they are used multiple times

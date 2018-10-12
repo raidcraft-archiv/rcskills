@@ -44,7 +44,11 @@ public interface Skill extends Ability<Hero>, Comparable<Skill>, RequirementReso
 
     SkillProperties getSkillProperties();
 
-    void use();
+    default void use() {
+        use(false);
+    }
+
+    void use(boolean bypassChecks);
 
     void use(CommandContext args);
 

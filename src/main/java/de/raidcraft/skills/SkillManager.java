@@ -2,10 +2,12 @@ package de.raidcraft.skills;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.config.ConfigLoader;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentProvider;
 import de.raidcraft.api.items.attachments.ProviderInformation;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.skills.api.exceptions.UnknownSkillException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.loader.GenericJarFileManager;
@@ -16,9 +18,11 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerManager;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.AliasesConfig;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -46,6 +50,18 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         // create the config path
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
         RaidCraft.registerComponent(SkillManager.class, this);
+
+        Quests.registerQuestLoader(new ConfigLoader(plugin, "skill") {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+                try {
+                    createAliasFactory(id, config.getString("skill"), config);
+                    plugin.getLogger().info("Loaded skill " + de.raidcraft.util.ConfigUtil.getFileName(config) + " successfully.");
+                } catch (UnknownSkillException e) {
+                    plugin.getLogger().warning("Failed to load " + de.raidcraft.util.ConfigUtil.getFileName(config) + ": " + e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
@@ -107,7 +123,7 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         }
     }
 
-    protected void createAliasFactory(String alias, String skill, AliasesConfig config) throws UnknownSkillException {
+    protected void createAliasFactory(String alias, String skill, ConfigurationSection config) throws UnknownSkillException {
 
         SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
         skillFactories.put(alias, factory);
@@ -201,6 +217,18 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         cache.values().stream()
                 .filter(skill -> skill instanceof Triggered)
                 .forEach(skill -> TriggerManager.unregisterListeners((Triggered) skill));
+    }
+
+    public Optional<Skill> getSkill(Player player, String skill, ConfigurationSection... config) {
+
+        try {
+            Hero hero = plugin.getCharacterManager().getHero(player);
+            if (hero == null) return Optional.empty();
+            return Optional.ofNullable(skillFactories.get(skill).create(hero, hero.getVirtualProfession(), config));
+        } catch (UnknownSkillException e) {
+            plugin.getLogger().warning(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     public static class CachedSkill {
