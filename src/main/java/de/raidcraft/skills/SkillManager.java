@@ -56,9 +56,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
             public void loadConfig(String id, ConfigurationSection config) {
                 try {
                     createAliasFactory(id, config.getString("skill"), config);
-                    plugin.getLogger().info("Loaded skill " + de.raidcraft.util.ConfigUtil.getFileName(config) + " successfully.");
+                    plugin.getLogger().info("Loaded skill " + id + " successfully.");
                 } catch (UnknownSkillException e) {
-                    plugin.getLogger().warning("Failed to load " + de.raidcraft.util.ConfigUtil.getFileName(config) + ": " + e.getMessage());
+                    plugin.getLogger().warning("Failed to load (" + id + ") " + de.raidcraft.util.ConfigUtil.getFileName(config) + ": " + e.getMessage());
                 }
             }
         });
