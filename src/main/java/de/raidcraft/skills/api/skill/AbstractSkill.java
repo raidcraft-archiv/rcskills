@@ -345,7 +345,7 @@ public abstract class AbstractSkill extends AbstractAbility<Hero> implements Ski
     @Override
     public final Profession getProfession() {
 
-        return profession;
+        return profession == null ? getHolder().getVirtualProfession() : profession;
     }
 
     @Override
