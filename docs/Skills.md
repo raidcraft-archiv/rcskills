@@ -9,6 +9,7 @@ Alle Konfigurationen an Skills sollten wenn möglich ein neuen eigenen Dateien i
 - [Basis Config](#basis-config)
 - [Waffen Skills](#waffen-skills)
 - [Skills mit Effekten](#skills-mit-effekten)
+- [Skills in Quests](#skills-in-quests)
 
 ## Der erste Skill
 
@@ -248,3 +249,8 @@ effects:
     damage: # BASIS-CONFIG
       base: 27
 ```
+
+## Skills in Quests
+
+Zusätzlich zu den Alias Configs gibt es auch die Möglichkeit direkt in Quests Skills zu definieren und zu nutzen. Dabei einfach eine normale Skill Config mit der Endung `.skill.yml` im Quest Ordner anlegen.
+Skills die so erstellt werden können dann, z.B. mit der `!cast.override this.mein-skill` Action gezaubert werden.
