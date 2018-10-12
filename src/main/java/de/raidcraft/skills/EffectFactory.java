@@ -98,9 +98,12 @@ public final class EffectFactory<E extends Effect> {
             // and also merge the skill into it if it exists
             if (ability instanceof Skill) {
                 Skill skill = (Skill) ability;
-                // lets now merge the effect with the merged skill profession config
-                SkillConfig skillConfig = plugin.getSkillManager().getFactory(skill).getConfig(skill.getProfession());
-                config.merge(skillConfig, "effects." + effectName);
+                SkillFactory skillFactory = plugin.getSkillManager().getFactory(skill);
+                if (skillFactory != null) {
+                    // lets now merge the effect with the merged skill profession config
+                    SkillConfig skillConfig = skillFactory.getConfig(skill.getProfession());
+                    config.merge(skillConfig, "effects." + effectName);
+                }
             }
 
             effectConfigs.put(ability, config);
