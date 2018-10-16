@@ -20,6 +20,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.util.ExpUtil;
+import de.raidcraft.util.EntityMetaData;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -84,6 +85,10 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
         CharacterTemplate character = event.getCharacter();
         Attack attack = character.getLastDamageCause();
 
+        if (!character.getEntity().hasMetadata(EntityMetaData.RCMOBS_AWARD_EXP)) {
+            return;
+        }
+
         if (attack == null || character.hasEffect(Summoned.class)) {
             return;
         }
@@ -113,13 +118,13 @@ public final class ExperienceManager implements Listener, PlayerStatisticProvide
         }
         if (heroesToAddExp.isEmpty()) return;
         int exp;
-        if (character.getEntity().hasMetadata("RC_CUSTOM_MOB")) {
+        if (character.getEntity().hasMetadata(EntityMetaData.RCMOBS_CUSTOM_MOB)) {
             exp = (int) ExpUtil.getPartyMobXPFull(
                     ((Hero) attacker).getPlayerLevel(),
                     highestPlayerLevel,
                     totalPlayerLevel,
                     character.getAttachedLevel().getLevel(),
-                    character.getEntity().hasMetadata("ELITE"),
+                    character.getEntity().hasMetadata(EntityMetaData.RCMOBS_ELITE),
                     // TODO: maybe add rested EXP
                     0);
         } else {
