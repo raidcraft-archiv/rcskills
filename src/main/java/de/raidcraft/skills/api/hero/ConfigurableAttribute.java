@@ -90,6 +90,19 @@ public class ConfigurableAttribute implements Attribute {
         if (recalculate) hero.recalculateHealth();
     }
 
+    /**
+     * Updates the attributes base value with or without updating the current value.
+     *
+     * @param value to increase or decrease base value with. Use negative numbers to decrease the the value. Cannot be below 0.
+     * @param updateCurrentValue set to true to increase the current value by the same amount after updating the base value
+     */
+    @Override
+    public void updateBaseValue(int value, boolean updateCurrentValue) {
+
+        setBaseValue(getBaseValue() + value);
+        if (updateCurrentValue) setCurrentValue(getCurrentValue() + value);
+    }
+
     @Override
     public void addValue(int value) {
 

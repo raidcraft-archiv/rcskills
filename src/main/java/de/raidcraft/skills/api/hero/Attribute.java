@@ -24,6 +24,14 @@ public interface Attribute {
 
     void setCurrentValue(int value);
 
+    /**
+     * Updates the attributes base value with or without updating the current value.
+     *
+     * @param value to increase or decrease base value with. Use negative numbers to decrease the the value. Cannot be below 0.
+     * @param updateCurrentValue set to true to increase the current value by the same amount after updating the base value
+     */
+    void updateBaseValue(int value, boolean updateCurrentValue);
+
     void addValue(int value);
 
     void removeValue(int value);

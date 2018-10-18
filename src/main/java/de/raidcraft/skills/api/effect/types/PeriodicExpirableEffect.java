@@ -57,6 +57,18 @@ public abstract class PeriodicExpirableEffect<S> extends PeriodicEffect<S> {
         return duration;
     }
 
+    public void setDuration(double time) {
+
+        duration = TimeUtil.secondsToTicks(time);
+        if (getDuration() == duration) return;
+        if (duration <= 0) {
+            stopTask();
+            return;
+        }
+        stopTask();
+        startTask();
+    }
+
     @Override
     public void startTask() {
 

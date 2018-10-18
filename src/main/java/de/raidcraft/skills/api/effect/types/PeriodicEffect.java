@@ -60,6 +60,17 @@ public abstract class PeriodicEffect<S> extends ScheduledEffect<S> {
         return interval;
     }
 
+    public void setInterval(long ticks) {
+        if (getInterval() == ticks) return;
+        if (ticks <= 0) {
+            stopTask();
+            return;
+        }
+        this.interval = ticks;
+        stopTask();
+        startTask();
+    }
+
     @Override
     public void startTask() {
 
