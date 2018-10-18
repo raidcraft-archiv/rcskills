@@ -13,10 +13,7 @@ import de.raidcraft.api.random.RDS;
 import de.raidcraft.skills.actionapi.actions.AddHeroExpAction;
 import de.raidcraft.skills.actionapi.actions.CastSkillAction;
 import de.raidcraft.skills.actionapi.actions.RemoveEffectAction;
-import de.raidcraft.skills.actionapi.requirements.LevelRequirement;
-import de.raidcraft.skills.actionapi.requirements.PathRequirement;
-import de.raidcraft.skills.actionapi.requirements.ProfessionRequirement;
-import de.raidcraft.skills.actionapi.requirements.SkillUseRequirement;
+import de.raidcraft.skills.actionapi.requirements.*;
 import de.raidcraft.skills.actionapi.trigger.HeroTrigger;
 import de.raidcraft.skills.actionapi.trigger.ProfessionTrigger;
 import de.raidcraft.skills.actionapi.trigger.SkillTrigger;
@@ -183,6 +180,7 @@ SkillsPlugin extends BasePlugin implements Component {
                 .requirement(new LevelRequirement())
                 .requirement(new ProfessionRequirement())
                 .requirement(new PathRequirement())
+                .requirement(new EffectRequirement())
                 .requirement(new Requirement<Player>() {
                     @Override
                     @Information(

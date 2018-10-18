@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author Silthus
@@ -197,11 +198,22 @@ public abstract class AbstractAbility<T extends CharacterTemplate> implements Ab
         return addEffect(getHolder(), eClass);
     }
 
+    public final <E extends Effect<S>, S> E addEffect(Class<E> eClass, Consumer<E> afterLoad) throws CombatException {
+
+        return addEffect(getHolder(), eClass, afterLoad);
+    }
+
     @SuppressWarnings("unchecked")
     public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass) throws CombatException {
 
         return target.addEffect(this, (S) this, eClass);
     }
+
+    public final <E extends Effect<S>, S> E addEffect(CharacterTemplate target, Class<E> eClass, Consumer<E> afterLoad) throws CombatException {
+
+        return target.addEffect(this, (S) this, eClass, afterLoad);
+    }
+
 
     public final <E extends Effect<S>, S> E addEffect(S source, CharacterTemplate target, Class<E> eClass) throws CombatException {
 

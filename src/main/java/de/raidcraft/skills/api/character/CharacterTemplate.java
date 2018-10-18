@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Silthus
@@ -172,6 +173,8 @@ public interface CharacterTemplate extends Levelable<CharacterTemplate> {
     <E extends Effect> void addEffect(Class<E> eClass, E effect) throws CombatException;
 
     <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass) throws CombatException;
+
+    <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass, Consumer<E> afterLoad) throws CombatException;
 
     <E extends Effect<S>, S> E addEffect(S source, Class<E> eClass) throws CombatException;
 

@@ -40,6 +40,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -862,6 +863,14 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass) throws CombatException {
 
         E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, ability);
+        addEffect(eClass, effect);
+        return effect;
+    }
+
+    @Override
+    public <E extends Effect<S>, S> E addEffect(Ability ability, S source, Class<E> eClass, Consumer<E> afterLoad) throws CombatException {
+        E effect = RaidCraft.getComponent(SkillsPlugin.class).getEffectManager().getEffect(source, this, eClass, ability);
+        afterLoad.accept(effect);
         addEffect(eClass, effect);
         return effect;
     }
