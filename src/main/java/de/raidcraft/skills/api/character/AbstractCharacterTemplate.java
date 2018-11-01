@@ -120,8 +120,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 return Sound.ENTITY_CREEPER_DEATH;
             case SKELETON:
                 return Sound.ENTITY_SKELETON_DEATH;
-            case IRON_GOLEM:
-                return Sound.ENTITY_IRONGOLEM_DEATH;
             case GHAST:
                 return Sound.ENTITY_GHAST_DEATH;
             case PIG:
@@ -137,8 +135,6 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 return Sound.ENTITY_WOLF_DEATH;
             case ZOMBIE:
                 return Sound.ENTITY_ZOMBIE_DEATH;
-            case PIG_ZOMBIE:
-                return Sound.ENTITY_ZOMBIE_PIG_DEATH;
             default:
                 return Sound.ENTITY_GENERIC_DEATH;
         }
@@ -653,7 +649,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
                 ((Effect) attack.getSource()).executeAmbientEffects(EffectEffectStage.DAMAGE, getEntity().getLocation());
             }
             if (attack.isOfAttackType(EffectType.CRITICAL)) {
-                EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.CRIT, 1, 50);
+                EffectUtil.playEffect(getEntity().getLocation().add(0, 1, 0), org.bukkit.Effect.MOBSPAWNER_FLAMES, 1, 50);
             }
             // lets set some bukkit properties
             getEntity().setLastDamage(attack.getDamage());
@@ -896,7 +892,8 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
         Map<Object, Effect> effects = this.effects.getOrDefault(eClass, new HashMap<>());
         if (!effects.isEmpty()) {
             for (Effect effect : new ArrayList<>(effects.values())) {
-                effects.remove(effect.getSource()).remove();
+                Effect removedEffect = effects.remove(effect.getSource());
+                if (removedEffect != null) removedEffect.remove();
             }
         }
     }
@@ -1178,7 +1175,7 @@ public abstract class AbstractCharacterTemplate implements CharacterTemplate {
     public Material getItemTypeInHand() {
 
         ItemStack itemInHand = getEntity().getEquipment().getItemInHand();
-        if (itemInHand == null || itemInHand.getTypeId() == 0) {
+        if (itemInHand == null) {
             return Material.AIR;
         }
         return itemInHand.getType();
