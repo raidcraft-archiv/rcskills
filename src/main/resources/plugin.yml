@@ -6,6 +6,7 @@ author: Silthus
 website: http://www.raid-craft.de
 depend: [RaidCraft-API]
 database: true
+api-version: 1.13
 permissions:
   rcskills.restricted:
       description: Gives access to all relevant player commands.

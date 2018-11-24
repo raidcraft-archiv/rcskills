@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.NotEmpty;
 import io.ebean.annotation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +25,6 @@ public class TBinding {
     private int ownerId;
 
     @Column(nullable = false, length = 32)
-    @NotEmpty
     private String item;
 
     @Column(length = 32)

@@ -1,6 +1,7 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.UpdatedTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -39,6 +40,7 @@ public class TSkill {
     /**
      * The last modified timestamp of the skill.
      */
+    @UpdatedTimestamp
     private Timestamp updtimestamp;
 
     /**

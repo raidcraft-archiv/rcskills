@@ -58,7 +58,7 @@ public final class BukkitEnvironmentManager implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.ENCHANTING_TABLE) {
             event.getPlayer().sendMessage(ChatColor.RED + "Du kannst keine Zaubertische öffnen.");
             event.setCancelled(true);
         }

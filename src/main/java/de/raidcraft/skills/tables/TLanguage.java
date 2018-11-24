@@ -1,6 +1,5 @@
 package de.raidcraft.skills.tables;
 
-import com.avaje.ebean.validation.Length;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +21,6 @@ public class TLanguage {
      */
     @Id
     @Column(columnDefinition = "CHAR", unique = true, length = 5)
-    @Length(min = 5)
     private String code;
 
     /**

@@ -77,7 +77,7 @@ public class Web extends PeriodicExpirableEffect<Ability> implements Triggered {
             web = web.getRelative(BlockFace.DOWN);
         }
         web = web.getRelative(BlockFace.UP);
-        web.setType(Material.WEB);
+        web.setType(Material.COBWEB);
         blocks.add(web);
     }
 
