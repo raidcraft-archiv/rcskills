@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,7 +45,7 @@ public class Disarm<S> extends ExpirableEffect<S> implements Triggered {
         if (getTarget() instanceof Hero) {
             Player player = ((Hero) getTarget()).getPlayer();
             ItemStack inHand = player.getItemInHand();
-            if (inHand != null && inHand.getTypeId() != 0 && CustomItemUtil.isWeapon(inHand)) {
+            if (inHand != null && inHand.getType() != Material.AIR && CustomItemUtil.isWeapon(inHand)) {
                 CustomItemUtil.moveItem(player, player.getInventory().getHeldItemSlot(), inHand);
             }
         }

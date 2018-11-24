@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 
 /**
@@ -41,7 +42,7 @@ public class Burn extends PeriodicExpirableEffect<Ability> {
     @Override
     protected void renew(CharacterTemplate target) {
 
-        ParticleEffect.sendToLocation(EnumWrappers.Particle.FLAME, target.getEntity().getLocation(), 0.25F, 0.25F, 0.25F, 3);
+        ParticleEffect.sendToLocation(Particle.FLAME, target.getEntity().getLocation(), 0.25F, 0.25F, 0.25F, 3);
     }
 
     @Override

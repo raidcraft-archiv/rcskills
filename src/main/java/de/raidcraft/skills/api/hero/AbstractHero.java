@@ -519,7 +519,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             }
             if (mainWeapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
                 ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
-                if (secondHandItem != null && secondHandItem.getTypeId() != 0) {
+                if (secondHandItem != null && secondHandItem.getType() != Material.AIR) {
                     CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
                     removeWeapon(EquipmentSlot.SHIELD_HAND);
                     removeArmor(EquipmentSlot.SHIELD_HAND);

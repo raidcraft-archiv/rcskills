@@ -14,6 +14,7 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.slikey.effectlib.effect.CylinderEffect;
 import de.slikey.effectlib.util.ParticleEffect;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 
 /**
  * Represents a profession instantiated for one {@link Hero}.
@@ -53,7 +54,7 @@ public class SimpleProfession extends AbstractProfession {
 
         CylinderEffect effect = new CylinderEffect(AmbientManager.getEffectManager());
         effect.setEntity(getHero().getEntity());
-        effect.particle = ParticleEffect.FLAME;
+        effect.particle = Particle.FLAME;
         effect.solid = true;
         effect.run();
         // lets update the max health

@@ -17,7 +17,7 @@ public enum ProjectileType {
     SMALL_FIREBALL(SmallFireball.class),
     WITHER_SKULL(WitherSkull.class),
     ENDER_PEARL(EnderPearl.class),
-    FISH(Fish.class),
+    FISH(FishHook.class),
     EXP_BOTTLE(ThrownExpBottle.class),
     SPLASH_POTION(ThrownPotion.class);
 

@@ -9,31 +9,31 @@ import org.bukkit.Material;
 public enum ToolType {
 
     AXE("Axt",
-            Material.WOOD_AXE,
+            Material.WOODEN_AXE,
             Material.STONE_AXE,
             Material.IRON_AXE,
-            Material.GOLD_AXE,
+            Material.GOLDEN_AXE,
             Material.DIAMOND_AXE
     ),
     SHOVEL("Schaufel",
-            Material.WOOD_SPADE,
-            Material.STONE_SPADE,
-            Material.IRON_SPADE,
-            Material.GOLD_SPADE,
-            Material.DIAMOND_SPADE
+            Material.WOODEN_SHOVEL,
+            Material.STONE_SHOVEL,
+            Material.IRON_SHOVEL,
+            Material.GOLDEN_SHOVEL,
+            Material.DIAMOND_SHOVEL
     ),
     PICKAXE("Pickaxt",
-            Material.WOOD_PICKAXE,
+            Material.WOODEN_PICKAXE,
             Material.STONE_PICKAXE,
             Material.IRON_PICKAXE,
-            Material.GOLD_PICKAXE,
+            Material.GOLDEN_PICKAXE,
             Material.DIAMOND_PICKAXE
     ),
     HOE("Harke",
-            Material.WOOD_HOE,
+            Material.WOODEN_HOE,
             Material.STONE_HOE,
             Material.IRON_HOE,
-            Material.GOLD_HOE,
+            Material.GOLDEN_HOE,
             Material.DIAMOND_HOE
     ),
     FISHING_ROD("Angel",
