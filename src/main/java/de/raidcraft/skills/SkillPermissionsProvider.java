@@ -27,10 +27,9 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
 
         this.plugin = plugin;
         RaidCraft.registerPermissionsProvider(this);
-        load();
     }
 
-    private void load() {
+    public void load() {
 
         GroupManager groupManager = RaidCraft.getPermissionGroupManager();
         if (groupManager == null) {

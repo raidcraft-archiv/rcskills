@@ -107,6 +107,9 @@ SkillsPlugin extends BasePlugin implements Component {
         RDS.registerObject(new RunestoneLootObject.RunestoneLootFactory());
 
         registerActionAPI();
+
+        // lets register our permissions provider last
+        permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
     }
 
     @Override
@@ -115,8 +118,7 @@ SkillsPlugin extends BasePlugin implements Component {
         // to avoid dependency hickups
         loadEngine();
 
-        // lets register our permissions provider last
-        permissionsProvider = new SkillPermissionsProvider(SkillsPlugin.this);
+        this.permissionsProvider.load();
 
         try {
             if (Bukkit.getPluginManager().getPlugin("RCItems") != null) {
