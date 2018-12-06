@@ -125,7 +125,12 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
 
     protected void createAliasFactory(String alias, String skill, ConfigurationSection config) throws UnknownSkillException {
 
-        SkillFactory factory = new SkillFactory(plugin, skillClasses.get(skill), skill, config);
+        Class<? extends Skill> sClass = skillClasses.get(skill);
+        if (sClass == null) {
+            plugin.getLogger().warning("Unable to find skill class for alias: " + alias + " and skill: " + skill);
+            return;
+        }
+        SkillFactory factory = new SkillFactory(plugin, sClass, skill, config);
         skillFactories.put(alias, factory);
         factory.createDefaults();
     }
