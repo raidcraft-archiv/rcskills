@@ -70,6 +70,7 @@ public final class ProfessionManager {
         dir.mkdirs();
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
+                if (plugin.getCommonConfig().skip_disabled_directory && file.getName().equalsIgnoreCase("disabled")) continue;
                 files.putAll(loadProfessions(file));
                 continue;
             }

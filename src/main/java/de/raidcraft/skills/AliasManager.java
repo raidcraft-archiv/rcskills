@@ -52,6 +52,7 @@ public final class AliasManager {
 
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
+                if (plugin.getCommonConfig().skip_disabled_directory && file.getName().equalsIgnoreCase("disabled")) continue;
                 // recursive loading of all sub directories
                 loadAliasConfig(file);
             }

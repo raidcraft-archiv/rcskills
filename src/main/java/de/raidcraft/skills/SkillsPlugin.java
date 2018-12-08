@@ -7,6 +7,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.config.Comment;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
@@ -372,6 +373,9 @@ SkillsPlugin extends BasePlugin implements Component {
         public long log_interval = 60;
         @Setting("disable-error-skills")
         public boolean disable_error_skills = false;
+        @Setting("skip-disabled-directory")
+        @Comment("Will skip all skill and profession configs under the disabled/* directory.")
+        public boolean skip_disabled_directory = true;
         @Setting("disable-error-abilities")
         public boolean disable_error_abilities = false;
         @Setting("callback-purge-ticks")
