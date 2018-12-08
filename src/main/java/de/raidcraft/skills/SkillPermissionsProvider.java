@@ -31,6 +31,8 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
 
     public void load() {
 
+        plugin.getLogger().info("Loading permission skills as groups...");
+
         GroupManager groupManager = RaidCraft.getPermissionGroupManager();
         if (groupManager == null) {
             plugin.getLogger().warning("Not registering RCSkill Skills as Permission Groups. No GroupManager found!");
@@ -48,12 +50,13 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
                             ((PermissionSkill) skill).getWorldPermissions(),
                             globalPermissions.toArray(new String[globalPermissions.size()]));
                     groups.add(group);
+                    plugin.getLogger().info("Registered '" + group.getName() + "' as permission group.");
                     if (group.getName().equalsIgnoreCase(defaultGroup)) {
                         this.defaultGroup = group;
                     }
                 }
             } catch (UnknownSkillException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Error when registering permission skill " + skillFactory.getAlias() + ": " + e.getMessage());
             }
         }
         if (this.defaultGroup == null) {
