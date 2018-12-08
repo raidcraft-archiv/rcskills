@@ -50,7 +50,6 @@ public final class SkillPermissionsProvider implements RCPermissionsProvider<Ski
                             ((PermissionSkill) skill).getWorldPermissions(),
                             globalPermissions.toArray(new String[globalPermissions.size()]));
                     groups.add(group);
-                    groupManager.updateGroupPermissions(group);
                     plugin.getLogger().info("Registered '" + group.getName() + "' as permission group.");
                     if (group.getName().equalsIgnoreCase(defaultGroup)) {
                         this.defaultGroup = group;
