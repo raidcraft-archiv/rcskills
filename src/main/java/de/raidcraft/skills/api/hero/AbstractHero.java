@@ -35,6 +35,7 @@ import de.raidcraft.skills.hero.TemporaryHero;
 import de.raidcraft.skills.tables.THero;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.CustomItemUtil;
@@ -485,7 +486,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             }
             // lets check all equiped weapons and adjust the player accordingly
             ItemStack mainWeaponItemStack = getPlayer().getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT);
-            if (mainWeaponItemStack == null || !CustomItemUtil.isWeapon(mainWeaponItemStack)) {
+            if (!CustomItemUtil.isWeapon(mainWeaponItemStack)) {
                 removeWeapon(EquipmentSlot.ONE_HANDED);
                 removeWeapon(EquipmentSlot.TWO_HANDED);
                 return;
@@ -518,7 +519,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
                 throw new CombatException(mainWeapon.getResolveReason(getPlayer()));
             }
             if (mainWeapon.getEquipmentSlot() == EquipmentSlot.TWO_HANDED) {
-                ItemStack secondHandItem = getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT);
+                ItemStack secondHandItem = getPlayer().getInventory().getItemInOffHand();
                 if (secondHandItem != null && secondHandItem.getType() != Material.AIR) {
                     CustomItemUtil.moveItem(getPlayer(), CustomItemUtil.OFFHAND_WEAPON_SLOT, secondHandItem);
                     removeWeapon(EquipmentSlot.SHIELD_HAND);
@@ -529,7 +530,7 @@ public abstract class AbstractHero extends AbstractSkilledCharacter<Hero> implem
             } else if (mainWeapon.getEquipmentSlot() == EquipmentSlot.ONE_HANDED) {
                 setWeapon(mainWeaponCustomItemStack);
                 // check for a second weapon too
-                CustomItemStack offHandItemStack = RaidCraft.getCustomItem(getPlayer().getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
+                CustomItemStack offHandItemStack = RaidCraft.getCustomItem(getPlayer().getInventory().getItemInOffHand());
                 if (offHandItemStack != null && offHandItemStack.getType() != Material.AIR) {
                     if (CustomItemUtil.isOffhandWeapon(offHandItemStack)) {
                         CustomWeapon offHandWeapon = CustomItemUtil.getWeapon(offHandItemStack);
