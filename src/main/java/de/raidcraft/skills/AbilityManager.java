@@ -102,7 +102,9 @@ public final class AbilityManager extends GenericJarFileManager<Ability> impleme
     protected void createAliasFactory(String alias, String skill, ConfigurationSection config) {
 
         try {
-            AbilityFactory factory = new AbilityFactory(plugin, abilityClasses.get(skill), skill, config);
+            Class<? extends Ability> sClass = abilityClasses.get(skill);
+            if (sClass == null) throw new UnknownSkillException("No skill class for " + skill + " found!");
+            AbilityFactory factory = new AbilityFactory(plugin, sClass, skill, config);
             abilityFactories.put(alias, factory);
         } catch (UnknownSkillException e) {
             plugin.getLogger().warning(e.getMessage());
