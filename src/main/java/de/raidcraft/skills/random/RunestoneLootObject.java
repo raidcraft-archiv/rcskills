@@ -6,6 +6,7 @@ import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.api.random.RDSObjectFactory;
 import de.raidcraft.api.random.objects.ItemLootObject;
 import de.raidcraft.skills.tables.TRunestone;
+import de.raidcraft.util.LocationUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class RunestoneLootObject extends ItemLootObject {
         @Override
         public RDSObject createInstance(ConfigurationSection config) {
 
-            World world = Bukkit.getWorld(config.getString("world", "world"));
+            World world = LocationUtil.getCaseInsensitiveWorld(config.getString("world", "world"));
             Location location;
             if (config.isSet("pitch") || config.isSet("yaw")) {
                 location = new Location(world,
