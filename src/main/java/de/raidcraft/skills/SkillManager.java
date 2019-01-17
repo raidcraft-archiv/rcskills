@@ -3,6 +3,7 @@ package de.raidcraft.skills;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentProvider;
@@ -51,9 +52,9 @@ public final class SkillManager extends GenericJarFileManager<Skill> implements 
         new File(plugin.getDataFolder(), plugin.getCommonConfig().skill_config_path).mkdirs();
         RaidCraft.registerComponent(SkillManager.class, this);
 
-        Quests.registerQuestLoader(new ConfigLoader(plugin, "skill") {
+        Quests.registerQuestLoader(new ConfigLoader<SkillsPlugin>(plugin, "skill") {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<SkillsPlugin> config) {
                 try {
                     createAliasFactory(id, config.getString("skill"), config);
                     plugin.getLogger().info("Loaded skill " + id + " successfully.");
